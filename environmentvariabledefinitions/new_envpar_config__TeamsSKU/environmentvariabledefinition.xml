@@ -1,0 +1,13 @@
+<environmentvariabledefinition schemaname="new_envpar_config__TeamsSKU">
+  <defaultvalue>16ddbbfc-09ea-4de2-b1d7-312db6112d70</defaultvalue>
+  <description default="Microsoft Teams free product SKU /!\">
+    <label description="Microsoft Teams free product SKU /!\" languagecode="1033" />
+  </description>
+  <displayname default="envpar_config__TeamsSKU">
+    <label description="envpar_config__TeamsSKU" languagecode="1033" />
+  </displayname>
+  <introducedversion>3.0.0.16</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <type>100000000</type>
+</environmentvariabledefinition>

@@ -1,0 +1,253 @@
+{
+    "properties": {
+        "connectionReferences": {
+            "shared_sharepointonline": {
+                "runtimeSource": "embedded",
+                "connection": {
+                    "connectionReferenceLogicalName": "new_sharedsharepointonline_9ad14"
+                },
+                "api": {
+                    "name": "shared_sharepointonline"
+                }
+            }
+        },
+        "definition": {
+            "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+            "contentVersion": "1.0.0.0",
+            "parameters": {
+                "$connections": {
+                    "defaultValue": {},
+                    "type": "Object"
+                },
+                "$authentication": {
+                    "defaultValue": {},
+                    "type": "SecureObject"
+                },
+                "envpar_config__TenantName": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__TenantName"
+                    }
+                }
+            },
+            "triggers": {
+                "manual": {
+                    "type": "Request",
+                    "kind": "Http",
+                    "inputs": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "siteName": {
+                                    "type": "string"
+                                },
+                                "fileIdentifier": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "actions": {
+                "Get_file_content_using_path": {
+                    "runAfter": {
+                        "Compose_RelationShip": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                        "host": {
+                            "connectionName": "shared_sharepointonline",
+                            "operationId": "GetFileContentByPath",
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                        },
+                        "parameters": {
+                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['siteName']}",
+                            "path": "@concat(outputs('tmpFolder'), '/', outputs('Compose_RelationShip')?['Relationship']?['@Target'] )",
+                            "inferContentType": true
+                        },
+                        "authentication": "@parameters('$authentication')"
+                    }
+                },
+                "Select": {
+                    "runAfter": {
+                        "Get_file_content_using_path": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "Select",
+                    "inputs": {
+                        "from": "@xpath(xml(outputs('Get_file_content_using_path')?['body']), '//*[local-name()=\"sdtPr\"]/*[local-name()=\"tag\"][@*[local-name()=\"val\" and .=\"ws365_quiz\"]]/parent::*[local-name()=\"sdtPr\"]/parent::*[local-name()=\"sdt\"]')",
+                        "select": {
+                            "title": "@json(item())?['w:sdt']?['w:sdtPr']?['w:alias']?['@w:val']",
+                            "response": "@xpath(xml(json(item())?['w:sdt']?['w:sdtContent']), 'string(/*)')"
+                        }
+                    }
+                },
+                "Extract_folder": {
+                    "runAfter": {
+                        "tmpFolder": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                        "host": {
+                            "connectionName": "shared_sharepointonline",
+                            "operationId": "ExtractFolderV2",
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                        },
+                        "parameters": {
+                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['siteName']}",
+                            "source": "@triggerBody()?['fileIdentifier']",
+                            "destination": "@outputs('tmpFolder')",
+                            "overwrite": false
+                        },
+                        "authentication": "@parameters('$authentication')"
+                    }
+                },
+                "tmpFolder": {
+                    "runAfter": {},
+                    "type": "Compose",
+                    "inputs": "@concat('/FormServerTemplates/tmp_', string(ticks(utcNow())), '_', guid())"
+                },
+                "Select_3": {
+                    "runAfter": {
+                        "Select": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "Select",
+                    "inputs": {
+                        "from": "@body('Select')",
+                        "select": {
+                            "Quest": "@trim(split(split(item()?['title'],'/')?[0],';')?[0])",
+                            "Survey": "@if(equals(int(trim(split(split(item()?['title'],'/')?[0],';')?[1])),0), 'Yes', 'No')",
+                            "Weight": "@int(trim(split(split(item()?['title'],'/')?[0],';')?[1]))",
+                            "Grader": "",
+                            "You": "@item()?['response']"
+                        }
+                    }
+                },
+                "Delete_item": {
+                    "runAfter": {
+                        "Get_folder_metadata_using_path": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                        "host": {
+                            "connectionName": "shared_sharepointonline",
+                            "operationId": "DeleteItem",
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                        },
+                        "parameters": {
+                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['siteName']}",
+                            "table": "Form Templates",
+                            "id": "@outputs('Get_folder_metadata_using_path')?['body/ItemId']"
+                        },
+                        "authentication": "@parameters('$authentication')"
+                    }
+                },
+                "Get_file_content_using_path_rels": {
+                    "runAfter": {
+                        "Extract_folder": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                        "host": {
+                            "connectionName": "shared_sharepointonline",
+                            "operationId": "GetFileContentByPath",
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                        },
+                        "parameters": {
+                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['siteName']}",
+                            "path": "@concat(outputs('tmpFolder'), '/_rels/.rels')",
+                            "inferContentType": true
+                        },
+                        "authentication": "@parameters('$authentication')"
+                    }
+                },
+                "Compose_RelationShip": {
+                    "runAfter": {
+                        "Get_file_content_using_path_rels": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "Compose",
+                    "inputs": "@json(xpath(xml(outputs('Get_file_content_using_path_rels')?['body']), '//*[name()=\"Relationship\" and @Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument\"]/self::*[1]')?[0])"
+                },
+                "Get_folder_metadata_using_path": {
+                    "runAfter": {
+                        "Response": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                        "host": {
+                            "connectionName": "shared_sharepointonline",
+                            "operationId": "GetFolderMetadataByPath",
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                        },
+                        "parameters": {
+                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['siteName']}",
+                            "path": "@outputs('tmpFolder')"
+                        },
+                        "authentication": "@parameters('$authentication')"
+                    }
+                },
+                "Response": {
+                    "runAfter": {
+                        "Select_3": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "Response",
+                    "kind": "Http",
+                    "inputs": {
+                        "statusCode": 200,
+                        "body": "@body('Select_3')",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "Quest": {
+                                        "type": "string"
+                                    },
+                                    "Survey": {
+                                        "type": "string"
+                                    },
+                                    "Weight": {
+                                        "type": "integer"
+                                    },
+                                    "Grader": {
+                                        "type": "string"
+                                    },
+                                    "You": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "Quest",
+                                    "Survey",
+                                    "Weight",
+                                    "Grader",
+                                    "You"
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "schemaVersion": "1.0.0.0"
+}

@@ -1,0 +1,13 @@
+<environmentvariabledefinition schemaname="new_envpar_config__PaypalApiPrefix">
+  <defaultvalue>https://api.paypal.com</defaultvalue>
+  <description default="Use https://api.paypal.com for live, or https://api.sandbox.paypal.com for test.">
+    <label description="Use https://api.paypal.com for live, or https://api.sandbox.paypal.com for test." languagecode="1033" />
+  </description>
+  <displayname default="envpar_config__PaypalApiPrefix">
+    <label description="envpar_config__PaypalApiPrefix" languagecode="1033" />
+  </displayname>
+  <introducedversion>3.0.0.25</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <type>100000000</type>
+</environmentvariabledefinition>

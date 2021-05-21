@@ -1,0 +1,91 @@
+{
+    "properties": {
+        "connectionReferences": {
+            "shared_sharepointonline": {
+                "runtimeSource": "embedded",
+                "connection": {
+                    "connectionReferenceLogicalName": "new_sharedsharepointonline_9ad14"
+                },
+                "api": {
+                    "name": "shared_sharepointonline"
+                }
+            }
+        },
+        "definition": {
+            "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+            "contentVersion": "1.0.0.0",
+            "parameters": {
+                "$connections": {
+                    "defaultValue": {},
+                    "type": "Object"
+                },
+                "$authentication": {
+                    "defaultValue": {},
+                    "type": "SecureObject"
+                },
+                "envpar_http__MySubscriptions": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_http__MySubscriptions"
+                    }
+                },
+                "envpar_config__TenantName": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__TenantName"
+                    }
+                },
+                "envpar_config__CycleZeroName": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__CycleZeroName"
+                    }
+                }
+            },
+            "triggers": {
+                "When_an_item_is_created": {
+                    "recurrence": {
+                        "interval": 3,
+                        "frequency": "Minute"
+                    },
+                    "splitOn": "@triggerOutputs()?['body/value']",
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                        "host": {
+                            "connectionName": "shared_sharepointonline",
+                            "operationId": "GetOnNewItems",
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                        },
+                        "parameters": {
+                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{parameters('envpar_config__CycleZeroName')}",
+                            "table": "MySubscriptions"
+                        },
+                        "authentication": "@parameters('$authentication')"
+                    }
+                }
+            },
+            "actions": {
+                "HTTP_2": {
+                    "runAfter": {},
+                    "type": "Http",
+                    "inputs": {
+                        "method": "POST",
+                        "uri": "@parameters('envpar_http__MySubscriptions')",
+                        "body": {
+                            "Cycle1GroupName": "tplparam_cyclname",
+                            "Id": "@triggerOutputs()?['body/ID']",
+                            "CreatedByEmail": "@{triggerOutputs()?['body/Author/Email']}"
+                        },
+                        "retryPolicy": {
+                            "type": "none"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "schemaVersion": "1.0.0.0"
+}

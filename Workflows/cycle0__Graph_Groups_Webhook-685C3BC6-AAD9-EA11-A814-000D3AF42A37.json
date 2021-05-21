@@ -1,0 +1,1012 @@
+{
+    "properties": {
+        "connectionReferences": {
+            "shared_sharepointonline": {
+                "runtimeSource": "embedded",
+                "connection": {
+                    "connectionReferenceLogicalName": "new_sharedsharepointonline_9ad14"
+                },
+                "api": {
+                    "name": "shared_sharepointonline"
+                }
+            },
+            "shared_sharepointonline_1": {
+                "runtimeSource": "embedded",
+                "connection": {
+                    "connectionReferenceLogicalName": "new_sharedsharepointonline_9ad14"
+                },
+                "api": {
+                    "name": "shared_sharepointonline"
+                }
+            }
+        },
+        "definition": {
+            "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+            "contentVersion": "1.0.0.0",
+            "parameters": {
+                "$connections": {
+                    "defaultValue": {},
+                    "type": "Object"
+                },
+                "$authentication": {
+                    "defaultValue": {},
+                    "type": "SecureObject"
+                },
+                "envpar_http__Graph_Notifications_Interface": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_http__Graph_Notifications_Interface",
+                        "description": "This flow HTTP trigger URL. Enter space character ( ) for none. Filled automatically."
+                    }
+                },
+                "envpar_config__TenantName": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__TenantName",
+                        "description": "Required. Org Name orgname (this is the prefix of the auto assigned domain orgname.onmicrosoft.com)"
+                    }
+                },
+                "envpar_config__CycleZeroName": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__CycleZeroName",
+                        "description": "Required. Could have many environments N each with its envN_cycle0 template"
+                    }
+                },
+                "envpar_config__CyclesRename": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__CyclesRename",
+                        "description": "Required. Rename cycle to class, for example. So now class1, ... classN"
+                    }
+                },
+                "envpar_config__TenantDomain": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__TenantDomain",
+                        "description": "Required. Org Domain name such as orgname.onmicrosoft.com or orgname.com"
+                    }
+                },
+                "envpar_config__GraphAppId": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__GraphAppId",
+                        "description": "Service Principal Id for Graph Api. Enter space character ( ) for none. Filled automatically."
+                    }
+                },
+                "envpar_config__GraphAppSecret": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__GraphAppSecret",
+                        "description": "Service Principal Secret for Graph Api. Enter space character ( ) for none. Filled automatically."
+                    }
+                }
+            },
+            "triggers": {
+                "HTTP_Webhook": {
+                    "type": "HttpWebhook",
+                    "inputs": {
+                        "subscribe": {
+                            "method": "POST",
+                            "uri": "@parameters('envpar_http__Graph_Notifications_Interface')",
+                            "headers": {
+                                "Content-Type": "application/json; charset=utf-8"
+                            },
+                            "body": {
+                                "method": "POST",
+                                "delayMinutes": 1440,
+                                "body": {
+                                    "changeType": "updated",
+                                    "clientState": "@{parameters('envpar_config__GraphAppId')}",
+                                    "notificationUrl": "@{listCallbackUrl()}",
+                                    "resource": "/groups"
+                                }
+                            }
+                        },
+                        "unsubscribe": {
+                            "method": "POST",
+                            "uri": "@parameters('envpar_http__Graph_Notifications_Interface')",
+                            "body": {
+                                "method": "DELETE",
+                                "delayMinutes": 0,
+                                "body": {
+                                    "changeType": "updated",
+                                    "clientState": "@{parameters('envpar_config__GraphAppId')}",
+                                    "notificationUrl": "@{listCallbackUrl()}",
+                                    "resource": "/groups"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "actions": {
+                "Condition": {
+                    "actions": {
+                        "Response_2": {
+                            "runAfter": {},
+                            "type": "Response",
+                            "kind": "Http",
+                            "inputs": {
+                                "statusCode": 202
+                            }
+                        }
+                    },
+                    "runAfter": {},
+                    "else": {
+                        "actions": {
+                            "Response": {
+                                "runAfter": {},
+                                "type": "Response",
+                                "kind": "Http",
+                                "inputs": {
+                                    "statusCode": 200,
+                                    "headers": {
+                                        "content-type": "text/plain"
+                                    },
+                                    "body": "@triggerOutputs()?['queries']?['validationtoken']"
+                                }
+                            },
+                            "Terminate": {
+                                "runAfter": {
+                                    "Response": [
+                                        "Succeeded"
+                                    ]
+                                },
+                                "type": "Terminate",
+                                "inputs": {
+                                    "runStatus": "Succeeded"
+                                }
+                            }
+                        }
+                    },
+                    "expression": {
+                        "equals": [
+                            "@string(triggerOutputs()?['queries']?['validationtoken'])",
+                            ""
+                        ]
+                    },
+                    "type": "If"
+                },
+                "Parse_JSON": {
+                    "runAfter": {
+                        "Initialize_variable_customerId": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "ParseJson",
+                    "inputs": {
+                        "content": "@triggerBody()?['value']",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "changeType": {
+                                        "type": "string"
+                                    },
+                                    "clientState": {
+                                        "type": "string"
+                                    },
+                                    "resource": {
+                                        "type": "string"
+                                    },
+                                    "resourceData": {
+                                        "type": "object",
+                                        "properties": {
+                                            "@@odata.type": {
+                                                "type": "string"
+                                            },
+                                            "@@odata.id": {
+                                                "type": "string"
+                                            },
+                                            "id": {
+                                                "type": "string"
+                                            },
+                                            "organizationId": {
+                                                "type": "string"
+                                            },
+                                            "sequenceNumber": {
+                                                "type": "integer"
+                                            },
+                                            "members@delta": {}
+                                        }
+                                    }
+                                },
+                                "required": [
+                                    "changeType",
+                                    "clientState",
+                                    "resource",
+                                    "resourceData"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "Apply_to_each": {
+                    "foreach": "@body('Parse_JSON')",
+                    "actions": {
+                        "Condition_Cycles_membersdelta": {
+                            "actions": {},
+                            "runAfter": {},
+                            "else": {
+                                "actions": {
+                                    "Parse_JSON_Cycles_membersdelta": {
+                                        "runAfter": {},
+                                        "type": "ParseJson",
+                                        "inputs": {
+                                            "content": "@items('Apply_to_each')?['resourceData']?['members@delta']",
+                                            "schema": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id"
+                                                    ]
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "Apply_to_each_Cycles_membersdelta": {
+                                        "foreach": "@body('Parse_JSON_Cycles_membersdelta')",
+                                        "actions": {
+                                            "Condition_Cycles_membersdelta_removed": {
+                                                "actions": {
+                                                    "Get_items_GroupsList": {
+                                                        "runAfter": {},
+                                                        "type": "OpenApiConnection",
+                                                        "inputs": {
+                                                            "host": {
+                                                                "connectionName": "shared_sharepointonline",
+                                                                "operationId": "GetItems",
+                                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                            },
+                                                            "parameters": {
+                                                                "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{parameters('envpar_config__CycleZeroName')}",
+                                                                "table": "GroupsList",
+                                                                "$filter": "Cycle1GroupId eq '@{items('Apply_to_each')?['resourceData']?['id']}'",
+                                                                "$top": 1
+                                                            },
+                                                            "authentication": "@parameters('$authentication')"
+                                                        }
+                                                    },
+                                                    "Apply_to_each_GroupsList": {
+                                                        "foreach": "@outputs('Get_items_GroupsList')?['body/value']",
+                                                        "actions": {
+                                                            "Condition_length_UsersList_0": {
+                                                                "actions": {
+                                                                    "Create_item_UsersList_0": {
+                                                                        "runAfter": {},
+                                                                        "type": "OpenApiConnection",
+                                                                        "inputs": {
+                                                                            "host": {
+                                                                                "connectionName": "shared_sharepointonline",
+                                                                                "operationId": "PostItem",
+                                                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                                            },
+                                                                            "parameters": {
+                                                                                "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{items('Apply_to_each_GroupsList')?['Cycle1GroupName']}",
+                                                                                "table": "UsersList",
+                                                                                "item": {
+                                                                                    "Title": "@body('Parse_JSON_2')?['mail']",
+                                                                                    "UID": "@{items('Apply_to_each_Cycles_membersdelta')['id']}",
+                                                                                    "UPN": "@replace(body('Parse_JSON_2')?['userPrincipalName'], '#EXT#@', '@')",
+                                                                                    "Cycle1GroupName": "@{items('Apply_to_each_GroupsList')?['Cycle1GroupName']}",
+                                                                                    "Cycle1GroupId": "@{items('Apply_to_each_GroupsList')?['Cycle1GroupId']}"
+                                                                                }
+                                                                            },
+                                                                            "authentication": "@parameters('$authentication')"
+                                                                        }
+                                                                    },
+                                                                    "Create_item_LogsList_0": {
+                                                                        "runAfter": {
+                                                                            "Create_item_UsersList_0": [
+                                                                                "Succeeded"
+                                                                            ]
+                                                                        },
+                                                                        "type": "OpenApiConnection",
+                                                                        "inputs": {
+                                                                            "host": {
+                                                                                "connectionName": "shared_sharepointonline",
+                                                                                "operationId": "PostItem",
+                                                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                                            },
+                                                                            "parameters": {
+                                                                                "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{items('Apply_to_each_GroupsList')?['Cycle1GroupName']}",
+                                                                                "table": "LogsList",
+                                                                                "item": {
+                                                                                    "Title": "Added @{body('Parse_JSON_2')?['mail']} to @{items('Apply_to_each_GroupsList')?['Cycle1GroupName']}",
+                                                                                    "Resource": "UsersList",
+                                                                                    "ResourceId": "@{body('Parse_JSON_2')?['mail']}",
+                                                                                    "ChangeType": "CREATE",
+                                                                                    "Source": "cycle0__Graph_Groups_Webhook",
+                                                                                    "LogDescription": ""
+                                                                                }
+                                                                            },
+                                                                            "authentication": "@parameters('$authentication')"
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "runAfter": {
+                                                                    "Get_items_UsersList": [
+                                                                        "Succeeded"
+                                                                    ]
+                                                                },
+                                                                "expression": {
+                                                                    "equals": [
+                                                                        "@length(outputs('Get_items_UsersList')?['body/value'])",
+                                                                        0
+                                                                    ]
+                                                                },
+                                                                "type": "If"
+                                                            },
+                                                            "HTTP_2": {
+                                                                "runAfter": {},
+                                                                "type": "Http",
+                                                                "inputs": {
+                                                                    "method": "GET",
+                                                                    "uri": "https://graph.microsoft.com/v1.0/users/@{items('Apply_to_each_Cycles_membersdelta')['id']}",
+                                                                    "headers": {
+                                                                        "Content-type": "application/json"
+                                                                    },
+                                                                    "authentication": {
+                                                                        "type": "ActiveDirectoryOAuth",
+                                                                        "tenant": "@parameters('envpar_config__TenantDomain')",
+                                                                        "audience": "https://graph.microsoft.com",
+                                                                        "clientId": "@parameters('envpar_config__GraphAppId')",
+                                                                        "secret": "@parameters('envpar_config__GraphAppSecret')"
+                                                                    }
+                                                                }
+                                                            },
+                                                            "Parse_JSON_2": {
+                                                                "runAfter": {
+                                                                    "HTTP_2": [
+                                                                        "Succeeded"
+                                                                    ]
+                                                                },
+                                                                "type": "ParseJson",
+                                                                "inputs": {
+                                                                    "content": "@body('HTTP_2')",
+                                                                    "schema": {
+                                                                        "type": "object",
+                                                                        "properties": {
+                                                                            "mail": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "userPrincipalName": {
+                                                                                "type": "string"
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            },
+                                                            "Get_items_UsersList": {
+                                                                "runAfter": {
+                                                                    "Parse_JSON_2": [
+                                                                        "Succeeded"
+                                                                    ]
+                                                                },
+                                                                "type": "OpenApiConnection",
+                                                                "inputs": {
+                                                                    "host": {
+                                                                        "connectionName": "shared_sharepointonline",
+                                                                        "operationId": "GetItems",
+                                                                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                                    },
+                                                                    "parameters": {
+                                                                        "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{items('Apply_to_each_GroupsList')?['Cycle1GroupName']}",
+                                                                        "table": "UsersList",
+                                                                        "$filter": "UID eq '@{items('Apply_to_each_Cycles_membersdelta')['id']}' and Cycle1GroupId eq '@{items('Apply_to_each')?['resourceData']?['id']}'",
+                                                                        "$top": 1
+                                                                    },
+                                                                    "authentication": "@parameters('$authentication')"
+                                                                }
+                                                            },
+                                                            "Get_items_UsersList1": {
+                                                                "runAfter": {
+                                                                    "Condition_trick_nested": [
+                                                                        "Failed"
+                                                                    ]
+                                                                },
+                                                                "type": "OpenApiConnection",
+                                                                "inputs": {
+                                                                    "host": {
+                                                                        "connectionName": "shared_sharepointonline",
+                                                                        "operationId": "GetItems",
+                                                                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                                    },
+                                                                    "parameters": {
+                                                                        "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{items('Apply_to_each_GroupsList')?['Cycle1GroupName']}",
+                                                                        "table": "UsersList",
+                                                                        "$filter": "UID eq '@{items('Apply_to_each_Cycles_membersdelta')['id']}' and Cycle1GroupId eq '@{items('Apply_to_each')?['resourceData']?['id']}' and StripeSubscriptionId eq null",
+                                                                        "$top": 1
+                                                                    },
+                                                                    "authentication": "@parameters('$authentication')"
+                                                                }
+                                                            },
+                                                            "Apply_to_each_UsersList": {
+                                                                "foreach": "@outputs('Get_items_UsersList1')?['body/value']",
+                                                                "actions": {
+                                                                    "Create_item_LogsList": {
+                                                                        "runAfter": {
+                                                                            "Update_item_UsersList": [
+                                                                                "Succeeded"
+                                                                            ]
+                                                                        },
+                                                                        "type": "OpenApiConnection",
+                                                                        "inputs": {
+                                                                            "host": {
+                                                                                "connectionName": "shared_sharepointonline",
+                                                                                "operationId": "PostItem",
+                                                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                                            },
+                                                                            "parameters": {
+                                                                                "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{items('Apply_to_each_GroupsList')?['Cycle1GroupName']}",
+                                                                                "table": "LogsList",
+                                                                                "item": {
+                                                                                    "Title": "Updated @{body('Parse_JSON_2')?['mail']} to Stripe customer @{variables('customerId')}  ",
+                                                                                    "Resource": "UsersList",
+                                                                                    "ResourceId": "@{body('Parse_JSON_2')?['mail']}",
+                                                                                    "ChangeType": "UPDATE",
+                                                                                    "Source": "cycle0__Graph_Groups_Webhook",
+                                                                                    "LogDescription": ""
+                                                                                }
+                                                                            },
+                                                                            "authentication": "@parameters('$authentication')"
+                                                                        }
+                                                                    },
+                                                                    "Update_item_UsersList": {
+                                                                        "runAfter": {
+                                                                            "Parse_JSON_4": [
+                                                                                "Succeeded"
+                                                                            ]
+                                                                        },
+                                                                        "type": "OpenApiConnection",
+                                                                        "inputs": {
+                                                                            "host": {
+                                                                                "connectionName": "shared_sharepointonline",
+                                                                                "operationId": "PatchItem",
+                                                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                                            },
+                                                                            "parameters": {
+                                                                                "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{items('Apply_to_each_GroupsList')?['Cycle1GroupName']}",
+                                                                                "table": "UsersList",
+                                                                                "id": "@items('Apply_to_each_UsersList')?['ID']",
+                                                                                "item": {
+                                                                                    "Title": "@body('Parse_JSON_2')?['mail']",
+                                                                                    "UID": "@{items('Apply_to_each_Cycles_membersdelta')['id']}",
+                                                                                    "UPN": "@replace(body('Parse_JSON_2')?['userPrincipalName'], '#EXT#@', '@')",
+                                                                                    "Cycle1GroupName": "@{items('Apply_to_each_GroupsList')?['Cycle1GroupName']}",
+                                                                                    "Cycle1GroupId": "@{items('Apply_to_each_GroupsList')?['Cycle1GroupId']}",
+                                                                                    "StripeCustomerId": "@{variables('customerId')}",
+                                                                                    "StripeSubscriptionId": "@body('Parse_JSON_4')?['id']",
+                                                                                    "StripePriceId": "@body('Parse_JSON_4')?['plan']?['id']",
+                                                                                    "StripePriceStatus": "@body('Parse_JSON_4')?['status']",
+                                                                                    "StripeLastMetered": "@utcNow()"
+                                                                                }
+                                                                            },
+                                                                            "authentication": "@parameters('$authentication')"
+                                                                        }
+                                                                    },
+                                                                    "Parse_JSON_4": {
+                                                                        "runAfter": {
+                                                                            "Condition_no_subscription": [
+                                                                                "Succeeded"
+                                                                            ]
+                                                                        },
+                                                                        "type": "ParseJson",
+                                                                        "inputs": {
+                                                                            "content": "@coalesce(body('HTTP'), body('HTTP_4')?['data']?[0]?['subscriptions']?['data']?[0])",
+                                                                            "schema": {
+                                                                                "type": "object",
+                                                                                "properties": {
+                                                                                    "id": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "current_period_start": {
+                                                                                        "type": "integer"
+                                                                                    },
+                                                                                    "current_period_end": {
+                                                                                        "type": "integer"
+                                                                                    },
+                                                                                    "plan": {
+                                                                                        "type": "object",
+                                                                                        "properties": {
+                                                                                            "id": {
+                                                                                                "type": "string"
+                                                                                            }
+                                                                                        }
+                                                                                    },
+                                                                                    "status": {
+                                                                                        "type": "string"
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    },
+                                                                    "Condition_no_customer": {
+                                                                        "actions": {
+                                                                            "HTTP_3": {
+                                                                                "runAfter": {},
+                                                                                "type": "Http",
+                                                                                "inputs": {
+                                                                                    "method": "POST",
+                                                                                    "uri": "https://api.stripe.com/v1/customers",
+                                                                                    "headers": {
+                                                                                        "Content-type": "application/x-www-form-urlencoded"
+                                                                                    },
+                                                                                    "body": "email=@{uriComponent(body('Parse_JSON_2')?['mail'])}&metadata%5Buid%5D=@{uriComponent(items('Apply_to_each_Cycles_membersdelta')['id'])}&metadata%5Bgid%5D=@{uriComponent(items('Apply_to_each')?['resourceData']?['id'])}",
+                                                                                    "authentication": {
+                                                                                        "type": "Raw",
+                                                                                        "value": "Bearer @{items('Apply_to_each_GroupsList')?['StripeKey']}"
+                                                                                    }
+                                                                                }
+                                                                            },
+                                                                            "Set_variable_customerId": {
+                                                                                "runAfter": {
+                                                                                    "HTTP_3": [
+                                                                                        "Succeeded"
+                                                                                    ]
+                                                                                },
+                                                                                "type": "SetVariable",
+                                                                                "inputs": {
+                                                                                    "name": "customerId",
+                                                                                    "value": "@{body('HTTP_3')?['id']}"
+                                                                                }
+                                                                            }
+                                                                        },
+                                                                        "runAfter": {
+                                                                            "HTTP_4": [
+                                                                                "Succeeded"
+                                                                            ]
+                                                                        },
+                                                                        "else": {
+                                                                            "actions": {
+                                                                                "Set_variable_customerId_2": {
+                                                                                    "runAfter": {},
+                                                                                    "type": "SetVariable",
+                                                                                    "inputs": {
+                                                                                        "name": "customerId",
+                                                                                        "value": "@{body('HTTP_4')?['data']?[0]?['id']}"
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        },
+                                                                        "expression": {
+                                                                            "equals": [
+                                                                                "@length(body('HTTP_4')?['data'])",
+                                                                                0
+                                                                            ]
+                                                                        },
+                                                                        "type": "If"
+                                                                    },
+                                                                    "HTTP_4": {
+                                                                        "runAfter": {},
+                                                                        "type": "Http",
+                                                                        "inputs": {
+                                                                            "method": "GET",
+                                                                            "uri": "https://api.stripe.com/v1/customers?email=@{uriComponent(body('Parse_JSON_2')?['mail'])}&expand%5B%5D=data.subscriptions",
+                                                                            "authentication": {
+                                                                                "type": "Raw",
+                                                                                "value": "Bearer @{items('Apply_to_each_GroupsList')?['StripeKey']}"
+                                                                            }
+                                                                        }
+                                                                    },
+                                                                    "Condition_no_subscription": {
+                                                                        "actions": {
+                                                                            "HTTP": {
+                                                                                "runAfter": {},
+                                                                                "type": "Http",
+                                                                                "inputs": {
+                                                                                    "method": "POST",
+                                                                                    "uri": "https://api.stripe.com/v1/subscriptions",
+                                                                                    "headers": {
+                                                                                        "Content-type": "application/x-www-form-urlencoded"
+                                                                                    },
+                                                                                    "body": "customer=@{variables('customerId')}&@{uriComponent('items[0][price]')}=@{items('Apply_to_each_GroupsList')?['StripePrice0']}",
+                                                                                    "authentication": {
+                                                                                        "type": "Raw",
+                                                                                        "value": "Bearer @{items('Apply_to_each_GroupsList')?['StripeKey']}"
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        },
+                                                                        "runAfter": {
+                                                                            "Condition_no_customer": [
+                                                                                "Succeeded"
+                                                                            ]
+                                                                        },
+                                                                        "expression": {
+                                                                            "equals": [
+                                                                                "@body('HTTP_4')?['data']?[0]?['subscriptions']?['data']?[0]",
+                                                                                "@null"
+                                                                            ]
+                                                                        },
+                                                                        "type": "If"
+                                                                    }
+                                                                },
+                                                                "runAfter": {
+                                                                    "Get_items_UsersList1": [
+                                                                        "Succeeded"
+                                                                    ]
+                                                                },
+                                                                "type": "Foreach"
+                                                            },
+                                                            "Condition_trick_nested": {
+                                                                "actions": {},
+                                                                "runAfter": {
+                                                                    "Condition_length_UsersList_0": [
+                                                                        "Succeeded"
+                                                                    ]
+                                                                },
+                                                                "else": {
+                                                                    "actions": {
+                                                                        "Compose": {
+                                                                            "runAfter": {},
+                                                                            "type": "Compose",
+                                                                            "inputs": "@json('-.{}2-01.')"
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "expression": {
+                                                                    "equals": [
+                                                                        "@string(items('Apply_to_each_GroupsList')?['StripeKey'])",
+                                                                        "@''"
+                                                                    ]
+                                                                },
+                                                                "type": "If"
+                                                            }
+                                                        },
+                                                        "runAfter": {
+                                                            "Get_items_GroupsList": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "Foreach"
+                                                    },
+                                                    "Get_items_GroupsList_Cycle1": {
+                                                        "runAfter": {
+                                                            "Apply_to_each_GroupsList": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "OpenApiConnection",
+                                                        "inputs": {
+                                                            "host": {
+                                                                "connectionName": "shared_sharepointonline_1",
+                                                                "operationId": "GetItems",
+                                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                            },
+                                                            "parameters": {
+                                                                "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{parameters('envpar_config__CycleZeroName')}",
+                                                                "table": "@'GroupsList'",
+                                                                "$filter": "Cycle1GroupName eq '@{parameters('envpar_config__CyclesRename')}1'",
+                                                                "$top": 1
+                                                            },
+                                                            "authentication": "@parameters('$authentication')"
+                                                        }
+                                                    },
+                                                    "Apply_to_each_GroupsList_Cycle1": {
+                                                        "foreach": "@outputs('Get_items_GroupsList_Cycle1')?['body/value']",
+                                                        "actions": {
+                                                            "Parse_JSON_Cycles": {
+                                                                "runAfter": {
+                                                                    "Set_variable_varCounter1_is_0": [
+                                                                        "Succeeded"
+                                                                    ]
+                                                                },
+                                                                "type": "ParseJson",
+                                                                "inputs": {
+                                                                    "content": "@json(coalesce(items('Apply_to_each_GroupsList_Cycle1')?['CyclesGroups'], '[]'))",
+                                                                    "schema": {
+                                                                        "type": "array",
+                                                                        "items": {
+                                                                            "type": "object",
+                                                                            "properties": {
+                                                                                "CyclesGroupName": {
+                                                                                    "type": "string"
+                                                                                },
+                                                                                "CyclesGroupId": {
+                                                                                    "type": "string"
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            },
+                                                            "Do_until_Cycles": {
+                                                                "actions": {
+                                                                    "Condition_Cycles": {
+                                                                        "actions": {
+                                                                            "Do_until_GroupsList": {
+                                                                                "actions": {
+                                                                                    "Run_a_Child_Flow_4": {
+                                                                                        "runAfter": {},
+                                                                                        "type": "Workflow",
+                                                                                        "inputs": {
+                                                                                            "host": {
+                                                                                                "workflowReferenceName": "ead81545-25db-ea11-a815-000d3af42a37"
+                                                                                            },
+                                                                                            "body": {
+                                                                                                "TenantDomain": "@parameters('envpar_config__TenantDomain')",
+                                                                                                "CycleGroupName": "@{parameters('envpar_config__CyclesRename')}@{add(variables('varCounter2'),1)}_@{first(split(body('Parse_JSON_7')?['userPrincipalName'], '@'))}",
+                                                                                                "CycleGroupOwnerId": "@body('Parse_JSON_7')?['id']",
+                                                                                                "Cycle1GroupName": "@{concat(parameters('envpar_config__CyclesRename'), '1')}_@{first(split(body('Parse_JSON_7')?['userPrincipalName'], '@'))}",
+                                                                                                "IsCycle1": "@if(equals(variables('varCounter2'),0),true,false)"
+                                                                                            }
+                                                                                        }
+                                                                                    },
+                                                                                    "Increment_variable_varCounter2": {
+                                                                                        "runAfter": {
+                                                                                            "Run_a_Child_Flow_4": [
+                                                                                                "Succeeded"
+                                                                                            ]
+                                                                                        },
+                                                                                        "type": "IncrementVariable",
+                                                                                        "inputs": {
+                                                                                            "name": "varCounter2",
+                                                                                            "value": "@1"
+                                                                                        }
+                                                                                    }
+                                                                                },
+                                                                                "runAfter": {
+                                                                                    "Set_variable_varCounter2_is_0": [
+                                                                                        "Succeeded"
+                                                                                    ]
+                                                                                },
+                                                                                "expression": "@equals(variables('varCounter2'), add(variables('varCounter1'), 1))",
+                                                                                "limit": {
+                                                                                    "count": 60,
+                                                                                    "timeout": "PT1H"
+                                                                                },
+                                                                                "type": "Until"
+                                                                            },
+                                                                            "Parse_JSON_7": {
+                                                                                "runAfter": {
+                                                                                    "HTTP_5": [
+                                                                                        "Succeeded"
+                                                                                    ]
+                                                                                },
+                                                                                "type": "ParseJson",
+                                                                                "inputs": {
+                                                                                    "content": "@body('HTTP_5')",
+                                                                                    "schema": {
+                                                                                        "type": "object",
+                                                                                        "properties": {
+                                                                                            "id": {
+                                                                                                "type": "string"
+                                                                                            },
+                                                                                            "mail": {
+                                                                                                "type": "string"
+                                                                                            },
+                                                                                            "userPrincipalName": {
+                                                                                                "type": "string"
+                                                                                            }
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            },
+                                                                            "HTTP_5": {
+                                                                                "runAfter": {},
+                                                                                "type": "Http",
+                                                                                "inputs": {
+                                                                                    "method": "GET",
+                                                                                    "uri": "https://graph.microsoft.com/v1.0/users/@{items('Apply_to_each_Cycles_membersdelta')['id']}",
+                                                                                    "headers": {
+                                                                                        "Content-type": "application/json"
+                                                                                    },
+                                                                                    "authentication": {
+                                                                                        "type": "ActiveDirectoryOAuth",
+                                                                                        "tenant": "@parameters('envpar_config__TenantDomain')",
+                                                                                        "audience": "https://graph.microsoft.com",
+                                                                                        "clientId": "@parameters('envpar_config__GraphAppId')",
+                                                                                        "secret": "@parameters('envpar_config__GraphAppSecret')"
+                                                                                    }
+                                                                                }
+                                                                            },
+                                                                            "Set_variable_varCounter2_is_0": {
+                                                                                "runAfter": {
+                                                                                    "Parse_JSON_7": [
+                                                                                        "Succeeded"
+                                                                                    ]
+                                                                                },
+                                                                                "type": "SetVariable",
+                                                                                "inputs": {
+                                                                                    "name": "varCounter2",
+                                                                                    "value": "@0"
+                                                                                }
+                                                                            },
+                                                                            "Create_item_LogsList_cycle0_0": {
+                                                                                "runAfter": {
+                                                                                    "Do_until_GroupsList": [
+                                                                                        "Succeeded"
+                                                                                    ]
+                                                                                },
+                                                                                "type": "OpenApiConnection",
+                                                                                "inputs": {
+                                                                                    "host": {
+                                                                                        "connectionName": "shared_sharepointonline_1",
+                                                                                        "operationId": "PostItem",
+                                                                                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                                                    },
+                                                                                    "parameters": {
+                                                                                        "dataset": "@concat('https://', parameters('envpar_config__TenantName'), '.sharepoint.com/sites/', parameters('envpar_config__CycleZeroName'))",
+                                                                                        "table": "LogsList",
+                                                                                        "item": {
+                                                                                            "Title": "Created @{concat(parameters('envpar_config__CyclesRename'), '1')}_@{first(split(body('Parse_JSON_7')?['userPrincipalName'], '@'))} .. @{parameters('envpar_config__CyclesRename')}@{variables('varCounter2')}_@{first(split(body('Parse_JSON_7')?['userPrincipalName'], '@'))} via membering in @{body('Parse_JSON_Cycles')?[variables('varCounter1')]?['CyclesGroupName']}",
+                                                                                            "Resource": "GroupsList",
+                                                                                            "ResourceId": "@{concat(parameters('envpar_config__CyclesRename'), '1')}_@{first(split(body('Parse_JSON_7')?['userPrincipalName'], '@'))}",
+                                                                                            "ChangeType": "CREATE",
+                                                                                            "Source": "cycle0__Graph_Groups_Webhook"
+                                                                                        }
+                                                                                    },
+                                                                                    "authentication": "@parameters('$authentication')"
+                                                                                }
+                                                                            }
+                                                                        },
+                                                                        "runAfter": {},
+                                                                        "expression": {
+                                                                            "equals": [
+                                                                                "@body('Parse_JSON_Cycles')?[sub(length(body('Parse_JSON_Cycles')),add(variables('varCounter1'),1))]?['CyclesGroupId']",
+                                                                                "@items('Apply_to_each')?['resourceData']?['id']"
+                                                                            ]
+                                                                        },
+                                                                        "type": "If"
+                                                                    },
+                                                                    "Increment_variable_varCounter1": {
+                                                                        "runAfter": {
+                                                                            "Condition_Cycles": [
+                                                                                "Succeeded"
+                                                                            ]
+                                                                        },
+                                                                        "type": "IncrementVariable",
+                                                                        "inputs": {
+                                                                            "name": "varCounter1",
+                                                                            "value": "@1"
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "runAfter": {
+                                                                    "Parse_JSON_Cycles": [
+                                                                        "Succeeded"
+                                                                    ]
+                                                                },
+                                                                "expression": "@equals(variables('varCounter1'), length(body('Parse_JSON_Cycles')))",
+                                                                "limit": {
+                                                                    "count": 60,
+                                                                    "timeout": "PT1H"
+                                                                },
+                                                                "type": "Until"
+                                                            },
+                                                            "Set_variable_varCounter1_is_0": {
+                                                                "runAfter": {},
+                                                                "type": "SetVariable",
+                                                                "inputs": {
+                                                                    "name": "varCounter1",
+                                                                    "value": "@0"
+                                                                }
+                                                            }
+                                                        },
+                                                        "runAfter": {
+                                                            "Get_items_GroupsList_Cycle1": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "Foreach"
+                                                    }
+                                                },
+                                                "runAfter": {},
+                                                "expression": {
+                                                    "equals": [
+                                                        "@items('Apply_to_each_Cycles_membersdelta')?['@removed']",
+                                                        "@null"
+                                                    ]
+                                                },
+                                                "type": "If"
+                                            }
+                                        },
+                                        "runAfter": {
+                                            "Parse_JSON_Cycles_membersdelta": [
+                                                "Succeeded"
+                                            ]
+                                        },
+                                        "type": "Foreach"
+                                    }
+                                }
+                            },
+                            "expression": {
+                                "or": [
+                                    {
+                                        "equals": [
+                                            "@items('Apply_to_each')?['resourceData']?['members@delta']",
+                                            "@null"
+                                        ]
+                                    },
+                                    {
+                                        "not": {
+                                            "equals": [
+                                                "@items('Apply_to_each')['clientState']",
+                                                "@parameters('envpar_config__GraphAppId')"
+                                            ]
+                                        }
+                                    }
+                                ]
+                            },
+                            "type": "If"
+                        }
+                    },
+                    "runAfter": {
+                        "Parse_JSON": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "Foreach"
+                },
+                "Initialize_variable_varCounter2": {
+                    "runAfter": {
+                        "Initialize_variable_varCounter1": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "varCounter2",
+                                "type": "integer",
+                                "value": "@0"
+                            }
+                        ]
+                    }
+                },
+                "Initialize_variable_varCounter1": {
+                    "runAfter": {
+                        "Condition": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "varCounter1",
+                                "type": "integer",
+                                "value": "@0"
+                            }
+                        ]
+                    }
+                },
+                "Initialize_variable_customerId": {
+                    "runAfter": {
+                        "Initialize_variable_varCounter2": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "customerId",
+                                "type": "string"
+                            }
+                        ]
+                    }
+                }
+            },
+            "outputs": {}
+        }
+    },
+    "schemaVersion": "1.0.0.0"
+}

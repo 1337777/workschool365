@@ -1,0 +1,13 @@
+<environmentvariabledefinition schemaname="new_envpar_config__FlowSKU">
+  <defaultvalue>f30db892-07e9-47e9-837c-80727f46fd3d</defaultvalue>
+  <description default="Microsoft Power Automate free product SKU">
+    <label description="Microsoft Power Automate free product SKU" languagecode="1033" />
+  </description>
+  <displayname default="envpar_config__FlowSKU">
+    <label description="envpar_config__FlowSKU" languagecode="1033" />
+  </displayname>
+  <introducedversion>3.0.0.16</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <type>100000000</type>
+</environmentvariabledefinition>

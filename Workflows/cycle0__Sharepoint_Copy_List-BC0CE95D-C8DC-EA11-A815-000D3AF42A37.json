@@ -1,0 +1,1671 @@
+{
+    "properties": {
+        "connectionReferences": {
+            "shared_sharepointonline": {
+                "runtimeSource": "embedded",
+                "connection": {
+                    "connectionReferenceLogicalName": "new_sharedsharepointonline_9ad14"
+                },
+                "api": {
+                    "name": "shared_sharepointonline"
+                }
+            }
+        },
+        "definition": {
+            "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+            "contentVersion": "1.0.0.0",
+            "parameters": {
+                "$connections": {
+                    "defaultValue": {},
+                    "type": "Object"
+                },
+                "$authentication": {
+                    "defaultValue": {},
+                    "type": "SecureObject"
+                },
+                "envpar_config__TenantName": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__TenantName",
+                        "description": "Required. Org Name orgname (this is the prefix of the auto assigned domain orgname.onmicrosoft.com)"
+                    }
+                }
+            },
+            "triggers": {
+                "manual": {
+                    "type": "Request",
+                    "kind": "Http",
+                    "inputs": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "fromSite": {
+                                    "type": "string"
+                                },
+                                "toSite": {
+                                    "type": "string"
+                                },
+                                "ListTitle": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "actions": {
+                "Scope_3": {
+                    "actions": {
+                        "Send_an_HTTP_request_to_SharePoint_17": {
+                            "runAfter": {},
+                            "type": "OpenApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connectionName": "shared_sharepointonline",
+                                    "operationId": "HttpRequest",
+                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                },
+                                "parameters": {
+                                    "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['fromSite']}",
+                                    "parameters/method": "GET",
+                                    "parameters/uri": "_api/web/lists/getbytitle('@{triggerBody()?['ListTitle']}')",
+                                    "parameters/headers": {
+                                        "accept": "application/json;odata=verbose",
+                                        "content-type": "application/json;odata=verbose"
+                                    }
+                                },
+                                "authentication": "@parameters('$authentication')"
+                            }
+                        },
+                        "Parse_JSON_5": {
+                            "runAfter": {
+                                "Send_an_HTTP_request_to_SharePoint_17": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "ParseJson",
+                            "inputs": {
+                                "content": "@body('Send_an_HTTP_request_to_SharePoint_17')?['d']",
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "__metadata": {
+                                            "type": "object",
+                                            "properties": {
+                                                "type": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        },
+                                        "AllowContentTypes": {
+                                            "type": "boolean"
+                                        },
+                                        "BaseTemplate": {
+                                            "type": "integer"
+                                        },
+                                        "BaseType": {
+                                            "type": "integer"
+                                        },
+                                        "ContentTypesEnabled": {
+                                            "type": "boolean"
+                                        },
+                                        "CrawlNonDefaultViews": {
+                                            "type": "boolean"
+                                        },
+                                        "DefaultItemOpenUseListSetting": {
+                                            "type": "boolean"
+                                        },
+                                        "Description": {
+                                            "type": "string"
+                                        },
+                                        "DisableGridEditing": {
+                                            "type": "boolean"
+                                        },
+                                        "DocumentTemplateUrl": {},
+                                        "DraftVersionVisibility": {
+                                            "type": "integer"
+                                        },
+                                        "EnableAttachments": {
+                                            "type": "boolean"
+                                        },
+                                        "EnableFolderCreation": {
+                                            "type": "boolean"
+                                        },
+                                        "EnableMinorVersions": {
+                                            "type": "boolean"
+                                        },
+                                        "EnableModeration": {
+                                            "type": "boolean"
+                                        },
+                                        "EnableRequestSignOff": {
+                                            "type": "boolean"
+                                        },
+                                        "EnableVersioning": {
+                                            "type": "boolean"
+                                        },
+                                        "EntityTypeName": {
+                                            "type": "string"
+                                        },
+                                        "ExemptFromBlockDownloadOfNonViewableFiles": {
+                                            "type": "boolean"
+                                        },
+                                        "FileSavePostProcessingEnabled": {
+                                            "type": "boolean"
+                                        },
+                                        "ForceCheckout": {
+                                            "type": "boolean"
+                                        },
+                                        "HasExternalDataSource": {
+                                            "type": "boolean"
+                                        },
+                                        "Hidden": {
+                                            "type": "boolean"
+                                        },
+                                        "MajorVersionLimit": {
+                                            "type": "integer"
+                                        },
+                                        "MajorWithMinorVersionsLimit": {
+                                            "type": "integer"
+                                        },
+                                        "MultipleDataList": {
+                                            "type": "boolean"
+                                        },
+                                        "NoCrawl": {
+                                            "type": "boolean"
+                                        },
+                                        "ParserDisabled": {
+                                            "type": "boolean"
+                                        },
+                                        "ServerTemplateCanCreateFolders": {
+                                            "type": "boolean"
+                                        },
+                                        "Title": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "Select_2": {
+                            "runAfter": {
+                                "Parse_JSON_5": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Select",
+                            "inputs": {
+                                "from": "@createArray(body('Parse_JSON_5'))",
+                                "select": {
+                                    "__metadata": {
+                                        "type": "@{body('Parse_JSON_5')?['__metadata']?['type']}"
+                                    },
+                                    "AllowContentTypes": "@body('Parse_JSON_5')?['AllowContentTypes']",
+                                    "BaseTemplate": "@body('Parse_JSON_5')?['BaseTemplate']",
+                                    "BaseType": "@body('Parse_JSON_5')?['BaseType']",
+                                    "ContentTypesEnabled": "@body('Parse_JSON_5')?['ContentTypesEnabled']",
+                                    "Title": "@body('Parse_JSON_5')?['Title']",
+                                    "CrawlNonDefaultViews": "@body('Parse_JSON_5')?['CrawlNonDefaultViews']",
+                                    "DefaultItemOpenUseListSetting": "@body('Parse_JSON_5')?['DefaultItemOpenUseListSetting']",
+                                    "Description": "@body('Parse_JSON_5')?['Description']",
+                                    "DisableGridEditing": "@body('Parse_JSON_5')?['DisableGridEditing']",
+                                    "DraftVersionVisibility": "@body('Parse_JSON_5')?['DraftVersionVisibility']",
+                                    "EnableAttachments": "@body('Parse_JSON_5')?['EnableAttachments']",
+                                    "EnableFolderCreation": "@body('Parse_JSON_5')?['EnableFolderCreation']",
+                                    "EnableMinorVersions": "@body('Parse_JSON_5')?['EnableMinorVersions']",
+                                    "EnableModeration": "@body('Parse_JSON_5')?['EnableModeration']",
+                                    "EnableRequestSignOff": "@body('Parse_JSON_5')?['EnableRequestSignOff']",
+                                    "EnableVersioning": "@body('Parse_JSON_5')?['EnableVersioning']",
+                                    "EntityTypeName": "@body('Parse_JSON_5')?['EntityTypeName']",
+                                    "ExemptFromBlockDownloadOfNonViewableFiles": "@body('Parse_JSON_5')?['ExemptFromBlockDownloadOfNonViewableFiles']",
+                                    "FileSavePostProcessingEnabled": "@body('Parse_JSON_5')?['FileSavePostProcessingEnabled']",
+                                    "ForceCheckout": "@body('Parse_JSON_5')?['ForceCheckout']",
+                                    "HasExternalDataSource": "@body('Parse_JSON_5')?['HasExternalDataSource']",
+                                    "Hidden": "@body('Parse_JSON_5')?['Hidden']",
+                                    "MultipleDataList": "@body('Parse_JSON_5')?['MultipleDataList']",
+                                    "NoCrawl": "@body('Parse_JSON_5')?['NoCrawl']",
+                                    "ParserDisabled": "@body('Parse_JSON_5')?['ParserDisabled']",
+                                    "ServerTemplateCanCreateFolders": "@body('Parse_JSON_5')?['ServerTemplateCanCreateFolders']",
+                                    "Direction": "@body('Parse_JSON_5')?['Direction']",
+                                    "ImageUrl": "@body('Parse_JSON_5')?['ImageUrl']",
+                                    "IrmEnabled": "@body('Parse_JSON_5')?['IrmEnabled']",
+                                    "IrmExpire": "@body('Parse_JSON_5')?['IrmExpire']",
+                                    "IrmReject": "@body('Parse_JSON_5')?['IrmReject']",
+                                    "IsApplicationList": "@body('Parse_JSON_5')?['IsApplicationList']",
+                                    "IsCatalog": "@body('Parse_JSON_5')?['IsCatalog']",
+                                    "IsPrivate": "@body('Parse_JSON_5')?['IsPrivate']",
+                                    "ListExperienceOptions": "@body('Parse_JSON_5')?['ListExperienceOptions']",
+                                    "ListItemEntityTypeFullName": "@body('Parse_JSON_5')?['ListItemEntityTypeFullName']"
+                                }
+                            }
+                        },
+                        "Send_an_HTTP_request_to_SharePoint_14": {
+                            "runAfter": {
+                                "Send_an_HTTP_request_to_SharePoint_8": [
+                                    "Succeeded",
+                                    "Skipped",
+                                    "Failed",
+                                    "TimedOut"
+                                ]
+                            },
+                            "type": "OpenApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connectionName": "shared_sharepointonline",
+                                    "operationId": "HttpRequest",
+                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                },
+                                "parameters": {
+                                    "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['fromSite']}",
+                                    "parameters/method": "GET",
+                                    "parameters/uri": "_api/web/lists/getbytitle('@{triggerBody()?['ListTitle']}')/fields",
+                                    "parameters/headers": {
+                                        "accept": "application/json;odata=verbose",
+                                        "content-type": "application/json;odata=verbose"
+                                    }
+                                },
+                                "authentication": "@parameters('$authentication')"
+                            }
+                        },
+                        "Parse_JSON_4": {
+                            "runAfter": {
+                                "Send_an_HTTP_request_to_SharePoint_14": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "ParseJson",
+                            "inputs": {
+                                "content": "@outputs('Send_an_HTTP_request_to_SharePoint_14')?['body']?['d']?['results']",
+                                "schema": {}
+                            }
+                        },
+                        "Filter_array": {
+                            "runAfter": {
+                                "Parse_JSON_4": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Query",
+                            "inputs": {
+                                "from": "@body('Parse_JSON_4')",
+                                "where": "@or(and(equals(item()['CanBeDeleted'], true), equals(item()['Hidden'], false)), equals(item()['StaticName'], 'Title'))"
+                            }
+                        },
+                        "Select_3": {
+                            "runAfter": {
+                                "Filter_array": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Select",
+                            "inputs": {
+                                "from": "@body('Filter_array')",
+                                "select": {
+                                    "__metadata": {
+                                        "type": "@{item()?['__metadata']?['type']}"
+                                    },
+                                    "AutoIndexed": "@item()['AutoIndexed']",
+                                    "CanBeDeleted": "@item()['CanBeDeleted']",
+                                    "ClientSideComponentId": "@item()['ClientSideComponentId']",
+                                    "ClientSideComponentProperties": "@{item()['ClientSideComponentProperties']}",
+                                    "ClientValidationFormula": "@{item()['ClientValidationFormula']}",
+                                    "ClientValidationMessage": "@{item()['ClientValidationMessage']}",
+                                    "CustomFormatter": "@{item()['CustomFormatter']}",
+                                    "DefaultFormula": "@{item()['DefaultFormula']}",
+                                    "DefaultValue": "@{item()['DefaultValue']}",
+                                    "Description": "@item()['Description']",
+                                    "Direction": "@item()['Direction']",
+                                    "EnforceUniqueValues": "@item()['EnforceUniqueValues']",
+                                    "EntityPropertyName": "@item()['EntityPropertyName']",
+                                    "Filterable": "@item()['Filterable']",
+                                    "FromBaseType": "@item()['FromBaseType']",
+                                    "Group": "@item()['Group']",
+                                    "Hidden": "@item()['Hidden']",
+                                    "Indexed": "@item()['Indexed']",
+                                    "IndexStatus": "@item()['IndexStatus']",
+                                    "InternalName": "@item()['InternalName']",
+                                    "JSLink": "@item()?['JSLink']",
+                                    "PinnedToFiltersPane": "@item()['PinnedToFiltersPane']",
+                                    "ReadOnlyField": "@item()['ReadOnlyField']",
+                                    "Required": "@item()['Required']",
+                                    "ShowInFiltersPane": "@item()['ShowInFiltersPane']",
+                                    "Sortable": "@item()['Sortable']",
+                                    "StaticName": "@item()['StaticName']",
+                                    "Title": "@item()['Title']",
+                                    "FieldTypeKind": "@item()['FieldTypeKind']",
+                                    "TypeAsString": "@item()['TypeAsString']",
+                                    "TypeDisplayName": "@item()['TypeDisplayName']",
+                                    "TypeShortDescription": "@item()['TypeShortDescription']"
+                                }
+                            }
+                        },
+                        "Scope_7": {
+                            "actions": {
+                                "Send_an_HTTP_request_to_SharePoint_18": {
+                                    "runAfter": {},
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline",
+                                            "operationId": "HttpRequest",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['toSite']}",
+                                            "parameters/method": "POST",
+                                            "parameters/uri": "_api/web/lists",
+                                            "parameters/headers": {
+                                                "accept": "application/json;odata=verbose",
+                                                "content-type": "application/json;odata=verbose"
+                                            },
+                                            "parameters/body": "@body('Select_2')[0]"
+                                        },
+                                        "authentication": "@parameters('$authentication')",
+                                        "retryPolicy": {
+                                            "type": "none"
+                                        }
+                                    }
+                                },
+                                "Send_an_HTTP_request_to_SharePoint_6": {
+                                    "runAfter": {
+                                        "Set_variable_3": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline",
+                                            "operationId": "HttpRequest",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['toSite']}",
+                                            "parameters/method": "PATCH",
+                                            "parameters/uri": "_api/web/lists/getbytitle('@{triggerBody()?['ListTitle']}')",
+                                            "parameters/headers": {
+                                                "accept": "application/json;odata=verbose",
+                                                "content-type": "application/json;odata=verbose",
+                                                "IF-MATCH": "*",
+                                                "X-HTTP-Method": "MERGE"
+                                            },
+                                            "parameters/body": "@body('Select_2')[0]"
+                                        },
+                                        "authentication": "@parameters('$authentication')",
+                                        "retryPolicy": {
+                                            "type": "none"
+                                        }
+                                    }
+                                },
+                                "Set_variable_3": {
+                                    "runAfter": {
+                                        "Send_an_HTTP_request_to_SharePoint_18": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "SetVariable",
+                                    "inputs": {
+                                        "name": "varListId",
+                                        "value": "@{outputs('Send_an_HTTP_request_to_SharePoint_18')?['body']?['d']?['Id']}"
+                                    }
+                                }
+                            },
+                            "runAfter": {
+                                "Scope_8": [
+                                    "Failed",
+                                    "TimedOut"
+                                ]
+                            },
+                            "type": "Scope"
+                        },
+                        "Send_an_HTTP_request_to_SharePoint_7": {
+                            "runAfter": {
+                                "Select_2": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "OpenApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connectionName": "shared_sharepointonline",
+                                    "operationId": "HttpRequest",
+                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                },
+                                "parameters": {
+                                    "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['fromSite']}",
+                                    "parameters/method": "GET",
+                                    "parameters/uri": "_api/web/lists/getbytitle('@{triggerBody()?['ListTitle']}')?$select=ReadSecurity,WriteSecurity",
+                                    "parameters/headers": {
+                                        "accept": "application/json;odata=verbose",
+                                        "content-type": "application/json;odata=verbose"
+                                    }
+                                },
+                                "authentication": "@parameters('$authentication')"
+                            }
+                        },
+                        "Parse_JSON": {
+                            "runAfter": {
+                                "Send_an_HTTP_request_to_SharePoint_7": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "ParseJson",
+                            "inputs": {
+                                "content": "@body('Send_an_HTTP_request_to_SharePoint_7')?['d']",
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "__metadata": {
+                                            "type": "object",
+                                            "properties": {
+                                                "type": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        },
+                                        "ReadSecurity": {
+                                            "type": "integer"
+                                        },
+                                        "WriteSecurity": {
+                                            "type": "integer"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "Send_an_HTTP_request_to_SharePoint_8": {
+                            "runAfter": {
+                                "Scope_7": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "OpenApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connectionName": "shared_sharepointonline",
+                                    "operationId": "HttpRequest",
+                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                },
+                                "parameters": {
+                                    "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['toSite']}",
+                                    "parameters/method": "PATCH",
+                                    "parameters/uri": "_api/web/lists/getbytitle('@{triggerBody()?['ListTitle']}')",
+                                    "parameters/headers": {
+                                        "accept": "application/json;odata=verbose",
+                                        "content-type": "application/json;odata=verbose",
+                                        "IF-MATCH": "*",
+                                        "X-HTTP-Method": "MERGE"
+                                    },
+                                    "parameters/body": "@body('Parse_JSON')"
+                                },
+                                "authentication": "@parameters('$authentication')",
+                                "retryPolicy": {
+                                    "type": "none"
+                                }
+                            }
+                        },
+                        "Apply_to_each_Fields": {
+                            "foreach": "@body('Filter_array')",
+                            "actions": {
+                                "Switch": {
+                                    "runAfter": {},
+                                    "cases": {
+                                        "Case_FieldLookUp": {
+                                            "case": 7,
+                                            "actions": {
+                                                "Send_an_HTTP_request_to_SharePoint_10": {
+                                                    "runAfter": {},
+                                                    "type": "OpenApiConnection",
+                                                    "inputs": {
+                                                        "host": {
+                                                            "connectionName": "shared_sharepointonline",
+                                                            "operationId": "HttpRequest",
+                                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                        },
+                                                        "parameters": {
+                                                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['toSite']}",
+                                                            "parameters/method": "POST",
+                                                            "parameters/uri": "_api/web/lists/getbytitle('@{triggerBody()?['ListTitle']}')/fields/addfield",
+                                                            "parameters/headers": {
+                                                                "accept": "application/json;odata=verbose",
+                                                                "content-type": "application/json;odata=verbose"
+                                                            },
+                                                            "parameters/body": "\n{ \"parameters\" : {\n    \"__metadata\": {\n      \"type\": \"SP.FieldCreationInformation\"\n    },\n    \"Title\": \"@{items('Apply_to_each_Fields')?['Title']}\",\n    \"FieldTypeKind\": \"@{items('Apply_to_each_Fields')?['FieldTypeKind']}\",\n    \"LookupFieldName\": \"@{items('Apply_to_each_Fields')?['LookupField']}\",\n    \"LookupListId\": \"@{variables('varListId')}\"\n  }\n}\n"
+                                                        },
+                                                        "authentication": "@parameters('$authentication')",
+                                                        "retryPolicy": {
+                                                            "type": "none"
+                                                        }
+                                                    }
+                                                },
+                                                "Set_variable": {
+                                                    "runAfter": {
+                                                        "Send_an_HTTP_request_to_SharePoint_10": [
+                                                            "Succeeded"
+                                                        ]
+                                                    },
+                                                    "type": "SetVariable",
+                                                    "inputs": {
+                                                        "name": "varField",
+                                                        "value": "\n{\n    \"__metadata\": {\n      \"type\": \"@{items('Apply_to_each_Fields')?['__metadata']?['type']}\"\n    },\n    \"AutoIndexed\": \"@{items('Apply_to_each_Fields')?['AutoIndexed']}\",\n    \"CanBeDeleted\": \"@{items('Apply_to_each_Fields')?['CanBeDeleted']}\",\n    \"ClientValidationFormula\": '@{items('Apply_to_each_Fields')?['ClientValidationFormula']}',\n    \"ClientValidationMessage\": '@{items('Apply_to_each_Fields')?['ClientValidationMessage']}',\n    \"CustomFormatter\": '@{items('Apply_to_each_Fields')?['CustomFormatter']}',\n    \"DefaultFormula\": '@{items('Apply_to_each_Fields')?['DefaultFormula']}',\n    \"DefaultValue\": \"@{items('Apply_to_each_Fields')?['DefaultValue']}\",\n    \"Description\": \"@{items('Apply_to_each_Fields')?['Description']}\",\n    \"Direction\": \"@{items('Apply_to_each_Fields')?['Direction']}\",\n    \"EnforceUniqueValues\": \"@{items('Apply_to_each_Fields')?['EnforceUniqueValues']}\",\n    \"EntityPropertyName\": \"@{items('Apply_to_each_Fields')?['EntityPropertyName']}\",\n    \"Filterable\": \"@{items('Apply_to_each_Fields')?['Filterable']}\",\n    \"FromBaseType\": \"@{items('Apply_to_each_Fields')?['FromBaseType']}\",\n    \"Group\": \"@{items('Apply_to_each_Fields')?['Group']}\",\n    \"Hidden\": \"@{items('Apply_to_each_Fields')?['Hidden']}\",\n    \"Indexed\": \"@{items('Apply_to_each_Fields')?['Indexed']}\",\n    \"IndexStatus\": \"@{items('Apply_to_each_Fields')?['IndexStatus']}\",\n    \"InternalName\": \"@{items('Apply_to_each_Fields')?['InternalName']}\",\n    \"PinnedToFiltersPane\": \"@{items('Apply_to_each_Fields')?['PinnedToFiltersPane']}\",\n    \"ReadOnlyField\": \"@{items('Apply_to_each_Fields')?['ReadOnlyField']}\",\n    \"Required\": \"@{items('Apply_to_each_Fields')?['Required']}\",\n    \"ShowInFiltersPane\": \"@{items('Apply_to_each_Fields')?['ShowInFiltersPane']}\",\n    \"Sortable\": \"@{items('Apply_to_each_Fields')?['Sortable']}\",\n    \"StaticName\": \"@{items('Apply_to_each_Fields')?['StaticName']}\",\n    \"Title\": \"@{items('Apply_to_each_Fields')?['Title']}\",\n    \"FieldTypeKind\": \"@{items('Apply_to_each_Fields')?['FieldTypeKind']}\",\n    \"AllowMultipleValues\": \"@{items('Apply_to_each_Fields')?['AllowMultipleValues']}\",\n    \"IsRelationship\": \"@{items('Apply_to_each_Fields')?['IsRelationship']}\",\n    \"RelationshipDeleteBehavior\": \"@{items('Apply_to_each_Fields')?['RelationshipDeleteBehavior']}\",\n    \"UnlimitedLengthInDocumentLibrary\": \"@{items('Apply_to_each_Fields')?['UnlimitedLengthInDocumentLibrary']}\"    \n  }\n"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "Case_People": {
+                                            "case": 20,
+                                            "actions": {
+                                                "Set_variable_5": {
+                                                    "runAfter": {},
+                                                    "type": "SetVariable",
+                                                    "inputs": {
+                                                        "name": "varField",
+                                                        "value": "{\n    \"__metadata\": {\n      \"type\": \"@{items('Apply_to_each_Fields')?['__metadata']?['type']}\"\n    },\n    \"AutoIndexed\": \"@{items('Apply_to_each_Fields')?['AutoIndexed']}\",\n    \"CanBeDeleted\": \"@{items('Apply_to_each_Fields')?['CanBeDeleted']}\",\n    \"ClientValidationFormula\": '@{items('Apply_to_each_Fields')?['ClientValidationFormula']}',\n    \"ClientValidationMessage\": '@{items('Apply_to_each_Fields')?['ClientValidationMessage']}',\n    \"CustomFormatter\": '@{items('Apply_to_each_Fields')?['CustomFormatter']}',\n    \"DefaultFormula\": '@{items('Apply_to_each_Fields')?['DefaultFormula']}',\n    \"DefaultValue\": \"@{items('Apply_to_each_Fields')?['DefaultValue']}\",\n    \"Description\": \"@{items('Apply_to_each_Fields')?['Description']}\",\n    \"Direction\": \"@{items('Apply_to_each_Fields')?['Direction']}\",\n    \"EnforceUniqueValues\": \"@{items('Apply_to_each_Fields')?['EnforceUniqueValues']}\",\n    \"EntityPropertyName\": \"@{items('Apply_to_each_Fields')?['EntityPropertyName']}\",\n    \"Filterable\": \"@{items('Apply_to_each_Fields')?['Filterable']}\",\n    \"FromBaseType\": \"@{items('Apply_to_each_Fields')?['FromBaseType']}\",\n    \"Group\": \"@{items('Apply_to_each_Fields')?['Group']}\",\n    \"Hidden\": \"@{items('Apply_to_each_Fields')?['Hidden']}\",\n    \"Indexed\": \"@{items('Apply_to_each_Fields')?['Indexed']}\",\n    \"IndexStatus\": \"@{items('Apply_to_each_Fields')?['IndexStatus']}\",\n    \"InternalName\": \"@{items('Apply_to_each_Fields')?['InternalName']}\",\n    \"PinnedToFiltersPane\": \"@{items('Apply_to_each_Fields')?['PinnedToFiltersPane']}\",\n    \"ReadOnlyField\": \"@{items('Apply_to_each_Fields')?['ReadOnlyField']}\",\n    \"Required\": \"@{items('Apply_to_each_Fields')?['Required']}\",\n    \"ShowInFiltersPane\": \"@{items('Apply_to_each_Fields')?['ShowInFiltersPane']}\",\n    \"Sortable\": \"@{items('Apply_to_each_Fields')?['Sortable']}\",\n    \"StaticName\": \"@{items('Apply_to_each_Fields')?['StaticName']}\",\n    \"Title\": \"@{items('Apply_to_each_Fields')?['Title']}\",\n    \"FieldTypeKind\": \"@{items('Apply_to_each_Fields')?['FieldTypeKind']}\",\n    \"AllowMultipleValues\": \"@{items('Apply_to_each_Fields')?['AllowMultipleValues']}\",\n    \"AllowDisplay\": \"@{items('Apply_to_each_Fields')?['AllowDisplay']}\",\n    \"Presence\": \"@{items('Apply_to_each_Fields')?['Presence']}\",\n    \"SelectionGroup\": \"@{items('Apply_to_each_Fields')?['SelectionGroup']}\",\n    \"SelectionMode\": \"@{items('Apply_to_each_Fields')?['SelectionMode']}\",\n    \"UserDisplayOptions\": \"@{items('Apply_to_each_Fields')?['UserDisplayOptions']}\"\n  }"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "Case_DateTime": {
+                                            "case": 4,
+                                            "actions": {
+                                                "Set_variable_6": {
+                                                    "runAfter": {},
+                                                    "type": "SetVariable",
+                                                    "inputs": {
+                                                        "name": "varField",
+                                                        "value": "{\n    \"__metadata\": {\n      \"type\": \"@{items('Apply_to_each_Fields')?['__metadata']?['type']}\"\n    },\n    \"AutoIndexed\": \"@{items('Apply_to_each_Fields')?['AutoIndexed']}\",\n    \"CanBeDeleted\": \"@{items('Apply_to_each_Fields')?['CanBeDeleted']}\",\n    \"ClientValidationFormula\": '@{items('Apply_to_each_Fields')?['ClientValidationFormula']}',\n    \"ClientValidationMessage\": '@{items('Apply_to_each_Fields')?['ClientValidationMessage']}',\n    \"CustomFormatter\": '@{items('Apply_to_each_Fields')?['CustomFormatter']}',\n    \"DefaultFormula\": '@{items('Apply_to_each_Fields')?['DefaultFormula']}',\n    \"DefaultValue\": \"@{items('Apply_to_each_Fields')?['DefaultValue']}\",\n    \"Description\": \"@{items('Apply_to_each_Fields')?['Description']}\",\n    \"Direction\": \"@{items('Apply_to_each_Fields')?['Direction']}\",\n    \"EnforceUniqueValues\": \"@{items('Apply_to_each_Fields')?['EnforceUniqueValues']}\",\n    \"EntityPropertyName\": \"@{items('Apply_to_each_Fields')?['EntityPropertyName']}\",\n    \"Filterable\": \"@{items('Apply_to_each_Fields')?['Filterable']}\",\n    \"FromBaseType\": \"@{items('Apply_to_each_Fields')?['FromBaseType']}\",\n    \"Group\": \"@{items('Apply_to_each_Fields')?['Group']}\",\n    \"Hidden\": \"@{items('Apply_to_each_Fields')?['Hidden']}\",\n    \"Indexed\": \"@{items('Apply_to_each_Fields')?['Indexed']}\",\n    \"IndexStatus\": \"@{items('Apply_to_each_Fields')?['IndexStatus']}\",\n    \"InternalName\": \"@{items('Apply_to_each_Fields')?['InternalName']}\",\n    \"PinnedToFiltersPane\": \"@{items('Apply_to_each_Fields')?['PinnedToFiltersPane']}\",\n    \"ReadOnlyField\": \"@{items('Apply_to_each_Fields')?['ReadOnlyField']}\",\n    \"Required\": \"@{items('Apply_to_each_Fields')?['Required']}\",\n    \"ShowInFiltersPane\": \"@{items('Apply_to_each_Fields')?['ShowInFiltersPane']}\",\n    \"Sortable\": \"@{items('Apply_to_each_Fields')?['Sortable']}\",\n    \"StaticName\": \"@{items('Apply_to_each_Fields')?['StaticName']}\",\n    \"Title\": \"@{items('Apply_to_each_Fields')?['Title']}\",\n    \"FieldTypeKind\": \"@{items('Apply_to_each_Fields')?['FieldTypeKind']}\",\n    \"DateTimeCalendarType\": \"@{items('Apply_to_each_Fields')?['DateTimeCalendarType']}\",\n    \"DateFormat\": \"@{items('Apply_to_each_Fields')?['DateFormat']}\",\n    \"DisplayFormat\": \"@{items('Apply_to_each_Fields')?['DisplayFormat']}\",\n    \"FriendlyDisplayFormat\": \"@{items('Apply_to_each_Fields')?['FriendlyDisplayFormat']}\",\n    \"TimeFormat\": \"@{items('Apply_to_each_Fields')?['TimeFormat']}\"\n  }"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "Case_Calculated": {
+                                            "case": 17,
+                                            "actions": {
+                                                "Set_variable_7": {
+                                                    "runAfter": {},
+                                                    "type": "SetVariable",
+                                                    "inputs": {
+                                                        "name": "varField",
+                                                        "value": "{\n    \"__metadata\": {\n      \"type\": \"@{items('Apply_to_each_Fields')?['__metadata']?['type']}\"\n    },\n    \"AutoIndexed\": \"@{items('Apply_to_each_Fields')?['AutoIndexed']}\",\n    \"CanBeDeleted\": \"@{items('Apply_to_each_Fields')?['CanBeDeleted']}\",\n    \"ClientValidationFormula\": '@{items('Apply_to_each_Fields')?['ClientValidationFormula']}',\n    \"ClientValidationMessage\": '@{items('Apply_to_each_Fields')?['ClientValidationMessage']}',\n    \"CustomFormatter\": '@{items('Apply_to_each_Fields')?['CustomFormatter']}',\n    \"DefaultFormula\": '@{items('Apply_to_each_Fields')?['DefaultFormula']}',\n    \"DefaultValue\": \"@{items('Apply_to_each_Fields')?['DefaultValue']}\",\n    \"Description\": \"@{items('Apply_to_each_Fields')?['Description']}\",\n    \"Direction\": \"@{items('Apply_to_each_Fields')?['Direction']}\",\n    \"EnforceUniqueValues\": \"@{items('Apply_to_each_Fields')?['EnforceUniqueValues']}\",\n    \"EntityPropertyName\": \"@{items('Apply_to_each_Fields')?['EntityPropertyName']}\",\n    \"Filterable\": \"@{items('Apply_to_each_Fields')?['Filterable']}\",\n    \"FromBaseType\": \"@{items('Apply_to_each_Fields')?['FromBaseType']}\",\n    \"Group\": \"@{items('Apply_to_each_Fields')?['Group']}\",\n    \"Hidden\": \"@{items('Apply_to_each_Fields')?['Hidden']}\",\n    \"Indexed\": \"@{items('Apply_to_each_Fields')?['Indexed']}\",\n    \"IndexStatus\": \"@{items('Apply_to_each_Fields')?['IndexStatus']}\",\n    \"InternalName\": \"@{items('Apply_to_each_Fields')?['InternalName']}\",\n    \"PinnedToFiltersPane\": \"@{items('Apply_to_each_Fields')?['PinnedToFiltersPane']}\",\n    \"ReadOnlyField\": \"@{items('Apply_to_each_Fields')?['ReadOnlyField']}\",\n    \"Required\": \"@{items('Apply_to_each_Fields')?['Required']}\",\n    \"ShowInFiltersPane\": \"@{items('Apply_to_each_Fields')?['ShowInFiltersPane']}\",\n    \"Sortable\": \"@{items('Apply_to_each_Fields')?['Sortable']}\",\n    \"StaticName\": \"@{items('Apply_to_each_Fields')?['StaticName']}\",\n    \"Title\": \"@{items('Apply_to_each_Fields')?['Title']}\",\n    \"FieldTypeKind\": \"@{items('Apply_to_each_Fields')?['FieldTypeKind']}\",\n    \"CurrencyLocaleId\": \"@{items('Apply_to_each_Fields')?['CurrencyLocaleId']}\",\n    \"DateFormat\": \"@{items('Apply_to_each_Fields')?['DateFormat']}\",\n    \"DisplayFormat\": \"@{items('Apply_to_each_Fields')?['DisplayFormat']}\",\n    \"Formula\": '@{items('Apply_to_each_Fields')?['Formula']}',\n    \"OutputType\": \"@{items('Apply_to_each_Fields')?['OutputType']}\"\n  }"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "Case_Choice": {
+                                            "case": 15,
+                                            "actions": {
+                                                "Set_variable_8": {
+                                                    "runAfter": {},
+                                                    "type": "SetVariable",
+                                                    "inputs": {
+                                                        "name": "varField",
+                                                        "value": "{\n    \"__metadata\": {\n      \"type\": \"@{items('Apply_to_each_Fields')?['__metadata']?['type']}\"\n    },\n    \"AutoIndexed\": \"@{items('Apply_to_each_Fields')?['AutoIndexed']}\",\n    \"CanBeDeleted\": \"@{items('Apply_to_each_Fields')?['CanBeDeleted']}\",\n    \"ClientValidationFormula\": '@{items('Apply_to_each_Fields')?['ClientValidationFormula']}',\n    \"ClientValidationMessage\": '@{items('Apply_to_each_Fields')?['ClientValidationMessage']}',\n    \"CustomFormatter\": '@{items('Apply_to_each_Fields')?['CustomFormatter']}',\n    \"DefaultFormula\": '@{items('Apply_to_each_Fields')?['DefaultFormula']}',\n    \"DefaultValue\": \"@{items('Apply_to_each_Fields')?['DefaultValue']}\",\n    \"Description\": \"@{items('Apply_to_each_Fields')?['Description']}\",\n    \"Direction\": \"@{items('Apply_to_each_Fields')?['Direction']}\",\n    \"EnforceUniqueValues\": \"@{items('Apply_to_each_Fields')?['EnforceUniqueValues']}\",\n    \"EntityPropertyName\": \"@{items('Apply_to_each_Fields')?['EntityPropertyName']}\",\n    \"Filterable\": \"@{items('Apply_to_each_Fields')?['Filterable']}\",\n    \"FromBaseType\": \"@{items('Apply_to_each_Fields')?['FromBaseType']}\",\n    \"Group\": \"@{items('Apply_to_each_Fields')?['Group']}\",\n    \"Hidden\": \"@{items('Apply_to_each_Fields')?['Hidden']}\",\n    \"Indexed\": \"@{items('Apply_to_each_Fields')?['Indexed']}\",\n    \"IndexStatus\": \"@{items('Apply_to_each_Fields')?['IndexStatus']}\",\n    \"InternalName\": \"@{items('Apply_to_each_Fields')?['InternalName']}\",\n    \"PinnedToFiltersPane\": \"@{items('Apply_to_each_Fields')?['PinnedToFiltersPane']}\",\n    \"ReadOnlyField\": \"@{items('Apply_to_each_Fields')?['ReadOnlyField']}\",\n    \"Required\": \"@{items('Apply_to_each_Fields')?['Required']}\",\n    \"ShowInFiltersPane\": \"@{items('Apply_to_each_Fields')?['ShowInFiltersPane']}\",\n    \"Sortable\": \"@{items('Apply_to_each_Fields')?['Sortable']}\",\n    \"StaticName\": \"@{items('Apply_to_each_Fields')?['StaticName']}\",\n    \"Title\": \"@{items('Apply_to_each_Fields')?['Title']}\",\n    \"FieldTypeKind\": \"@{items('Apply_to_each_Fields')?['FieldTypeKind']}\",\n    \"FillInChoice\": \"@{items('Apply_to_each_Fields')?['FillInChoice']}\",\n    \"Mappings\": \"@{items('Apply_to_each_Fields')?['Mappings']}\",\n    \"Choices\": {\n      \"__metadata\": {\n        \"type\": \"Collection(Edm.String)\"\n      },\n      \"results\": @{items('Apply_to_each_Fields')?['Choices']?['results']}\n    }\n  }"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "Case_Multiline": {
+                                            "case": 3,
+                                            "actions": {
+                                                "Set_variable_9": {
+                                                    "runAfter": {},
+                                                    "type": "SetVariable",
+                                                    "inputs": {
+                                                        "name": "varField",
+                                                        "value": "{\n    \"__metadata\": {\n      \"type\": \"@{items('Apply_to_each_Fields')?['__metadata']?['type']}\"\n    },\n    \"AutoIndexed\": \"@{items('Apply_to_each_Fields')?['AutoIndexed']}\",\n    \"CanBeDeleted\": \"@{items('Apply_to_each_Fields')?['CanBeDeleted']}\",\n    \"ClientValidationFormula\": '@{items('Apply_to_each_Fields')?['ClientValidationFormula']}',\n    \"ClientValidationMessage\": '@{items('Apply_to_each_Fields')?['ClientValidationMessage']}',\n    \"CustomFormatter\": '@{items('Apply_to_each_Fields')?['CustomFormatter']}',\n    \"DefaultFormula\": '@{items('Apply_to_each_Fields')?['DefaultFormula']}',\n    \"DefaultValue\": \"@{items('Apply_to_each_Fields')?['DefaultValue']}\",\n    \"Description\": \"@{items('Apply_to_each_Fields')?['Description']}\",\n    \"Direction\": \"@{items('Apply_to_each_Fields')?['Direction']}\",\n    \"EnforceUniqueValues\": \"@{items('Apply_to_each_Fields')?['EnforceUniqueValues']}\",\n    \"EntityPropertyName\": \"@{items('Apply_to_each_Fields')?['EntityPropertyName']}\",\n    \"Filterable\": \"@{items('Apply_to_each_Fields')?['Filterable']}\",\n    \"FromBaseType\": \"@{items('Apply_to_each_Fields')?['FromBaseType']}\",\n    \"Group\": \"@{items('Apply_to_each_Fields')?['Group']}\",\n    \"Hidden\": \"@{items('Apply_to_each_Fields')?['Hidden']}\",\n    \"Indexed\": \"@{items('Apply_to_each_Fields')?['Indexed']}\",\n    \"IndexStatus\": \"@{items('Apply_to_each_Fields')?['IndexStatus']}\",\n    \"InternalName\": \"@{items('Apply_to_each_Fields')?['InternalName']}\",\n    \"PinnedToFiltersPane\": \"@{items('Apply_to_each_Fields')?['PinnedToFiltersPane']}\",\n    \"ReadOnlyField\": \"@{items('Apply_to_each_Fields')?['ReadOnlyField']}\",\n    \"Required\": \"@{items('Apply_to_each_Fields')?['Required']}\",\n    \"ShowInFiltersPane\": \"@{items('Apply_to_each_Fields')?['ShowInFiltersPane']}\",\n    \"Sortable\": \"@{items('Apply_to_each_Fields')?['Sortable']}\",\n    \"StaticName\": \"@{items('Apply_to_each_Fields')?['StaticName']}\",\n    \"Title\": \"@{items('Apply_to_each_Fields')?['Title']}\",\n    \"FieldTypeKind\": \"@{items('Apply_to_each_Fields')?['FieldTypeKind']}\",\n    \"AllowHyperlink\": \"@{items('Apply_to_each_Fields')?['AllowHyperlink']}\",\n    \"AppendOnly\": \"@{items('Apply_to_each_Fields')?['AppendOnly']}\",\n    \"NumberOfLines\": \"@{items('Apply_to_each_Fields')?['NumberOfLines']}\",\n    \"RestrictedMode\": \"@{items('Apply_to_each_Fields')?['RestrictedMode']}\",\n    \"RichText\": \"@{items('Apply_to_each_Fields')?['RichText']}\",\n    \"UnlimitedLengthInDocumentLibrary\": \"@{items('Apply_to_each_Fields')?['UnlimitedLengthInDocumentLibrary']}\",\n    \"WikiLinking\": \"@{items('Apply_to_each_Fields')?['WikiLinking']}\"\n  }"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "Case_Number": {
+                                            "case": 9,
+                                            "actions": {
+                                                "Set_variable_10": {
+                                                    "runAfter": {},
+                                                    "type": "SetVariable",
+                                                    "inputs": {
+                                                        "name": "varField",
+                                                        "value": "{\n    \"__metadata\": {\n      \"type\": \"@{items('Apply_to_each_Fields')?['__metadata']?['type']}\"\n    },\n    \"AutoIndexed\": \"@{items('Apply_to_each_Fields')?['AutoIndexed']}\",\n    \"CanBeDeleted\": \"@{items('Apply_to_each_Fields')?['CanBeDeleted']}\",\n    \"ClientValidationFormula\": '@{items('Apply_to_each_Fields')?['ClientValidationFormula']}',\n    \"ClientValidationMessage\": '@{items('Apply_to_each_Fields')?['ClientValidationMessage']}',\n    \"CustomFormatter\": '@{items('Apply_to_each_Fields')?['CustomFormatter']}',\n    \"DefaultFormula\": '@{items('Apply_to_each_Fields')?['DefaultFormula']}',\n    \"DefaultValue\": \"@{items('Apply_to_each_Fields')?['DefaultValue']}\",\n    \"Description\": \"@{items('Apply_to_each_Fields')?['Description']}\",\n    \"Direction\": \"@{items('Apply_to_each_Fields')?['Direction']}\",\n    \"EnforceUniqueValues\": \"@{items('Apply_to_each_Fields')?['EnforceUniqueValues']}\",\n    \"EntityPropertyName\": \"@{items('Apply_to_each_Fields')?['EntityPropertyName']}\",\n    \"Filterable\": \"@{items('Apply_to_each_Fields')?['Filterable']}\",\n    \"FromBaseType\": \"@{items('Apply_to_each_Fields')?['FromBaseType']}\",\n    \"Group\": \"@{items('Apply_to_each_Fields')?['Group']}\",\n    \"Hidden\": \"@{items('Apply_to_each_Fields')?['Hidden']}\",\n    \"Indexed\": \"@{items('Apply_to_each_Fields')?['Indexed']}\",\n    \"IndexStatus\": \"@{items('Apply_to_each_Fields')?['IndexStatus']}\",\n    \"InternalName\": \"@{items('Apply_to_each_Fields')?['InternalName']}\",\n    \"PinnedToFiltersPane\": \"@{items('Apply_to_each_Fields')?['PinnedToFiltersPane']}\",\n    \"ReadOnlyField\": \"@{items('Apply_to_each_Fields')?['ReadOnlyField']}\",\n    \"Required\": \"@{items('Apply_to_each_Fields')?['Required']}\",\n    \"ShowInFiltersPane\": \"@{items('Apply_to_each_Fields')?['ShowInFiltersPane']}\",\n    \"Sortable\": \"@{items('Apply_to_each_Fields')?['Sortable']}\",\n    \"StaticName\": \"@{items('Apply_to_each_Fields')?['StaticName']}\",\n    \"Title\": \"@{items('Apply_to_each_Fields')?['Title']}\",\n    \"FieldTypeKind\": \"@{items('Apply_to_each_Fields')?['FieldTypeKind']}\",\n    \"ValidationFormula\": '@{items('Apply_to_each_Fields')?['ValidationFormula']}',\n      \"ValidationMessage\": '@{items('Apply_to_each_Fields')?['ValidationMessage']}',\n    \"CommaSeparator\": \"@{items('Apply_to_each_Fields')?['CommaSeparator']}\",\n    \"CustomUnitName\": \"@{items('Apply_to_each_Fields')?['CustomUnitName']}\",\n    \"CustomUnitOnRight\": \"@{items('Apply_to_each_Fields')?['CustomUnitOnRight']}\",\n    \"DisplayFormat\": \"@{items('Apply_to_each_Fields')?['DisplayFormat']}\",\n    \"ShowAsPercentage\": \"@{items('Apply_to_each_Fields')?['ShowAsPercentage']}\",\n    \"Unit\": \"@{items('Apply_to_each_Fields')?['Unit']}\"\n  }"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "Case_Currency": {
+                                            "case": 10,
+                                            "actions": {
+                                                "Set_variable_11": {
+                                                    "runAfter": {},
+                                                    "type": "SetVariable",
+                                                    "inputs": {
+                                                        "name": "varField",
+                                                        "value": "{\n    \"__metadata\": {\n      \"type\": \"@{items('Apply_to_each_Fields')?['__metadata']?['type']}\"\n    },\n    \"AutoIndexed\": \"@{items('Apply_to_each_Fields')?['AutoIndexed']}\",\n    \"CanBeDeleted\": \"@{items('Apply_to_each_Fields')?['CanBeDeleted']}\",\n    \"ClientValidationFormula\": '@{items('Apply_to_each_Fields')?['ClientValidationFormula']}',\n    \"ClientValidationMessage\": '@{items('Apply_to_each_Fields')?['ClientValidationMessage']}',\n    \"CustomFormatter\": '@{items('Apply_to_each_Fields')?['CustomFormatter']}',\n    \"DefaultFormula\": '@{items('Apply_to_each_Fields')?['DefaultFormula']}',\n    \"DefaultValue\": \"@{items('Apply_to_each_Fields')?['DefaultValue']}\",\n    \"Description\": \"@{items('Apply_to_each_Fields')?['Description']}\",\n    \"Direction\": \"@{items('Apply_to_each_Fields')?['Direction']}\",\n    \"EnforceUniqueValues\": \"@{items('Apply_to_each_Fields')?['EnforceUniqueValues']}\",\n    \"EntityPropertyName\": \"@{items('Apply_to_each_Fields')?['EntityPropertyName']}\",\n    \"Filterable\": \"@{items('Apply_to_each_Fields')?['Filterable']}\",\n    \"FromBaseType\": \"@{items('Apply_to_each_Fields')?['FromBaseType']}\",\n    \"Group\": \"@{items('Apply_to_each_Fields')?['Group']}\",\n    \"Hidden\": \"@{items('Apply_to_each_Fields')?['Hidden']}\",\n    \"Indexed\": \"@{items('Apply_to_each_Fields')?['Indexed']}\",\n    \"IndexStatus\": \"@{items('Apply_to_each_Fields')?['IndexStatus']}\",\n    \"InternalName\": \"@{items('Apply_to_each_Fields')?['InternalName']}\",\n    \"PinnedToFiltersPane\": \"@{items('Apply_to_each_Fields')?['PinnedToFiltersPane']}\",\n    \"ReadOnlyField\": \"@{items('Apply_to_each_Fields')?['ReadOnlyField']}\",\n    \"Required\": \"@{items('Apply_to_each_Fields')?['Required']}\",\n    \"ShowInFiltersPane\": \"@{items('Apply_to_each_Fields')?['ShowInFiltersPane']}\",\n    \"Sortable\": \"@{items('Apply_to_each_Fields')?['Sortable']}\",\n    \"StaticName\": \"@{items('Apply_to_each_Fields')?['StaticName']}\",\n    \"Title\": \"@{items('Apply_to_each_Fields')?['Title']}\",\n    \"FieldTypeKind\": \"@{items('Apply_to_each_Fields')?['FieldTypeKind']}\",\n    \"ValidationFormula\": '@{items('Apply_to_each_Fields')?['ValidationFormula']}',\n      \"ValidationMessage\": '@{items('Apply_to_each_Fields')?['ValidationMessage']}',\n    \"CommaSeparator\": \"@{items('Apply_to_each_Fields')?['CommaSeparator']}\",\n    \"CustomUnitName\": \"@{items('Apply_to_each_Fields')?['CustomUnitName']}\",\n    \"CustomUnitOnRight\": \"@{items('Apply_to_each_Fields')?['CustomUnitOnRight']}\",\n    \"DisplayFormat\": \"@{items('Apply_to_each_Fields')?['DisplayFormat']}\",\n    \"Unit\": \"@{items('Apply_to_each_Fields')?['Unit']}\",\n    \"CurrencyLocaleId\": \"@{items('Apply_to_each_Fields')?['CurrencyLocaleId']}\"\n  }\n"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "Case_Url": {
+                                            "case": 11,
+                                            "actions": {
+                                                "Set_variable_12": {
+                                                    "runAfter": {},
+                                                    "type": "SetVariable",
+                                                    "inputs": {
+                                                        "name": "varField",
+                                                        "value": "{\n    \"__metadata\": {\n      \"type\": \"@{items('Apply_to_each_Fields')?['__metadata']?['type']}\"\n    },\n    \"AutoIndexed\": \"@{items('Apply_to_each_Fields')?['AutoIndexed']}\",\n    \"CanBeDeleted\": \"@{items('Apply_to_each_Fields')?['CanBeDeleted']}\",\n    \"ClientValidationFormula\": '@{items('Apply_to_each_Fields')?['ClientValidationFormula']}',\n    \"ClientValidationMessage\": '@{items('Apply_to_each_Fields')?['ClientValidationMessage']}',\n    \"CustomFormatter\": '@{items('Apply_to_each_Fields')?['CustomFormatter']}',\n    \"DefaultFormula\": '@{items('Apply_to_each_Fields')?['DefaultFormula']}',\n    \"DefaultValue\": \"@{items('Apply_to_each_Fields')?['DefaultValue']}\",\n    \"Description\": \"@{items('Apply_to_each_Fields')?['Description']}\",\n    \"Direction\": \"@{items('Apply_to_each_Fields')?['Direction']}\",\n    \"EnforceUniqueValues\": \"@{items('Apply_to_each_Fields')?['EnforceUniqueValues']}\",\n    \"EntityPropertyName\": \"@{items('Apply_to_each_Fields')?['EntityPropertyName']}\",\n    \"Filterable\": \"@{items('Apply_to_each_Fields')?['Filterable']}\",\n    \"FromBaseType\": \"@{items('Apply_to_each_Fields')?['FromBaseType']}\",\n    \"Group\": \"@{items('Apply_to_each_Fields')?['Group']}\",\n    \"Hidden\": \"@{items('Apply_to_each_Fields')?['Hidden']}\",\n    \"Indexed\": \"@{items('Apply_to_each_Fields')?['Indexed']}\",\n    \"IndexStatus\": \"@{items('Apply_to_each_Fields')?['IndexStatus']}\",\n    \"InternalName\": \"@{items('Apply_to_each_Fields')?['InternalName']}\",\n    \"PinnedToFiltersPane\": \"@{items('Apply_to_each_Fields')?['PinnedToFiltersPane']}\",\n    \"ReadOnlyField\": \"@{items('Apply_to_each_Fields')?['ReadOnlyField']}\",\n    \"Required\": \"@{items('Apply_to_each_Fields')?['Required']}\",\n    \"ShowInFiltersPane\": \"@{items('Apply_to_each_Fields')?['ShowInFiltersPane']}\",\n    \"Sortable\": \"@{items('Apply_to_each_Fields')?['Sortable']}\",\n    \"StaticName\": \"@{items('Apply_to_each_Fields')?['StaticName']}\",\n    \"Title\": \"@{items('Apply_to_each_Fields')?['Title']}\",\n    \"FieldTypeKind\": \"@{items('Apply_to_each_Fields')?['FieldTypeKind']}\",\n    \"DisplayFormat\": \"@{items('Apply_to_each_Fields')?['DisplayFormat']}\"\n  }\n"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "Case_Text": {
+                                            "case": 2,
+                                            "actions": {
+                                                "Set_variable_13": {
+                                                    "runAfter": {},
+                                                    "type": "SetVariable",
+                                                    "inputs": {
+                                                        "name": "varField",
+                                                        "value": "\n{\n    \"__metadata\": {\n      \"type\": \"@{items('Apply_to_each_Fields')?['__metadata']?['type']}\"\n    },\n    \"AutoIndexed\": \"@{items('Apply_to_each_Fields')?['AutoIndexed']}\",\n    \"CanBeDeleted\": \"@{items('Apply_to_each_Fields')?['CanBeDeleted']}\",\n    \"ClientValidationFormula\": \"@{items('Apply_to_each_Fields')?['ClientValidationFormula']}\",\n    \"ClientValidationMessage\": \"@{items('Apply_to_each_Fields')?['ClientValidationMessage']}\",\n    \"CustomFormatter\": \"@{items('Apply_to_each_Fields')?['CustomFormatter']}\",\n    \"DefaultFormula\": \"@{items('Apply_to_each_Fields')?['DefaultFormula']}\",\n    \"DefaultValue\": \"@{items('Apply_to_each_Fields')?['DefaultValue']}\",\n    \"Description\": \"@{items('Apply_to_each_Fields')?['Description']}\",\n    \"Direction\": \"@{items('Apply_to_each_Fields')?['Direction']}\",\n    \"EnforceUniqueValues\": \"@{items('Apply_to_each_Fields')?['EnforceUniqueValues']}\",\n    \"EntityPropertyName\": \"@{items('Apply_to_each_Fields')?['EntityPropertyName']}\",\n    \"Filterable\": \"@{items('Apply_to_each_Fields')?['Filterable']}\",\n    \"FromBaseType\": \"@{items('Apply_to_each_Fields')?['FromBaseType']}\",\n    \"Group\": \"@{items('Apply_to_each_Fields')?['Group']}\",\n    \"Hidden\": \"@{items('Apply_to_each_Fields')?['Hidden']}\",\n    \"Indexed\": \"@{items('Apply_to_each_Fields')?['Indexed']}\",\n    \"IndexStatus\": \"@{items('Apply_to_each_Fields')?['IndexStatus']}\",\n    \"InternalName\": \"@{items('Apply_to_each_Fields')?['InternalName']}\",\n    \"PinnedToFiltersPane\": \"@{items('Apply_to_each_Fields')?['PinnedToFiltersPane']}\",\n    \"ReadOnlyField\": \"@{items('Apply_to_each_Fields')?['ReadOnlyField']}\",\n    \"Required\": \"@{items('Apply_to_each_Fields')?['Required']}\",\n    \"ShowInFiltersPane\": \"@{items('Apply_to_each_Fields')?['ShowInFiltersPane']}\",\n    \"Sortable\": \"@{items('Apply_to_each_Fields')?['Sortable']}\",\n    \"StaticName\": \"@{items('Apply_to_each_Fields')?['StaticName']}\",\n    \"Title\": \"@{items('Apply_to_each_Fields')?['Title']}\",\n    \"FieldTypeKind\": \"@{items('Apply_to_each_Fields')?['FieldTypeKind']}\",\n    \"MaxLength\": \"@{items('Apply_to_each_Fields')?['MaxLength']}\"\n  }\n"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "default": {
+                                        "actions": {
+                                            "Set_variable_2": {
+                                                "runAfter": {},
+                                                "type": "SetVariable",
+                                                "inputs": {
+                                                    "name": "varField",
+                                                    "value": "{\n    \"__metadata\": {\n      \"type\": \"@{items('Apply_to_each_Fields')?['__metadata']?['type']}\"\n    },\n    \"AutoIndexed\": \"@{items('Apply_to_each_Fields')?['AutoIndexed']}\",\n    \"CanBeDeleted\": \"@{items('Apply_to_each_Fields')?['CanBeDeleted']}\",\n    \"ClientValidationFormula\": \"@{items('Apply_to_each_Fields')?['ClientValidationFormula']}\",\n    \"ClientValidationMessage\": \"@{items('Apply_to_each_Fields')?['ClientValidationMessage']}\",\n    \"CustomFormatter\": \"@{items('Apply_to_each_Fields')?['CustomFormatter']}\",\n    \"DefaultFormula\": \"@{items('Apply_to_each_Fields')?['DefaultFormula']}\",\n    \"DefaultValue\": \"@{items('Apply_to_each_Fields')?['DefaultValue']}\",\n    \"Description\": \"@{items('Apply_to_each_Fields')?['Description']}\",\n    \"Direction\": \"@{items('Apply_to_each_Fields')?['Direction']}\",\n    \"EnforceUniqueValues\": \"@{items('Apply_to_each_Fields')?['EnforceUniqueValues']}\",\n    \"EntityPropertyName\": \"@{items('Apply_to_each_Fields')?['EntityPropertyName']}\",\n    \"Filterable\": \"@{items('Apply_to_each_Fields')?['Filterable']}\",\n    \"FromBaseType\": \"@{items('Apply_to_each_Fields')?['FromBaseType']}\",\n    \"Group\": \"@{items('Apply_to_each_Fields')?['Group']}\",\n    \"Hidden\": \"@{items('Apply_to_each_Fields')?['Hidden']}\",\n    \"Indexed\": \"@{items('Apply_to_each_Fields')?['Indexed']}\",\n    \"IndexStatus\": \"@{items('Apply_to_each_Fields')?['IndexStatus']}\",\n    \"InternalName\": \"@{items('Apply_to_each_Fields')?['InternalName']}\",\n    \"PinnedToFiltersPane\": \"@{items('Apply_to_each_Fields')?['PinnedToFiltersPane']}\",\n    \"ReadOnlyField\": \"@{items('Apply_to_each_Fields')?['ReadOnlyField']}\",\n    \"Required\": \"@{items('Apply_to_each_Fields')?['Required']}\",\n    \"ShowInFiltersPane\": \"@{items('Apply_to_each_Fields')?['ShowInFiltersPane']}\",\n    \"Sortable\": \"@{items('Apply_to_each_Fields')?['Sortable']}\",\n    \"StaticName\": \"@{items('Apply_to_each_Fields')?['StaticName']}\",\n    \"Title\": \"@{items('Apply_to_each_Fields')?['Title']}\",\n    \"FieldTypeKind\": \"@{items('Apply_to_each_Fields')?['FieldTypeKind']}\"\n  }"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "expression": "@items('Apply_to_each_Fields')?['FieldTypeKind']",
+                                    "type": "Switch"
+                                },
+                                "Send_an_HTTP_request_to_SharePoint_2": {
+                                    "runAfter": {
+                                        "Switch": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline",
+                                            "operationId": "HttpRequest",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['toSite']}",
+                                            "parameters/method": "GET",
+                                            "parameters/uri": "_api/web/lists/getbytitle('@{triggerBody()?['ListTitle']}')/fields/getbytitle('@{items('Apply_to_each_Fields')['Title']}')",
+                                            "parameters/headers": {
+                                                "accept": "application/json;odata=verbose",
+                                                "content-type": "application/json;odata=verbose"
+                                            }
+                                        },
+                                        "authentication": "@parameters('$authentication')",
+                                        "retryPolicy": {
+                                            "type": "none"
+                                        }
+                                    }
+                                },
+                                "Send_an_HTTP_request_to_SharePoint_5": {
+                                    "runAfter": {
+                                        "Send_an_HTTP_request_to_SharePoint_2": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline",
+                                            "operationId": "HttpRequest",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['toSite']}",
+                                            "parameters/method": "PATCH",
+                                            "parameters/uri": "_api/web/lists/getbytitle('@{triggerBody()?['ListTitle']}')/fields/getbytitle('@{items('Apply_to_each_Fields')['Title']}')",
+                                            "parameters/headers": {
+                                                "accept": "application/json;odata=verbose",
+                                                "content-type": "application/json;odata=verbose",
+                                                "IF-MATCH": "*",
+                                                "X-HTTP-METHOD": "MERGE"
+                                            },
+                                            "parameters/body": "@variables('varField')"
+                                        },
+                                        "authentication": "@parameters('$authentication')",
+                                        "retryPolicy": {
+                                            "type": "none"
+                                        }
+                                    }
+                                },
+                                "Scope_2": {
+                                    "actions": {},
+                                    "runAfter": {
+                                        "Send_an_HTTP_request_to_SharePoint_5": [
+                                            "Failed",
+                                            "Skipped",
+                                            "TimedOut"
+                                        ]
+                                    },
+                                    "type": "Scope"
+                                },
+                                "Send_an_HTTP_request_to_SharePoint_15": {
+                                    "runAfter": {
+                                        "Send_an_HTTP_request_to_SharePoint_2": [
+                                            "Skipped",
+                                            "TimedOut",
+                                            "Failed"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline",
+                                            "operationId": "HttpRequest",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['toSite']}",
+                                            "parameters/method": "POST",
+                                            "parameters/uri": "_api/web/lists/getbytitle('@{triggerBody()?['ListTitle']}')/fields",
+                                            "parameters/headers": {
+                                                "accept": "application/json;odata=verbose",
+                                                "content-type": "application/json;odata=verbose"
+                                            },
+                                            "parameters/body": "@variables('varField')"
+                                        },
+                                        "authentication": "@parameters('$authentication')",
+                                        "retryPolicy": {
+                                            "type": "none"
+                                        }
+                                    }
+                                },
+                                "Scope_6": {
+                                    "actions": {},
+                                    "runAfter": {
+                                        "Send_an_HTTP_request_to_SharePoint_15": [
+                                            "TimedOut",
+                                            "Skipped",
+                                            "Failed"
+                                        ]
+                                    },
+                                    "type": "Scope"
+                                }
+                            },
+                            "runAfter": {
+                                "Select_3": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Foreach"
+                        },
+                        "Scope_8": {
+                            "actions": {
+                                "Send_an_HTTP_request_to_SharePoint": {
+                                    "runAfter": {},
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline",
+                                            "operationId": "HttpRequest",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['toSite']}",
+                                            "parameters/method": "POST",
+                                            "parameters/uri": "_api/web/lists/getbytitle('@{triggerBody()?['ListTitle']}')",
+                                            "parameters/headers": {
+                                                "accept": "application/json;odata=verbose",
+                                                "content-type": "application/json;odata=verbose",
+                                                "IF-MATCH": "*",
+                                                "X-HTTP-Method": "MERGE"
+                                            },
+                                            "parameters/body": "@body('Select_2')[0]"
+                                        },
+                                        "authentication": "@parameters('$authentication')",
+                                        "retryPolicy": {
+                                            "type": "none"
+                                        }
+                                    }
+                                },
+                                "Set_variable_4": {
+                                    "runAfter": {
+                                        "Send_an_HTTP_request_to_SharePoint": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "SetVariable",
+                                    "inputs": {
+                                        "name": "varListId",
+                                        "value": "@{outputs('Send_an_HTTP_request_to_SharePoint')?['body']?['d']?['Id']}"
+                                    }
+                                }
+                            },
+                            "runAfter": {
+                                "Parse_JSON": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Scope"
+                        }
+                    },
+                    "runAfter": {
+                        "Initialize_variable_2": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "Scope"
+                },
+                "Scope_4": {
+                    "actions": {
+                        "Send_an_HTTP_request_to_SharePoint_19": {
+                            "runAfter": {},
+                            "type": "OpenApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connectionName": "shared_sharepointonline",
+                                    "operationId": "HttpRequest",
+                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                },
+                                "parameters": {
+                                    "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['fromSite']}",
+                                    "parameters/method": "GET",
+                                    "parameters/uri": "_api/web/lists/getbytitle('@{triggerBody()?['ListTitle']}')/views",
+                                    "parameters/headers": {
+                                        "accept": "application/json;odata=verbose",
+                                        "content-type": "application/json;odata=verbose"
+                                    }
+                                },
+                                "authentication": "@parameters('$authentication')"
+                            }
+                        },
+                        "Parse_JSON_6": {
+                            "runAfter": {
+                                "Send_an_HTTP_request_to_SharePoint_19": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "ParseJson",
+                            "inputs": {
+                                "content": "@outputs('Send_an_HTTP_request_to_SharePoint_19')?['body']?['d']?['results']",
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "__metadata": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string"
+                                                    },
+                                                    "uri": {
+                                                        "type": "string"
+                                                    },
+                                                    "type": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            },
+                                            "ViewFields": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "__deferred": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "uri": {
+                                                                "type": "string"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "Aggregations": {},
+                                            "AggregationsStatus": {},
+                                            "AssociatedContentTypeId": {},
+                                            "BaseViewId": {
+                                                "type": "string"
+                                            },
+                                            "CalendarViewStyles": {},
+                                            "ColumnWidth": {},
+                                            "ContentTypeId": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "__metadata": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "type": {
+                                                                "type": "string"
+                                                            }
+                                                        }
+                                                    },
+                                                    "StringValue": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            },
+                                            "CustomFormatter": {},
+                                            "DefaultView": {
+                                                "type": "boolean"
+                                            },
+                                            "DefaultViewForContentType": {
+                                                "type": "boolean"
+                                            },
+                                            "EditorModified": {
+                                                "type": "boolean"
+                                            },
+                                            "Formats": {},
+                                            "GridLayout": {},
+                                            "Hidden": {
+                                                "type": "boolean"
+                                            },
+                                            "HtmlSchemaXml": {
+                                                "type": "string"
+                                            },
+                                            "Id": {
+                                                "type": "string"
+                                            },
+                                            "ImageUrl": {
+                                                "type": "string"
+                                            },
+                                            "IncludeRootFolder": {
+                                                "type": "boolean"
+                                            },
+                                            "ViewJoins": {},
+                                            "JSLink": {},
+                                            "ListViewXml": {
+                                                "type": "string"
+                                            },
+                                            "Method": {},
+                                            "MobileDefaultView": {
+                                                "type": "boolean"
+                                            },
+                                            "MobileView": {
+                                                "type": "boolean"
+                                            },
+                                            "ModerationType": {},
+                                            "NewDocumentTemplates": {},
+                                            "OrderedView": {
+                                                "type": "boolean"
+                                            },
+                                            "Paged": {
+                                                "type": "boolean"
+                                            },
+                                            "PersonalView": {
+                                                "type": "boolean"
+                                            },
+                                            "ViewProjectedFields": {},
+                                            "ViewQuery": {},
+                                            "ReadOnlyView": {
+                                                "type": "boolean"
+                                            },
+                                            "RequiresClientIntegration": {
+                                                "type": "boolean"
+                                            },
+                                            "RowLimit": {
+                                                "type": "integer"
+                                            },
+                                            "Scope": {
+                                                "type": "integer"
+                                            },
+                                            "ServerRelativePath": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "__metadata": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "type": {
+                                                                "type": "string"
+                                                            }
+                                                        }
+                                                    },
+                                                    "DecodedUrl": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            },
+                                            "ServerRelativeUrl": {
+                                                "type": "string"
+                                            },
+                                            "StyleId": {},
+                                            "TabularView": {
+                                                "type": "boolean"
+                                            },
+                                            "Threaded": {
+                                                "type": "boolean"
+                                            },
+                                            "Title": {
+                                                "type": "string"
+                                            },
+                                            "Toolbar": {},
+                                            "ToolbarTemplateName": {},
+                                            "ViewType": {
+                                                "type": "string"
+                                            },
+                                            "ViewData": {},
+                                            "ViewType2": {},
+                                            "VisualizationInfo": {}
+                                        },
+                                        "required": [
+                                            "__metadata",
+                                            "ViewFields",
+                                            "Aggregations",
+                                            "AggregationsStatus",
+                                            "AssociatedContentTypeId",
+                                            "BaseViewId",
+                                            "CalendarViewStyles",
+                                            "ColumnWidth",
+                                            "ContentTypeId",
+                                            "CustomFormatter",
+                                            "DefaultView",
+                                            "DefaultViewForContentType",
+                                            "EditorModified",
+                                            "Formats",
+                                            "GridLayout",
+                                            "Hidden",
+                                            "HtmlSchemaXml",
+                                            "Id",
+                                            "ImageUrl",
+                                            "IncludeRootFolder",
+                                            "ViewJoins",
+                                            "JSLink",
+                                            "ListViewXml",
+                                            "Method",
+                                            "MobileDefaultView",
+                                            "MobileView",
+                                            "ModerationType",
+                                            "NewDocumentTemplates",
+                                            "OrderedView",
+                                            "Paged",
+                                            "PersonalView",
+                                            "ViewProjectedFields",
+                                            "ViewQuery",
+                                            "ReadOnlyView",
+                                            "RequiresClientIntegration",
+                                            "RowLimit",
+                                            "Scope",
+                                            "ServerRelativePath",
+                                            "ServerRelativeUrl",
+                                            "StyleId",
+                                            "TabularView",
+                                            "Threaded",
+                                            "Title",
+                                            "Toolbar",
+                                            "ToolbarTemplateName",
+                                            "ViewType",
+                                            "ViewData",
+                                            "ViewType2",
+                                            "VisualizationInfo"
+                                        ]
+                                    }
+                                }
+                            }
+                        },
+                        "Select_6": {
+                            "runAfter": {
+                                "Parse_JSON_6": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Select",
+                            "inputs": {
+                                "from": "@body('Parse_JSON_6')",
+                                "select": {
+                                    "__metadata": {
+                                        "type": "@{item()?['__metadata']?['type']}"
+                                    },
+                                    "ColumnWidth": "@{string(item()['ColumnWidth'])}",
+                                    "ContentTypeId": {
+                                        "__metadata": {
+                                            "type": "@{item()?['ContentTypeId']?['__metadata']?['type']}"
+                                        },
+                                        "StringValue": "@{item()?['ContentTypeId']?['StringValue']}"
+                                    },
+                                    "CustomFormatter": "@{replace(replace(string(item()?['CustomFormatter']), '<', '&lt;'), '>', '&gt;')}",
+                                    "DefaultView": "@item()['DefaultView']",
+                                    "DefaultViewForContentType": "@item()['DefaultViewForContentType']",
+                                    "EditorModified": "@item()['EditorModified']",
+                                    "Hidden": "@item()['Hidden']",
+                                    "ImageUrl": "@item()['ImageUrl']",
+                                    "IncludeRootFolder": "@item()['IncludeRootFolder']",
+                                    "MobileDefaultView": "@item()['MobileDefaultView']",
+                                    "MobileView": "@item()['MobileView']",
+                                    "OrderedView": "@item()['OrderedView']",
+                                    "Paged": "@item()['Paged']",
+                                    "PersonalView": "@item()['PersonalView']",
+                                    "ViewQuery": "@item()['ViewQuery']",
+                                    "ReadOnlyView": "@item()['ReadOnlyView']",
+                                    "RequiresClientIntegration": "@item()['RequiresClientIntegration']",
+                                    "RowLimit": "@item()['RowLimit']",
+                                    "Scope": "@item()['Scope']",
+                                    "TabularView": "@item()['TabularView']",
+                                    "Threaded": "@item()['Threaded']",
+                                    "Toolbar": "@item()['Toolbar']",
+                                    "ViewType": "@item()['ViewType']",
+                                    "Title": "@item()['Title']",
+                                    "Aggregations": "@{string(item()['Aggregations'])}",
+                                    "AggregationsStatus": "@{string(item()['AggregationsStatus'])}",
+                                    "BaseViewId": "@{string(item()['BaseViewId'])}",
+                                    "CalendarViewStyles": "@{string(item()['CalendarViewStyles'])}",
+                                    "Formats": "@{string(item()['Formats'])}",
+                                    "GridLayout": "@{string(item()['GridLayout'])}",
+                                    "ViewJoins": "@{string(item()['ViewJoins'])}",
+                                    "AssociatedContentTypeId": "@{string(item()['AssociatedContentTypeId'])}",
+                                    "Method": "@{string(item()['Method'])}",
+                                    "ModerationType": "@{string(item()['ModerationType'])}",
+                                    "NewDocumentTemplates": "@{string(item()['NewDocumentTemplates'])}",
+                                    "ViewProjectedFields": "@{string(item()['ViewProjectedFields'])}",
+                                    "StyleId": "@{string(item()['StyleId'])}",
+                                    "ToolbarTemplateName": "@{string(item()['ToolbarTemplateName'])}",
+                                    "ViewData": "@{string(item()['ViewData'])}",
+                                    "ViewType2": "@{string(item()['ViewType2'])}",
+                                    "VisualizationInfo": "@item()['VisualizationInfo']"
+                                }
+                            }
+                        },
+                        "Filter_array_2": {
+                            "runAfter": {
+                                "Select_6": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Query",
+                            "inputs": {
+                                "from": "@body('Select_6')",
+                                "where": "@equals(item()['DefaultView'], true)"
+                            }
+                        },
+                        "Apply_to_each_4": {
+                            "foreach": "@body('Filter_array_2')",
+                            "actions": {
+                                "Parse_JSON_8": {
+                                    "runAfter": {
+                                        "Send_an_HTTP_request_to_SharePoint_25": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "ParseJson",
+                                    "inputs": {
+                                        "content": "@outputs('Send_an_HTTP_request_to_SharePoint_25')?['body']?['d']",
+                                        "schema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "__metadata": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "string"
+                                                        },
+                                                        "uri": {
+                                                            "type": "string"
+                                                        },
+                                                        "type": {
+                                                            "type": "string"
+                                                        }
+                                                    }
+                                                },
+                                                "SchemaXml": {
+                                                    "type": "string"
+                                                },
+                                                "Items": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "__metadata": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "type": {
+                                                                    "type": "string"
+                                                                }
+                                                            }
+                                                        },
+                                                        "results": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "Apply_to_each_5": {
+                                    "foreach": "@body('Parse_JSON_8')?['Items']?['results']",
+                                    "actions": {
+                                        "Send_an_HTTP_request_to_SharePoint_28": {
+                                            "runAfter": {},
+                                            "type": "OpenApiConnection",
+                                            "inputs": {
+                                                "host": {
+                                                    "connectionName": "shared_sharepointonline",
+                                                    "operationId": "HttpRequest",
+                                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                },
+                                                "parameters": {
+                                                    "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['toSite']}",
+                                                    "parameters/method": "POST",
+                                                    "parameters/uri": "_api/web/lists/getbytitle('@{triggerBody()?['ListTitle']}')/views/getbytitle('@{items('Apply_to_each_4')['Title']}')/viewfields/addviewfield",
+                                                    "parameters/headers": {
+                                                        "accept": "application/json;odata=verbose",
+                                                        "content-type": "application/json;odata=verbose"
+                                                    },
+                                                    "parameters/body": "{\"strField\":\"@{items('Apply_to_each_5')}\"}"
+                                                },
+                                                "authentication": "@parameters('$authentication')",
+                                                "retryPolicy": {
+                                                    "type": "none"
+                                                }
+                                            }
+                                        },
+                                        "Scope_5": {
+                                            "actions": {},
+                                            "runAfter": {
+                                                "Send_an_HTTP_request_to_SharePoint_28": [
+                                                    "Failed",
+                                                    "Skipped",
+                                                    "TimedOut"
+                                                ]
+                                            },
+                                            "type": "Scope"
+                                        }
+                                    },
+                                    "runAfter": {
+                                        "Send_an_HTTP_request_to_SharePoint_3": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "Foreach"
+                                },
+                                "Send_an_HTTP_request_to_SharePoint_26": {
+                                    "runAfter": {},
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline",
+                                            "operationId": "HttpRequest",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['toSite']}",
+                                            "parameters/method": "POST",
+                                            "parameters/uri": "_api/web/lists/getbytitle('@{triggerBody()?['ListTitle']}')/views/getbytitle('@{items('Apply_to_each_4')['Title']}')",
+                                            "parameters/headers": {
+                                                "content-type": "application/json;odata=verbose",
+                                                "accept": "application/json;odata=verbose",
+                                                "IF-MATCH": "*",
+                                                "X-HTTP-Method": "MERGE"
+                                            },
+                                            "parameters/body": "@items('Apply_to_each_4')"
+                                        },
+                                        "authentication": "@parameters('$authentication')",
+                                        "retryPolicy": {
+                                            "type": "none"
+                                        }
+                                    }
+                                },
+                                "Send_an_HTTP_request_to_SharePoint_25": {
+                                    "runAfter": {
+                                        "Send_an_HTTP_request_to_SharePoint_26": [
+                                            "Succeeded",
+                                            "Failed",
+                                            "TimedOut",
+                                            "Skipped"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline",
+                                            "operationId": "HttpRequest",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['fromSite']}",
+                                            "parameters/method": "GET",
+                                            "parameters/uri": "_api/web/lists/getbytitle('@{triggerBody()?['ListTitle']}')/views/getbytitle('@{items('Apply_to_each_4')['Title']}')/viewfields",
+                                            "parameters/headers": {
+                                                "accept": "application/json;odata=verbose",
+                                                "content-type": "application/json;odata=verbose"
+                                            }
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Send_an_HTTP_request_to_SharePoint_3": {
+                                    "runAfter": {
+                                        "Parse_JSON_8": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline",
+                                            "operationId": "HttpRequest",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['toSite']}",
+                                            "parameters/method": "POST",
+                                            "parameters/uri": "_api/web/lists/getbytitle('@{triggerBody()?['ListTitle']}')/views/getbytitle('@{items('Apply_to_each_4')['Title']}')/viewfields/removeallviewfields",
+                                            "parameters/headers": {
+                                                "accept": "application/json;odata=verbose",
+                                                "content-type": "application/json;odata=verbose"
+                                            }
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                }
+                            },
+                            "runAfter": {
+                                "Filter_array_2": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Foreach"
+                        },
+                        "Filter_array_3": {
+                            "runAfter": {
+                                "Apply_to_each_4": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Query",
+                            "inputs": {
+                                "from": "@body('Select_6')",
+                                "where": "@equals(item()['DefaultView'], false)"
+                            }
+                        },
+                        "Apply_to_each_2": {
+                            "foreach": "@body('Filter_array_3')",
+                            "actions": {
+                                "Send_an_HTTP_request_to_SharePoint_21": {
+                                    "runAfter": {
+                                        "Send_an_HTTP_request_to_SharePoint_9": [
+                                            "Succeeded",
+                                            "Skipped"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline",
+                                            "operationId": "HttpRequest",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['fromSite']}",
+                                            "parameters/method": "GET",
+                                            "parameters/uri": "_api/web/lists/getbytitle('@{triggerBody()?['ListTitle']}')/views/getbytitle('@{items('Apply_to_each_2')['Title']}')/viewfields",
+                                            "parameters/headers": {
+                                                "accept": "application/json;odata=verbose",
+                                                "content-type": "application/json;odata=verbose"
+                                            }
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Parse_JSON_7": {
+                                    "runAfter": {
+                                        "Send_an_HTTP_request_to_SharePoint_21": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "ParseJson",
+                                    "inputs": {
+                                        "content": "@outputs('Send_an_HTTP_request_to_SharePoint_21')?['body']?['d']",
+                                        "schema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "__metadata": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "string"
+                                                        },
+                                                        "uri": {
+                                                            "type": "string"
+                                                        },
+                                                        "type": {
+                                                            "type": "string"
+                                                        }
+                                                    }
+                                                },
+                                                "SchemaXml": {
+                                                    "type": "string"
+                                                },
+                                                "Items": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "__metadata": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "type": {
+                                                                    "type": "string"
+                                                                }
+                                                            }
+                                                        },
+                                                        "results": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "Send_an_HTTP_request_to_SharePoint_22": {
+                                    "runAfter": {},
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline",
+                                            "operationId": "HttpRequest",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['toSite']}",
+                                            "parameters/method": "GET",
+                                            "parameters/uri": "_api/web/lists/getbytitle('@{triggerBody()?['ListTitle']}')/views/getbytitle('@{items('Apply_to_each_2')['Title']}')",
+                                            "parameters/headers": {
+                                                "accept": "application/json;odata=verbose",
+                                                "content-type": "application/json;odata=verbose"
+                                            }
+                                        },
+                                        "authentication": "@parameters('$authentication')",
+                                        "retryPolicy": {
+                                            "type": "none"
+                                        }
+                                    }
+                                },
+                                "Apply_to_each_3": {
+                                    "foreach": "@body('Parse_JSON_7')?['Items']?['results']",
+                                    "actions": {
+                                        "Send_an_HTTP_request_to_SharePoint_23": {
+                                            "runAfter": {},
+                                            "type": "OpenApiConnection",
+                                            "inputs": {
+                                                "host": {
+                                                    "connectionName": "shared_sharepointonline",
+                                                    "operationId": "HttpRequest",
+                                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                },
+                                                "parameters": {
+                                                    "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['toSite']}",
+                                                    "parameters/method": "POST",
+                                                    "parameters/uri": "_api/web/lists/getbytitle('@{triggerBody()?['ListTitle']}')/views/getbytitle('@{items('Apply_to_each_2')['Title']}')/viewfields/addviewfield",
+                                                    "parameters/headers": {
+                                                        "accept": "application/json;odata=verbose",
+                                                        "content-type": "application/json;odata=verbose"
+                                                    },
+                                                    "parameters/body": "{\"strField\":\"@{items('Apply_to_each_3')}\"}"
+                                                },
+                                                "authentication": "@parameters('$authentication')",
+                                                "retryPolicy": {
+                                                    "type": "none"
+                                                }
+                                            }
+                                        },
+                                        "Scope": {
+                                            "actions": {},
+                                            "runAfter": {
+                                                "Send_an_HTTP_request_to_SharePoint_23": [
+                                                    "Failed",
+                                                    "Skipped",
+                                                    "TimedOut"
+                                                ]
+                                            },
+                                            "type": "Scope"
+                                        }
+                                    },
+                                    "runAfter": {
+                                        "Send_an_HTTP_request_to_SharePoint_4": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "Foreach"
+                                },
+                                "Send_an_HTTP_request_to_SharePoint_4": {
+                                    "runAfter": {
+                                        "Parse_JSON_7": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline",
+                                            "operationId": "HttpRequest",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['toSite']}",
+                                            "parameters/method": "POST",
+                                            "parameters/uri": "_api/web/lists/getbytitle('@{triggerBody()?['ListTitle']}')/views/getbytitle('@{items('Apply_to_each_2')['Title']}')/viewfields/removeallviewfields",
+                                            "parameters/headers": {
+                                                "accept": "application/json;odata=verbose",
+                                                "content-type": "application/json;odata=verbose"
+                                            }
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Send_an_HTTP_request_to_SharePoint_9": {
+                                    "runAfter": {
+                                        "Send_an_HTTP_request_to_SharePoint_22": [
+                                            "Failed",
+                                            "TimedOut"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline",
+                                            "operationId": "HttpRequest",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['toSite']}",
+                                            "parameters/method": "POST",
+                                            "parameters/uri": "_api/web/lists/getbytitle('@{triggerBody()?['ListTitle']}')/views",
+                                            "parameters/headers": {
+                                                "accept": "application/json;odata=verbose",
+                                                "content-type": "application/json;odata=verbose"
+                                            },
+                                            "parameters/body": "@items('Apply_to_each_2')"
+                                        },
+                                        "authentication": "@parameters('$authentication')",
+                                        "retryPolicy": {
+                                            "type": "none"
+                                        }
+                                    }
+                                }
+                            },
+                            "runAfter": {
+                                "Filter_array_3": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Foreach"
+                        }
+                    },
+                    "runAfter": {
+                        "Scope_3": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "Scope"
+                },
+                "Response": {
+                    "runAfter": {
+                        "Scope_4": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "Response",
+                    "kind": "Http",
+                    "inputs": {
+                        "statusCode": 200
+                    }
+                },
+                "Initialize_variable": {
+                    "runAfter": {},
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "varCounter1",
+                                "type": "integer",
+                                "value": 0
+                            }
+                        ]
+                    }
+                },
+                "Initialize_variable_2": {
+                    "runAfter": {
+                        "Initialize_variable_3": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "varField",
+                                "type": "string"
+                            }
+                        ]
+                    }
+                },
+                "Initialize_variable_3": {
+                    "runAfter": {
+                        "Initialize_variable": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "varListId",
+                                "type": "string"
+                            }
+                        ]
+                    }
+                }
+            },
+            "outputs": {}
+        }
+    },
+    "schemaVersion": "1.0.0.0"
+}

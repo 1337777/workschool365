@@ -1,0 +1,2129 @@
+{
+    "properties": {
+        "connectionReferences": {
+            "shared_sharepointonline": {
+                "runtimeSource": "embedded",
+                "connection": {
+                    "connectionReferenceLogicalName": "new_sharedsharepointonline_9ad14"
+                },
+                "api": {
+                    "name": "shared_sharepointonline"
+                }
+            },
+            "shared_flowmanagement": {
+                "runtimeSource": "embedded",
+                "connection": {
+                    "connectionReferenceLogicalName": "new_sharedflowmanagement_f1091"
+                },
+                "api": {
+                    "name": "shared_flowmanagement"
+                }
+            }
+        },
+        "definition": {
+            "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+            "contentVersion": "1.0.0.0",
+            "parameters": {
+                "$connections": {
+                    "defaultValue": {},
+                    "type": "Object"
+                },
+                "$authentication": {
+                    "defaultValue": {},
+                    "type": "SecureObject"
+                },
+                "envpar_conn_sharedsharepointonline": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_conn_sharedsharepointonline",
+                        "description": "Enter space character ( ) for none. Filled automatically."
+                    }
+                },
+                "envpar_config__TenantName": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__TenantName",
+                        "description": "Required. Org Name orgname (this is the prefix of the auto assigned domain orgname.onmicrosoft.com)"
+                    }
+                },
+                "envpar_config__CycleZeroName": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__CycleZeroName",
+                        "description": "Required. Could have many environments N each with its envN_cycle0 template"
+                    }
+                },
+                "envpar_config__AdminId": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__AdminId",
+                        "description": "Admin UID. Enter space character ( ) for none. Filled automatically."
+                    }
+                },
+                "envpar_config__TenantDomain": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__TenantDomain",
+                        "description": "Required. Org Domain name such as orgname.onmicrosoft.com or orgname.com"
+                    }
+                },
+                "envpar_config__GraphAppId": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__GraphAppId",
+                        "description": "Service Principal Id for Graph Api. Enter space character ( ) for none. Filled automatically."
+                    }
+                },
+                "envpar_config__GraphAppSecret": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__GraphAppSecret",
+                        "description": "Service Principal Secret for Graph Api. Enter space character ( ) for none. Filled automatically."
+                    }
+                },
+                "envpar_config__CyclesRename": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__CyclesRename",
+                        "description": "Required. Rename cycle to class, for example. So now class1, ... classN"
+                    }
+                },
+                "envpar_id__AllFlows": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_id__AllFlows",
+                        "description": "UIDs of all Template Flows as json object. Enter space character { } for none. Filled automatically."
+                    }
+                }
+            },
+            "triggers": {
+                "manual": {
+                    "type": "Request",
+                    "kind": "Http",
+                    "inputs": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "TenantDomain": {
+                                    "type": "string"
+                                },
+                                "CycleGroupName": {
+                                    "type": "string"
+                                },
+                                "CycleGroupOwnerId": {
+                                    "type": "string"
+                                },
+                                "Cycle1GroupName": {
+                                    "type": "string"
+                                },
+                                "IsCycle1": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "actions": {
+                "Initialize_variable_CycleGroupId": {
+                    "runAfter": {
+                        "Initialize_variable_CycleGroupOwner": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "CycleGroupId",
+                                "type": "string"
+                            }
+                        ]
+                    }
+                },
+                "Get_items_GroupsList": {
+                    "runAfter": {
+                        "Condition_group_not_exists": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                        "host": {
+                            "connectionName": "shared_sharepointonline",
+                            "operationId": "GetItems",
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                        },
+                        "parameters": {
+                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{parameters('envpar_config__CycleZeroName')}",
+                            "table": "GroupsList",
+                            "$filter": "Cycle1GroupName eq '@{triggerBody()?['Cycle1GroupName']}'"
+                        },
+                        "authentication": "@parameters('$authentication')"
+                    }
+                },
+                "Condition_grouplist_item_not_exist": {
+                    "actions": {
+                        "Condition_5": {
+                            "actions": {
+                                "Create_item_GroupsList": {
+                                    "runAfter": {},
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline",
+                                            "operationId": "PostItem",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{parameters('envpar_config__CycleZeroName')}",
+                                            "table": "GroupsList",
+                                            "item/Title": "@triggerBody()?['CycleGroupName']",
+                                            "item/CyclesGroupOwner": "@variables('CycleGroupOwner')",
+                                            "item/CyclesGroupOwnerId": "@triggerBody()?['CycleGroupOwnerId']",
+                                            "item/Cycle1GroupId": "@variables('CycleGroupId')",
+                                            "item/Cycle1GroupName": "@triggerBody()?['CycleGroupName']",
+                                            "item/CyclesGroups": "@'[]'"
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                }
+                            },
+                            "runAfter": {},
+                            "expression": {
+                                "equals": [
+                                    "@triggerBody()?['IsCycle1']",
+                                    "@true"
+                                ]
+                            },
+                            "type": "If"
+                        }
+                    },
+                    "runAfter": {
+                        "Get_items_GroupsList": [
+                            "Succeeded"
+                        ]
+                    },
+                    "else": {
+                        "actions": {
+                            "Apply_to_each_2": {
+                                "foreach": "@outputs('Get_items_GroupsList')?['body/value']",
+                                "actions": {
+                                    "Condition_6": {
+                                        "actions": {},
+                                        "runAfter": {},
+                                        "else": {
+                                            "actions": {
+                                                "Filter_array_2": {
+                                                    "runAfter": {
+                                                        "Parse_JSON": [
+                                                            "Succeeded"
+                                                        ]
+                                                    },
+                                                    "type": "Query",
+                                                    "inputs": {
+                                                        "from": "@body('Parse_JSON')",
+                                                        "where": "@equals(item()['CyclesGroupName'], triggerBody()?['CycleGroupName'])"
+                                                    }
+                                                },
+                                                "Parse_JSON": {
+                                                    "runAfter": {
+                                                        "Get_item_GroupsList": [
+                                                            "Succeeded"
+                                                        ]
+                                                    },
+                                                    "type": "ParseJson",
+                                                    "inputs": {
+                                                        "content": "@json(outputs('Get_item_GroupsList')?['body/CyclesGroups'])",
+                                                        "schema": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "CyclesGroupName": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "CyclesGroupId": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "StripePrices": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "MicrosoftPrices": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "CyclesGroupName",
+                                                                    "CyclesGroupId",
+                                                                    "StripePrices",
+                                                                    "MicrosoftPrices"
+                                                                ]
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "Get_item_GroupsList": {
+                                                    "runAfter": {},
+                                                    "type": "OpenApiConnection",
+                                                    "inputs": {
+                                                        "host": {
+                                                            "connectionName": "shared_sharepointonline",
+                                                            "operationId": "GetItem",
+                                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                        },
+                                                        "parameters": {
+                                                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{parameters('envpar_config__CycleZeroName')}",
+                                                            "table": "GroupsList",
+                                                            "id": "@items('Apply_to_each_2')?['ID']"
+                                                        },
+                                                        "authentication": "@parameters('$authentication')"
+                                                    }
+                                                },
+                                                "Condition_7": {
+                                                    "actions": {
+                                                        "Update_item_GroupsList": {
+                                                            "runAfter": {},
+                                                            "type": "OpenApiConnection",
+                                                            "inputs": {
+                                                                "host": {
+                                                                    "connectionName": "shared_sharepointonline",
+                                                                    "operationId": "PatchItem",
+                                                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                                },
+                                                                "parameters": {
+                                                                    "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{parameters('envpar_config__CycleZeroName')}",
+                                                                    "table": "GroupsList",
+                                                                    "id": "@outputs('Get_item_GroupsList')?['body/ID']",
+                                                                    "item/Title": "@outputs('Get_item_GroupsList')?['body/Title']",
+                                                                    "item/CyclesGroups": "@string(union(json(concat('[ { \"CyclesGroupName\" : \"',  triggerBody()?['CycleGroupName']  , '\", \"CyclesGroupId\" : \"',  variables('CycleGroupId')   , '\" , \"StripePrices\" : \"\" , \"MicrosoftPrices\" : \"\" } ]')),\r\nbody('Parse_JSON') ))"
+                                                                },
+                                                                "authentication": "@parameters('$authentication')"
+                                                            }
+                                                        }
+                                                    },
+                                                    "runAfter": {
+                                                        "Filter_array_2": [
+                                                            "Succeeded"
+                                                        ]
+                                                    },
+                                                    "expression": {
+                                                        "equals": [
+                                                            "@length(body('Filter_array_2'))",
+                                                            0
+                                                        ]
+                                                    },
+                                                    "type": "If"
+                                                }
+                                            }
+                                        },
+                                        "expression": {
+                                            "equals": [
+                                                "@triggerBody()?['IsCycle1']",
+                                                "@true"
+                                            ]
+                                        },
+                                        "type": "If"
+                                    }
+                                },
+                                "runAfter": {},
+                                "type": "Foreach"
+                            }
+                        }
+                    },
+                    "expression": {
+                        "equals": [
+                            "@length(outputs('Get_items_GroupsList')?['body/value'])",
+                            0
+                        ]
+                    },
+                    "type": "If"
+                },
+                "Initialize_variable_CycleGroupOwner": {
+                    "runAfter": {},
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "CycleGroupOwner",
+                                "type": "string"
+                            }
+                        ]
+                    }
+                },
+                "Response": {
+                    "runAfter": {
+                        "Condition_grouplist_item_not_exist": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "Response",
+                    "kind": "Http",
+                    "inputs": {
+                        "statusCode": 200,
+                        "headers": {
+                            "content-type": "application/json"
+                        },
+                        "body": {
+                            "CycleGroupId": "@{variables('CycleGroupId')}"
+                        },
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "CycleGroupId": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "HTTP_Get_user": {
+                    "runAfter": {
+                        "Initialize_variable_CycleGroupId": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "Http",
+                    "inputs": {
+                        "method": "GET",
+                        "uri": "https://graph.microsoft.com/v1.0/users/@{triggerBody()?['CycleGroupOwnerId']}",
+                        "headers": {
+                            "Content-type": "application/json"
+                        },
+                        "authentication": {
+                            "type": "ActiveDirectoryOAuth",
+                            "tenant": "@triggerBody()?['TenantDomain']",
+                            "audience": "https://graph.microsoft.com",
+                            "clientId": "@parameters('envpar_config__GraphAppId')",
+                            "secret": "@parameters('envpar_config__GraphAppSecret')"
+                        }
+                    }
+                },
+                "Set_variable_CycleGroupOwner": {
+                    "runAfter": {
+                        "HTTP_Get_user": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "SetVariable",
+                    "inputs": {
+                        "name": "CycleGroupOwner",
+                        "value": "@{body('HTTP_Get_user')?['mail']}"
+                    }
+                },
+                "HTTP_2": {
+                    "runAfter": {
+                        "Set_variable_CycleGroupOwner": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "Http",
+                    "inputs": {
+                        "method": "GET",
+                        "uri": "https://graph.microsoft.com/v1.0/groups?$filter=mailNickname eq '@{triggerBody()?['CycleGroupName']}'",
+                        "authentication": {
+                            "type": "ActiveDirectoryOAuth",
+                            "tenant": "@parameters('envpar_config__TenantDomain')",
+                            "audience": "https://graph.microsoft.com",
+                            "clientId": "@parameters('envpar_config__GraphAppId')",
+                            "secret": "@parameters('envpar_config__GraphAppSecret')"
+                        }
+                    }
+                },
+                "Condition_group_not_exists": {
+                    "actions": {
+                        "Scope_Create_Group_Team": {
+                            "actions": {
+                                "HTTP_5": {
+                                    "runAfter": {},
+                                    "type": "Http",
+                                    "inputs": {
+                                        "method": "POST",
+                                        "uri": "https://graph.microsoft.com/v1.0/groups",
+                                        "headers": {
+                                            "Content-type": "application/json"
+                                        },
+                                        "body": {
+                                            "displayName": "@{triggerBody()?['CycleGroupName']}",
+                                            "mailNickname": "@{triggerBody()?['CycleGroupName']}",
+                                            "visibility": "@{if(triggerBody()?['IsCycle1'], 'Public', 'Private')}",
+                                            "groupTypes": [
+                                                "Unified"
+                                            ],
+                                            "mailEnabled": true,
+                                            "securityEnabled": true,
+                                            "owners@odata.bind": "@union(createArray(concat('https://graph.microsoft.com/v1.0/users/', triggerBody()?['CycleGroupOwnerId'])), createArray(concat('https://graph.microsoft.com/v1.0/users/', parameters('envpar_config__AdminId'))))"
+                                        },
+                                        "authentication": {
+                                            "type": "ActiveDirectoryOAuth",
+                                            "tenant": "@parameters('envpar_config__TenantDomain')",
+                                            "audience": "https://graph.microsoft.com",
+                                            "clientId": "@parameters('envpar_config__GraphAppId')",
+                                            "secret": "@parameters('envpar_config__GraphAppSecret')"
+                                        }
+                                    }
+                                },
+                                "Set_variable_2": {
+                                    "runAfter": {
+                                        "HTTP_5": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "SetVariable",
+                                    "inputs": {
+                                        "name": "CycleGroupId",
+                                        "value": "@{body('HTTP_5')?['id']}"
+                                    }
+                                },
+                                "HTTP_6": {
+                                    "runAfter": {
+                                        "Delay_150sec": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "Http",
+                                    "inputs": {
+                                        "method": "POST",
+                                        "uri": "https://graph.microsoft.com/v1.0/teams",
+                                        "headers": {
+                                            "Content-type": "application/json"
+                                        },
+                                        "body": {
+                                            "template@odata.bind": "https://graph.microsoft.com/v1.0/teamsTemplates('standard')",
+                                            "group@odata.bind": "https://graph.microsoft.com/v1.0/groups('@{variables('CycleGroupId')}')",
+                                            "channels": [
+                                                {
+                                                    "displayName": "SurveyQuiz",
+                                                    "isFavoriteByDefault": true,
+                                                    "tabs": [
+                                                        {
+                                                            "teamsApp@odata.bind": "https://graph.microsoft.com/v1.0/appCatalogs/teamsApps('com.microsoft.teamspace.tab.web')",
+                                                            "name": "MySubscriptions",
+                                                            "configuration": {
+                                                                "contentUrl": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['Cycle1GroupName']}/Lists/MySubscriptions"
+                                                            }
+                                                        },
+                                                        {
+                                                            "teamsApp@odata.bind": "https://graph.microsoft.com/v1.0/appCatalogs/teamsApps('com.microsoft.teamspace.tab.web')",
+                                                            "name": "SurveyQuiz",
+                                                            "configuration": {
+                                                                "contentUrl": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['CycleGroupName']}/SurveyQuiz"
+                                                            }
+                                                        },
+                                                        {
+                                                            "teamsApp@odata.bind": "https://graph.microsoft.com/v1.0/appCatalogs/teamsApps('com.microsoft.teamspace.tab.web')",
+                                                            "name": "Transcripts",
+                                                            "configuration": {
+                                                                "contentUrl": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['CycleGroupName']}/SurveyQuiz/Forms/TranscriptsView.aspx?RootFolder=%2Fsites%2F@{triggerBody()?['CycleGroupName']}%2FSurveyQuiz%2FTranscripts"
+                                                            }
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "displayName": "EventReview",
+                                                    "isFavoriteByDefault": true,
+                                                    "tabs": [
+                                                        {
+                                                            "teamsApp@odata.bind": "https://graph.microsoft.com/v1.0/appCatalogs/teamsApps('com.microsoft.teamspace.tab.web')",
+                                                            "name": "MySubscriptions",
+                                                            "configuration": {
+                                                                "contentUrl": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['Cycle1GroupName']}/Lists/MySubscriptions"
+                                                            }
+                                                        },
+                                                        {
+                                                            "teamsApp@odata.bind": "https://graph.microsoft.com/v1.0/appCatalogs/teamsApps('com.microsoft.teamspace.tab.web')",
+                                                            "name": "EventReview",
+                                                            "configuration": {
+                                                                "contentUrl": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['CycleGroupName']}/EventReview"
+                                                            }
+                                                        },
+                                                        {
+                                                            "teamsApp@odata.bind": "https://graph.microsoft.com/v1.0/appCatalogs/teamsApps('com.microsoft.teamspace.tab.web')",
+                                                            "name": "EventReviewCalendar",
+                                                            "configuration": {
+                                                                "contentUrl": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['CycleGroupName']}/EventReview/Forms/EventReviewCalendar.aspx"
+                                                            }
+                                                        }
+                                                    ]
+                                                }
+                                            ],
+                                            "memberSettings": {
+                                                "allowCreateUpdateChannels": false,
+                                                "allowDeleteChannels": false,
+                                                "allowAddRemoveApps": false,
+                                                "allowCreateUpdateRemoveTabs": false,
+                                                "allowCreateUpdateRemoveConnectors": false
+                                            },
+                                            "installedApps": [
+                                                {
+                                                    "teamsApp@odata.bind": "https://graph.microsoft.com/v1.0/appCatalogs/teamsApps('com.microsoft.teamspace.tab.vsts')"
+                                                },
+                                                {
+                                                    "teamsApp@odata.bind": "https://graph.microsoft.com/v1.0/appCatalogs/teamsApps('1542629c-01b3-4a6d-8f76-1938b779e48d')"
+                                                }
+                                            ]
+                                        },
+                                        "authentication": {
+                                            "type": "ActiveDirectoryOAuth",
+                                            "tenant": "@parameters('envpar_config__TenantDomain')",
+                                            "audience": "https://graph.microsoft.com",
+                                            "clientId": "@parameters('envpar_config__GraphAppId')",
+                                            "secret": "@parameters('envpar_config__GraphAppSecret')"
+                                        }
+                                    }
+                                },
+                                "Scope_RoleAssignments": {
+                                    "actions": {
+                                        "Compose_Edit_RoleDefinition_": {
+                                            "runAfter": {},
+                                            "type": "Compose",
+                                            "inputs": 1073741830
+                                        },
+                                        "Compose_Read_RoleDefinition": {
+                                            "runAfter": {
+                                                "Compose_Edit_RoleDefinition_": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "Compose",
+                                            "inputs": 1073741826
+                                        },
+                                        "Compose_SiteGroupIdMembers": {
+                                            "runAfter": {
+                                                "Compose_Contribute_RoleDefinition": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "Compose",
+                                            "inputs": 5
+                                        },
+                                        "Compose_ItemsViewAddUpdateNoDelete": {
+                                            "runAfter": {
+                                                "Compose_SiteGroupIdMembers": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "Compose",
+                                            "inputs": "ItemsViewAddUpdateNoDelete"
+                                        },
+                                        "HTTP_SharePoint_Remove_Members_Edit": {
+                                            "runAfter": {
+                                                "Compose_ItemsViewAddUpdateNoDelete": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "OpenApiConnection",
+                                            "inputs": {
+                                                "host": {
+                                                    "connectionName": "shared_sharepointonline",
+                                                    "operationId": "HttpRequest",
+                                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                },
+                                                "parameters": {
+                                                    "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['CycleGroupName']}",
+                                                    "parameters/method": "POST",
+                                                    "parameters/uri": "_api/web/roleassignments/removeroleassignment(principalid=@{outputs('Compose_SiteGroupIdMembers')}, roledefid=@{outputs('Compose_Edit_RoleDefinition_')})",
+                                                    "parameters/headers": {
+                                                        "accept": "application/json;odata=verbose",
+                                                        "content-type": "application/json;odata=verbose"
+                                                    }
+                                                },
+                                                "authentication": "@parameters('$authentication')"
+                                            }
+                                        },
+                                        "HTTP_SharePoint_Add_Members_Read": {
+                                            "runAfter": {
+                                                "HTTP_SharePoint_Remove_Members_Edit": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "OpenApiConnection",
+                                            "inputs": {
+                                                "host": {
+                                                    "connectionName": "shared_sharepointonline",
+                                                    "operationId": "HttpRequest",
+                                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                },
+                                                "parameters": {
+                                                    "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['CycleGroupName']}",
+                                                    "parameters/method": "POST",
+                                                    "parameters/uri": "_api/web/roleassignments/addroleassignment(principalid=@{outputs('Compose_SiteGroupIdMembers')}, roledefid=@{outputs('Compose_Read_RoleDefinition')})",
+                                                    "parameters/headers": {
+                                                        "accept": "application/json;odata=verbose",
+                                                        "content-type": "application/json;odata=verbose"
+                                                    }
+                                                },
+                                                "authentication": "@parameters('$authentication')"
+                                            }
+                                        },
+                                        "HTTP_SharePoint_Post_RoleDefinition": {
+                                            "runAfter": {
+                                                "HTTP_SharePoint_Add_Members_Read": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "OpenApiConnection",
+                                            "inputs": {
+                                                "host": {
+                                                    "connectionName": "shared_sharepointonline",
+                                                    "operationId": "HttpRequest",
+                                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                },
+                                                "parameters": {
+                                                    "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['CycleGroupName']}",
+                                                    "parameters/method": "POST",
+                                                    "parameters/uri": "_api/web/roledefinitions",
+                                                    "parameters/headers": {
+                                                        "accept": "application/json;odata=verbose",
+                                                        "content-type": "application/json;odata=verbose"
+                                                    },
+                                                    "parameters/body": "{\n              \"__metadata\": {\n                \"type\": \"SP.RoleDefinition\"\n              },\n              \"BasePermissions\": {\n                \"__metadata\": {\n                  \"type\": \"SP.BasePermissions\"\n                },\n                \"High\": \"0\",\n                \"Low\": \"196615\"\n              },\n              \"Description\": \"\",\n              \"Hidden\": false,\n              \"Name\": \"@{outputs('Compose_ItemsViewAddUpdateNoDelete')}\",\n              \"Order\": 2147483647,\n              \"RoleTypeKind\": 0\n            }"
+                                                },
+                                                "authentication": "@parameters('$authentication')"
+                                            }
+                                        },
+                                        "Parse_JSON_RoleDefinition": {
+                                            "runAfter": {
+                                                "HTTP_SharePoint_Post_RoleDefinition": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "ParseJson",
+                                            "inputs": {
+                                                "content": "@outputs('HTTP_SharePoint_Post_RoleDefinition')?['body']",
+                                                "schema": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "d": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "__metadata": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "id": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "uri": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "type": {
+                                                                            "type": "string"
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "BasePermissions": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "__metadata": {
+                                                                            "type": "object",
+                                                                            "properties": {
+                                                                                "type": {
+                                                                                    "type": "string"
+                                                                                }
+                                                                            }
+                                                                        },
+                                                                        "High": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "Low": {
+                                                                            "type": "string"
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "Description": {
+                                                                    "type": "string"
+                                                                },
+                                                                "Hidden": {
+                                                                    "type": "boolean"
+                                                                },
+                                                                "Id": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "Name": {
+                                                                    "type": "string"
+                                                                },
+                                                                "Order": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "RoleTypeKind": {
+                                                                    "type": "integer"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "HTTP_SharePoint_Add_Members_ItemsViewAddUpdateNoDelete": {
+                                            "runAfter": {
+                                                "Parse_JSON_RoleDefinition": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "OpenApiConnection",
+                                            "inputs": {
+                                                "host": {
+                                                    "connectionName": "shared_sharepointonline",
+                                                    "operationId": "HttpRequest",
+                                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                },
+                                                "parameters": {
+                                                    "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['CycleGroupName']}",
+                                                    "parameters/method": "POST",
+                                                    "parameters/uri": "_api/web/roleassignments/addroleassignment(principalid=@{outputs('Compose_SiteGroupIdMembers')}, roledefid=@{body('Parse_JSON_RoleDefinition')?['d']?['Id']})",
+                                                    "parameters/headers": {
+                                                        "accept": "application/json;odata=verbose",
+                                                        "content-type": "application/json;odata=verbose"
+                                                    }
+                                                },
+                                                "authentication": "@parameters('$authentication')"
+                                            }
+                                        },
+                                        "Compose_Contribute_RoleDefinition": {
+                                            "runAfter": {
+                                                "Compose_Read_RoleDefinition": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "Compose",
+                                            "inputs": 1073741827
+                                        }
+                                    },
+                                    "runAfter": {
+                                        "Send_an_HTTP_request_to_SharePoint_13": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "Scope"
+                                },
+                                "HTTP_4": {
+                                    "runAfter": {
+                                        "HTTP_SharePoint_Theme": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "Http",
+                                    "inputs": {
+                                        "method": "GET",
+                                        "uri": "https://graph.microsoft.com/v1.0/groups/@{variables('CycleGroupId')}/sites/root",
+                                        "headers": {
+                                            "Content-type": "application/json"
+                                        },
+                                        "authentication": {
+                                            "type": "ActiveDirectoryOAuth",
+                                            "tenant": "@parameters('envpar_config__TenantDomain')",
+                                            "audience": "https://graph.microsoft.com",
+                                            "clientId": "@parameters('envpar_config__GraphAppId')",
+                                            "secret": "@parameters('envpar_config__GraphAppSecret')"
+                                        }
+                                    }
+                                },
+                                "Send_an_HTTP_request_to_SharePoint_13": {
+                                    "runAfter": {
+                                        "HTTP_4": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline",
+                                            "operationId": "HttpRequest",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "https://@{parameters('envpar_config__TenantName')}-admin.sharepoint.com",
+                                            "parameters/method": "PATCH",
+                                            "parameters/uri": "_api/SPO.Tenant/sites('@{split(body('HTTP_4')?['id'],',')?[1]}')",
+                                            "parameters/headers": {
+                                                "accept": "application/json;odata=verbose",
+                                                "content-type": "application/json;odata=verbose",
+                                                "x-http-method": "MERGE",
+                                                "if-match": "*"
+                                            },
+                                            "parameters/body": "{\n    \"__metadata\": {\n        \"type\": \"Microsoft.Online.SharePoint.TenantAdministration.SiteProperties\"\n    },\n\n    \"SharingCapability\": 2,\n    \"DefaultLinkPermission\": 0,\n    \"DefaultSharingLinkType\": 0,\n    \"SharingDomainRestrictionMode\": 0\n}\n"
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Delay_150sec": {
+                                    "runAfter": {
+                                        "Set_variable_2": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "Wait",
+                                    "inputs": {
+                                        "interval": {
+                                            "count": 150,
+                                            "unit": "Second"
+                                        }
+                                    }
+                                },
+                                "Delay_270sec": {
+                                    "runAfter": {
+                                        "HTTP_6": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "Wait",
+                                    "inputs": {
+                                        "interval": {
+                                            "count": 270,
+                                            "unit": "Second"
+                                        }
+                                    }
+                                },
+                                "HTTP_SharePoint_Theme": {
+                                    "runAfter": {
+                                        "Delay_270sec": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline",
+                                            "operationId": "HttpRequest",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['CycleGroupName']}",
+                                            "parameters/method": "POST",
+                                            "parameters/uri": "_api/thememanager/ApplyTheme",
+                                            "parameters/headers": {
+                                                "content-type": "application/json;odata=verbose",
+                                                "accept": "application/json;odata=verbose"
+                                            },
+                                            "parameters/body": "{'name':'Dark Blue','themeJson':'{\"backgroundImageUri\":\"\",\"palette\":{\"themePrimary\":{\"R\":58,\"G\":150,\"B\":221,\"A\":255},\"themeLighterAlt\":{\"R\":2,\"G\":6,\"B\":9,\"A\":255},\"themeLighter\":{\"R\":9,\"G\":24,\"B\":35,\"A\":255},\"themeLight\":{\"R\":17,\"G\":45,\"B\":67,\"A\":255},\"themeTertiary\":{\"R\":35,\"G\":90,\"B\":133,\"A\":255},\"themeSecondary\":{\"R\":51,\"G\":133,\"B\":195,\"A\":255},\"themeDarkAlt\":{\"R\":75,\"G\":160,\"B\":225,\"A\":255},\"themeDark\":{\"R\":101,\"G\":174,\"B\":230,\"A\":255},\"themeDarker\":{\"R\":138,\"G\":194,\"B\":236,\"A\":255},\"accent\":{\"R\":58,\"G\":150,\"B\":221,\"A\":255},\"neutralLighterAlt\":{\"R\":29,\"G\":43,\"B\":60,\"A\":255},\"neutralLighter\":{\"R\":34,\"G\":50,\"B\":68,\"A\":255},\"neutralLight\":{\"R\":43,\"G\":61,\"B\":81,\"A\":255},\"neutralQuaternaryAlt\":{\"R\":50,\"G\":68,\"B\":89,\"A\":255},\"neutralQuaternary\":{\"R\":55,\"G\":74,\"B\":95,\"A\":255},\"neutralTertiaryAlt\":{\"R\":79,\"G\":99,\"B\":122,\"A\":255},\"neutralTertiary\":{\"R\":200,\"G\":200,\"B\":200,\"A\":255},\"neutralSecondary\":{\"R\":208,\"G\":208,\"B\":208,\"A\":255},\"neutralPrimaryAlt\":{\"R\":218,\"G\":218,\"B\":218,\"A\":255},\"neutralPrimary\":{\"R\":255,\"G\":255,\"B\":255,\"A\":255},\"neutralDark\":{\"R\":244,\"G\":244,\"B\":244,\"A\":255},\"black\":{\"R\":248,\"G\":248,\"B\":248,\"A\":255},\"white\":{\"R\":24,\"G\":37,\"B\":52,\"A\":255},\"primaryBackground\":{\"R\":24,\"G\":37,\"B\":52,\"A\":255},\"primaryText\":{\"R\":255,\"G\":255,\"B\":255,\"A\":255}},\"cacheToken\":\"\",\"isDefault\":true,\"isInverted\":true,\"version\":\"\"}'}"
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                }
+                            },
+                            "runAfter": {},
+                            "type": "Scope"
+                        },
+                        "Scope_Post_process": {
+                            "actions": {
+                                "Compose_Navigation": {
+                                    "runAfter": {},
+                                    "type": "Compose",
+                                    "inputs": [
+                                        {
+                                            "__metadata": {
+                                                "type": "SP.NavigationNode"
+                                            },
+                                            "IsExternal": false,
+                                            "IsVisible": true,
+                                            "Title": "TEAMS CHAT FORUM",
+                                            "Url": "https://teams.microsoft.com/?tenantId=@{parameters('envpar_config__TenantDomain')}"
+                                        },
+                                        {
+                                            "__metadata": {
+                                                "type": "SP.NavigationNode"
+                                            },
+                                            "IsDocLib": true,
+                                            "IsExternal": false,
+                                            "IsVisible": true,
+                                            "ListTemplateType": 101,
+                                            "Title": "SurveyQuiz",
+                                            "Url": "https://@{concat(parameters('envpar_config__TenantName'), '.sharepoint.com')}/sites/@{triggerBody()?['CycleGroupName']}/SurveyQuiz"
+                                        },
+                                        {
+                                            "__metadata": {
+                                                "type": "SP.NavigationNode"
+                                            },
+                                            "IsDocLib": true,
+                                            "IsExternal": false,
+                                            "IsVisible": true,
+                                            "ListTemplateType": 101,
+                                            "Title": "EventReview",
+                                            "Url": "https://@{concat(parameters('envpar_config__TenantName'), '.sharepoint.com')}/sites/@{triggerBody()?['CycleGroupName']}/EventReview"
+                                        },
+                                        {
+                                            "__metadata": {
+                                                "type": "SP.NavigationNode"
+                                            },
+                                            "IsDocLib": true,
+                                            "IsExternal": false,
+                                            "IsVisible": true,
+                                            "ListTemplateType": 100,
+                                            "Title": "MySubscriptions",
+                                            "Url": "https://@{concat(parameters('envpar_config__TenantName'), '.sharepoint.com')}/sites/@{triggerBody()?['Cycle1GroupName']}/Lists/MySubscriptions"
+                                        },
+                                        {
+                                            "__metadata": {
+                                                "type": "SP.NavigationNode"
+                                            },
+                                            "IsDocLib": true,
+                                            "IsExternal": true,
+                                            "IsVisible": true,
+                                            "ListTemplateType": 100,
+                                            "Title": "UsersList",
+                                            "Url": "https://@{concat(parameters('envpar_config__TenantName'), '.sharepoint.com')}/sites/@{triggerBody()?['Cycle1GroupName']}/Lists/UsersList"
+                                        },
+                                        {
+                                            "__metadata": {
+                                                "type": "SP.NavigationNode"
+                                            },
+                                            "IsDocLib": true,
+                                            "IsExternal": false,
+                                            "IsVisible": true,
+                                            "ListTemplateType": 100,
+                                            "Title": "LogsList",
+                                            "Url": "https://@{concat(parameters('envpar_config__TenantName'), '.sharepoint.com')}/sites/@{triggerBody()?['CycleGroupName']}/Lists/LogsList"
+                                        },
+                                        {
+                                            "__metadata": {
+                                                "type": "SP.NavigationNode"
+                                            },
+                                            "IsDocLib": true,
+                                            "IsExternal": true,
+                                            "IsVisible": true,
+                                            "ListTemplateType": 100,
+                                            "Title": "MyGroups",
+                                            "Url": "https://@{concat(parameters('envpar_config__TenantName'), '.sharepoint.com')}/sites/@{parameters('envpar_config__CycleZeroName')}/Lists/MyGroups"
+                                        }
+                                    ]
+                                },
+                                "Apply_to_each_Navigation": {
+                                    "foreach": "@outputs('Compose_Navigation')",
+                                    "actions": {
+                                        "HTTP_SharePoint_Navigation": {
+                                            "runAfter": {},
+                                            "type": "OpenApiConnection",
+                                            "inputs": {
+                                                "host": {
+                                                    "connectionName": "shared_sharepointonline",
+                                                    "operationId": "HttpRequest",
+                                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                },
+                                                "parameters": {
+                                                    "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['CycleGroupName']}",
+                                                    "parameters/method": "POST",
+                                                    "parameters/uri": "_api/Web/Navigation/QuickLaunch",
+                                                    "parameters/headers": {
+                                                        "accept": "application/json;odata=verbose",
+                                                        "content-type": "application/json;odata=verbose"
+                                                    },
+                                                    "parameters/body": "@items('Apply_to_each_Navigation')"
+                                                },
+                                                "authentication": "@parameters('$authentication')",
+                                                "retryPolicy": {
+                                                    "type": "none"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "runAfter": {
+                                        "Compose_Navigation": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "Foreach"
+                                },
+                                "Condition_Add_Owner_as_Group_Member": {
+                                    "actions": {},
+                                    "runAfter": {
+                                        "Apply_to_each_Navigation": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "else": {
+                                        "actions": {
+                                            "HTTP_Add_Owner_as_Group_Member": {
+                                                "runAfter": {},
+                                                "type": "Http",
+                                                "inputs": {
+                                                    "method": "POST",
+                                                    "uri": "https://graph.microsoft.com/v1.0/groups/@{variables('CycleGroupId')}/members/$ref",
+                                                    "headers": {
+                                                        "Content-type": "application/json"
+                                                    },
+                                                    "body": {
+                                                        "@@odata.id": "https://graph.microsoft.com/v1.0/directoryObjects/@{triggerBody()?['CycleGroupOwnerId']}"
+                                                    },
+                                                    "authentication": {
+                                                        "type": "ActiveDirectoryOAuth",
+                                                        "tenant": "@parameters('envpar_config__TenantDomain')",
+                                                        "audience": "https://graph.microsoft.com",
+                                                        "clientId": "@parameters('envpar_config__GraphAppId')",
+                                                        "secret": "@parameters('envpar_config__GraphAppSecret')"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "expression": {
+                                        "and": [
+                                            {
+                                                "not": {
+                                                    "equals": [
+                                                        "@triggerBody()?['IsCycle1']",
+                                                        "@true"
+                                                    ]
+                                                }
+                                            },
+                                            {
+                                                "equals": [
+                                                    "@triggerBody()?['Cycle1GroupName']",
+                                                    "@concat(parameters('envpar_config__CyclesRename'), '1')"
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    "type": "If"
+                                }
+                            },
+                            "runAfter": {
+                                "Scope_LogsList": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Scope"
+                        },
+                        "Scope_SurveyQuiz": {
+                            "actions": {
+                                "Run_a_Child_Flow_2": {
+                                    "runAfter": {},
+                                    "type": "Workflow",
+                                    "inputs": {
+                                        "host": {
+                                            "workflowReferenceName": "bc0ce95d-c8dc-ea11-a815-000d3af42a37"
+                                        },
+                                        "body": {
+                                            "fromSite": "@{parameters('envpar_config__CycleZeroName')}",
+                                            "toSite": "@triggerBody()?['CycleGroupName']",
+                                            "ListTitle": "SurveyQuiz"
+                                        }
+                                    }
+                                },
+                                "HTTP": {
+                                    "runAfter": {
+                                        "Delay_60sec": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "Http",
+                                    "inputs": {
+                                        "method": "GET",
+                                        "uri": "https://graph.microsoft.com/v1.0/sites/@{concat(parameters('envpar_config__TenantName'), '.sharepoint.com')}:/sites/@{triggerBody()?['CycleGroupName']}:/drives?$filter=name eq 'SurveyQuiz'",
+                                        "headers": {
+                                            "Content-type": "application/json"
+                                        },
+                                        "authentication": {
+                                            "type": "ActiveDirectoryOAuth",
+                                            "tenant": "@parameters('envpar_config__TenantDomain')",
+                                            "audience": "https://graph.microsoft.com",
+                                            "clientId": "@parameters('envpar_config__GraphAppId')",
+                                            "secret": "@parameters('envpar_config__GraphAppSecret')"
+                                        }
+                                    }
+                                },
+                                "Get_Flow": {
+                                    "runAfter": {
+                                        "HTTP": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_flowmanagement",
+                                            "operationId": "GetFlow",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                        },
+                                        "parameters": {
+                                            "environmentName": "@{workflow()?['tags']?['environmentName']}",
+                                            "flowName": "@{json(parameters('envpar_id__AllFlows'))?['cycle0__SurveyQuiz__Template']}"
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Select": {
+                                    "runAfter": {
+                                        "Get_Flow": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "Select",
+                                    "inputs": {
+                                        "from": "@outputs('Get_Flow')?['body/properties/connectionReferences']",
+                                        "select": {
+                                            "connectionName": "@item()?['connectionName']",
+                                            "id": "@item()?['id']"
+                                        }
+                                    }
+                                },
+                                "Create_Flow": {
+                                    "runAfter": {
+                                        "Select": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_flowmanagement",
+                                            "operationId": "CreateFlow",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                        },
+                                        "parameters": {
+                                            "environmentName": "@{workflow()?['tags']?['environmentName']}",
+                                            "Flow/properties/displayName": "@replace(replace(outputs('Get_Flow')?['body/properties/displayName'], parameters('envpar_config__CycleZeroName'), triggerBody()?['CycleGroupName']), 'tplparam_cyclname', triggerBody()?['CycleGroupName'])",
+                                            "Flow/properties/definition": "@json(replace(replace(\r\n    replace(string(outputs('Get_Flow')?['body/properties/definition']), 'parameters(''envpar_config__CycleZeroName'')', concat('''', triggerBody()?['CycleGroupName'], '''')),\r\n    'tplparam_cycldriveid',\r\n    last(body('HTTP')?['value'])?['id'] ),\r\n    'tplparam_cyclname',\r\n    triggerBody()?['CycleGroupName']) )",
+                                            "Flow/properties/state": "Started",
+                                            "Flow/properties/connectionReferences": [
+                                                {
+                                                    "connectionName": "@parameters('envpar_conn_sharedsharepointonline')",
+                                                    "id": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                }
+                                            ]
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Copy_folder_SurveyQuiz": {
+                                    "runAfter": {
+                                        "Turn_On_Flow_SurveyQuiz": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline",
+                                            "operationId": "CopyFolderAsync",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{parameters('envpar_config__CycleZeroName')}",
+                                            "parameters/sourceFolderId": "/SurveyQuiz/General",
+                                            "parameters/destinationDataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['CycleGroupName']}",
+                                            "parameters/destinationFolderPath": "/SurveyQuiz",
+                                            "parameters/nameConflictBehavior": 2
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Copy_folder_SurveyQuiz_Transcripts": {
+                                    "runAfter": {
+                                        "Set_content_approval_status_SurveyQuiz": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline",
+                                            "operationId": "CopyFolderAsync",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{parameters('envpar_config__CycleZeroName')}",
+                                            "parameters/sourceFolderId": "/SurveyQuiz/Transcripts",
+                                            "parameters/destinationDataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['CycleGroupName']}",
+                                            "parameters/destinationFolderPath": "/SurveyQuiz",
+                                            "parameters/nameConflictBehavior": 2
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Copy_folder_SurveyQuiz_TranscriptsCopy": {
+                                    "runAfter": {
+                                        "Set_content_approval_status_SurveyQuiz_Transcripts": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline",
+                                            "operationId": "CopyFolderAsync",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{parameters('envpar_config__CycleZeroName')}",
+                                            "parameters/sourceFolderId": "/SurveyQuiz/TranscriptsCopy",
+                                            "parameters/destinationDataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['CycleGroupName']}",
+                                            "parameters/destinationFolderPath": "/SurveyQuiz",
+                                            "parameters/nameConflictBehavior": 2
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Set_content_approval_status_SurveyQuiz": {
+                                    "runAfter": {
+                                        "Copy_folder_SurveyQuiz": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline",
+                                            "operationId": "SetApprovalStatus",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['CycleGroupName']}",
+                                            "table": "SurveyQuiz",
+                                            "id": "@outputs('Copy_folder_SurveyQuiz')?['body/ItemId']",
+                                            "approvalAction": "Approve",
+                                            "comments": "",
+                                            "entityTag": "@outputs('Copy_folder_SurveyQuiz')?['body/ETag']"
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Set_content_approval_status_SurveyQuiz_Transcripts": {
+                                    "runAfter": {
+                                        "Copy_folder_SurveyQuiz_Transcripts": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline",
+                                            "operationId": "SetApprovalStatus",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['CycleGroupName']}",
+                                            "table": "SurveyQuiz",
+                                            "id": "@outputs('Copy_folder_SurveyQuiz_Transcripts')?['body/ItemId']",
+                                            "approvalAction": "Approve",
+                                            "comments": "",
+                                            "entityTag": "@outputs('Copy_folder_SurveyQuiz_Transcripts')?['body/ETag']"
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Send_an_HTTP_request_to_SharePoint_SurveyQuiz_TranscriptsCopy": {
+                                    "runAfter": {
+                                        "Copy_folder_SurveyQuiz_TranscriptsCopy": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline",
+                                            "operationId": "HttpRequest",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['CycleGroupName']}",
+                                            "parameters/method": "POST",
+                                            "parameters/uri": "_api/web/lists/getByTitle('SurveyQuiz')/items/getbyid('@{outputs('Copy_folder_SurveyQuiz_TranscriptsCopy')?['body/ItemId']}')/breakroleinheritance(copyRoleAssignments=false, clearSubscopes=true)",
+                                            "parameters/headers": {
+                                                "accept": "application/json;odata=verbose",
+                                                "content-type": "application/json;odata=verbose"
+                                            }
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Delay_60sec": {
+                                    "runAfter": {
+                                        "Run_a_Child_Flow_2": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "Wait",
+                                    "inputs": {
+                                        "interval": {
+                                            "count": 60,
+                                            "unit": "Second"
+                                        }
+                                    }
+                                },
+                                "Turn_Off_Flow_SurveyQuiz": {
+                                    "runAfter": {
+                                        "Create_Flow": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_flowmanagement",
+                                            "operationId": "StopFlow",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                        },
+                                        "parameters": {
+                                            "environmentName": "@workflow()?['tags']?['environmentName']",
+                                            "flowName": "@outputs('Create_Flow')?['body/name']"
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Turn_On_Flow_SurveyQuiz": {
+                                    "runAfter": {
+                                        "Turn_Off_Flow_SurveyQuiz": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_flowmanagement",
+                                            "operationId": "StartFlow",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                        },
+                                        "parameters": {
+                                            "environmentName": "@workflow()?['tags']?['environmentName']",
+                                            "flowName": "@outputs('Create_Flow')?['body/name']"
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                }
+                            },
+                            "runAfter": {
+                                "Condition_UsersList": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Scope"
+                        },
+                        "Scope_EventReview": {
+                            "actions": {
+                                "Run_a_Child_Flow_3": {
+                                    "runAfter": {},
+                                    "type": "Workflow",
+                                    "inputs": {
+                                        "host": {
+                                            "workflowReferenceName": "bc0ce95d-c8dc-ea11-a815-000d3af42a37"
+                                        },
+                                        "body": {
+                                            "fromSite": "@{parameters('envpar_config__CycleZeroName')}",
+                                            "toSite": "@triggerBody()?['CycleGroupName']",
+                                            "ListTitle": "EventReview"
+                                        }
+                                    }
+                                },
+                                "HTTP_3": {
+                                    "runAfter": {
+                                        "Delay_90sec": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "Http",
+                                    "inputs": {
+                                        "method": "GET",
+                                        "uri": "https://graph.microsoft.com/v1.0/sites/@{concat(parameters('envpar_config__TenantName'), '.sharepoint.com')}:/sites/@{triggerBody()?['CycleGroupName']}:/drives?$filter=name eq 'EventReview'",
+                                        "headers": {
+                                            "Content-type": "application/json"
+                                        },
+                                        "authentication": {
+                                            "type": "ActiveDirectoryOAuth",
+                                            "tenant": "@parameters('envpar_config__TenantDomain')",
+                                            "audience": "https://graph.microsoft.com",
+                                            "clientId": "@parameters('envpar_config__GraphAppId')",
+                                            "secret": "@parameters('envpar_config__GraphAppSecret')"
+                                        }
+                                    }
+                                },
+                                "Get_Flow_3": {
+                                    "runAfter": {
+                                        "HTTP_3": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_flowmanagement",
+                                            "operationId": "GetFlow",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                        },
+                                        "parameters": {
+                                            "environmentName": "@{workflow()?['tags']?['environmentName']}",
+                                            "flowName": "@{json(parameters('envpar_id__AllFlows'))?['cycle0__EventReview__Template']}"
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Select_3": {
+                                    "runAfter": {
+                                        "Get_Flow_3": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "Select",
+                                    "inputs": {
+                                        "from": "@outputs('Get_Flow_3')?['body/properties/connectionReferences']",
+                                        "select": {
+                                            "connectionName": "@item()?['connectionName']",
+                                            "id": "@item()?['id']"
+                                        }
+                                    }
+                                },
+                                "Create_Flow_3": {
+                                    "runAfter": {
+                                        "Select_3": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_flowmanagement",
+                                            "operationId": "CreateFlow",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                        },
+                                        "parameters": {
+                                            "environmentName": "@{workflow()?['tags']?['environmentName']}",
+                                            "Flow/properties/displayName": "@replace(replace(outputs('Get_Flow_3')?['body/properties/displayName'], parameters('envpar_config__CycleZeroName'), triggerBody()?['CycleGroupName']), 'tplparam_cyclname', triggerBody()?['CycleGroupName'])",
+                                            "Flow/properties/definition": "@json(replace(replace(replace(replace(string(outputs('Get_Flow_3')?['body/properties/definition']), 'parameters(''envpar_config__CycleZeroName'')', concat('''', triggerBody()?['CycleGroupName'], '''')),\r\n    'tplparam_cycldriveid', body('HTTP_3')?['value']?[1]?['id']),\r\n    'tplparam_cyclaltname', triggerBody()?['Cycle1GroupName']),\r\n    'tplparam_cyclname', triggerBody()?['CycleGroupName']))",
+                                            "Flow/properties/state": "Started",
+                                            "Flow/properties/connectionReferences": [
+                                                {
+                                                    "connectionName": "@parameters('envpar_conn_sharedsharepointonline')",
+                                                    "id": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                }
+                                            ]
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Get_Flow_EventReview_Delete": {
+                                    "runAfter": {
+                                        "Turn_On_Flow_EventReview": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_flowmanagement",
+                                            "operationId": "GetFlow",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                        },
+                                        "parameters": {
+                                            "environmentName": "@{workflow()?['tags']?['environmentName']}",
+                                            "flowName": "@{json(parameters('envpar_id__AllFlows'))?['cycle0__EventReview__Delete__Template']}"
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Create_Flow_EventReview_Delete": {
+                                    "runAfter": {
+                                        "Select_EventReview_Delete": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_flowmanagement",
+                                            "operationId": "CreateFlow",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                        },
+                                        "parameters": {
+                                            "environmentName": "@{workflow()?['tags']?['environmentName']}",
+                                            "Flow/properties/displayName": "@replace(replace(outputs('Get_Flow_EventReview_Delete')?['body/properties/displayName'], parameters('envpar_config__CycleZeroName'), triggerBody()?['CycleGroupName']), 'tplparam_cyclname', triggerBody()?['CycleGroupName'])",
+                                            "Flow/properties/definition": "@json(replace(replace(replace(replace(string(outputs('Get_Flow_EventReview_Delete')?['body/properties/definition']), 'parameters(''envpar_config__CycleZeroName'')', concat('''', triggerBody()?['CycleGroupName'], '''')),\r\n    'tplparam_cycldriveid', body('HTTP_3')?['value']?[1]?['id']),\r\n    'tplparam_cyclaltname', triggerBody()?['Cycle1GroupName']),\r\n    'tplparam_cyclname', triggerBody()?['CycleGroupName']))",
+                                            "Flow/properties/state": "Started",
+                                            "Flow/properties/connectionReferences": [
+                                                {
+                                                    "connectionName": "@parameters('envpar_conn_sharedsharepointonline')",
+                                                    "id": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                }
+                                            ]
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Select_EventReview_Delete": {
+                                    "runAfter": {
+                                        "Get_Flow_EventReview_Delete": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "Select",
+                                    "inputs": {
+                                        "from": "@outputs('Get_Flow_EventReview_Delete')?['body/properties/connectionReferences']",
+                                        "select": {
+                                            "connectionName": "@item()?['connectionName']",
+                                            "id": "@item()?['id']"
+                                        }
+                                    }
+                                },
+                                "Copy_folder_EventReview": {
+                                    "runAfter": {
+                                        "Set_content_approval_status_EventReviewWithReceipts_Approve": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline",
+                                            "operationId": "CopyFolderAsync",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{parameters('envpar_config__CycleZeroName')}",
+                                            "parameters/sourceFolderId": "/EventReview/Receipts",
+                                            "parameters/destinationDataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['CycleGroupName']}",
+                                            "parameters/destinationFolderPath": "/EventReview",
+                                            "parameters/nameConflictBehavior": 2
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Send_an_HTTP_request_to_SharePoint_EventReview_Break": {
+                                    "runAfter": {
+                                        "Set_content_approval_status_EventReview": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline",
+                                            "operationId": "HttpRequest",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['CycleGroupName']}",
+                                            "parameters/method": "POST",
+                                            "parameters/uri": "_api/web/lists/getByTitle('EventReview')/items/getbyid('@{outputs('Copy_folder_EventReview')?['body/ItemId']}')/breakroleinheritance(copyRoleAssignments=true, clearSubscopes=true)",
+                                            "parameters/headers": {
+                                                "accept": "application/json;odata=verbose",
+                                                "content-type": "application/json;odata=verbose"
+                                            }
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Send_an_HTTP_request_to_SharePoint_EventReview_Read": {
+                                    "runAfter": {
+                                        "Send_an_HTTP_request_to_SharePoint_EventReview_Break": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline",
+                                            "operationId": "HttpRequest",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['CycleGroupName']}",
+                                            "parameters/method": "POST",
+                                            "parameters/uri": "_api/web/lists/getByTitle('EventReview')/items/getbyid('@{outputs('Copy_folder_EventReview')?['body/ItemId']}')/roleassignments/removeroleassignment(principalid=@{outputs('Compose_SiteGroupIdMembers')}, roledefid=@{body('Parse_JSON_RoleDefinition')?['d']?['Id']})",
+                                            "parameters/headers": {
+                                                "accept": "application/json;odata=verbose",
+                                                "content-type": "application/json;odata=verbose"
+                                            }
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Set_content_approval_status_EventReview": {
+                                    "runAfter": {
+                                        "Copy_folder_EventReview": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline",
+                                            "operationId": "SetApprovalStatus",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['CycleGroupName']}",
+                                            "table": "EventReview",
+                                            "id": "@outputs('Copy_folder_EventReview')?['body/ItemId']",
+                                            "approvalAction": "Approve",
+                                            "comments": "",
+                                            "entityTag": "@outputs('Copy_folder_EventReview')?['body/ETag']"
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Delay_90sec": {
+                                    "runAfter": {
+                                        "Run_a_Child_Flow_3": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "Wait",
+                                    "inputs": {
+                                        "interval": {
+                                            "count": 90,
+                                            "unit": "Second"
+                                        }
+                                    }
+                                },
+                                "Copy_file_EventReviewWithReceipts": {
+                                    "runAfter": {
+                                        "Turn_On_Flow_EventReview_Delete": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "metadata": {
+                                        "%252fEventReview%252fEventReviewWithReceipts.docx": "/EventReview/EventReviewWithReceipts.docx"
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline",
+                                            "operationId": "CopyFileAsync",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{parameters('envpar_config__CycleZeroName')}",
+                                            "parameters/sourceFileId": "%252fEventReview%252fEventReviewWithReceipts.docx",
+                                            "parameters/destinationDataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['CycleGroupName']}",
+                                            "parameters/destinationFolderPath": "/EventReview",
+                                            "parameters/nameConflictBehavior": 2
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Set_content_approval_status_EventReviewWithReceipts": {
+                                    "runAfter": {
+                                        "Copy_file_EventReviewWithReceipts": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline",
+                                            "operationId": "SetApprovalStatus",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['CycleGroupName']}",
+                                            "table": "EventReview",
+                                            "id": "@outputs('Copy_file_EventReviewWithReceipts')?['body/ItemId']",
+                                            "approvalAction": "Submit",
+                                            "comments": "",
+                                            "entityTag": "@outputs('Copy_file_EventReviewWithReceipts')?['body/ETag']"
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Set_content_approval_status_EventReviewWithReceipts_Approve": {
+                                    "runAfter": {
+                                        "Set_content_approval_status_EventReviewWithReceipts": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline",
+                                            "operationId": "SetApprovalStatus",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['CycleGroupName']}",
+                                            "table": "EventReview",
+                                            "id": "@outputs('Copy_file_EventReviewWithReceipts')?['body/ItemId']",
+                                            "approvalAction": "Approve",
+                                            "comments": "",
+                                            "entityTag": "@outputs('Set_content_approval_status_EventReviewWithReceipts')?['body/ETag']"
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Turn_Off_Flow_EventReview": {
+                                    "runAfter": {
+                                        "Create_Flow_3": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_flowmanagement",
+                                            "operationId": "StopFlow",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                        },
+                                        "parameters": {
+                                            "environmentName": "@workflow()?['tags']?['environmentName']",
+                                            "flowName": "@outputs('Create_Flow_3')?['body/name']"
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Turn_On_Flow_EventReview": {
+                                    "runAfter": {
+                                        "Turn_Off_Flow_EventReview": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_flowmanagement",
+                                            "operationId": "StartFlow",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                        },
+                                        "parameters": {
+                                            "environmentName": "@workflow()?['tags']?['environmentName']",
+                                            "flowName": "@outputs('Create_Flow_3')?['body/name']"
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Turn_Off_Flow_EventReview_Delete": {
+                                    "runAfter": {
+                                        "Create_Flow_EventReview_Delete": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_flowmanagement",
+                                            "operationId": "StopFlow",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                        },
+                                        "parameters": {
+                                            "environmentName": "@workflow()?['tags']?['environmentName']",
+                                            "flowName": "@outputs('Create_Flow_EventReview_Delete')?['body/name']"
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Turn_On_Flow_EventReview_Delete": {
+                                    "runAfter": {
+                                        "Turn_Off_Flow_EventReview_Delete": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_flowmanagement",
+                                            "operationId": "StartFlow",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                        },
+                                        "parameters": {
+                                            "environmentName": "@workflow()?['tags']?['environmentName']",
+                                            "flowName": "@outputs('Create_Flow_EventReview_Delete')?['body/name']"
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                }
+                            },
+                            "runAfter": {
+                                "Scope_SurveyQuiz": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Scope"
+                        },
+                        "Condition_UsersList": {
+                            "actions": {
+                                "Run_a_Child_Flow_5": {
+                                    "runAfter": {},
+                                    "type": "Workflow",
+                                    "inputs": {
+                                        "host": {
+                                            "workflowReferenceName": "bc0ce95d-c8dc-ea11-a815-000d3af42a37"
+                                        },
+                                        "body": {
+                                            "fromSite": "@{parameters('envpar_config__CycleZeroName')}",
+                                            "toSite": "@triggerBody()?['CycleGroupName']",
+                                            "ListTitle": "UsersList"
+                                        }
+                                    }
+                                },
+                                "HTTP_SharePoint_UsersList_BreakInheritance": {
+                                    "runAfter": {
+                                        "Run_a_Child_Flow_5": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline",
+                                            "operationId": "HttpRequest",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['CycleGroupName']}",
+                                            "parameters/method": "POST",
+                                            "parameters/uri": "_api/web/lists/getByTitle('UsersList')/breakroleinheritance(copyRoleAssignments=false, clearSubscopes=true)",
+                                            "parameters/headers": {
+                                                "accept": "application/json;odata=verbose",
+                                                "content-type": "application/json;odata=verbose"
+                                            }
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                }
+                            },
+                            "runAfter": {
+                                "Scope_Create_Group_Team": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "expression": {
+                                "equals": [
+                                    "@triggerBody()?['IsCycle1']",
+                                    "@true"
+                                ]
+                            },
+                            "type": "If"
+                        },
+                        "Condition_MySubscriptions": {
+                            "actions": {
+                                "Run_a_Child_Flow_4": {
+                                    "runAfter": {},
+                                    "type": "Workflow",
+                                    "inputs": {
+                                        "host": {
+                                            "workflowReferenceName": "bc0ce95d-c8dc-ea11-a815-000d3af42a37"
+                                        },
+                                        "body": {
+                                            "fromSite": "@{parameters('envpar_config__CycleZeroName')}",
+                                            "toSite": "@triggerBody()?['CycleGroupName']",
+                                            "ListTitle": "MySubscriptions"
+                                        }
+                                    }
+                                },
+                                "Get_Flow_2": {
+                                    "runAfter": {
+                                        "Run_a_Child_Flow_4": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_flowmanagement",
+                                            "operationId": "GetFlow",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                        },
+                                        "parameters": {
+                                            "environmentName": "@{workflow()?['tags']?['environmentName']}",
+                                            "flowName": "@{json(parameters('envpar_id__AllFlows'))?['cycle0__MySubscriptions__Template']}"
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Select_2": {
+                                    "runAfter": {
+                                        "Get_Flow_2": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "Select",
+                                    "inputs": {
+                                        "from": "@outputs('Get_Flow_2')?['body/properties/connectionReferences']",
+                                        "select": {
+                                            "connectionName": "@item()?['connectionName']",
+                                            "id": "@item()?['id']"
+                                        }
+                                    }
+                                },
+                                "Create_Flow_2": {
+                                    "runAfter": {
+                                        "Select_2": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_flowmanagement",
+                                            "operationId": "CreateFlow",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                        },
+                                        "parameters": {
+                                            "environmentName": "@{workflow()?['tags']?['environmentName']}",
+                                            "Flow/properties/displayName": "@replace(replace(outputs('Get_Flow_2')?['body/properties/displayName'], parameters('envpar_config__CycleZeroName'), triggerBody()?['CycleGroupName']), 'tplparam_cyclname', triggerBody()?['CycleGroupName'])",
+                                            "Flow/properties/definition": "@json(replace(replace(string(outputs('Get_Flow_2')?['body/properties/definition']), 'parameters(''envpar_config__CycleZeroName'')', concat('''', triggerBody()?['CycleGroupName'], '''')), \r\n    'tplparam_cyclname', triggerBody()?['CycleGroupName']))",
+                                            "Flow/properties/state": "Started",
+                                            "Flow/properties/connectionReferences": [
+                                                {
+                                                    "connectionName": "@parameters('envpar_conn_sharedsharepointonline')",
+                                                    "id": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                }
+                                            ]
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                }
+                            },
+                            "runAfter": {
+                                "Scope_EventReview": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "expression": {
+                                "equals": [
+                                    "@triggerBody()?['IsCycle1']",
+                                    "@true"
+                                ]
+                            },
+                            "type": "If"
+                        },
+                        "Scope_LogsList": {
+                            "actions": {
+                                "Run_a_Child_Flow_6": {
+                                    "runAfter": {},
+                                    "type": "Workflow",
+                                    "inputs": {
+                                        "host": {
+                                            "workflowReferenceName": "bc0ce95d-c8dc-ea11-a815-000d3af42a37"
+                                        },
+                                        "body": {
+                                            "fromSite": "@{parameters('envpar_config__CycleZeroName')}",
+                                            "toSite": "@triggerBody()?['CycleGroupName']",
+                                            "ListTitle": "LogsList"
+                                        }
+                                    }
+                                },
+                                "HTTP_SharePoint_LogsList_BreakInheritance": {
+                                    "runAfter": {
+                                        "Run_a_Child_Flow_6": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline",
+                                            "operationId": "HttpRequest",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['CycleGroupName']}",
+                                            "parameters/method": "POST",
+                                            "parameters/uri": "_api/web/lists/getByTitle('LogsList')/breakroleinheritance(copyRoleAssignments=false, clearSubscopes=true)",
+                                            "parameters/headers": {
+                                                "accept": "application/json;odata=verbose",
+                                                "content-type": "application/json;odata=verbose"
+                                            }
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                }
+                            },
+                            "runAfter": {
+                                "Condition_MySubscriptions": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Scope"
+                        }
+                    },
+                    "runAfter": {
+                        "HTTP_2": [
+                            "Succeeded"
+                        ]
+                    },
+                    "else": {
+                        "actions": {
+                            "Set_variable_3": {
+                                "runAfter": {},
+                                "type": "SetVariable",
+                                "inputs": {
+                                    "name": "CycleGroupId",
+                                    "value": "@{body('HTTP_2')?['value']?[0]?['id']}"
+                                }
+                            },
+                            "Scope_Cheap": {
+                                "actions": {
+                                    "List_My_Flows": {
+                                        "runAfter": {},
+                                        "type": "OpenApiConnection",
+                                        "inputs": {
+                                            "host": {
+                                                "connectionName": "shared_flowmanagement",
+                                                "operationId": "ListMyFlows",
+                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                            },
+                                            "parameters": {
+                                                "environmentName": "@{workflow()?['tags']?['environmentName']}"
+                                            },
+                                            "authentication": "@parameters('$authentication')"
+                                        }
+                                    },
+                                    "Filter_array": {
+                                        "runAfter": {
+                                            "List_My_Flows": [
+                                                "Succeeded"
+                                            ]
+                                        },
+                                        "type": "Query",
+                                        "inputs": {
+                                            "from": "@outputs('List_My_Flows')?['body/value']",
+                                            "where": "@startsWith(item()?['properties/displayName'], concat(triggerBody()?['CycleGroupName'], '__'))"
+                                        }
+                                    },
+                                    "Apply_to_each": {
+                                        "foreach": "@body('Filter_array')",
+                                        "actions": {
+                                            "Turn_On_Flow": {
+                                                "runAfter": {},
+                                                "type": "OpenApiConnection",
+                                                "inputs": {
+                                                    "host": {
+                                                        "connectionName": "shared_flowmanagement",
+                                                        "operationId": "StartFlow",
+                                                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                                    },
+                                                    "parameters": {
+                                                        "environmentName": "@{workflow()?['tags']?['environmentName']}",
+                                                        "flowName": "@items('Apply_to_each')?['name']"
+                                                    },
+                                                    "authentication": "@parameters('$authentication')"
+                                                }
+                                            }
+                                        },
+                                        "runAfter": {
+                                            "Filter_array": [
+                                                "Succeeded"
+                                            ]
+                                        },
+                                        "type": "Foreach"
+                                    }
+                                },
+                                "runAfter": {
+                                    "Set_variable_3": [
+                                        "Succeeded"
+                                    ]
+                                },
+                                "type": "Scope"
+                            }
+                        }
+                    },
+                    "expression": {
+                        "equals": [
+                            "@length(body('HTTP_2')?['value'])",
+                            "@0"
+                        ]
+                    },
+                    "type": "If"
+                }
+            },
+            "outputs": {}
+        }
+    },
+    "schemaVersion": "1.0.0.0"
+}

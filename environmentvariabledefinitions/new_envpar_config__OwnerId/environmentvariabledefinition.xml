@@ -1,0 +1,12 @@
+<environmentvariabledefinition schemaname="new_envpar_config__OwnerId">
+  <description default="Owner (Billing, Cycles,...) UID. Enter space character ( ) for none. Filled automatically.">
+    <label description="Owner (Billing, Cycles,...) UID. Enter space character ( ) for none. Filled automatically." languagecode="1033" />
+  </description>
+  <displayname default="envpar_config__OwnerId">
+    <label description="envpar_config__OwnerId" languagecode="1033" />
+  </displayname>
+  <introducedversion>3.0.0.16</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <type>100000000</type>
+</environmentvariabledefinition>

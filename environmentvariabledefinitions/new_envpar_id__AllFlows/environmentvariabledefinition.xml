@@ -1,0 +1,12 @@
+<environmentvariabledefinition schemaname="new_envpar_id__AllFlows">
+  <description default="UIDs of all Template Flows as json object. Enter space character { } for none. Filled automatically.">
+    <label description="UIDs of all Template Flows as json object. Enter space character { } for none. Filled automatically." languagecode="1033" />
+  </description>
+  <displayname default="envpar_id__AllFlows">
+    <label description="envpar_id__AllFlows" languagecode="1033" />
+  </displayname>
+  <introducedversion>3.0.0.36</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <type>100000000</type>
+</environmentvariabledefinition>

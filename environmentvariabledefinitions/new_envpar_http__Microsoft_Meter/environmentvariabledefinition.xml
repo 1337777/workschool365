@@ -1,0 +1,12 @@
+<environmentvariabledefinition schemaname="new_envpar_http__Microsoft_Meter">
+  <description default="This flow HTTP trigger URL. Enter space character ( ) for none. Filled automatically.">
+    <label description="This flow HTTP trigger URL. Enter space character ( ) for none. Filled automatically." languagecode="1033" />
+  </description>
+  <displayname default="envpar_http__Microsoft_Meter">
+    <label description="envpar_http__Microsoft_Meter" languagecode="1033" />
+  </displayname>
+  <introducedversion>3.0.0.32</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <type>100000000</type>
+</environmentvariabledefinition>

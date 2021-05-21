@@ -1,0 +1,1510 @@
+{
+    "properties": {
+        "connectionReferences": {
+            "shared_sharepointonline": {
+                "runtimeSource": "embedded",
+                "connection": {
+                    "connectionReferenceLogicalName": "new_sharedsharepointonline_9ad14"
+                },
+                "api": {
+                    "name": "shared_sharepointonline"
+                }
+            }
+        },
+        "definition": {
+            "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+            "contentVersion": "1.0.0.0",
+            "parameters": {
+                "$connections": {
+                    "defaultValue": {},
+                    "type": "Object"
+                },
+                "$authentication": {
+                    "defaultValue": {},
+                    "type": "SecureObject"
+                },
+                "envpar_config__TenantName": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__TenantName"
+                    }
+                },
+                "envpar_config__TenantDomain": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__TenantDomain"
+                    }
+                },
+                "envpar_config__CycleZeroName": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__CycleZeroName"
+                    }
+                },
+                "envpar_config__GraphAppId": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__GraphAppId",
+                        "description": "enter space character ( ) for none"
+                    }
+                },
+                "envpar_config__GraphAppSecret": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__GraphAppSecret",
+                        "description": "enter space character ( ) for none"
+                    }
+                },
+                "envpar_config__LoginAppId": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__LoginAppId",
+                        "description": "enter space character ( ) for none"
+                    }
+                },
+                "envpar_config__LoginAppSecret": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__LoginAppSecret",
+                        "description": "enter space character ( ) for none"
+                    }
+                },
+                "envpar_config__CyclesRename": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__CyclesRename"
+                    }
+                },
+                "envpar_http__AzureAD_Signed": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_http__AzureAD_Signed"
+                    }
+                }
+            },
+            "triggers": {
+                "manual": {
+                    "type": "Request",
+                    "kind": "Http",
+                    "inputs": {
+                        "schema": {},
+                        "method": "GET"
+                    },
+                    "description": "GET ..."
+                }
+            },
+            "actions": {
+                "Initialize_variable_access_token": {
+                    "runAfter": {
+                        "Initialize_variable_state": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "access_token",
+                                "type": "string"
+                            }
+                        ]
+                    }
+                },
+                "Initialize_variable_state": {
+                    "runAfter": {},
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "state",
+                                "type": "string",
+                                "value": "@{coalesce(triggerOutputs()?['queries']?['state'], '/sign')}"
+                            }
+                        ]
+                    }
+                },
+                "Response": {
+                    "runAfter": {
+                        "Condition_sign_up": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "Response",
+                    "kind": "Http",
+                    "inputs": {
+                        "statusCode": 200,
+                        "headers": {
+                            "content-type": "text/html"
+                        },
+                        "body": "@variables('responseBody')"
+                    }
+                },
+                "Initialize_variable_responseBody": {
+                    "runAfter": {
+                        "Initialize_variable_redirectUrl": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "responseBody",
+                                "type": "string"
+                            }
+                        ]
+                    }
+                },
+                "Initialize_variable_email": {
+                    "runAfter": {
+                        "Initialize_variable_access_token": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "email",
+                                "type": "string"
+                            }
+                        ]
+                    }
+                },
+                "Initialize_variable_redirectUrl": {
+                    "runAfter": {
+                        "Initialize_variable_userId": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "redirectUrl",
+                                "type": "string"
+                            }
+                        ]
+                    }
+                },
+                "Initialize_variable_userId": {
+                    "runAfter": {
+                        "Initialize_variable_email": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "userId",
+                                "type": "string"
+                            }
+                        ]
+                    }
+                },
+                "Condition_sign_up_email_2": {
+                    "actions": {
+                        "Compose_Delay": {
+                            "runAfter": {},
+                            "type": "Compose",
+                            "inputs": 10
+                        },
+                        "Delay": {
+                            "runAfter": {
+                                "Compose_Delay": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Wait",
+                            "inputs": {
+                                "interval": {
+                                    "count": "@outputs('Compose_Delay')",
+                                    "unit": "Minute"
+                                }
+                            }
+                        },
+                        "HTTP_Get_user": {
+                            "runAfter": {
+                                "Delay": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Http",
+                            "inputs": {
+                                "method": "GET",
+                                "uri": "https://graph.microsoft.com/v1.0/users/@{variables('userId')}/?$select=userPrincipalName,mail,mailNickname,otherMails,userType,creationType,proxyAddresses,externalUserState,externalUserStateChangeDateTime,identities,assignedLicenses,assignedPlans,createdDateTime",
+                                "authentication": {
+                                    "type": "ActiveDirectoryOAuth",
+                                    "tenant": "@parameters('envpar_config__TenantDomain')",
+                                    "audience": "https://graph.microsoft.com",
+                                    "clientId": "@parameters('envpar_config__GraphAppId')",
+                                    "secret": "@parameters('envpar_config__GraphAppSecret')"
+                                }
+                            }
+                        },
+                        "Parse_JSON": {
+                            "runAfter": {
+                                "HTTP_Get_user": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "ParseJson",
+                            "inputs": {
+                                "content": "@body('HTTP_Get_user')",
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "userPrincipalName": {
+                                            "type": "string"
+                                        },
+                                        "mail": {
+                                            "type": "string"
+                                        },
+                                        "mailNickname": {
+                                            "type": "string"
+                                        },
+                                        "otherMails": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "userType": {
+                                            "type": "string"
+                                        },
+                                        "creationType": {
+                                            "type": "string"
+                                        },
+                                        "proxyAddresses": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "externalUserState": {
+                                            "type": "string"
+                                        },
+                                        "externalUserStateChangeDateTime": {
+                                            "type": "string"
+                                        },
+                                        "identities": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "signInType": {
+                                                        "type": "string"
+                                                    },
+                                                    "issuer": {
+                                                        "type": "string"
+                                                    },
+                                                    "issuerAssignedId": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "signInType",
+                                                    "issuer",
+                                                    "issuerAssignedId"
+                                                ]
+                                            }
+                                        },
+                                        "assignedLicenses": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "disabledPlans": {
+                                                        "type": "array"
+                                                    },
+                                                    "skuId": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "disabledPlans",
+                                                    "skuId"
+                                                ]
+                                            }
+                                        },
+                                        "assignedPlans": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "assignedDateTime": {
+                                                        "type": "string"
+                                                    },
+                                                    "capabilityStatus": {
+                                                        "type": "string"
+                                                    },
+                                                    "service": {
+                                                        "type": "string"
+                                                    },
+                                                    "servicePlanId": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "assignedDateTime",
+                                                    "capabilityStatus",
+                                                    "service",
+                                                    "servicePlanId"
+                                                ]
+                                            }
+                                        },
+                                        "createdDateTime": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "Condition_not_accepted_invitation": {
+                            "actions": {
+                                "Create_item_LogsList": {
+                                    "runAfter": {
+                                        "Apply_to_each": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline",
+                                            "operationId": "PostItem",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{parameters('envpar_config__CycleZeroName')}",
+                                            "table": "LogsList",
+                                            "item/Title": "DELETE TODO sign_up_email_post @{variables('email')} , state @{variables('state')} ,  did not sign in",
+                                            "item/Resource": "UsersList",
+                                            "item/ResourceId": "@variables('email')",
+                                            "item/ChangeType": "DELETE",
+                                            "item/Source": "cycle0__Signed"
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "HTTP_Delete_email_user": {
+                                    "runAfter": {},
+                                    "type": "Http",
+                                    "inputs": {
+                                        "method": "DELETE",
+                                        "uri": "https://graph.microsoft.com/v1.0/users/@{variables('userId')}",
+                                        "authentication": {
+                                            "type": "ActiveDirectoryOAuth",
+                                            "tenant": "@parameters('envpar_config__TenantDomain')",
+                                            "audience": "https://graph.microsoft.com",
+                                            "clientId": "@parameters('envpar_config__GraphAppId')",
+                                            "secret": "@parameters('envpar_config__GraphAppSecret')"
+                                        }
+                                    }
+                                },
+                                "Get_items": {
+                                    "runAfter": {
+                                        "HTTP_Delete_email_user": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline",
+                                            "operationId": "GetItems",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{if(equals(string(split(variables('state'), '/')?[2]), ''), concat(parameters('envpar_config__CyclesRename'), '1'), string(split(variables('state'), '/')?[2]))}",
+                                            "table": "UsersList",
+                                            "$filter": "Title eq '@{variables('email')}'",
+                                            "$top": 1
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Apply_to_each": {
+                                    "foreach": "@outputs('Get_items')?['body/value']",
+                                    "actions": {
+                                        "Delete_item": {
+                                            "runAfter": {},
+                                            "type": "OpenApiConnection",
+                                            "inputs": {
+                                                "host": {
+                                                    "connectionName": "shared_sharepointonline",
+                                                    "operationId": "DeleteItem",
+                                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                },
+                                                "parameters": {
+                                                    "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{if(equals(string(split(variables('state'), '/')?[2]), ''), concat(parameters('envpar_config__CyclesRename'), '1'), string(split(variables('state'), '/')?[2]))}",
+                                                    "table": "UsersList",
+                                                    "id": "@items('Apply_to_each')?['ID']"
+                                                },
+                                                "authentication": "@parameters('$authentication')"
+                                            }
+                                        }
+                                    },
+                                    "runAfter": {
+                                        "Get_items": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "Foreach"
+                                }
+                            },
+                            "runAfter": {
+                                "Parse_JSON": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "else": {
+                                "actions": {
+                                    "Scope_8": {
+                                        "actions": {},
+                                        "runAfter": {},
+                                        "type": "Scope"
+                                    },
+                                    "Apply_to_each_GroupsList_3": {
+                                        "foreach": "@outputs('Get_items_GroupsList_3')?['body/value']",
+                                        "actions": {
+                                            "HTTP_Add_Cycle1GroupId": {
+                                                "runAfter": {},
+                                                "type": "Http",
+                                                "inputs": {
+                                                    "method": "POST",
+                                                    "uri": "https://graph.microsoft.com/v1.0/groups/@{items('Apply_to_each_GroupsList_3')?['Cycle1GroupId']}/members/$ref",
+                                                    "body": {
+                                                        "@@odata.id": "https://graph.microsoft.com/v1.0/directoryObjects/@{variables('userId')}"
+                                                    },
+                                                    "authentication": {
+                                                        "type": "ActiveDirectoryOAuth",
+                                                        "tenant": "@parameters('envpar_config__TenantDomain')",
+                                                        "audience": "https://graph.microsoft.com",
+                                                        "clientId": "@parameters('envpar_config__GraphAppId')",
+                                                        "secret": "@parameters('envpar_config__GraphAppSecret')"
+                                                    }
+                                                }
+                                            },
+                                            "Scope_3": {
+                                                "actions": {},
+                                                "runAfter": {
+                                                    "HTTP_Add_Cycle1GroupId": [
+                                                        "Failed",
+                                                        "Skipped",
+                                                        "TimedOut"
+                                                    ]
+                                                },
+                                                "type": "Scope"
+                                            }
+                                        },
+                                        "runAfter": {
+                                            "Get_items_GroupsList_3": [
+                                                "Succeeded"
+                                            ]
+                                        },
+                                        "type": "Foreach"
+                                    },
+                                    "Get_items_GroupsList_3": {
+                                        "runAfter": {
+                                            "Scope_8": [
+                                                "Failed"
+                                            ]
+                                        },
+                                        "type": "OpenApiConnection",
+                                        "inputs": {
+                                            "host": {
+                                                "connectionName": "shared_sharepointonline",
+                                                "operationId": "GetItems",
+                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                            },
+                                            "parameters": {
+                                                "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{parameters('envpar_config__CycleZeroName')}",
+                                                "table": "GroupsList",
+                                                "$filter": "Cycle1GroupName eq '@{if(equals(string(split(variables('state'), '/')?[2]), ''), concat(parameters('envpar_config__CyclesRename'), '1'), string(split(variables('state'), '/')?[2]))}'"
+                                            },
+                                            "authentication": "@parameters('$authentication')"
+                                        }
+                                    }
+                                }
+                            },
+                            "expression": {
+                                "and": [
+                                    {
+                                        "equals": [
+                                            "@body('Parse_JSON')?['creationType']",
+                                            "@'Invitation'"
+                                        ]
+                                    },
+                                    {
+                                        "not": {
+                                            "equals": [
+                                                "@body('Parse_JSON')?['externalUserState']",
+                                                "@'Accepted'"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "equals": [
+                                            "@less( ticks(utcNow()) , ticks(addMinutes(body('Parse_JSON')?['createdDateTime'], add(5,outputs('Compose_Delay')))) )",
+                                            "@true"
+                                        ]
+                                    }
+                                ]
+                            },
+                            "type": "If"
+                        }
+                    },
+                    "runAfter": {
+                        "Response": [
+                            "Succeeded"
+                        ]
+                    },
+                    "expression": {
+                        "equals": [
+                            "@split(variables('state'), '/')?[1]",
+                            "sign_up_email"
+                        ]
+                    },
+                    "type": "If"
+                },
+                "Condition_sign_up_email": {
+                    "actions": {
+                        "Set_variable_email": {
+                            "runAfter": {},
+                            "type": "SetVariable",
+                            "inputs": {
+                                "name": "email",
+                                "value": "@{replace(toLower(trim(string(triggerOutputs()?['queries']?['email']))), '/', '')}"
+                            }
+                        }
+                    },
+                    "runAfter": {
+                        "Initialize_variable_responseBody": [
+                            "Succeeded"
+                        ]
+                    },
+                    "else": {
+                        "actions": {
+                            "Condition_code": {
+                                "actions": {},
+                                "runAfter": {},
+                                "else": {
+                                    "actions": {
+                                        "Scope_get_token": {
+                                            "actions": {
+                                                "HTTP_Post_code": {
+                                                    "runAfter": {},
+                                                    "type": "Http",
+                                                    "inputs": {
+                                                        "method": "POST",
+                                                        "uri": "https://login.microsoftonline.com/common/oauth2/v2.0/token",
+                                                        "headers": {
+                                                            "Content-Type": "application/x-www-form-urlencoded"
+                                                        },
+                                                        "body": "client_id=@{parameters('envpar_config__LoginAppId')}&scope=user.read+openid+profile+email&code=@{triggerOutputs()['queries']?['code']}&grant_type=authorization_code&client_secret=@{uriComponent(parameters('envpar_config__LoginAppSecret'))}&redirect_uri=@{uriComponent(parameters('envpar_http__AzureAD_Signed'))}"
+                                                    }
+                                                },
+                                                "Set_variable_access_token": {
+                                                    "runAfter": {
+                                                        "HTTP_Post_code": [
+                                                            "Succeeded"
+                                                        ]
+                                                    },
+                                                    "type": "SetVariable",
+                                                    "inputs": {
+                                                        "name": "access_token",
+                                                        "value": "@{body('HTTP_Post_code')?['access_token']}"
+                                                    }
+                                                },
+                                                "Parse_JSON_decode_token": {
+                                                    "runAfter": {
+                                                        "Compose_token_content": [
+                                                            "Succeeded"
+                                                        ]
+                                                    },
+                                                    "type": "ParseJson",
+                                                    "inputs": {
+                                                        "content": "@decodeBase64(if( equals(mod(length(outputs('Compose_token_content')), 4), 0) , outputs('Compose_token_content')\r\n, if( equals(mod(length(outputs('Compose_token_content')), 4), 2) , concat(outputs('Compose_token_content'), '==') \r\n, concat(outputs('Compose_token_content'), '=') ) ))",
+                                                        "schema": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "aud": {
+                                                                    "type": "string"
+                                                                },
+                                                                "iss": {
+                                                                    "type": "string"
+                                                                },
+                                                                "iat": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "nbf": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "exp": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "acct": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "acr": {
+                                                                    "type": "string"
+                                                                },
+                                                                "aio": {
+                                                                    "type": "string"
+                                                                },
+                                                                "app_displayname": {
+                                                                    "type": "string"
+                                                                },
+                                                                "appid": {
+                                                                    "type": "string"
+                                                                },
+                                                                "appidacr": {
+                                                                    "type": "string"
+                                                                },
+                                                                "email": {
+                                                                    "type": "string"
+                                                                },
+                                                                "family_name": {
+                                                                    "type": "string"
+                                                                },
+                                                                "given_name": {
+                                                                    "type": "string"
+                                                                },
+                                                                "idp": {
+                                                                    "type": "string"
+                                                                },
+                                                                "idtyp": {
+                                                                    "type": "string"
+                                                                },
+                                                                "ipaddr": {
+                                                                    "type": "string"
+                                                                },
+                                                                "name": {
+                                                                    "type": "string"
+                                                                },
+                                                                "oid": {
+                                                                    "type": "string"
+                                                                },
+                                                                "platf": {
+                                                                    "type": "string"
+                                                                },
+                                                                "puid": {
+                                                                    "type": "string"
+                                                                },
+                                                                "rh": {
+                                                                    "type": "string"
+                                                                },
+                                                                "scp": {
+                                                                    "type": "string"
+                                                                },
+                                                                "signin_state": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "sub": {
+                                                                    "type": "string"
+                                                                },
+                                                                "tenant_region_scope": {
+                                                                    "type": "string"
+                                                                },
+                                                                "tid": {
+                                                                    "type": "string"
+                                                                },
+                                                                "unique_name": {
+                                                                    "type": "string"
+                                                                },
+                                                                "uti": {
+                                                                    "type": "string"
+                                                                },
+                                                                "ver": {
+                                                                    "type": "string"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "Compose_token_content": {
+                                                    "runAfter": {
+                                                        "Scope_7": [
+                                                            "Succeeded",
+                                                            "Skipped"
+                                                        ]
+                                                    },
+                                                    "type": "Compose",
+                                                    "inputs": "@first(skip(split(variables('access_token'), '.'), 1))"
+                                                },
+                                                "Set_variable_email_2": {
+                                                    "runAfter": {
+                                                        "Parse_JSON_decode_token": [
+                                                            "Succeeded"
+                                                        ]
+                                                    },
+                                                    "type": "SetVariable",
+                                                    "inputs": {
+                                                        "name": "email",
+                                                        "value": "@{toLower(string(body('Parse_JSON_decode_token')?['email']))}"
+                                                    }
+                                                },
+                                                "Scope_5": {
+                                                    "actions": {
+                                                        "HTTP": {
+                                                            "runAfter": {},
+                                                            "type": "Http",
+                                                            "inputs": {
+                                                                "method": "GET",
+                                                                "uri": "https://graph.microsoft.com/oidc/userinfo",
+                                                                "authentication": {
+                                                                    "type": "Raw",
+                                                                    "value": "Bearer @{variables('access_token')}"
+                                                                }
+                                                            }
+                                                        },
+                                                        "Set_variable_email_3": {
+                                                            "runAfter": {
+                                                                "HTTP": [
+                                                                    "Succeeded"
+                                                                ]
+                                                            },
+                                                            "type": "SetVariable",
+                                                            "inputs": {
+                                                                "name": "email",
+                                                                "value": "@{toLower(string(body('HTTP')?['email']))}"
+                                                            }
+                                                        }
+                                                    },
+                                                    "runAfter": {
+                                                        "Parse_JSON_decode_token": [
+                                                            "Failed"
+                                                        ]
+                                                    },
+                                                    "type": "Scope"
+                                                },
+                                                "Scope_6": {
+                                                    "actions": {},
+                                                    "runAfter": {
+                                                        "Set_variable_email_2": [
+                                                            "Skipped",
+                                                            "Succeeded"
+                                                        ],
+                                                        "Scope_5": [
+                                                            "Succeeded"
+                                                        ]
+                                                    },
+                                                    "type": "Scope"
+                                                },
+                                                "Scope_7": {
+                                                    "actions": {
+                                                        "HTTP_2": {
+                                                            "runAfter": {},
+                                                            "type": "Http",
+                                                            "inputs": {
+                                                                "method": "POST",
+                                                                "uri": "https://login.microsoftonline.com/@{parameters('envpar_config__TenantDomain')}/oauth2/v2.0/token",
+                                                                "headers": {
+                                                                    "Content-Type": "application/x-www-form-urlencoded"
+                                                                },
+                                                                "body": "client_id=@{parameters('envpar_config__LoginAppId')}&scope=user.read+openid+profile+email&code=@{triggerOutputs()['queries']?['code']}&grant_type=authorization_code&client_secret=@{uriComponent(parameters('envpar_config__LoginAppSecret'))}&redirect_uri=@{uriComponent(parameters('envpar_http__AzureAD_Signed'))}"
+                                                            }
+                                                        },
+                                                        "Set_variable_2": {
+                                                            "runAfter": {
+                                                                "HTTP_2": [
+                                                                    "Succeeded"
+                                                                ]
+                                                            },
+                                                            "type": "SetVariable",
+                                                            "inputs": {
+                                                                "name": "access_token",
+                                                                "value": "@{body('HTTP_2')?['access_token']}"
+                                                            }
+                                                        }
+                                                    },
+                                                    "runAfter": {
+                                                        "Set_variable_access_token": [
+                                                            "Skipped"
+                                                        ]
+                                                    },
+                                                    "type": "Scope"
+                                                }
+                                            },
+                                            "runAfter": {},
+                                            "type": "Scope"
+                                        }
+                                    }
+                                },
+                                "expression": {
+                                    "equals": [
+                                        "@string(triggerOutputs()?['queries']?['code'])",
+                                        "@''"
+                                    ]
+                                },
+                                "type": "If"
+                            }
+                        }
+                    },
+                    "expression": {
+                        "equals": [
+                            "@split(variables('state'), '/')?[1]",
+                            "sign_up_email"
+                        ]
+                    },
+                    "type": "If"
+                },
+                "Condition_sign_up": {
+                    "actions": {
+                        "Set_variable_redirectUrl_2": {
+                            "runAfter": {},
+                            "type": "SetVariable",
+                            "inputs": {
+                                "name": "redirectUrl",
+                                "value": "https://login.microsoftonline.com/@{parameters('envpar_config__TenantDomain')}/oauth2/v2.0/authorize?client_id=@{parameters('envpar_config__LoginAppId')}&response_mode=query&response_type=code&scope=user.read+openid+profile+email&login_hint=@{uriComponent(variables('email'))}&redirect_uri=@{uriComponent(parameters('envpar_http__AzureAD_Signed'))}&state=%2Fsign"
+                            }
+                        },
+                        "Set_variable_responseBody": {
+                            "runAfter": {
+                                "Set_variable_redirectUrl_2": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "SetVariable",
+                            "inputs": {
+                                "name": "responseBody",
+                                "value": "<html><head>\n<meta http-equiv=\"Refresh\" content=\"30; URL=@{variables('redirectUrl')}\">\n    <title>WorkSchool 365</title>\n    <meta charset=\"utf-8\">\n    <meta http-equiv=\"Content-type\" content=\"text/html; charset=utf-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n    <style type=\"text/css\">\n    body {\n        background-color: #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system, system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n    }\n    div {\n        width: 600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color: #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n        text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n    </style>    \n</head>\n<body>\n<div>\n    <h1>Wait 30 seconds to be automatically redirected to your signed-in personalized page... </h1>\n    <p><a href=\"@{variables('redirectUrl')}\">Click here to be redirected manually ( after 30 seconds 😊 ) </a> </p>\n</div>\n</body></html>"
+                            }
+                        },
+                        "HTTP_Add_invitation": {
+                            "runAfter": {
+                                "Set_variable_responseBody": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Http",
+                            "inputs": {
+                                "method": "POST",
+                                "uri": "https://graph.microsoft.com/v1.0/invitations",
+                                "headers": {
+                                    "Content-type": "application/json"
+                                },
+                                "body": {
+                                    "invitedUserEmailAddress": "@{variables('email')}",
+                                    "sendInvitationMessage": false,
+                                    "invitedUserType": "Member",
+                                    "inviteRedirectUrl": "@{variables('redirectUrl')}"
+                                },
+                                "authentication": {
+                                    "type": "ActiveDirectoryOAuth",
+                                    "tenant": "@parameters('envpar_config__TenantDomain')",
+                                    "audience": "https://graph.microsoft.com",
+                                    "clientId": "@parameters('envpar_config__GraphAppId')",
+                                    "secret": "@parameters('envpar_config__GraphAppSecret')"
+                                }
+                            }
+                        },
+                        "Set_variable_userId": {
+                            "runAfter": {
+                                "HTTP_Add_invitation": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "SetVariable",
+                            "inputs": {
+                                "name": "userId",
+                                "value": "@{body('Http_Add_invitation')?['invitedUser']?['id']}"
+                            }
+                        },
+                        "Create_item_LogsList_2": {
+                            "runAfter": {
+                                "Apply_to_each_GroupsList": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "OpenApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connectionName": "shared_sharepointonline",
+                                    "operationId": "PostItem",
+                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                },
+                                "parameters": {
+                                    "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{parameters('envpar_config__CycleZeroName')}",
+                                    "table": "LogsList",
+                                    "item/Title": "Created user @{variables('email')} by @{split(variables('state'), '/')?[1]}",
+                                    "item/Resource": "UsersList",
+                                    "item/ResourceId": "@variables('email')",
+                                    "item/ChangeType": "CREATE",
+                                    "item/Source": "cycle0__AzureAD_Signed"
+                                },
+                                "authentication": "@parameters('$authentication')"
+                            }
+                        },
+                        "Condition_sign_up_microsoft": {
+                            "actions": {},
+                            "runAfter": {
+                                "Set_variable_userId": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "expression": {
+                                "equals": [
+                                    "@split(variables('state'), '/')?[1]",
+                                    "sign_up_microsoft"
+                                ]
+                            },
+                            "type": "If"
+                        },
+                        "Apply_to_each_GroupsList": {
+                            "foreach": "@outputs('Get_items_GroupsList')?['body/value']",
+                            "actions": {
+                                "HTTP_Add_to_Cycle1": {
+                                    "runAfter": {},
+                                    "type": "Http",
+                                    "inputs": {
+                                        "method": "POST",
+                                        "uri": "https://graph.microsoft.com/v1.0/groups/@{items('Apply_to_each_GroupsList')?['Cycle1GroupId']}/members/$ref",
+                                        "headers": {
+                                            "Content-type": "application/json"
+                                        },
+                                        "body": {
+                                            "@@odata.id": "https://graph.microsoft.com/v1.0/directoryObjects/@{variables('userId')}"
+                                        },
+                                        "authentication": {
+                                            "type": "ActiveDirectoryOAuth",
+                                            "tenant": "@parameters('envpar_config__TenantDomain')",
+                                            "audience": "https://graph.microsoft.com",
+                                            "clientId": "@parameters('envpar_config__GraphAppId')",
+                                            "secret": "@parameters('envpar_config__GraphAppSecret')"
+                                        }
+                                    }
+                                },
+                                "Scope": {
+                                    "actions": {},
+                                    "runAfter": {
+                                        "HTTP_Add_to_Cycle1": [
+                                            "Failed",
+                                            "Skipped",
+                                            "TimedOut"
+                                        ]
+                                    },
+                                    "type": "Scope"
+                                }
+                            },
+                            "runAfter": {
+                                "Get_items_GroupsList": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Foreach"
+                        },
+                        "Get_items_GroupsList": {
+                            "runAfter": {
+                                "Condition_sign_up_microsoft": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "OpenApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connectionName": "shared_sharepointonline",
+                                    "operationId": "GetItems",
+                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                },
+                                "parameters": {
+                                    "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{parameters('envpar_config__CycleZeroName')}",
+                                    "table": "GroupsList",
+                                    "$filter": "Cycle1GroupName eq '@{if(equals(string(split(variables('state'), '/')?[2]), ''), concat(parameters('envpar_config__CyclesRename'), '1'), string(split(variables('state'), '/')?[2]))}'",
+                                    "$top": 1
+                                },
+                                "authentication": "@parameters('$authentication')"
+                            }
+                        }
+                    },
+                    "runAfter": {
+                        "Condition_sign_up_email": [
+                            "Succeeded"
+                        ]
+                    },
+                    "else": {
+                        "actions": {
+                            "Condition_sign": {
+                                "actions": {
+                                    "Set_variable_userId_2": {
+                                        "runAfter": {},
+                                        "type": "SetVariable",
+                                        "inputs": {
+                                            "name": "userId",
+                                            "value": "@body('Parse_JSON_decode_token')?['oid']"
+                                        }
+                                    },
+                                    "HTTP_Get_user_identities": {
+                                        "runAfter": {
+                                            "Set_variable_userId_2": [
+                                                "Succeeded"
+                                            ]
+                                        },
+                                        "type": "Http",
+                                        "inputs": {
+                                            "method": "GET",
+                                            "uri": "https://graph.microsoft.com/v1.0/users/@{variables('userId')}/?$select=userPrincipalName,mail,mailNickname,otherMails,userType,creationType,proxyAddresses,externalUserState,externalUserStateChangeDateTime,identities,assignedLicenses,assignedPlans,usageLocation,createdDateTime",
+                                            "authentication": {
+                                                "type": "ActiveDirectoryOAuth",
+                                                "tenant": "@parameters('envpar_config__TenantDomain')",
+                                                "audience": "https://graph.microsoft.com",
+                                                "clientId": "@parameters('envpar_config__GraphAppId')",
+                                                "secret": "@parameters('envpar_config__GraphAppSecret')"
+                                            },
+                                            "retryPolicy": {
+                                                "type": "none"
+                                            }
+                                        }
+                                    },
+                                    "Scope_4": {
+                                        "actions": {},
+                                        "runAfter": {
+                                            "HTTP_Get_user_identities": [
+                                                "Failed",
+                                                "Skipped",
+                                                "TimedOut"
+                                            ]
+                                        },
+                                        "type": "Scope"
+                                    },
+                                    "Parse_JSON_identities": {
+                                        "runAfter": {
+                                            "Scope_4": [
+                                                "Skipped"
+                                            ]
+                                        },
+                                        "type": "ParseJson",
+                                        "inputs": {
+                                            "content": "@body('HTTP_Get_user_identities')",
+                                            "schema": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "creationType": {},
+                                                    "externalUserState": {},
+                                                    "externalUserStateChangeDateTime": {},
+                                                    "createdDateTime": {
+                                                        "type": "string"
+                                                    },
+                                                    "identities": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "signInType": {
+                                                                    "type": "string"
+                                                                },
+                                                                "issuer": {
+                                                                    "type": "string"
+                                                                },
+                                                                "issuerAssignedId": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "signInType",
+                                                                "issuer",
+                                                                "issuerAssignedId"
+                                                            ]
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "Condition_recent_SelfServiceSignup": {
+                                        "actions": {
+                                            "Get_items_GroupsList_2": {
+                                                "runAfter": {
+                                                    "Condition_facebook_NONEED_ARCHIVE": [
+                                                        "Succeeded"
+                                                    ]
+                                                },
+                                                "type": "OpenApiConnection",
+                                                "inputs": {
+                                                    "host": {
+                                                        "connectionName": "shared_sharepointonline",
+                                                        "operationId": "GetItems",
+                                                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                    },
+                                                    "parameters": {
+                                                        "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{parameters('envpar_config__CycleZeroName')}",
+                                                        "table": "GroupsList",
+                                                        "$filter": "Cycle1GroupName eq '@{if(equals(string(split(variables('state'), '/')?[2]), ''), concat(parameters('envpar_config__CyclesRename'), '1'), string(split(variables('state'), '/')?[2]))}'",
+                                                        "$top": 1
+                                                    },
+                                                    "authentication": "@parameters('$authentication')"
+                                                }
+                                            },
+                                            "Apply_to_each_GroupsList_2": {
+                                                "foreach": "@outputs('Get_items_GroupsList_2')?['body/value']",
+                                                "actions": {
+                                                    "HTTP_Add_to_Cycle1GroupName_2": {
+                                                        "runAfter": {},
+                                                        "type": "Http",
+                                                        "inputs": {
+                                                            "method": "POST",
+                                                            "uri": "https://graph.microsoft.com/v1.0/groups/@{items('Apply_to_each_GroupsList_2')?['Cycle1GroupId']}/members/$ref",
+                                                            "body": {
+                                                                "@@odata.id": "https://graph.microsoft.com/v1.0/directoryObjects/@{variables('userId')}"
+                                                            },
+                                                            "authentication": {
+                                                                "type": "ActiveDirectoryOAuth",
+                                                                "tenant": "@parameters('envpar_config__TenantDomain')",
+                                                                "audience": "https://graph.microsoft.com",
+                                                                "clientId": "@parameters('envpar_config__GraphAppId')",
+                                                                "secret": "@parameters('envpar_config__GraphAppSecret')"
+                                                            }
+                                                        }
+                                                    },
+                                                    "Scope_2": {
+                                                        "actions": {},
+                                                        "runAfter": {
+                                                            "HTTP_Add_to_Cycle1GroupName_2": [
+                                                                "Failed",
+                                                                "Skipped",
+                                                                "TimedOut"
+                                                            ]
+                                                        },
+                                                        "type": "Scope"
+                                                    }
+                                                },
+                                                "runAfter": {
+                                                    "Get_items_GroupsList_2": [
+                                                        "Succeeded"
+                                                    ]
+                                                },
+                                                "type": "Foreach"
+                                            },
+                                            "Create_item_LogsList_3": {
+                                                "runAfter": {
+                                                    "Apply_to_each_GroupsList_2": [
+                                                        "Succeeded"
+                                                    ]
+                                                },
+                                                "type": "OpenApiConnection",
+                                                "inputs": {
+                                                    "host": {
+                                                        "connectionName": "shared_sharepointonline",
+                                                        "operationId": "PostItem",
+                                                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                    },
+                                                    "parameters": {
+                                                        "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{parameters('envpar_config__CycleZeroName')}",
+                                                        "table": "LogsList",
+                                                        "item/Title": "Created 1 user @{variables('email')} by SelfServiceSignup recently",
+                                                        "item/Resource": "UsersList",
+                                                        "item/ResourceId": "@variables('email')",
+                                                        "item/ChangeType": "CREATE",
+                                                        "item/Source": "cycle0__AzureAD_Signed"
+                                                    },
+                                                    "authentication": "@parameters('$authentication')"
+                                                }
+                                            },
+                                            "Condition_facebook_NONEED_ARCHIVE": {
+                                                "actions": {
+                                                    "HTTP_Reinvite_send_message": {
+                                                        "runAfter": {
+                                                            "Set_variable_redirectUrl_3": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "Http",
+                                                        "inputs": {
+                                                            "method": "POST",
+                                                            "uri": "https://graph.microsoft.com/v1.0/invitations",
+                                                            "body": {
+                                                                "invitedUserEmailAddress": "@{variables('email')}",
+                                                                "sendInvitationMessage": true,
+                                                                "invitedUserType": "Member",
+                                                                "inviteRedirectUrl": "@{variables('redirectUrl')}",
+                                                                "invitedUserMessageInfo": {
+                                                                    "customizedMessageBody": "Your sign-up was successful and your account has been created. However, due to some limitations with FACEBOOK sign-in, please NEXT TIMES ALWAYS SIGN-IN  USING INSTEAD YOUR LINKED EMAIL :  @{variables('email')}. Continue now your first sign-in by clicking « Accept Invitation » "
+                                                                }
+                                                            },
+                                                            "authentication": {
+                                                                "type": "ActiveDirectoryOAuth",
+                                                                "tenant": "@parameters('envpar_config__TenantDomain')",
+                                                                "audience": "https://graph.microsoft.com",
+                                                                "clientId": "@parameters('envpar_config__GraphAppId')",
+                                                                "secret": "@parameters('envpar_config__GraphAppSecret')"
+                                                            }
+                                                        }
+                                                    },
+                                                    "HTTP_Delete_facebook_user": {
+                                                        "runAfter": {
+                                                            "HTTP_RevokeSignInSessions": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "Http",
+                                                        "inputs": {
+                                                            "method": "DELETE",
+                                                            "uri": "https://graph.microsoft.com/v1.0/users/@{variables('userId')}",
+                                                            "authentication": {
+                                                                "type": "ActiveDirectoryOAuth",
+                                                                "tenant": "@parameters('envpar_config__TenantDomain')",
+                                                                "audience": "https://graph.microsoft.com",
+                                                                "clientId": "@parameters('envpar_config__GraphAppId')",
+                                                                "secret": "@parameters('envpar_config__GraphAppSecret')"
+                                                            }
+                                                        }
+                                                    },
+                                                    "Set_variable_userId_3": {
+                                                        "runAfter": {
+                                                            "Set_variable_responseBody_3": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "SetVariable",
+                                                        "inputs": {
+                                                            "name": "userId",
+                                                            "value": "@body('Parse_JSON_Invite')?['invitedUser']?['id']"
+                                                        }
+                                                    },
+                                                    "HTTP_RevokeSignInSessions": {
+                                                        "runAfter": {},
+                                                        "type": "Http",
+                                                        "inputs": {
+                                                            "method": "POST",
+                                                            "uri": "https://graph.microsoft.com/v1.0/users/@{variables('userId')}/revokeSignInSessions",
+                                                            "authentication": {
+                                                                "type": "ActiveDirectoryOAuth",
+                                                                "tenant": "@parameters('envpar_config__TenantDomain')",
+                                                                "audience": "https://graph.microsoft.com",
+                                                                "clientId": "@parameters('envpar_config__GraphAppId')",
+                                                                "secret": "@parameters('envpar_config__GraphAppSecret')"
+                                                            }
+                                                        }
+                                                    },
+                                                    "Set_variable_responseBody_3": {
+                                                        "runAfter": {
+                                                            "Set_variable_redirectUrl_4": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "SetVariable",
+                                                        "inputs": {
+                                                            "name": "responseBody",
+                                                            "value": "<html><head>\n<meta http-equiv=\"Refresh\" content=\"30; URL=@{variables('redirectUrl')}\">\n    <title>WorkSchool 365</title>\n    <meta charset=\"utf-8\">\n    <meta http-equiv=\"Content-type\" content=\"text/html; charset=utf-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n    <style type=\"text/css\">\n    body {\n        background-color: #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system, system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n    }\n    div {\n        width: 600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color: #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n        text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n    </style>    \n</head>\n<body>\n<div>\n    <h1>You are being automatically redirected to your signed-in personalized page... </h1>\n<h2> Your sign-up was successful and your account has been created. However, due to some limitations with FACEBOOK sign-in, please NEXT TIMES ALWAYS SIGN-IN USING INSTEAD YOUR LINKED EMAIL :  @{variables('email')} </h2>\n    <p><a href=\"@{variables('redirectUrl')}\">Click here to be redirected manually  ( or wait 30 seconds 😊 )  </a> </p>\n</div>\n</body></html>"
+                                                        }
+                                                    },
+                                                    "Set_variable_redirectUrl_4": {
+                                                        "runAfter": {
+                                                            "Parse_JSON_Invite": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "SetVariable",
+                                                        "inputs": {
+                                                            "name": "redirectUrl",
+                                                            "value": "@body('Parse_JSON_Invite')?['inviteRedeemUrl']"
+                                                        }
+                                                    },
+                                                    "Parse_JSON_Invite": {
+                                                        "runAfter": {
+                                                            "HTTP_Reinvite_send_message": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "ParseJson",
+                                                        "inputs": {
+                                                            "content": "@body('HTTP_Reinvite_send_message')",
+                                                            "schema": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "inviteRedeemUrl": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "invitedUser": {
+                                                                        "type": "object",
+                                                                        "properties": {
+                                                                            "id": {
+                                                                                "type": "string"
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "Set_variable_redirectUrl_3": {
+                                                        "runAfter": {
+                                                            "Delay_at_least_5_seconds": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "SetVariable",
+                                                        "inputs": {
+                                                            "name": "redirectUrl",
+                                                            "value": "https://login.microsoftonline.com/@{parameters('envpar_config__TenantDomain')}/oauth2/v2.0/authorize?client_id=@{parameters('envpar_config__LoginAppId')}&response_mode=query&response_type=code&scope=https%3A%2F%2Fgraph.microsoft.com%2Fuser.read&login_hint=@{uriComponent(variables('email'))}&redirect_uri=@{uriComponent(parameters('envpar_http__AzureAD_Signed'))}&state=%2Fsign"
+                                                        }
+                                                    },
+                                                    "Delay_at_least_5_seconds": {
+                                                        "runAfter": {
+                                                            "HTTP_Delete_facebook_user": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "Wait",
+                                                        "inputs": {
+                                                            "interval": {
+                                                                "count": 5,
+                                                                "unit": "Second"
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "runAfter": {
+                                                    "Select_identities": [
+                                                        "Succeeded"
+                                                    ]
+                                                },
+                                                "else": {
+                                                    "actions": {
+                                                        "Set_variable_responseBody_not_facebook_delay30sec": {
+                                                            "runAfter": {},
+                                                            "type": "SetVariable",
+                                                            "inputs": {
+                                                                "name": "responseBody",
+                                                                "value": "<html><head>\n<meta http-equiv=\"Refresh\" content=\"60; URL=@{variables('redirectUrl')}\">\n    <title>WorkSchool 365</title>\n    <meta charset=\"utf-8\">\n    <meta http-equiv=\"Content-type\" content=\"text/html; charset=utf-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n    <style type=\"text/css\">\n    body {\n        background-color: #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system, system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n    }\n    div {\n        width: 600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color: #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n        text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n    </style>    \n</head>\n<body>\n<div>\n    <h1>You are being automatically redirected to your signed-in personalized page... </h1>\n    <p><a href=\"@{variables('redirectUrl')}\">Click here to be redirected manually  ( or wait 60 seconds 😊 )</a> </p>\n</div>\n</body></html>"
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "expression": {
+                                                    "and": [
+                                                        {
+                                                            "contains": [
+                                                                "@body('Select_identities')",
+                                                                "@json('{\"issuer\": \"facebook.com\"}')"
+                                                            ]
+                                                        },
+                                                        {
+                                                            "equals": [
+                                                                "@true",
+                                                                "@false"
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                "type": "If"
+                                            },
+                                            "Select_identities": {
+                                                "runAfter": {},
+                                                "type": "Select",
+                                                "inputs": {
+                                                    "from": "@body('Parse_JSON_identities')?['identities']",
+                                                    "select": {
+                                                        "issuer": "@item()['issuer']"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "runAfter": {
+                                            "Parse_JSON_identities": [
+                                                "Succeeded"
+                                            ]
+                                        },
+                                        "expression": {
+                                            "and": [
+                                                {
+                                                    "equals": [
+                                                        "@body('Parse_JSON_identities')?['creationType']",
+                                                        "SelfServiceSignup"
+                                                    ]
+                                                },
+                                                {
+                                                    "equals": [
+                                                        "@less( ticks(utcNow()) , ticks(addMinutes(body('Parse_JSON_identities')?['createdDateTime'], 10)) )",
+                                                        "@true"
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        "type": "If"
+                                    }
+                                },
+                                "runAfter": {
+                                    "Set_variable_responseBody_2": [
+                                        "Succeeded"
+                                    ]
+                                },
+                                "expression": {
+                                    "or": [
+                                        {
+                                            "equals": [
+                                                "@split(variables('state'), '/')?[1]",
+                                                "sign"
+                                            ]
+                                        },
+                                        {
+                                            "not": {
+                                                "equals": [
+                                                    "@string(triggerOutputs()?['queries']?['code'])",
+                                                    "@''"
+                                                ]
+                                            }
+                                        }
+                                    ]
+                                },
+                                "type": "If"
+                            },
+                            "Set_variable_redirectUrl": {
+                                "runAfter": {},
+                                "type": "SetVariable",
+                                "inputs": {
+                                    "name": "redirectUrl",
+                                    "value": "@concat('https://', parameters('envpar_config__TenantName'), '.sharepoint.com/sites/', parameters('envpar_config__CyclesRename'), '1')"
+                                }
+                            },
+                            "Set_variable_responseBody_2": {
+                                "runAfter": {
+                                    "Set_variable_redirectUrl": [
+                                        "Succeeded"
+                                    ]
+                                },
+                                "type": "SetVariable",
+                                "inputs": {
+                                    "name": "responseBody",
+                                    "value": "<html><head>\n<meta http-equiv=\"Refresh\" content=\"0; URL=@{variables('redirectUrl')}\">\n    <title>WorkSchool 365</title>\n    <meta charset=\"utf-8\">\n    <meta http-equiv=\"Content-type\" content=\"text/html; charset=utf-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n    <style type=\"text/css\">\n    body {\n        background-color: #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system, system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n    }\n    div {\n        width: 600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color: #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n        text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n    </style>\n</head>\n<body>\n<div>\n    <h1>You are being automatically redirected to your signed-in personalized page... </h1>\n    <p><a href=\"@{variables('redirectUrl')}\">Click here to be redirected manually ( after 1 seconds 😊 ) </a> </p>\n</div>\n</body></html>"
+                                }
+                            }
+                        }
+                    },
+                    "expression": {
+                        "or": [
+                            {
+                                "equals": [
+                                    "@split(variables('state'), '/')?[1]",
+                                    "sign_up_microsoft"
+                                ]
+                            },
+                            {
+                                "equals": [
+                                    "@split(variables('state'), '/')?[1]",
+                                    "sign_up_email"
+                                ]
+                            }
+                        ]
+                    },
+                    "type": "If"
+                }
+            }
+        }
+    },
+    "schemaVersion": "1.0.0.0"
+}

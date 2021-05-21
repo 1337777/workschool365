@@ -1,0 +1,13 @@
+<environmentvariabledefinition schemaname="new_envpar_config__TenantName">
+  <defaultvalue></defaultvalue>
+  <description default="Required. Org Name orgname (this is the prefix of the auto assigned domain orgname.onmicrosoft.com)">
+    <label description="Required. Org Name orgname (this is the prefix of the auto assigned domain orgname.onmicrosoft.com)" languagecode="1033" />
+  </description>
+  <displayname default="envpar_config__TenantName">
+    <label description="envpar_config__TenantName" languagecode="1033" />
+  </displayname>
+  <introducedversion>3.0.0.16</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <type>100000000</type>
+</environmentvariabledefinition>

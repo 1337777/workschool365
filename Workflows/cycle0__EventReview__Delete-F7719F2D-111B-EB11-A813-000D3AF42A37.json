@@ -1,0 +1,300 @@
+{
+    "properties": {
+        "connectionReferences": {
+            "shared_excelonlinebusiness_1": {
+                "runtimeSource": "embedded",
+                "connection": {
+                    "connectionReferenceLogicalName": "new_sharedexcelonlinebusiness_64224"
+                },
+                "api": {
+                    "name": "shared_excelonlinebusiness"
+                }
+            },
+            "shared_sharepointonline_1": {
+                "runtimeSource": "embedded",
+                "connection": {
+                    "connectionReferenceLogicalName": "new_sharedsharepointonline_9ad14"
+                },
+                "api": {
+                    "name": "shared_sharepointonline"
+                }
+            }
+        },
+        "definition": {
+            "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+            "contentVersion": "1.0.0.0",
+            "parameters": {
+                "$connections": {
+                    "defaultValue": {},
+                    "type": "Object"
+                },
+                "$authentication": {
+                    "defaultValue": {},
+                    "type": "SecureObject"
+                },
+                "envpar_config__TenantName": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__TenantName"
+                    }
+                }
+            },
+            "triggers": {
+                "manual": {
+                    "type": "Request",
+                    "kind": "Http",
+                    "inputs": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "siteName": {
+                                    "type": "string"
+                                },
+                                "Id": {
+                                    "type": "integer"
+                                },
+                                "driveId": {
+                                    "type": "string"
+                                },
+                                "Cycle1GroupName": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "method": "POST"
+                    }
+                }
+            },
+            "actions": {
+                "Response": {
+                    "runAfter": {
+                        "Set_content_approval_status_5": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "Response",
+                    "kind": "Http",
+                    "inputs": {
+                        "statusCode": 200
+                    }
+                },
+                "Initialize_variable_siteAddress": {
+                    "runAfter": {
+                        "Initialize_variable_Cycle1GroupName": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "siteAddress",
+                                "type": "string",
+                                "value": "https://@{outputs('Compose_TenantName')}.sharepoint.com/sites/@{variables('siteName')}"
+                            }
+                        ]
+                    }
+                },
+                "Initialize_variable_siteName": {
+                    "runAfter": {
+                        "Compose_TenantName": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "siteName",
+                                "type": "string",
+                                "value": "@triggerBody()?['siteName']"
+                            }
+                        ]
+                    }
+                },
+                "Initialize_variable_driveId": {
+                    "runAfter": {
+                        "Initialize_variable_fileItemId": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "driveId",
+                                "type": "string",
+                                "value": "@triggerBody()?['driveId']"
+                            }
+                        ]
+                    }
+                },
+                "Initialize_variable_fileItemId": {
+                    "runAfter": {
+                        "Initialize_variable_siteName": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "fileItemId",
+                                "type": "integer",
+                                "value": "@triggerBody()?['Id']"
+                            }
+                        ]
+                    }
+                },
+                "Initialize_variable_Cycle1GroupName": {
+                    "runAfter": {
+                        "Initialize_variable_driveId": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "Cycle1GroupName",
+                                "type": "string",
+                                "value": "@triggerBody()?['Cycle1GroupName']"
+                            }
+                        ]
+                    }
+                },
+                "Compose_TenantName": {
+                    "runAfter": {},
+                    "type": "Compose",
+                    "inputs": "@{parameters('envpar_config__TenantName')}"
+                },
+                "Initialize_variable_StatusDescription": {
+                    "runAfter": {
+                        "Initialize_variable_siteAddress": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "StatusDescription",
+                                "type": "string"
+                            }
+                        ]
+                    }
+                },
+                "Delete_a_row": {
+                    "runAfter": {
+                        "Initialize_variable_StatusDescription": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                        "host": {
+                            "connectionName": "shared_excelonlinebusiness_1",
+                            "operationId": "DeleteItem",
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_excelonlinebusiness"
+                        },
+                        "parameters": {
+                            "source": "sites/@{parameters('envpar_config__TenantName')}.sharepoint.com:/sites/@{variables('siteName')}:",
+                            "drive": "@variables('driveId')",
+                            "file": "EventReview%252FReceipts%252FEventReview.xlsx",
+                            "table": "Table1",
+                            "idColumn": "ID",
+                            "id": "@variables('fileItemId')"
+                        },
+                        "authentication": "@parameters('$authentication')"
+                    }
+                },
+                "Get_file_metadata_3": {
+                    "runAfter": {
+                        "Delay": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                        "host": {
+                            "connectionName": "shared_sharepointonline_1",
+                            "operationId": "GetFileMetadata",
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                        },
+                        "parameters": {
+                            "dataset": "@variables('siteAddress')",
+                            "id": "EventReview%252fReceipts%252fEventReview.xlsx"
+                        },
+                        "authentication": "@parameters('$authentication')"
+                    }
+                },
+                "Set_content_approval_status_4": {
+                    "runAfter": {
+                        "Get_file_metadata_3": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                        "host": {
+                            "connectionName": "shared_sharepointonline_1",
+                            "operationId": "SetApprovalStatus",
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                        },
+                        "parameters": {
+                            "dataset": "@variables('siteAddress')",
+                            "table": "EventReview",
+                            "id": "@outputs('Get_file_metadata_3')?['body/ItemId']",
+                            "approvalAction": "Submit",
+                            "comments": "",
+                            "entityTag": "@outputs('Get_file_metadata_3')?['body/ETag']"
+                        },
+                        "authentication": "@parameters('$authentication')"
+                    }
+                },
+                "Set_content_approval_status_5": {
+                    "runAfter": {
+                        "Set_content_approval_status_4": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                        "host": {
+                            "connectionName": "shared_sharepointonline_1",
+                            "operationId": "SetApprovalStatus",
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                        },
+                        "parameters": {
+                            "dataset": "@variables('siteAddress')",
+                            "table": "EventReview",
+                            "id": "@outputs('Get_file_metadata_3')?['body/ItemId']",
+                            "approvalAction": "Approve",
+                            "comments": "",
+                            "entityTag": "@outputs('Set_content_approval_status_4')?['body/ETag']"
+                        },
+                        "authentication": "@parameters('$authentication')"
+                    }
+                },
+                "Delay": {
+                    "runAfter": {
+                        "Delete_a_row": [
+                            "Succeeded",
+                            "Failed"
+                        ]
+                    },
+                    "type": "Wait",
+                    "inputs": {
+                        "interval": {
+                            "count": 60,
+                            "unit": "Second"
+                        }
+                    }
+                }
+            },
+            "outputs": {}
+        }
+    },
+    "schemaVersion": "1.0.0.0"
+}

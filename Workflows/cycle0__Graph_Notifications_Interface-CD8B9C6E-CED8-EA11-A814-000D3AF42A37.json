@@ -1,0 +1,326 @@
+{
+    "properties": {
+        "connectionReferences": {},
+        "definition": {
+            "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+            "contentVersion": "1.0.0.0",
+            "parameters": {
+                "$authentication": {
+                    "defaultValue": {},
+                    "type": "SecureObject"
+                },
+                "envpar_config__TenantDomain": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__TenantDomain",
+                        "description": "Required. Org Domain name such as orgname.onmicrosoft.com or orgname.com"
+                    }
+                },
+                "envpar_config__GraphAppId": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__GraphAppId",
+                        "description": "Service Principal Id for Graph Api. Enter space character ( ) for none. Filled automatically."
+                    }
+                },
+                "envpar_config__GraphAppSecret": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__GraphAppSecret",
+                        "description": "Service Principal Secret for Graph Api. Enter space character ( ) for none. Filled automatically."
+                    }
+                },
+                "envpar_http__Graph_Notifications_Interface": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_http__Graph_Notifications_Interface",
+                        "description": "This flow HTTP trigger URL. Enter space character ( ) for none. Filled automatically."
+                    }
+                }
+            },
+            "triggers": {
+                "manual": {
+                    "type": "Request",
+                    "kind": "Http",
+                    "inputs": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "method": {
+                                    "type": "string"
+                                },
+                                "body": {},
+                                "delayMinutes": {
+                                    "type": "integer"
+                                }
+                            }
+                        }
+                    },
+                    "description": "delayMinutes shall minimum 60 minutes"
+                }
+            },
+            "actions": {
+                "Condition_method_POST": {
+                    "actions": {
+                        "HTTP": {
+                            "runAfter": {},
+                            "type": "Http",
+                            "inputs": {
+                                "method": "POST",
+                                "uri": "https://graph.microsoft.com/v1.0/subscriptions",
+                                "headers": {
+                                    "Content-Type": "application/json; charset=utf-8"
+                                },
+                                "body": "@addProperty(triggerBody()?['body'], 'expirationDateTime' , addMinutes(utcNow(), triggerBody()?['delayMinutes']) )",
+                                "authentication": {
+                                    "type": "ActiveDirectoryOAuth",
+                                    "tenant": "@parameters('envpar_config__TenantDomain')",
+                                    "audience": "https://graph.microsoft.com",
+                                    "clientId": "@parameters('envpar_config__GraphAppId')",
+                                    "secret": "@parameters('envpar_config__GraphAppSecret')"
+                                }
+                            }
+                        },
+                        "HTTP_2": {
+                            "runAfter": {
+                                "HTTP": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Http",
+                            "inputs": {
+                                "method": "POST",
+                                "uri": "@parameters('envpar_http__Graph_Notifications_Interface')",
+                                "body": {
+                                    "method": "PATCH",
+                                    "body": "@body('HTTP')",
+                                    "delayMinutes": "@triggerBody()?['delayMinutes']"
+                                },
+                                "retryPolicy": {
+                                    "type": "none"
+                                }
+                            }
+                        }
+                    },
+                    "runAfter": {},
+                    "else": {
+                        "actions": {
+                            "Condition_method_PATCH": {
+                                "actions": {
+                                    "Terminate": {
+                                        "runAfter": {
+                                            "Scope_PATCH": [
+                                                "Failed",
+                                                "Skipped",
+                                                "TimedOut"
+                                            ]
+                                        },
+                                        "type": "Terminate",
+                                        "inputs": {
+                                            "runStatus": "Succeeded"
+                                        }
+                                    },
+                                    "Scope_PATCH": {
+                                        "actions": {
+                                            "HTTP_3": {
+                                                "runAfter": {
+                                                    "Delay_Period_Minus_10_minutes": [
+                                                        "Succeeded"
+                                                    ]
+                                                },
+                                                "type": "Http",
+                                                "inputs": {
+                                                    "method": "PATCH",
+                                                    "uri": "https://graph.microsoft.com/v1.0/subscriptions/@{triggerBody()?['body']?['id']}",
+                                                    "headers": {
+                                                        "Content-Type": "application/json; charset=utf-8"
+                                                    },
+                                                    "body": {
+                                                        "expirationDateTime": "@{addMinutes(utcNow(),triggerBody()?['delayMinutes'])}"
+                                                    },
+                                                    "authentication": {
+                                                        "type": "ActiveDirectoryOAuth",
+                                                        "tenant": "@parameters('envpar_config__TenantDomain')",
+                                                        "audience": "https://graph.microsoft.com",
+                                                        "clientId": "@parameters('envpar_config__GraphAppId')",
+                                                        "secret": "@parameters('envpar_config__GraphAppSecret')"
+                                                    }
+                                                }
+                                            },
+                                            "HTTP_4": {
+                                                "runAfter": {
+                                                    "HTTP_3": [
+                                                        "Succeeded"
+                                                    ]
+                                                },
+                                                "type": "Http",
+                                                "inputs": {
+                                                    "method": "POST",
+                                                    "uri": "@parameters('envpar_http__Graph_Notifications_Interface')",
+                                                    "body": {
+                                                        "method": "PATCH",
+                                                        "body": "@body('HTTP_3')",
+                                                        "delayMinutes": "@triggerBody()?['delayMinutes']"
+                                                    },
+                                                    "retryPolicy": {
+                                                        "type": "none"
+                                                    }
+                                                }
+                                            },
+                                            "Delay_Period_Minus_10_minutes": {
+                                                "runAfter": {},
+                                                "type": "Wait",
+                                                "inputs": {
+                                                    "interval": {
+                                                        "count": "@sub(triggerBody()?['delayMinutes'], 10)",
+                                                        "unit": "Minute"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "runAfter": {},
+                                        "type": "Scope"
+                                    }
+                                },
+                                "runAfter": {},
+                                "else": {
+                                    "actions": {
+                                        "Parse_JSON": {
+                                            "runAfter": {
+                                                "HTTP_5": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "ParseJson",
+                                            "inputs": {
+                                                "content": "@body('HTTP_5')",
+                                                "schema": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "value": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "resource": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "applicationId": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "changeType": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "clientState": {},
+                                                                    "notificationUrl": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "expirationDateTime": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "creatorId": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "resource",
+                                                                    "applicationId",
+                                                                    "changeType",
+                                                                    "clientState",
+                                                                    "notificationUrl",
+                                                                    "expirationDateTime",
+                                                                    "creatorId"
+                                                                ]
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "Filter_array": {
+                                            "runAfter": {
+                                                "Parse_JSON": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "Query",
+                                            "inputs": {
+                                                "from": "@body('Parse_JSON')?['value']",
+                                                "where": "@equals(item()?['notificationUrl'], triggerBody()?['body']?['notificationUrl'])"
+                                            }
+                                        },
+                                        "Apply_to_each_4": {
+                                            "foreach": "@body('Filter_array')",
+                                            "actions": {
+                                                "HTTP_6": {
+                                                    "runAfter": {},
+                                                    "type": "Http",
+                                                    "inputs": {
+                                                        "method": "DELETE",
+                                                        "uri": "https://graph.microsoft.com/v1.0/subscriptions/@{items('Apply_to_each_4')?['id']}",
+                                                        "authentication": {
+                                                            "type": "ActiveDirectoryOAuth",
+                                                            "tenant": "@parameters('envpar_config__TenantDomain')",
+                                                            "audience": "https://graph.microsoft.com",
+                                                            "clientId": "@parameters('envpar_config__GraphAppId')",
+                                                            "secret": "@parameters('envpar_config__GraphAppSecret')"
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "runAfter": {
+                                                "Filter_array": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "Foreach"
+                                        },
+                                        "HTTP_5": {
+                                            "runAfter": {},
+                                            "type": "Http",
+                                            "inputs": {
+                                                "method": "GET",
+                                                "uri": "https://graph.microsoft.com/v1.0/subscriptions",
+                                                "authentication": {
+                                                    "type": "ActiveDirectoryOAuth",
+                                                    "tenant": "@parameters('envpar_config__TenantDomain')",
+                                                    "audience": "https://graph.microsoft.com",
+                                                    "clientId": "@parameters('envpar_config__GraphAppId')",
+                                                    "secret": "@parameters('envpar_config__GraphAppSecret')"
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "expression": {
+                                    "equals": [
+                                        "@triggerBody()?['method']",
+                                        "PATCH"
+                                    ]
+                                },
+                                "type": "If"
+                            }
+                        }
+                    },
+                    "expression": {
+                        "equals": [
+                            "@triggerBody()?['method']",
+                            "POST"
+                        ]
+                    },
+                    "type": "If"
+                }
+            },
+            "outputs": {}
+        }
+    },
+    "schemaVersion": "1.0.0.0"
+}

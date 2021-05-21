@@ -1,0 +1,13 @@
+<environmentvariabledefinition schemaname="new_envpar_config__CyclesNumber">
+  <defaultvalue>4</defaultvalue>
+  <description default="Required. Total number N of cycles from cycle1 to cycleN">
+    <label description="Required. Total number N of cycles from cycle1 to cycleN" languagecode="1033" />
+  </description>
+  <displayname default="envpar_config__CyclesNumber">
+    <label description="envpar_config__CyclesNumber" languagecode="1033" />
+  </displayname>
+  <introducedversion>3.0.0.16</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <type>100000001</type>
+</environmentvariabledefinition>

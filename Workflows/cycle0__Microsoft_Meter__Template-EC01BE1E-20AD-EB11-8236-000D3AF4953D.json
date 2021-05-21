@@ -1,0 +1,49 @@
+{
+    "properties": {
+        "connectionReferences": {},
+        "definition": {
+            "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+            "contentVersion": "1.0.0.0",
+            "parameters": {
+                "$authentication": {
+                    "defaultValue": {},
+                    "type": "SecureObject"
+                },
+                "envpar_http__Microsoft_Meter": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_http__Microsoft_Meter"
+                    }
+                }
+            },
+            "triggers": {
+                "Recurrence": {
+                    "recurrence": {
+                        "frequency": "Hour",
+                        "interval": 8
+                    },
+                    "type": "Recurrence"
+                }
+            },
+            "actions": {
+                "HTTP": {
+                    "runAfter": {},
+                    "type": "Http",
+                    "inputs": {
+                        "method": "POST",
+                        "uri": "@parameters('envpar_http__Microsoft_Meter')",
+                        "body": {
+                            "Cycle1GroupName": "tplparam_cyclname"
+                        },
+                        "retryPolicy": {
+                            "type": "none"
+                        }
+                    }
+                }
+            },
+            "outputs": {}
+        }
+    },
+    "schemaVersion": "1.0.0.0"
+}

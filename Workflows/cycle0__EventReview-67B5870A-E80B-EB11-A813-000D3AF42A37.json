@@ -1,0 +1,1683 @@
+{
+    "properties": {
+        "connectionReferences": {
+            "shared_sharepointonline_1": {
+                "runtimeSource": "embedded",
+                "connection": {
+                    "connectionReferenceLogicalName": "new_sharedsharepointonline_9ad14"
+                },
+                "api": {
+                    "name": "shared_sharepointonline"
+                }
+            },
+            "shared_excelonlinebusiness_1": {
+                "runtimeSource": "embedded",
+                "connection": {
+                    "connectionReferenceLogicalName": "new_sharedexcelonlinebusiness_64224"
+                },
+                "api": {
+                    "name": "shared_excelonlinebusiness"
+                }
+            },
+            "shared_sharepointonline": {
+                "runtimeSource": "embedded",
+                "connection": {
+                    "connectionReferenceLogicalName": "new_sharedsharepointonline_9ad14"
+                },
+                "api": {
+                    "name": "shared_sharepointonline"
+                }
+            },
+            "shared_wordonlinebusiness": {
+                "runtimeSource": "embedded",
+                "connection": {
+                    "connectionReferenceLogicalName": "new_WordOnlineBusiness"
+                },
+                "api": {
+                    "name": "shared_wordonlinebusiness"
+                }
+            }
+        },
+        "definition": {
+            "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+            "contentVersion": "1.0.0.0",
+            "parameters": {
+                "$connections": {
+                    "defaultValue": {},
+                    "type": "Object"
+                },
+                "$authentication": {
+                    "defaultValue": {},
+                    "type": "SecureObject"
+                },
+                "envpar_config__TenantName": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__TenantName"
+                    }
+                },
+                "envpar_config__CycleZeroName": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__CycleZeroName"
+                    }
+                }
+            },
+            "triggers": {
+                "manual": {
+                    "type": "Request",
+                    "kind": "Http",
+                    "inputs": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "siteName": {
+                                    "type": "string"
+                                },
+                                "Id": {
+                                    "type": "integer"
+                                },
+                                "driveId": {
+                                    "type": "string"
+                                },
+                                "Cycle1GroupName": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "method": "POST"
+                    }
+                }
+            },
+            "actions": {
+                "Response": {
+                    "runAfter": {
+                        "Scope_PayNowAction_para_Excel_para_Perms": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "Response",
+                    "kind": "Http",
+                    "inputs": {
+                        "statusCode": 200
+                    }
+                },
+                "Initialize_variable_siteAddress": {
+                    "runAfter": {
+                        "Initialize_variable_Cycle1GroupName": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "siteAddress",
+                                "type": "string",
+                                "value": "https://@{outputs('Compose_TenantName')}.sharepoint.com/sites/@{variables('siteName')}"
+                            }
+                        ]
+                    }
+                },
+                "Initialize_variable_siteName": {
+                    "runAfter": {
+                        "Compose_TenantName": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "siteName",
+                                "type": "string",
+                                "value": "@triggerBody()?['siteName']"
+                            }
+                        ]
+                    }
+                },
+                "Initialize_variable_driveId": {
+                    "runAfter": {
+                        "Initialize_variable_fileItemId": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "driveId",
+                                "type": "string",
+                                "value": "@triggerBody()?['driveId']"
+                            }
+                        ]
+                    }
+                },
+                "Initialize_variable_fileItemId": {
+                    "runAfter": {
+                        "Initialize_variable_siteName": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "fileItemId",
+                                "type": "integer",
+                                "value": "@triggerBody()?['Id']"
+                            }
+                        ]
+                    }
+                },
+                "Select_AssignedTo": {
+                    "runAfter": {
+                        "Set_content_approval_status": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "Select",
+                    "inputs": {
+                        "from": "@body('Parse_JSON')?['AssignedTo']",
+                        "select": "@item()?['Email']"
+                    }
+                },
+                "Get_file_properties": {
+                    "runAfter": {
+                        "Initialize_variable_reviews": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                        "host": {
+                            "connectionName": "shared_sharepointonline_1",
+                            "operationId": "GetFileItem",
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                        },
+                        "parameters": {
+                            "dataset": "@variables('siteAddress')",
+                            "table": "EventReview",
+                            "id": "@variables('fileItemId')"
+                        },
+                        "authentication": "@parameters('$authentication')"
+                    }
+                },
+                "Parse_JSON": {
+                    "runAfter": {
+                        "Get_file_properties": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "ParseJson",
+                    "inputs": {
+                        "content": "@body('Get_file_properties')",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "@@odata.etag": {
+                                    "type": "string"
+                                },
+                                "ItemInternalId": {
+                                    "type": "string"
+                                },
+                                "ID": {
+                                    "type": "integer"
+                                },
+                                "Title": {
+                                    "type": "string"
+                                },
+                                "Author": {
+                                    "type": "object",
+                                    "properties": {
+                                        "@@odata.type": {
+                                            "type": "string"
+                                        },
+                                        "Claims": {
+                                            "type": "string"
+                                        },
+                                        "DisplayName": {
+                                            "type": "string"
+                                        },
+                                        "Email": {
+                                            "type": "string"
+                                        },
+                                        "Picture": {
+                                            "type": "string"
+                                        },
+                                        "Department": {},
+                                        "JobTitle": {}
+                                    }
+                                },
+                                "Author#Claims": {
+                                    "type": "string"
+                                },
+                                "StartDate": {
+                                    "type": "string"
+                                },
+                                "TaskLink": {
+                                    "type": "string"
+                                },
+                                "AssignedTo": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "@@odata.type": {
+                                                "type": "string"
+                                            },
+                                            "Claims": {
+                                                "type": "string"
+                                            },
+                                            "DisplayName": {
+                                                "type": "string"
+                                            },
+                                            "Email": {
+                                                "type": "string"
+                                            },
+                                            "Picture": {
+                                                "type": "string"
+                                            },
+                                            "Department": {},
+                                            "JobTitle": {}
+                                        }
+                                    }
+                                },
+                                "AssignedTo@odata.type": {
+                                    "type": "string"
+                                },
+                                "AssignedTo#Claims": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+                                "AssignedTo#Claims@odata.type": {
+                                    "type": "string"
+                                },
+                                "PayAmount": {
+                                    "type": "number"
+                                },
+                                "PayNowAction": {
+                                    "type": "boolean"
+                                },
+                                "DueDate": {
+                                    "type": "string"
+                                },
+                                "Predecessors": {
+                                    "type": "array"
+                                },
+                                "Predecessors@odata.type": {
+                                    "type": "string"
+                                },
+                                "Predecessors#Id": {
+                                    "type": "array"
+                                },
+                                "Predecessors#Id@odata.type": {
+                                    "type": "string"
+                                },
+                                "PercentComplete": {
+                                    "type": "number"
+                                },
+                                "Editor": {
+                                    "type": "object",
+                                    "properties": {
+                                        "@@odata.type": {
+                                            "type": "string"
+                                        },
+                                        "Claims": {
+                                            "type": "string"
+                                        },
+                                        "DisplayName": {
+                                            "type": "string"
+                                        },
+                                        "Email": {
+                                            "type": "string"
+                                        },
+                                        "Picture": {
+                                            "type": "string"
+                                        },
+                                        "Department": {
+                                            "type": "string"
+                                        },
+                                        "JobTitle": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "Editor#Claims": {
+                                    "type": "string"
+                                },
+                                "Modified": {
+                                    "type": "string"
+                                },
+                                "CountryOrRegion": {
+                                    "type": "string"
+                                },
+                                "State": {
+                                    "type": "string"
+                                },
+                                "City": {
+                                    "type": "string"
+                                },
+                                "Street": {
+                                    "type": "string"
+                                },
+                                "DispName": {
+                                    "type": "string"
+                                },
+                                "Created": {
+                                    "type": "string"
+                                },
+                                "OData__DisplayName": {
+                                    "type": "string"
+                                },
+                                "{Identifier}": {
+                                    "type": "string"
+                                },
+                                "{IsFolder}": {
+                                    "type": "boolean"
+                                },
+                                "{Link}": {
+                                    "type": "string"
+                                },
+                                "{Name}": {
+                                    "type": "string"
+                                },
+                                "{FilenameWithExtension}": {
+                                    "type": "string"
+                                },
+                                "{Path}": {
+                                    "type": "string"
+                                },
+                                "{FullPath}": {
+                                    "type": "string"
+                                },
+                                "{ModerationStatus}": {
+                                    "type": "string"
+                                },
+                                "{IsCheckedOut}": {
+                                    "type": "boolean"
+                                },
+                                "{VersionNumber}": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "Set_content_approval_status": {
+                    "runAfter": {
+                        "Get_file_metadata": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                        "host": {
+                            "connectionName": "shared_sharepointonline_1",
+                            "operationId": "SetApprovalStatus",
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                        },
+                        "parameters": {
+                            "dataset": "@variables('siteAddress')",
+                            "table": "EventReview",
+                            "id": "@body('Parse_JSON')?['ID']",
+                            "approvalAction": "Approve",
+                            "comments": "",
+                            "entityTag": "@outputs('Get_file_metadata')?['body/ETag']"
+                        },
+                        "authentication": "@parameters('$authentication')"
+                    }
+                },
+                "Get_file_metadata": {
+                    "runAfter": {
+                        "Parse_JSON": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                        "host": {
+                            "connectionName": "shared_sharepointonline_1",
+                            "operationId": "GetFileMetadata",
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                        },
+                        "parameters": {
+                            "dataset": "@variables('siteAddress')",
+                            "id": "@body('Parse_JSON')?['{Identifier}']"
+                        },
+                        "authentication": "@parameters('$authentication')"
+                    }
+                },
+                "Initialize_variable_Cycle1GroupName": {
+                    "runAfter": {
+                        "Initialize_variable_driveId": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "Cycle1GroupName",
+                                "type": "string",
+                                "value": "@triggerBody()?['Cycle1GroupName']"
+                            }
+                        ]
+                    }
+                },
+                "Compose_TenantName": {
+                    "runAfter": {},
+                    "type": "Compose",
+                    "inputs": "@{parameters('envpar_config__TenantName')}"
+                },
+                "Initialize_variable_StatusDescription": {
+                    "runAfter": {
+                        "Initialize_variable_siteAddress": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "StatusDescription",
+                                "type": "string"
+                            }
+                        ]
+                    }
+                },
+                "Scope_PayNowAction_para_Excel_para_Perms": {
+                    "actions": {
+                        "Scope_Excel": {
+                            "actions": {
+                                "Compose": {
+                                    "runAfter": {},
+                                    "type": "Compose",
+                                    "inputs": {
+                                        "ID": "@{concat('=HYPERLINK(\"', concat(variables('siteAddress'), '/EventReview/Link.', last(split(body('Parse_JSON')?['{Link}'], '.'))) , '\", ' , body('Parse_JSON')?['ID'] , ')' )}",
+                                        "Title": "@{body('Parse_JSON')?['{Name}']}",
+                                        "AssignedTo": "@{string(body('Select_AssignedTo'))}",
+                                        "StartDate": "@{if(equals(string(body('Parse_JSON')?['StartDate']),''), '', formatDateTime(body('Parse_JSON')?['StartDate'], 'g'))}",
+                                        "Modified": "@{formatDateTime(body('Parse_JSON')?['Modified'], 'g')}",
+                                        "Author": "@{body('Parse_JSON')?['Author']?['Email']}",
+                                        "Predecessors": "@{body('Parse_JSON')?['Predecessors#Id']}",
+                                        "PayAmount": "@{body('Parse_JSON')?['PayAmount']}",
+                                        "Location": "@{coalesce(body('Parse_JSON')?['City'], body('Parse_JSON')?['State'], body('Parse_JSON')?['CountryOrRegion'])}",
+                                        "Receipt": "@{ if( equals(string(outputs('Create_sharing_link_Receipt')?['body/link/webUrl']), '') , '' , concat( '=HYPERLINK(\"' , outputs('Create_sharing_link_Receipt')?['body/link/webUrl'] , '\")' )) }"
+                                    }
+                                },
+                                "Get_a_row": {
+                                    "runAfter": {
+                                        "Compose": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_excelonlinebusiness_1",
+                                            "operationId": "GetItem",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_excelonlinebusiness"
+                                        },
+                                        "parameters": {
+                                            "source": "sites/@{parameters('envpar_config__TenantName')}.sharepoint.com:/sites/@{variables('siteName')}:",
+                                            "drive": "@variables('driveId')",
+                                            "file": "EventReview%252FReceipts%252FEventReview.xlsx",
+                                            "table": "Table1",
+                                            "idColumn": "@'ID'",
+                                            "id": "@body('Parse_JSON')?['ID']"
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Update_a_row": {
+                                    "runAfter": {
+                                        "Add_a_row_into_a_table": [
+                                            "Skipped"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_excelonlinebusiness_1",
+                                            "operationId": "PatchItem",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_excelonlinebusiness"
+                                        },
+                                        "parameters": {
+                                            "source": "sites/@{parameters('envpar_config__TenantName')}.sharepoint.com:/sites/@{variables('siteName')}:",
+                                            "drive": "@variables('driveId')",
+                                            "file": "EventReview%252FReceipts%252FEventReview.xlsx",
+                                            "table": "Table1",
+                                            "idColumn": "@'ID'",
+                                            "id": "@body('Parse_JSON')?['ID']",
+                                            "item": "@outputs('Compose')"
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Add_a_row_into_a_table": {
+                                    "runAfter": {
+                                        "Get_a_row": [
+                                            "Failed"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_excelonlinebusiness_1",
+                                            "operationId": "AddRowV2",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_excelonlinebusiness"
+                                        },
+                                        "parameters": {
+                                            "source": "sites/@{parameters('envpar_config__TenantName')}.sharepoint.com:/sites/@{variables('siteName')}:",
+                                            "drive": "@variables('driveId')",
+                                            "file": "EventReview%252FReceipts%252FEventReview.xlsx",
+                                            "table": "Table1",
+                                            "item": "@outputs('Compose')"
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Get_file_metadata_3": {
+                                    "runAfter": {
+                                        "Delay": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline_1",
+                                            "operationId": "GetFileMetadata",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "@variables('siteAddress')",
+                                            "id": "EventReview%252fReceipts%252fEventReview.xlsx"
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Set_content_approval_status_4": {
+                                    "runAfter": {
+                                        "Get_file_metadata_3": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline_1",
+                                            "operationId": "SetApprovalStatus",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "@variables('siteAddress')",
+                                            "table": "EventReview",
+                                            "id": "@outputs('Get_file_metadata_3')?['body/ItemId']",
+                                            "approvalAction": "Submit",
+                                            "comments": "",
+                                            "entityTag": "@outputs('Get_file_metadata_3')?['body/ETag']"
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Set_content_approval_status_5": {
+                                    "runAfter": {
+                                        "Set_content_approval_status_4": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline_1",
+                                            "operationId": "SetApprovalStatus",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "@variables('siteAddress')",
+                                            "table": "EventReview",
+                                            "id": "@outputs('Get_file_metadata_3')?['body/ItemId']",
+                                            "approvalAction": "Approve",
+                                            "comments": "",
+                                            "entityTag": "@outputs('Set_content_approval_status_4')?['body/ETag']"
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Delay": {
+                                    "runAfter": {
+                                        "Update_a_row": [
+                                            "Succeeded",
+                                            "Skipped"
+                                        ]
+                                    },
+                                    "type": "Wait",
+                                    "inputs": {
+                                        "interval": {
+                                            "count": 60,
+                                            "unit": "Second"
+                                        }
+                                    }
+                                }
+                            },
+                            "runAfter": {},
+                            "type": "Scope"
+                        },
+                        "Scope_Author_Perms_AssignedTo_Perms": {
+                            "actions": {
+                                "Send_an_HTTP_request_to_SharePoint_3": {
+                                    "runAfter": {
+                                        "Send_an_HTTP_request_to_SharePoint_2": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline_1",
+                                            "operationId": "HttpRequest",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "@variables('siteAddress')",
+                                            "parameters/method": "POST",
+                                            "parameters/uri": "_api/web/lists/getByTitle('EventReview')/items/getbyid(@{body('Parse_JSON')?['ID']})/roleassignments/removeroleassignment(principalid=@{outputs('Compose_SiteGroupIdMembers')}, roledefid=@{body('Parse_JSON_Get_ItemsViewAddUpdateNoDelete_Id')?['d']?['Id']})",
+                                            "parameters/headers": {
+                                                "accept": "application/json;odata=verbose",
+                                                "content-type": "application/json;odata=verbose"
+                                            }
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Grant_access_to_an_item_or_a_folder_2": {
+                                    "runAfter": {
+                                        "Send_an_HTTP_request_to_SharePoint_3": [
+                                            "Succeeded",
+                                            "Failed"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline_1",
+                                            "operationId": "GrantAccess",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "@variables('siteAddress')",
+                                            "table": "EventReview",
+                                            "id": "@body('Parse_JSON')?['ID']",
+                                            "parameter/recipients": "@body('Parse_JSON')?['Author']?['Email']",
+                                            "parameter/roleValue": "role:1073741827",
+                                            "parameter/sendEmail": false
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Condition_AssignedTo": {
+                                    "actions": {},
+                                    "runAfter": {
+                                        "Grant_access_to_an_item_or_a_folder_2": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "else": {
+                                        "actions": {
+                                            "Grant_access_to_an_item_or_a_folder": {
+                                                "runAfter": {},
+                                                "type": "OpenApiConnection",
+                                                "inputs": {
+                                                    "host": {
+                                                        "connectionName": "shared_sharepointonline",
+                                                        "operationId": "GrantAccess",
+                                                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                    },
+                                                    "parameters": {
+                                                        "dataset": "@variables('siteAddress')",
+                                                        "table": "EventReview",
+                                                        "id": "@body('Parse_JSON')?['ID']",
+                                                        "parameter/recipients": "@join(body('Select_AssignedTo'),';')",
+                                                        "parameter/roleValue": "role: @{body('Parse_JSON_Get_ItemsViewAddUpdateNoDelete_Id')?['d']?['Id']}",
+                                                        "parameter/sendEmail": false
+                                                    },
+                                                    "authentication": "@parameters('$authentication')"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "expression": {
+                                        "equals": [
+                                            "@length(body('Select_AssignedTo'))",
+                                            0
+                                        ]
+                                    },
+                                    "type": "If"
+                                },
+                                "Send_an_HTTP_request_to_SharePoint_2": {
+                                    "runAfter": {
+                                        "Send_an_HTTP_request_to_SharePoint": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline_1",
+                                            "operationId": "HttpRequest",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "@variables('siteAddress')",
+                                            "parameters/method": "POST",
+                                            "parameters/uri": "_api/web/lists/getByTitle('EventReview')/items/getbyid(@{body('Parse_JSON')?['ID']})/breakroleinheritance(copyRoleAssignments=true, clearSubscopes=true)",
+                                            "parameters/headers": {
+                                                "accept": "application/json;odata=verbose",
+                                                "content-type": "application/json;odata=verbose"
+                                            }
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Send_an_HTTP_request_to_SharePoint": {
+                                    "runAfter": {},
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline_1",
+                                            "operationId": "HttpRequest",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "@variables('siteAddress')",
+                                            "parameters/method": "POST",
+                                            "parameters/uri": "_api/web/lists/getByTitle('EventReview')/items/getbyid(@{body('Parse_JSON')?['ID']})/resetroleinheritance",
+                                            "parameters/headers": {
+                                                "accept": "application/json;odata=verbose",
+                                                "content-type": "application/json;odata=verbose"
+                                            }
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                }
+                            },
+                            "runAfter": {},
+                            "type": "Scope"
+                        }
+                    },
+                    "runAfter": {
+                        "Condition_PayNowAction_Author": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "Scope"
+                },
+                "Scope_ItemsViewAddUpdateNoDelete": {
+                    "actions": {
+                        "Compose_SiteGroupIdMembers": {
+                            "runAfter": {},
+                            "type": "Compose",
+                            "inputs": 5
+                        },
+                        "Compose_ItemsViewAddUpdateNoDelete": {
+                            "runAfter": {
+                                "Compose_SiteGroupIdMembers": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Compose",
+                            "inputs": "ItemsViewAddUpdateNoDelete"
+                        },
+                        "Get_ItemsViewAddUpdateNoDelete_Id": {
+                            "runAfter": {
+                                "Compose_ItemsViewAddUpdateNoDelete": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "OpenApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connectionName": "shared_sharepointonline_1",
+                                    "operationId": "HttpRequest",
+                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                },
+                                "parameters": {
+                                    "dataset": "@variables('siteAddress')",
+                                    "parameters/method": "GET",
+                                    "parameters/uri": "_api/web/roledefinitions/getbyname('@{outputs('Compose_ItemsViewAddUpdateNoDelete')}')",
+                                    "parameters/headers": {
+                                        "accept": "application/json;odata=verbose",
+                                        "content-type": "application/json;odata=verbose"
+                                    }
+                                },
+                                "authentication": "@parameters('$authentication')"
+                            }
+                        },
+                        "Parse_JSON_Get_ItemsViewAddUpdateNoDelete_Id": {
+                            "runAfter": {
+                                "Get_ItemsViewAddUpdateNoDelete_Id": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "ParseJson",
+                            "inputs": {
+                                "content": "@body('Get_ItemsViewAddUpdateNoDelete_Id')",
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "d": {
+                                            "type": "object",
+                                            "properties": {
+                                                "__metadata": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "string"
+                                                        },
+                                                        "uri": {
+                                                            "type": "string"
+                                                        },
+                                                        "type": {
+                                                            "type": "string"
+                                                        }
+                                                    }
+                                                },
+                                                "BasePermissions": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "__metadata": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "type": {
+                                                                    "type": "string"
+                                                                }
+                                                            }
+                                                        },
+                                                        "High": {
+                                                            "type": "string"
+                                                        },
+                                                        "Low": {
+                                                            "type": "string"
+                                                        }
+                                                    }
+                                                },
+                                                "Description": {
+                                                    "type": "string"
+                                                },
+                                                "Hidden": {
+                                                    "type": "boolean"
+                                                },
+                                                "Id": {
+                                                    "type": "integer"
+                                                },
+                                                "Name": {
+                                                    "type": "string"
+                                                },
+                                                "Order": {
+                                                    "type": "integer"
+                                                },
+                                                "RoleTypeKind": {
+                                                    "type": "integer"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "runAfter": {
+                        "Select_AssignedTo": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "Scope"
+                },
+                "Initialize_variable_reviews": {
+                    "runAfter": {
+                        "Initialize_variable_payees": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "reviews",
+                                "type": "string"
+                            }
+                        ]
+                    }
+                },
+                "Condition_PayNowAction_Author": {
+                    "actions": {
+                        "Get_items_GroupsList": {
+                            "runAfter": {},
+                            "type": "OpenApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connectionName": "shared_sharepointonline_1",
+                                    "operationId": "GetItems",
+                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                },
+                                "parameters": {
+                                    "dataset": "https://@{outputs('Compose_TenantName')}.sharepoint.com/sites/@{parameters('envpar_config__CycleZeroName')}",
+                                    "table": "GroupsList",
+                                    "$filter": "Cycle1GroupName eq '@{triggerBody()?['Cycle1GroupName']}'",
+                                    "$top": 1
+                                },
+                                "authentication": "@parameters('$authentication')"
+                            }
+                        },
+                        "Get_items_UsersList_From": {
+                            "runAfter": {
+                                "Get_items_GroupsList": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "OpenApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connectionName": "shared_sharepointonline_1",
+                                    "operationId": "GetItems",
+                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                },
+                                "parameters": {
+                                    "dataset": "https://@{outputs('Compose_TenantName')}.sharepoint.com/sites/@{variables('Cycle1GroupName')}",
+                                    "table": "UsersList",
+                                    "$filter": "Title eq '@{body('Parse_JSON')?['Author']?['Email']}'",
+                                    "$top": 1
+                                },
+                                "authentication": "@parameters('$authentication')"
+                            }
+                        },
+                        "Apply_to_each_GroupsList": {
+                            "foreach": "@outputs('Get_items_GroupsList')?['body/value']",
+                            "actions": {
+                                "Apply_to_each_UsersList_From": {
+                                    "foreach": "@outputs('Get_items_UsersList_From')?['body/value']",
+                                    "actions": {
+                                        "Apply_to_each_AssignedTo": {
+                                            "foreach": "@body('Select_AssignedTo')",
+                                            "actions": {
+                                                "Get_items_UsersList_To": {
+                                                    "runAfter": {},
+                                                    "type": "OpenApiConnection",
+                                                    "inputs": {
+                                                        "host": {
+                                                            "connectionName": "shared_sharepointonline_1",
+                                                            "operationId": "GetItems",
+                                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                        },
+                                                        "parameters": {
+                                                            "dataset": "https://@{outputs('Compose_TenantName')}.sharepoint.com/sites/@{variables('Cycle1GroupName')}",
+                                                            "table": "UsersList",
+                                                            "$filter": "Title eq '@{items('Apply_to_each_AssignedTo')}'",
+                                                            "$top": 1
+                                                        },
+                                                        "authentication": "@parameters('$authentication')"
+                                                    }
+                                                },
+                                                "Apply_to_each_UsersList_To": {
+                                                    "foreach": "@outputs('Get_items_UsersList_To')?['body/value']",
+                                                    "actions": {
+                                                        "Condition_Subscriptions": {
+                                                            "actions": {
+                                                                "HTTP_Get_customer": {
+                                                                    "runAfter": {},
+                                                                    "type": "Http",
+                                                                    "inputs": {
+                                                                        "method": "GET",
+                                                                        "uri": "https://api.stripe.com/v1/customers/@{items('Apply_to_each_UsersList_From')?['StripeCustomerId']}",
+                                                                        "authentication": {
+                                                                            "type": "Raw",
+                                                                            "value": "Bearer @{items('Apply_to_each_GroupsList')?['StripeKey']}"
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "Parse_JSON_Customer": {
+                                                                    "runAfter": {
+                                                                        "HTTP_Get_customer": [
+                                                                            "Succeeded"
+                                                                        ]
+                                                                    },
+                                                                    "type": "ParseJson",
+                                                                    "inputs": {
+                                                                        "content": "@body('HTTP_Get_customer')",
+                                                                        "schema": {
+                                                                            "type": "object",
+                                                                            "properties": {
+                                                                                "id": {
+                                                                                    "type": "string"
+                                                                                },
+                                                                                "balance": {
+                                                                                    "type": "integer"
+                                                                                },
+                                                                                "currency": {
+                                                                                    "type": "string"
+                                                                                },
+                                                                                "subscriptions": {
+                                                                                    "type": "object",
+                                                                                    "properties": {
+                                                                                        "data": {
+                                                                                            "type": "array",
+                                                                                            "items": {
+                                                                                                "type": "object",
+                                                                                                "properties": {
+                                                                                                    "id": {
+                                                                                                        "type": "string"
+                                                                                                    },
+                                                                                                    "current_period_end": {
+                                                                                                        "type": "integer"
+                                                                                                    }
+                                                                                                },
+                                                                                                "required": [
+                                                                                                    "id",
+                                                                                                    "current_period_end"
+                                                                                                ]
+                                                                                            }
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "Condition_2": {
+                                                                    "actions": {},
+                                                                    "runAfter": {
+                                                                        "Parse_JSON_Customer": [
+                                                                            "Succeeded"
+                                                                        ]
+                                                                    },
+                                                                    "else": {
+                                                                        "actions": {
+                                                                            "Set_variable_StatusDescription_2": {
+                                                                                "runAfter": {
+                                                                                    "Append_to_array_variable_payees": [
+                                                                                        "Succeeded"
+                                                                                    ]
+                                                                                },
+                                                                                "type": "SetVariable",
+                                                                                "inputs": {
+                                                                                    "name": "StatusDescription",
+                                                                                    "value": "SUCCESS of Payment transfer of @{body('Parse_JSON')?['PayAmount']} @{items('Apply_to_each_GroupsList')?['CurrencyCode']} from @{items('Apply_to_each_UsersList_From')?['Title']} to @{items('Apply_to_each_UsersList_To')?['Title']} in this root group @{triggerBody()?['Cycle1GroupName']}"
+                                                                                }
+                                                                            },
+                                                                            "Compose_amount": {
+                                                                                "runAfter": {},
+                                                                                "type": "Compose",
+                                                                                "inputs": "@if(contains(createArray('bif', 'clp', 'djf', 'gnf', 'jpy', 'kmf', 'krw', 'mga', 'pyg', 'rwf', 'vnd', 'vuv', 'xaf', 'xof', 'xpf'), items('Apply_to_each_GroupsList')?['CurrencyCode']), int(body('Parse_JSON')?['PayAmount']) , int(mul(float(body('Parse_JSON')?['PayAmount']), 100)) )"
+                                                                            },
+                                                                            "Get_files_Predecessors": {
+                                                                                "runAfter": {
+                                                                                    "HTTP_Add_Balance": [
+                                                                                        "Succeeded"
+                                                                                    ]
+                                                                                },
+                                                                                "type": "OpenApiConnection",
+                                                                                "inputs": {
+                                                                                    "host": {
+                                                                                        "connectionName": "shared_sharepointonline_1",
+                                                                                        "operationId": "GetFileItems",
+                                                                                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                                                    },
+                                                                                    "parameters": {
+                                                                                        "dataset": "@variables('siteAddress')",
+                                                                                        "table": "EventReview",
+                                                                                        "$filter": "Predecessors eq '@{body('Parse_JSON')?['ID']}'"
+                                                                                    },
+                                                                                    "authentication": "@parameters('$authentication')"
+                                                                                }
+                                                                            },
+                                                                            "Filter_array_Predecessors": {
+                                                                                "runAfter": {
+                                                                                    "Get_files_Predecessors": [
+                                                                                        "Succeeded"
+                                                                                    ]
+                                                                                },
+                                                                                "type": "Query",
+                                                                                "inputs": {
+                                                                                    "from": "@outputs('Get_files_Predecessors')?['body/value']",
+                                                                                    "where": "@equals(item()?['Author']?['Email'], items('Apply_to_each_UsersList_To')?['Title'])"
+                                                                                }
+                                                                            },
+                                                                            "Apply_to_each_Predecessors": {
+                                                                                "foreach": "@body('Filter_array_Predecessors')",
+                                                                                "actions": {
+                                                                                    "Run_a_Child_Flow_Predecessors": {
+                                                                                        "runAfter": {},
+                                                                                        "type": "Workflow",
+                                                                                        "inputs": {
+                                                                                            "host": {
+                                                                                                "workflowReferenceName": "d04f0d38-b776-eb11-a812-0022486d6717"
+                                                                                            },
+                                                                                            "body": {
+                                                                                                "siteName": "@variables('siteName')",
+                                                                                                "fileIdentifier": "@items('Apply_to_each_Predecessors')?['{FullPath}']"
+                                                                                            }
+                                                                                        }
+                                                                                    },
+                                                                                    "Append_to_string_variable_reviews": {
+                                                                                        "runAfter": {
+                                                                                            "Run_a_Child_Flow_Predecessors": [
+                                                                                                "Succeeded"
+                                                                                            ]
+                                                                                        },
+                                                                                        "type": "AppendToStringVariable",
+                                                                                        "inputs": {
+                                                                                            "name": "reviews",
+                                                                                            "value": "\n<ws365><ereview>\n<reviewer> @{items('Apply_to_each_UsersList_To')?['Title']} </reviewer>\n<url> @{items('Apply_to_each_Predecessors')?['{Link}']} </url>\n<pay> @{body('Parse_JSON')?['PayAmount']} @{items('Apply_to_each_GroupsList')?['CurrencyCode']} </pay>\n</ereview></ws365>\n\n@{body('Run_a_Child_Flow_Predecessors')?['title']}\n@{body('Run_a_Child_Flow_Predecessors')?['short']}"
+                                                                                        }
+                                                                                    }
+                                                                                },
+                                                                                "runAfter": {
+                                                                                    "Filter_array_Predecessors": [
+                                                                                        "Succeeded"
+                                                                                    ]
+                                                                                },
+                                                                                "type": "Foreach"
+                                                                            },
+                                                                            "Append_to_array_variable_payees": {
+                                                                                "runAfter": {
+                                                                                    "Apply_to_each_Predecessors": [
+                                                                                        "Succeeded"
+                                                                                    ]
+                                                                                },
+                                                                                "type": "AppendToArrayVariable",
+                                                                                "inputs": {
+                                                                                    "name": "payees",
+                                                                                    "value": "@items('Apply_to_each_UsersList_To')?['Title']"
+                                                                                }
+                                                                            },
+                                                                            "HTTP_Delete_Balance": {
+                                                                                "runAfter": {
+                                                                                    "Compose_amount": [
+                                                                                        "Succeeded"
+                                                                                    ]
+                                                                                },
+                                                                                "type": "Http",
+                                                                                "inputs": {
+                                                                                    "method": "POST",
+                                                                                    "uri": "https://api.stripe.com/v1/customers/@{items('Apply_to_each_UsersList_From')?['StripeCustomerId']}/balance_transactions",
+                                                                                    "headers": {
+                                                                                        "Content-type": "application/x-www-form-urlencoded"
+                                                                                    },
+                                                                                    "body": "amount=@{outputs('Compose_amount')}&currency=@{items('Apply_to_each_GroupsList')?['CurrencyCode']}&metadata%5Bsource%5D=@{variables('siteName')}__EventReview&metadata%5Bid%5D=@{body('Parse_JSON')?['ID']}",
+                                                                                    "authentication": {
+                                                                                        "type": "Raw",
+                                                                                        "value": "Bearer @{items('Apply_to_each_GroupsList')?['StripeKey']}"
+                                                                                    }
+                                                                                }
+                                                                            },
+                                                                            "HTTP_Add_Balance": {
+                                                                                "runAfter": {
+                                                                                    "HTTP_Delete_Balance": [
+                                                                                        "Succeeded"
+                                                                                    ]
+                                                                                },
+                                                                                "type": "Http",
+                                                                                "inputs": {
+                                                                                    "method": "POST",
+                                                                                    "uri": "https://api.stripe.com/v1/customers/@{items('Apply_to_each_UsersList_To')?['StripeCustomerId']}/balance_transactions",
+                                                                                    "headers": {
+                                                                                        "Content-type": "application/x-www-form-urlencoded"
+                                                                                    },
+                                                                                    "body": "amount=-@{outputs('Compose_amount')}&currency=@{items('Apply_to_each_GroupsList')?['CurrencyCode']}&metadata%5Bsource%5D=@{variables('siteName')}__EventReview&metadata%5Bid%5D=@{body('Parse_JSON')?['ID']}",
+                                                                                    "authentication": {
+                                                                                        "type": "Raw",
+                                                                                        "value": "Bearer @{items('Apply_to_each_GroupsList')?['StripeKey']}"
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    },
+                                                                    "expression": {
+                                                                        "and": [
+                                                                            {
+                                                                                "less": [
+                                                                                    "@div(body('Parse_JSON_Customer')?['balance'], float(-100))",
+                                                                                    "@float(body('Parse_JSON')?['PayAmount'])"
+                                                                                ]
+                                                                            },
+                                                                            {
+                                                                                "equals": [
+                                                                                    "@true",
+                                                                                    "@false"
+                                                                                ]
+                                                                            }
+                                                                        ]
+                                                                    },
+                                                                    "type": "If"
+                                                                }
+                                                            },
+                                                            "runAfter": {},
+                                                            "else": {
+                                                                "actions": {
+                                                                    "Set_variable_StatusDescription_3": {
+                                                                        "runAfter": {},
+                                                                        "type": "SetVariable",
+                                                                        "inputs": {
+                                                                            "name": "StatusDescription",
+                                                                            "value": "@{if(equals(items('Apply_to_each_UsersList_From')?['StripeSubscriptionId'], ''), 'The source author has not setup payment account in this group', \r\nif(equals(items('Apply_to_each_UsersList_To')?['StripeSubscriptionId'], ''), 'The assignee destination has not setup payment account in this group', \r\n'This group has not setup payments')\r\n)}"
+                                                                        }
+                                                                    }
+                                                                }
+                                                            },
+                                                            "expression": {
+                                                                "and": [
+                                                                    {
+                                                                        "not": {
+                                                                            "equals": [
+                                                                                "@items('Apply_to_each_UsersList_From')?['StripeSubscriptionId']",
+                                                                                "@null"
+                                                                            ]
+                                                                        }
+                                                                    },
+                                                                    {
+                                                                        "not": {
+                                                                            "equals": [
+                                                                                "@items('Apply_to_each_UsersList_To')?['StripeSubscriptionId']",
+                                                                                "@null"
+                                                                            ]
+                                                                        }
+                                                                    },
+                                                                    {
+                                                                        "not": {
+                                                                            "equals": [
+                                                                                "@items('Apply_to_each_GroupsList')?['StripeKey']",
+                                                                                "@null"
+                                                                            ]
+                                                                        }
+                                                                    }
+                                                                ]
+                                                            },
+                                                            "type": "If"
+                                                        }
+                                                    },
+                                                    "runAfter": {
+                                                        "Get_items_UsersList_To": [
+                                                            "Succeeded"
+                                                        ]
+                                                    },
+                                                    "type": "Foreach"
+                                                }
+                                            },
+                                            "runAfter": {},
+                                            "type": "Foreach"
+                                        }
+                                    },
+                                    "runAfter": {},
+                                    "type": "Foreach"
+                                }
+                            },
+                            "runAfter": {
+                                "Get_items_UsersList_From": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Foreach"
+                        },
+                        "Scope": {
+                            "actions": {
+                                "Create_file_Receipt": {
+                                    "runAfter": {},
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline_1",
+                                            "operationId": "CreateFile",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "@variables('siteAddress')",
+                                            "folderPath": "EventReview/Receipts",
+                                            "name": "@{body('Parse_JSON')?['Author']?['Email']} @{body('Parse_JSON')?['{Name}']} @{body('Parse_JSON')?['Modified']} @{variables('fileItemId')}.docx",
+                                            "body": "{\"$content-type\":\"application/vnd.openxmlformats-officedocument.wordprocessingml.document\",\n\"$content\":\"\"}"
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    },
+                                    "runtimeConfiguration": {
+                                        "contentTransfer": {
+                                            "transferMode": "Chunked"
+                                        }
+                                    }
+                                },
+                                "Send_an_HTTP_request_to_SharePoint_4": {
+                                    "runAfter": {
+                                        "Create_file_Receipt": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline_1",
+                                            "operationId": "HttpRequest",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "@variables('siteAddress')",
+                                            "parameters/method": "POST",
+                                            "parameters/uri": "_api/web/lists/getByTitle('EventReview')/items/getbyid(@{outputs('Create_file_Receipt')?['body/ItemId']})/breakroleinheritance(copyRoleAssignments=true, clearSubscopes=true)",
+                                            "parameters/headers": {
+                                                "accept": "application/json;odata=verbose",
+                                                "content-type": "application/json;odata=verbose"
+                                            }
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Send_an_HTTP_request_to_SharePoint_5": {
+                                    "runAfter": {
+                                        "Send_an_HTTP_request_to_SharePoint_4": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline_1",
+                                            "operationId": "HttpRequest",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "@variables('siteAddress')",
+                                            "parameters/method": "POST",
+                                            "parameters/uri": "_api/web/lists/getByTitle('EventReview')/items/getbyid(@{outputs('Create_file_Receipt')?['body/ItemId']})/roleassignments/removeroleassignment(principalid=@{outputs('Compose_SiteGroupIdMembers')}, roledefid=@{body('Parse_JSON_Get_ItemsViewAddUpdateNoDelete_Id')?['d']?['Id']})",
+                                            "parameters/headers": {
+                                                "accept": "application/json;odata=verbose",
+                                                "content-type": "application/json;odata=verbose"
+                                            }
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Update_file_properties_Receipt": {
+                                    "runAfter": {
+                                        "Update_file_Receipt": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline_1",
+                                            "operationId": "PatchFileItem",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "@variables('siteAddress')",
+                                            "table": "EventReview",
+                                            "id": "@outputs('Create_file_Receipt')?['body/ItemId']",
+                                            "item": {
+                                                "Title": "@{body('Run_a_Child_Flow_Author')?['title']}",
+                                                "AssignedTo": "@body('Select_AssignedTo_Claims')",
+                                                "PayAmount": "@body('Parse_JSON')?['PayAmount']",
+                                                "PayNowAction": "@body('Parse_JSON')?['PayNowAction']",
+                                                "SharingLink": "@{outputs('Create_sharing_link_Receipt')?['body/link/webUrl']}",
+                                                "AssignmentRef": {
+                                                    "@@odata.type": "#Microsoft.Azure.Connectors.SharePoint.SPListExpandedReference",
+                                                    "Id": "@variables('fileItemId')",
+                                                    "Value": "@{variables('fileItemId')}"
+                                                },
+                                                "{ContentType}": {
+                                                    "Id": "@{body('Parse_JSON')?['{ContentType}']?['Id']}"
+                                                },
+                                                "Short": "@{body('Run_a_Child_Flow_Author')?['short']}"
+                                            }
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Get_file_metadata_using_path_Receipt": {
+                                    "runAfter": {
+                                        "Update_file_properties_Receipt": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline_1",
+                                            "operationId": "GetFileMetadataByPath",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "@variables('siteAddress')",
+                                            "path": "@outputs('Create_file_Receipt')?['body/Path']"
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Set_content_approval_status_Receipt_Submit": {
+                                    "runAfter": {
+                                        "Get_file_metadata_using_path_Receipt": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline_1",
+                                            "operationId": "SetApprovalStatus",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "@variables('siteAddress')",
+                                            "table": "EventReview",
+                                            "id": "@outputs('Create_file_Receipt')?['body/ItemId']",
+                                            "approvalAction": "Submit",
+                                            "comments": "",
+                                            "entityTag": "@outputs('Get_file_metadata_using_path_Receipt')?['body/ETag']"
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Set_content_approval_status_Receipt_Approve": {
+                                    "runAfter": {
+                                        "Set_content_approval_status_Receipt_Submit": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline_1",
+                                            "operationId": "SetApprovalStatus",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "@variables('siteAddress')",
+                                            "table": "EventReview",
+                                            "id": "@outputs('Create_file_Receipt')?['body/ItemId']",
+                                            "approvalAction": "Approve",
+                                            "comments": "",
+                                            "entityTag": "@outputs('Set_content_approval_status_Receipt_Submit')?['body/ETag']"
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Filter_array_AssignedTo_Claims": {
+                                    "runAfter": {
+                                        "Create_sharing_link_Receipt": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "Query",
+                                    "inputs": {
+                                        "from": "@body('Parse_JSON')?['AssignedTo']",
+                                        "where": "@contains(variables('payees'), item()?['Email'])"
+                                    }
+                                },
+                                "Select_AssignedTo_Claims": {
+                                    "runAfter": {
+                                        "Filter_array_AssignedTo_Claims": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "Select",
+                                    "inputs": {
+                                        "from": "@body('Filter_array_AssignedTo_Claims')",
+                                        "select": {
+                                            "Claims": "@item()?['Claims']"
+                                        }
+                                    }
+                                },
+                                "Update_file_Receipt": {
+                                    "runAfter": {
+                                        "Populate_a_Microsoft_Word_template": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline_1",
+                                            "operationId": "UpdateFile",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "@variables('siteAddress')",
+                                            "id": "@outputs('Create_file_Receipt')?['body/Id']",
+                                            "body": "@outputs('Populate_a_Microsoft_Word_template')?['body']"
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Create_sharing_link_Receipt": {
+                                    "runAfter": {
+                                        "Send_an_HTTP_request_to_SharePoint_5": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline_1",
+                                            "operationId": "CreateSharingLink",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "@variables('siteAddress')",
+                                            "table": "EventReview",
+                                            "id": "@outputs('Create_file_Receipt')?['body/ItemId']",
+                                            "permission/type": "view",
+                                            "permission/scope": "anonymous"
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Run_a_Child_Flow_Author": {
+                                    "runAfter": {
+                                        "Select_AssignedTo_Claims": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "Workflow",
+                                    "inputs": {
+                                        "host": {
+                                            "workflowReferenceName": "d04f0d38-b776-eb11-a812-0022486d6717"
+                                        },
+                                        "body": {
+                                            "siteName": "@variables('siteName')",
+                                            "fileIdentifier": "@body('Parse_JSON')?['{FullPath}']"
+                                        }
+                                    }
+                                },
+                                "Populate_a_Microsoft_Word_template": {
+                                    "runAfter": {
+                                        "Run_a_Child_Flow_Author": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_wordonlinebusiness",
+                                            "operationId": "CreateFileItem",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_wordonlinebusiness"
+                                        },
+                                        "parameters": {
+                                            "source": "@variables('siteAddress')",
+                                            "drive": "@variables('driveId')",
+                                            "file": "@join(skip(split(body('Parse_JSON')?['{FullPath}'], '/'), 1), '/')",
+                                            "dynamicFileSchema": {
+                                                "@{body('Run_a_Child_Flow_Author')?['ccid']}": "Author: @{body('Parse_JSON')?['Author']?['Email']} ; Sharing Link: @{outputs('Create_sharing_link_Receipt')?['body/link/webUrl']}\n@{variables('reviews')}"
+                                            }
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                }
+                            },
+                            "runAfter": {
+                                "Apply_to_each_GroupsList": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Scope"
+                        }
+                    },
+                    "runAfter": {
+                        "Scope_ItemsViewAddUpdateNoDelete": [
+                            "Succeeded"
+                        ]
+                    },
+                    "expression": {
+                        "and": [
+                            {
+                                "equals": [
+                                    "@body('Parse_JSON')?['PayNowAction']",
+                                    "@true"
+                                ]
+                            },
+                            {
+                                "equals": [
+                                    "@body('Parse_JSON')?['Author']?['Email']",
+                                    "@body('Parse_JSON')?['Editor']?['Email']"
+                                ]
+                            },
+                            {
+                                "greaterOrEquals": [
+                                    "@float(coalesce(body('Parse_JSON')?['PayAmount'], 0))",
+                                    "@1"
+                                ]
+                            },
+                            {
+                                "greater": [
+                                    "@length(body('Select_AssignedTo'))",
+                                    "@0"
+                                ]
+                            }
+                        ]
+                    },
+                    "type": "If"
+                },
+                "Initialize_variable_payees": {
+                    "runAfter": {
+                        "Initialize_variable_StatusDescription": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "payees",
+                                "type": "array"
+                            }
+                        ]
+                    }
+                }
+            },
+            "outputs": {}
+        }
+    },
+    "schemaVersion": "1.0.0.0"
+}

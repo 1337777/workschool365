@@ -1,0 +1,1525 @@
+{
+    "properties": {
+        "connectionReferences": {
+            "shared_sharepointonline": {
+                "runtimeSource": "embedded",
+                "connection": {
+                    "connectionReferenceLogicalName": "new_sharedsharepointonline_9ad14"
+                },
+                "api": {
+                    "name": "shared_sharepointonline"
+                }
+            },
+            "shared_flowmanagement": {
+                "runtimeSource": "embedded",
+                "connection": {
+                    "connectionReferenceLogicalName": "new_sharedflowmanagement_f1091"
+                },
+                "api": {
+                    "name": "shared_flowmanagement"
+                }
+            }
+        },
+        "definition": {
+            "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+            "contentVersion": "1.0.0.0",
+            "parameters": {
+                "$connections": {
+                    "defaultValue": {},
+                    "type": "Object"
+                },
+                "$authentication": {
+                    "defaultValue": {},
+                    "type": "SecureObject"
+                },
+                "envpar_config__TenantName": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__TenantName",
+                        "description": "Required. Org Name orgname (this is the prefix of the auto assigned domain orgname.onmicrosoft.com)"
+                    }
+                },
+                "envpar_config__CycleZeroName": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__CycleZeroName",
+                        "description": "Required. Could have many environments N each with its envN_cycle0 template"
+                    }
+                },
+                "envpar_config__MicrosoftAppId": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__MicrosoftAppId",
+                        "description": "Service Principal Id for Microsoft Marketplace Api. Enter space character ( ) for none. Filled automatically."
+                    }
+                },
+                "envpar_http__AzureAD_Signed": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_http__AzureAD_Signed",
+                        "description": "This flow HTTP trigger URL. Enter space character ( ) for none. Filled automatically."
+                    }
+                },
+                "envpar_config__TenantDomain": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__TenantDomain",
+                        "description": "Required. Org Domain name such as orgname.onmicrosoft.com or orgname.com"
+                    }
+                },
+                "envpar_config__GraphAppId": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__GraphAppId",
+                        "description": "Service Principal Id for Graph Api. Enter space character ( ) for none. Filled automatically."
+                    }
+                },
+                "envpar_config__GraphAppSecret": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__GraphAppSecret",
+                        "description": "Service Principal Secret for Graph Api. Enter space character ( ) for none. Filled automatically."
+                    }
+                },
+                "envpar_id__AllFlows": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_id__AllFlows",
+                        "description": "UIDs of all Template Flows as json object. Enter space character { } for none. Filled automatically."
+                    }
+                }
+            },
+            "triggers": {
+                "When_an_item_is_created": {
+                    "recurrence": {
+                        "interval": 3,
+                        "frequency": "Minute"
+                    },
+                    "splitOn": "@triggerOutputs()?['body/value']",
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                        "host": {
+                            "connectionName": "shared_sharepointonline",
+                            "operationId": "GetOnNewItems",
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                        },
+                        "parameters": {
+                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{parameters('envpar_config__CycleZeroName')}",
+                            "table": "MyGroups"
+                        },
+                        "authentication": "@parameters('$authentication')"
+                    }
+                }
+            },
+            "actions": {
+                "Initialize_variable_varCyclesGroup": {
+                    "runAfter": {},
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "varCyclesGroup",
+                                "type": "array",
+                                "value": []
+                            }
+                        ]
+                    }
+                },
+                "Initialize_variable_varCounter": {
+                    "runAfter": {
+                        "Initialize_variable_varCyclesGroup": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "varCounter",
+                                "type": "integer",
+                                "value": 0
+                            }
+                        ]
+                    }
+                },
+                "Get_items_GroupsList": {
+                    "runAfter": {
+                        "Initialize_variable_varCounter": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                        "host": {
+                            "connectionName": "shared_sharepointonline",
+                            "operationId": "GetItems",
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                        },
+                        "parameters": {
+                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{parameters('envpar_config__CycleZeroName')}",
+                            "table": "GroupsList",
+                            "$filter": "CyclesGroupOwner eq '@{triggerOutputs()?['body/Author/Email']}'",
+                            "$top": 1
+                        },
+                        "authentication": "@parameters('$authentication')"
+                    }
+                },
+                "Apply_to_each": {
+                    "foreach": "@outputs('Get_items_GroupsList')?['body/value']",
+                    "actions": {
+                        "Scope_Flows": {
+                            "actions": {
+                                "Scope_7": {
+                                    "actions": {},
+                                    "runAfter": {},
+                                    "type": "Scope"
+                                },
+                                "Scope_Stripe": {
+                                    "actions": {
+                                        "Condition": {
+                                            "actions": {},
+                                            "runAfter": {},
+                                            "else": {
+                                                "actions": {
+                                                    "Get_Flow_Stripe": {
+                                                        "runAfter": {},
+                                                        "type": "OpenApiConnection",
+                                                        "inputs": {
+                                                            "host": {
+                                                                "connectionName": "shared_flowmanagement",
+                                                                "operationId": "GetFlow",
+                                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                                            },
+                                                            "parameters": {
+                                                                "environmentName": "@{workflow()?['tags']?['environmentName']}",
+                                                                "flowName": "@{json(parameters('envpar_id__AllFlows'))?['cycle0__Stripe_Webhook__Template']}"
+                                                            },
+                                                            "authentication": "@parameters('$authentication')"
+                                                        }
+                                                    },
+                                                    "List_My_Flows_Stripe": {
+                                                        "runAfter": {
+                                                            "Get_Flow_Stripe": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "OpenApiConnection",
+                                                        "inputs": {
+                                                            "host": {
+                                                                "connectionName": "shared_flowmanagement",
+                                                                "operationId": "ListMyFlows",
+                                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                                            },
+                                                            "parameters": {
+                                                                "environmentName": "@{workflow()?['tags']?['environmentName']}"
+                                                            },
+                                                            "authentication": "@parameters('$authentication')"
+                                                        }
+                                                    },
+                                                    "Filter_array_Stripe": {
+                                                        "runAfter": {
+                                                            "List_My_Flows_Stripe": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "Query",
+                                                        "inputs": {
+                                                            "from": "@outputs('List_My_Flows_Stripe')?['body/value']",
+                                                            "where": "@startsWith(item()?['properties/displayName'], replace(replace(outputs('Get_Flow_Stripe')?['body/properties/displayName'], parameters('envpar_config__CycleZeroName'), items('Apply_to_each')?['Cycle1GroupName']), 'tplparam_cyclname', items('Apply_to_each')?['Cycle1GroupName']))"
+                                                        }
+                                                    },
+                                                    "Apply_to_each_Stripe": {
+                                                        "foreach": "@body('Filter_array_Stripe')",
+                                                        "actions": {
+                                                            "Turn_Off_Flow_Stripe": {
+                                                                "runAfter": {},
+                                                                "type": "OpenApiConnection",
+                                                                "inputs": {
+                                                                    "host": {
+                                                                        "connectionName": "shared_flowmanagement",
+                                                                        "operationId": "StopFlow",
+                                                                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                                                    },
+                                                                    "parameters": {
+                                                                        "environmentName": "@{workflow()?['tags']?['environmentName']}",
+                                                                        "flowName": "@items('Apply_to_each_Stripe')?['name']"
+                                                                    },
+                                                                    "authentication": "@parameters('$authentication')"
+                                                                }
+                                                            },
+                                                            "Delete_Flow_Stripe": {
+                                                                "runAfter": {
+                                                                    "Turn_Off_Flow_Stripe": [
+                                                                        "Succeeded"
+                                                                    ]
+                                                                },
+                                                                "type": "OpenApiConnection",
+                                                                "inputs": {
+                                                                    "host": {
+                                                                        "connectionName": "shared_flowmanagement",
+                                                                        "operationId": "DeleteFlow",
+                                                                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                                                    },
+                                                                    "parameters": {
+                                                                        "environmentName": "@{workflow()?['tags']?['environmentName']}",
+                                                                        "flowName": "@items('Apply_to_each_Stripe')?['name']"
+                                                                    },
+                                                                    "authentication": "@parameters('$authentication')"
+                                                                }
+                                                            }
+                                                        },
+                                                        "runAfter": {
+                                                            "Filter_array_Stripe": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "Foreach"
+                                                    },
+                                                    "Create_Flow_Stripe": {
+                                                        "runAfter": {
+                                                            "Apply_to_each_Stripe": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "OpenApiConnection",
+                                                        "inputs": {
+                                                            "host": {
+                                                                "connectionName": "shared_flowmanagement",
+                                                                "operationId": "CreateFlow",
+                                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                                            },
+                                                            "parameters": {
+                                                                "environmentName": "@{workflow()?['tags']?['environmentName']}",
+                                                                "Flow/properties/displayName": "@replace(replace(outputs('Get_Flow_Stripe')?['body/properties/displayName'], parameters('envpar_config__CycleZeroName'), items('Apply_to_each')?['Cycle1GroupName']), 'tplparam_cyclname', items('Apply_to_each')?['Cycle1GroupName'])",
+                                                                "Flow/properties/definition": "@json(\r\nreplace(replace(replace(replace(string(outputs('Get_Flow_Stripe')?['body/properties/definition']), 'parameters(''envpar_config__CycleZeroName'')', concat('''', items('Apply_to_each')?['Cycle1GroupName'], '''')), \r\n'tplparam_cyclname', items('Apply_to_each')?['Cycle1GroupName'] ),\r\n'tplparam_cyclgroupslistitemid' , string(items('Apply_to_each')?['ID']) ),\r\n'tplparam_cyclmygroupsitemid'  , string(triggerOutputs()?['body/ID']) ))",
+                                                                "Flow/properties/state": "Started"
+                                                            },
+                                                            "authentication": "@parameters('$authentication')"
+                                                        }
+                                                    },
+                                                    "HTTP_Readd_to_group": {
+                                                        "runAfter": {
+                                                            "HTTP_Delete_from_group": [
+                                                                "Succeeded",
+                                                                "Failed"
+                                                            ]
+                                                        },
+                                                        "type": "Http",
+                                                        "inputs": {
+                                                            "method": "POST",
+                                                            "uri": "https://graph.microsoft.com/v1.0/groups/@{items('Apply_to_each')?['Cycle1GroupId']}/members/$ref",
+                                                            "headers": {
+                                                                "Content-type": "application/json"
+                                                            },
+                                                            "body": {
+                                                                "@@odata.id": "https://graph.microsoft.com/v1.0/directoryObjects/@{items('Apply_to_each')?['CyclesGroupOwnerId']}"
+                                                            },
+                                                            "authentication": {
+                                                                "type": "ActiveDirectoryOAuth",
+                                                                "tenant": "@parameters('envpar_config__TenantDomain')",
+                                                                "audience": "https://graph.microsoft.com",
+                                                                "clientId": "@parameters('envpar_config__GraphAppId')",
+                                                                "secret": "@parameters('envpar_config__GraphAppSecret')"
+                                                            }
+                                                        }
+                                                    },
+                                                    "HTTP_Delete_from_group": {
+                                                        "runAfter": {
+                                                            "Turn_On_Flow_2_Stripe": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "Http",
+                                                        "inputs": {
+                                                            "method": "DELETE",
+                                                            "uri": "https://graph.microsoft.com/v1.0/groups/@{items('Apply_to_each')?['Cycle1GroupId']}/members/@{items('Apply_to_each')?['CyclesGroupOwnerId']}/$ref",
+                                                            "headers": {
+                                                                "Content-type": "application/json"
+                                                            },
+                                                            "authentication": {
+                                                                "type": "ActiveDirectoryOAuth",
+                                                                "tenant": "@parameters('envpar_config__TenantDomain')",
+                                                                "audience": "https://graph.microsoft.com",
+                                                                "clientId": "@parameters('envpar_config__GraphAppId')",
+                                                                "secret": "@parameters('envpar_config__GraphAppSecret')"
+                                                            }
+                                                        }
+                                                    },
+                                                    "Scope": {
+                                                        "actions": {},
+                                                        "runAfter": {
+                                                            "HTTP_Readd_to_group": [
+                                                                "Failed"
+                                                            ]
+                                                        },
+                                                        "type": "Scope"
+                                                    },
+                                                    "Turn_Off_Flow_2_Stripe": {
+                                                        "runAfter": {
+                                                            "Create_Flow_Stripe": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "OpenApiConnection",
+                                                        "inputs": {
+                                                            "host": {
+                                                                "connectionName": "shared_flowmanagement",
+                                                                "operationId": "StopFlow",
+                                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                                            },
+                                                            "parameters": {
+                                                                "environmentName": "@workflow()?['tags']?['environmentName']",
+                                                                "flowName": "@outputs('Create_Flow_Stripe')?['body/name']"
+                                                            },
+                                                            "authentication": "@parameters('$authentication')"
+                                                        }
+                                                    },
+                                                    "Turn_On_Flow_2_Stripe": {
+                                                        "runAfter": {
+                                                            "Turn_Off_Flow_2_Stripe": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "OpenApiConnection",
+                                                        "inputs": {
+                                                            "host": {
+                                                                "connectionName": "shared_flowmanagement",
+                                                                "operationId": "StartFlow",
+                                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                                            },
+                                                            "parameters": {
+                                                                "environmentName": "@workflow()?['tags']?['environmentName']",
+                                                                "flowName": "@outputs('Create_Flow_Stripe')?['body/name']"
+                                                            },
+                                                            "authentication": "@parameters('$authentication')"
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "expression": {
+                                                "equals": [
+                                                    "@triggerOutputs()?['body/StripeKey']",
+                                                    "@null"
+                                                ]
+                                            },
+                                            "type": "If"
+                                        }
+                                    },
+                                    "runAfter": {
+                                        "Scope_7": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "Scope"
+                                },
+                                "Scope_Paypal": {
+                                    "actions": {
+                                        "Condition_2": {
+                                            "actions": {},
+                                            "runAfter": {},
+                                            "else": {
+                                                "actions": {
+                                                    "Get_Flow_Paypal": {
+                                                        "runAfter": {},
+                                                        "type": "OpenApiConnection",
+                                                        "inputs": {
+                                                            "host": {
+                                                                "connectionName": "shared_flowmanagement",
+                                                                "operationId": "GetFlow",
+                                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                                            },
+                                                            "parameters": {
+                                                                "environmentName": "@{workflow()?['tags']?['environmentName']}",
+                                                                "flowName": "@{json(parameters('envpar_id__AllFlows'))?['cycle0__Paypal_Webhook__Template']}"
+                                                            },
+                                                            "authentication": "@parameters('$authentication')"
+                                                        }
+                                                    },
+                                                    "List_My_Flows_Paypal": {
+                                                        "runAfter": {
+                                                            "Get_Flow_Paypal": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "OpenApiConnection",
+                                                        "inputs": {
+                                                            "host": {
+                                                                "connectionName": "shared_flowmanagement",
+                                                                "operationId": "ListMyFlows",
+                                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                                            },
+                                                            "parameters": {
+                                                                "environmentName": "@{workflow()?['tags']?['environmentName']}"
+                                                            },
+                                                            "authentication": "@parameters('$authentication')"
+                                                        }
+                                                    },
+                                                    "Filter_array_Paypal": {
+                                                        "runAfter": {
+                                                            "List_My_Flows_Paypal": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "Query",
+                                                        "inputs": {
+                                                            "from": "@outputs('List_My_Flows_Paypal')?['body/value']",
+                                                            "where": "@startsWith(item()?['properties/displayName'], replace(replace(outputs('Get_Flow_Paypal')?['body/properties/displayName'], parameters('envpar_config__CycleZeroName'), items('Apply_to_each')?['Cycle1GroupName']), 'tplparam_cyclname', items('Apply_to_each')?['Cycle1GroupName']))"
+                                                        }
+                                                    },
+                                                    "Create_Flow_Paypal": {
+                                                        "runAfter": {
+                                                            "Apply_to_each_Paypal": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "OpenApiConnection",
+                                                        "inputs": {
+                                                            "host": {
+                                                                "connectionName": "shared_flowmanagement",
+                                                                "operationId": "CreateFlow",
+                                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                                            },
+                                                            "parameters": {
+                                                                "environmentName": "@{workflow()?['tags']?['environmentName']}",
+                                                                "Flow/properties/displayName": "@replace(replace(outputs('Get_Flow_Paypal')?['body/properties/displayName'], parameters('envpar_config__CycleZeroName'), items('Apply_to_each')?['Cycle1GroupName']), 'tplparam_cyclname', items('Apply_to_each')?['Cycle1GroupName'])",
+                                                                "Flow/properties/definition": "@json(\r\nreplace(replace(replace(replace(string(outputs('Get_Flow_Paypal')?['body/properties/definition']), 'parameters(''envpar_config__CycleZeroName'')', concat('''', items('Apply_to_each')?['Cycle1GroupName'], '''')), \r\n'tplparam_cyclname', items('Apply_to_each')?['Cycle1GroupName'] ),\r\n'tplparam_cyclgroupslistitemid' , string(items('Apply_to_each')?['ID']) ),\r\n'tplparam_cyclmygroupsitemid'  , string(triggerOutputs()?['body/ID']) ))",
+                                                                "Flow/properties/state": "Started"
+                                                            },
+                                                            "authentication": "@parameters('$authentication')"
+                                                        }
+                                                    },
+                                                    "Apply_to_each_Paypal": {
+                                                        "foreach": "@body('Filter_array_Paypal')",
+                                                        "actions": {
+                                                            "Turn_Off_Flow_Paypal": {
+                                                                "runAfter": {},
+                                                                "type": "OpenApiConnection",
+                                                                "inputs": {
+                                                                    "host": {
+                                                                        "connectionName": "shared_flowmanagement",
+                                                                        "operationId": "StopFlow",
+                                                                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                                                    },
+                                                                    "parameters": {
+                                                                        "environmentName": "@{workflow()?['tags']?['environmentName']}",
+                                                                        "flowName": "@items('Apply_to_each_Paypal')?['name']"
+                                                                    },
+                                                                    "authentication": "@parameters('$authentication')"
+                                                                }
+                                                            },
+                                                            "Delete_Flow_Paypal": {
+                                                                "runAfter": {
+                                                                    "Turn_Off_Flow_Paypal": [
+                                                                        "Succeeded"
+                                                                    ]
+                                                                },
+                                                                "type": "OpenApiConnection",
+                                                                "inputs": {
+                                                                    "host": {
+                                                                        "connectionName": "shared_flowmanagement",
+                                                                        "operationId": "DeleteFlow",
+                                                                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                                                    },
+                                                                    "parameters": {
+                                                                        "environmentName": "@{workflow()?['tags']?['environmentName']}",
+                                                                        "flowName": "@items('Apply_to_each_Paypal')?['name']"
+                                                                    },
+                                                                    "authentication": "@parameters('$authentication')"
+                                                                }
+                                                            }
+                                                        },
+                                                        "runAfter": {
+                                                            "Filter_array_Paypal": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "Foreach"
+                                                    },
+                                                    "Turn_Off_Flow_2_Paypal": {
+                                                        "runAfter": {
+                                                            "Create_Flow_Paypal": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "OpenApiConnection",
+                                                        "inputs": {
+                                                            "host": {
+                                                                "connectionName": "shared_flowmanagement",
+                                                                "operationId": "StopFlow",
+                                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                                            },
+                                                            "parameters": {
+                                                                "environmentName": "@workflow()?['tags']?['environmentName']",
+                                                                "flowName": "@outputs('Create_Flow_Paypal')?['body/name']"
+                                                            },
+                                                            "authentication": "@parameters('$authentication')"
+                                                        }
+                                                    },
+                                                    "Turn_On_Flow_2_Paypal": {
+                                                        "runAfter": {
+                                                            "Turn_Off_Flow_2_Paypal": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "OpenApiConnection",
+                                                        "inputs": {
+                                                            "host": {
+                                                                "connectionName": "shared_flowmanagement",
+                                                                "operationId": "StartFlow",
+                                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                                            },
+                                                            "parameters": {
+                                                                "environmentName": "@workflow()?['tags']?['environmentName']",
+                                                                "flowName": "@outputs('Create_Flow_Paypal')?['body/name']"
+                                                            },
+                                                            "authentication": "@parameters('$authentication')"
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "expression": {
+                                                "equals": [
+                                                    "@triggerOutputs()?['body/PaypalKey']",
+                                                    "@null"
+                                                ]
+                                            },
+                                            "type": "If"
+                                        }
+                                    },
+                                    "runAfter": {
+                                        "Scope_7": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "Scope"
+                                },
+                                "Scope_Microsoft_Create": {
+                                    "actions": {
+                                        "Condition_3": {
+                                            "actions": {},
+                                            "runAfter": {},
+                                            "else": {
+                                                "actions": {
+                                                    "Get_Flow_Microsoft_Create": {
+                                                        "runAfter": {},
+                                                        "type": "OpenApiConnection",
+                                                        "inputs": {
+                                                            "host": {
+                                                                "connectionName": "shared_flowmanagement",
+                                                                "operationId": "GetFlow",
+                                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                                            },
+                                                            "parameters": {
+                                                                "environmentName": "@{workflow()?['tags']?['environmentName']}",
+                                                                "flowName": "@{json(parameters('envpar_id__AllFlows'))?['cycle0__Microsoft_Create_Webhook__Template']}"
+                                                            },
+                                                            "authentication": "@parameters('$authentication')"
+                                                        }
+                                                    },
+                                                    "List_My_Flows_Microsoft_Create": {
+                                                        "runAfter": {
+                                                            "Get_Flow_Microsoft_Create": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "OpenApiConnection",
+                                                        "inputs": {
+                                                            "host": {
+                                                                "connectionName": "shared_flowmanagement",
+                                                                "operationId": "ListMyFlows",
+                                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                                            },
+                                                            "parameters": {
+                                                                "environmentName": "@{workflow()?['tags']?['environmentName']}"
+                                                            },
+                                                            "authentication": "@parameters('$authentication')"
+                                                        }
+                                                    },
+                                                    "Filter_array_Microsoft_Create": {
+                                                        "runAfter": {
+                                                            "List_My_Flows_Microsoft_Create": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "Query",
+                                                        "inputs": {
+                                                            "from": "@outputs('List_My_Flows_Microsoft_Create')?['body/value']",
+                                                            "where": "@startsWith(item()?['properties/displayName'], replace(replace(outputs('Get_Flow_Microsoft_Create')?['body/properties/displayName'], parameters('envpar_config__CycleZeroName'), items('Apply_to_each')?['Cycle1GroupName']), 'tplparam_cyclname', items('Apply_to_each')?['Cycle1GroupName']))"
+                                                        }
+                                                    },
+                                                    "Create_Flow_Microsoft_Create": {
+                                                        "runAfter": {
+                                                            "Apply_to_each_Microsoft_Create": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "OpenApiConnection",
+                                                        "inputs": {
+                                                            "host": {
+                                                                "connectionName": "shared_flowmanagement",
+                                                                "operationId": "CreateFlow",
+                                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                                            },
+                                                            "parameters": {
+                                                                "environmentName": "@{workflow()?['tags']?['environmentName']}",
+                                                                "Flow/properties/displayName": "@replace(replace(outputs('Get_Flow_Microsoft_Create')?['body/properties/displayName'], parameters('envpar_config__CycleZeroName'), items('Apply_to_each')?['Cycle1GroupName']), 'tplparam_cyclname', items('Apply_to_each')?['Cycle1GroupName'])",
+                                                                "Flow/properties/definition": "@json(\r\nreplace(replace(replace(replace(string(outputs('Get_Flow_Microsoft_Create')?['body/properties/definition']), 'parameters(''envpar_config__CycleZeroName'')', concat('''', items('Apply_to_each')?['Cycle1GroupName'], '''')), \r\n'tplparam_cyclname', items('Apply_to_each')?['Cycle1GroupName'] ),\r\n'tplparam_cyclgroupslistitemid' , string(items('Apply_to_each')?['ID']) ),\r\n'tplparam_cyclmygroupsitemid'  , string(triggerOutputs()?['body/ID']) ))",
+                                                                "Flow/properties/state": "Started"
+                                                            },
+                                                            "authentication": "@parameters('$authentication')"
+                                                        }
+                                                    },
+                                                    "Apply_to_each_Microsoft_Create": {
+                                                        "foreach": "@body('Filter_array_Microsoft_Create')",
+                                                        "actions": {
+                                                            "Turn_Off_Flow_Microsoft_Create": {
+                                                                "runAfter": {},
+                                                                "type": "OpenApiConnection",
+                                                                "inputs": {
+                                                                    "host": {
+                                                                        "connectionName": "shared_flowmanagement",
+                                                                        "operationId": "StopFlow",
+                                                                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                                                    },
+                                                                    "parameters": {
+                                                                        "environmentName": "@{workflow()?['tags']?['environmentName']}",
+                                                                        "flowName": "@items('Apply_to_each_Microsoft_Create')?['name']"
+                                                                    },
+                                                                    "authentication": "@parameters('$authentication')"
+                                                                }
+                                                            },
+                                                            "Delete_Flow_Microsoft_Create": {
+                                                                "runAfter": {
+                                                                    "Turn_Off_Flow_Microsoft_Create": [
+                                                                        "Succeeded"
+                                                                    ]
+                                                                },
+                                                                "type": "OpenApiConnection",
+                                                                "inputs": {
+                                                                    "host": {
+                                                                        "connectionName": "shared_flowmanagement",
+                                                                        "operationId": "DeleteFlow",
+                                                                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                                                    },
+                                                                    "parameters": {
+                                                                        "environmentName": "@{workflow()?['tags']?['environmentName']}",
+                                                                        "flowName": "@items('Apply_to_each_Microsoft_Create')?['name']"
+                                                                    },
+                                                                    "authentication": "@parameters('$authentication')"
+                                                                }
+                                                            }
+                                                        },
+                                                        "runAfter": {
+                                                            "Filter_array_Microsoft_Create": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "Foreach"
+                                                    },
+                                                    "Turn_Off_Flow_2_Microsoft_Create": {
+                                                        "runAfter": {
+                                                            "Create_Flow_Microsoft_Create": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "OpenApiConnection",
+                                                        "inputs": {
+                                                            "host": {
+                                                                "connectionName": "shared_flowmanagement",
+                                                                "operationId": "StopFlow",
+                                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                                            },
+                                                            "parameters": {
+                                                                "environmentName": "@workflow()?['tags']?['environmentName']",
+                                                                "flowName": "@outputs('Create_Flow_Microsoft_Create')?['body/name']"
+                                                            },
+                                                            "authentication": "@parameters('$authentication')"
+                                                        }
+                                                    },
+                                                    "Turn_On_Flow_2_Microsoft_Create": {
+                                                        "runAfter": {
+                                                            "Turn_Off_Flow_2_Microsoft_Create": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "OpenApiConnection",
+                                                        "inputs": {
+                                                            "host": {
+                                                                "connectionName": "shared_flowmanagement",
+                                                                "operationId": "StartFlow",
+                                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                                            },
+                                                            "parameters": {
+                                                                "environmentName": "@workflow()?['tags']?['environmentName']",
+                                                                "flowName": "@outputs('Create_Flow_Microsoft_Create')?['body/name']"
+                                                            },
+                                                            "authentication": "@parameters('$authentication')"
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "expression": {
+                                                "equals": [
+                                                    "@triggerOutputs()?['body/MicrosoftPrice0']",
+                                                    "@null"
+                                                ]
+                                            },
+                                            "type": "If"
+                                        }
+                                    },
+                                    "runAfter": {
+                                        "Scope_7": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "Scope"
+                                },
+                                "Scope_Microsoft_Update": {
+                                    "actions": {
+                                        "Condition_4": {
+                                            "actions": {},
+                                            "runAfter": {},
+                                            "else": {
+                                                "actions": {
+                                                    "Get_Flow_Microsoft_Update": {
+                                                        "runAfter": {},
+                                                        "type": "OpenApiConnection",
+                                                        "inputs": {
+                                                            "host": {
+                                                                "connectionName": "shared_flowmanagement",
+                                                                "operationId": "GetFlow",
+                                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                                            },
+                                                            "parameters": {
+                                                                "environmentName": "@{workflow()?['tags']?['environmentName']}",
+                                                                "flowName": "@{json(parameters('envpar_id__AllFlows'))?['cycle0__Microsoft_Update_Webhook__Template']}"
+                                                            },
+                                                            "authentication": "@parameters('$authentication')"
+                                                        }
+                                                    },
+                                                    "List_My_Flows_Microsoft_Update": {
+                                                        "runAfter": {
+                                                            "Get_Flow_Microsoft_Update": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "OpenApiConnection",
+                                                        "inputs": {
+                                                            "host": {
+                                                                "connectionName": "shared_flowmanagement",
+                                                                "operationId": "ListMyFlows",
+                                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                                            },
+                                                            "parameters": {
+                                                                "environmentName": "@{workflow()?['tags']?['environmentName']}"
+                                                            },
+                                                            "authentication": "@parameters('$authentication')"
+                                                        }
+                                                    },
+                                                    "Filter_array_Microsoft_Update": {
+                                                        "runAfter": {
+                                                            "List_My_Flows_Microsoft_Update": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "Query",
+                                                        "inputs": {
+                                                            "from": "@outputs('List_My_Flows_Microsoft_Update')?['body/value']",
+                                                            "where": "@startsWith(item()?['properties/displayName'], replace(replace(outputs('Get_Flow_Microsoft_Update')?['body/properties/displayName'], parameters('envpar_config__CycleZeroName'), items('Apply_to_each')?['Cycle1GroupName']), 'tplparam_cyclname', items('Apply_to_each')?['Cycle1GroupName']))"
+                                                        }
+                                                    },
+                                                    "Create_Flow_Microsoft_Update": {
+                                                        "runAfter": {
+                                                            "Apply_to_each_Microsoft_Update": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "OpenApiConnection",
+                                                        "inputs": {
+                                                            "host": {
+                                                                "connectionName": "shared_flowmanagement",
+                                                                "operationId": "CreateFlow",
+                                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                                            },
+                                                            "parameters": {
+                                                                "environmentName": "@{workflow()?['tags']?['environmentName']}",
+                                                                "Flow/properties/displayName": "@replace(replace(outputs('Get_Flow_Microsoft_Update')?['body/properties/displayName'], parameters('envpar_config__CycleZeroName'), items('Apply_to_each')?['Cycle1GroupName']), 'tplparam_cyclname', items('Apply_to_each')?['Cycle1GroupName'])",
+                                                                "Flow/properties/definition": "@json(\r\nreplace(replace(replace(replace(string(outputs('Get_Flow_Microsoft_Update')?['body/properties/definition']), 'parameters(''envpar_config__CycleZeroName'')', concat('''', items('Apply_to_each')?['Cycle1GroupName'], '''')), \r\n'tplparam_cyclname', items('Apply_to_each')?['Cycle1GroupName'] ),\r\n'tplparam_cyclgroupslistitemid' , string(items('Apply_to_each')?['ID']) ),\r\n'tplparam_cyclmygroupsitemid'  , string(triggerOutputs()?['body/ID']) ))",
+                                                                "Flow/properties/state": "Started"
+                                                            },
+                                                            "authentication": "@parameters('$authentication')"
+                                                        }
+                                                    },
+                                                    "Apply_to_each_Microsoft_Update": {
+                                                        "foreach": "@body('Filter_array_Microsoft_Update')",
+                                                        "actions": {
+                                                            "Turn_Off_Flow_Microsoft_Update": {
+                                                                "runAfter": {},
+                                                                "type": "OpenApiConnection",
+                                                                "inputs": {
+                                                                    "host": {
+                                                                        "connectionName": "shared_flowmanagement",
+                                                                        "operationId": "StopFlow",
+                                                                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                                                    },
+                                                                    "parameters": {
+                                                                        "environmentName": "@{workflow()?['tags']?['environmentName']}",
+                                                                        "flowName": "@items('Apply_to_each_Microsoft_Update')?['name']"
+                                                                    },
+                                                                    "authentication": "@parameters('$authentication')"
+                                                                }
+                                                            },
+                                                            "Delete_Flow_Microsoft_Update": {
+                                                                "runAfter": {
+                                                                    "Turn_Off_Flow_Microsoft_Update": [
+                                                                        "Succeeded"
+                                                                    ]
+                                                                },
+                                                                "type": "OpenApiConnection",
+                                                                "inputs": {
+                                                                    "host": {
+                                                                        "connectionName": "shared_flowmanagement",
+                                                                        "operationId": "DeleteFlow",
+                                                                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                                                    },
+                                                                    "parameters": {
+                                                                        "environmentName": "@{workflow()?['tags']?['environmentName']}",
+                                                                        "flowName": "@items('Apply_to_each_Microsoft_Update')?['name']"
+                                                                    },
+                                                                    "authentication": "@parameters('$authentication')"
+                                                                }
+                                                            }
+                                                        },
+                                                        "runAfter": {
+                                                            "Filter_array_Microsoft_Update": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "Foreach"
+                                                    },
+                                                    "Turn_Off_Flow_2_Microsoft_Update": {
+                                                        "runAfter": {
+                                                            "Create_Flow_Microsoft_Update": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "OpenApiConnection",
+                                                        "inputs": {
+                                                            "host": {
+                                                                "connectionName": "shared_flowmanagement",
+                                                                "operationId": "StopFlow",
+                                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                                            },
+                                                            "parameters": {
+                                                                "environmentName": "@workflow()?['tags']?['environmentName']",
+                                                                "flowName": "@outputs('Create_Flow_Microsoft_Update')?['body/name']"
+                                                            },
+                                                            "authentication": "@parameters('$authentication')"
+                                                        }
+                                                    },
+                                                    "Turn_On_Flow_2_Microsoft_Update": {
+                                                        "runAfter": {
+                                                            "Turn_Off_Flow_2_Microsoft_Update": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "OpenApiConnection",
+                                                        "inputs": {
+                                                            "host": {
+                                                                "connectionName": "shared_flowmanagement",
+                                                                "operationId": "StartFlow",
+                                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                                            },
+                                                            "parameters": {
+                                                                "environmentName": "@workflow()?['tags']?['environmentName']",
+                                                                "flowName": "@outputs('Create_Flow_Microsoft_Update')?['body/name']"
+                                                            },
+                                                            "authentication": "@parameters('$authentication')"
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "expression": {
+                                                "equals": [
+                                                    "@triggerOutputs()?['body/MicrosoftPrice0']",
+                                                    "@null"
+                                                ]
+                                            },
+                                            "type": "If"
+                                        }
+                                    },
+                                    "runAfter": {
+                                        "Scope_7": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "Scope"
+                                },
+                                "Scope_Microsoft_Contact": {
+                                    "actions": {
+                                        "Condition_5": {
+                                            "actions": {},
+                                            "runAfter": {},
+                                            "else": {
+                                                "actions": {
+                                                    "Get_Flow_Microsoft_Contact": {
+                                                        "runAfter": {},
+                                                        "type": "OpenApiConnection",
+                                                        "inputs": {
+                                                            "host": {
+                                                                "connectionName": "shared_flowmanagement",
+                                                                "operationId": "GetFlow",
+                                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                                            },
+                                                            "parameters": {
+                                                                "environmentName": "@{workflow()?['tags']?['environmentName']}",
+                                                                "flowName": "@{json(parameters('envpar_id__AllFlows'))?['cycle0__Microsoft_Contact_Webhook__Template']}"
+                                                            },
+                                                            "authentication": "@parameters('$authentication')"
+                                                        }
+                                                    },
+                                                    "List_My_Flows_Microsoft_Contact": {
+                                                        "runAfter": {
+                                                            "Get_Flow_Microsoft_Contact": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "OpenApiConnection",
+                                                        "inputs": {
+                                                            "host": {
+                                                                "connectionName": "shared_flowmanagement",
+                                                                "operationId": "ListMyFlows",
+                                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                                            },
+                                                            "parameters": {
+                                                                "environmentName": "@{workflow()?['tags']?['environmentName']}"
+                                                            },
+                                                            "authentication": "@parameters('$authentication')"
+                                                        }
+                                                    },
+                                                    "Filter_array_Microsoft_Contact": {
+                                                        "runAfter": {
+                                                            "List_My_Flows_Microsoft_Contact": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "Query",
+                                                        "inputs": {
+                                                            "from": "@outputs('List_My_Flows_Microsoft_Contact')?['body/value']",
+                                                            "where": "@startsWith(item()?['properties/displayName'], replace(replace(outputs('Get_Flow_Microsoft_Contact')?['body/properties/displayName'], parameters('envpar_config__CycleZeroName'), items('Apply_to_each')?['Cycle1GroupName']), 'tplparam_cyclname', items('Apply_to_each')?['Cycle1GroupName']))"
+                                                        }
+                                                    },
+                                                    "Apply_to_each_Microsoft_Contact": {
+                                                        "foreach": "@body('Filter_array_Microsoft_Contact')",
+                                                        "actions": {
+                                                            "Turn_Off_Flow_Microsoft_Contact": {
+                                                                "runAfter": {},
+                                                                "type": "OpenApiConnection",
+                                                                "inputs": {
+                                                                    "host": {
+                                                                        "connectionName": "shared_flowmanagement",
+                                                                        "operationId": "StopFlow",
+                                                                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                                                    },
+                                                                    "parameters": {
+                                                                        "environmentName": "@{workflow()?['tags']?['environmentName']}",
+                                                                        "flowName": "@items('Apply_to_each_Microsoft_Contact')?['name']"
+                                                                    },
+                                                                    "authentication": "@parameters('$authentication')"
+                                                                }
+                                                            },
+                                                            "Delete_Flow_Microsoft_Contact": {
+                                                                "runAfter": {
+                                                                    "Turn_Off_Flow_Microsoft_Contact": [
+                                                                        "Succeeded"
+                                                                    ]
+                                                                },
+                                                                "type": "OpenApiConnection",
+                                                                "inputs": {
+                                                                    "host": {
+                                                                        "connectionName": "shared_flowmanagement",
+                                                                        "operationId": "DeleteFlow",
+                                                                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                                                    },
+                                                                    "parameters": {
+                                                                        "environmentName": "@{workflow()?['tags']?['environmentName']}",
+                                                                        "flowName": "@items('Apply_to_each_Microsoft_Contact')?['name']"
+                                                                    },
+                                                                    "authentication": "@parameters('$authentication')"
+                                                                }
+                                                            }
+                                                        },
+                                                        "runAfter": {
+                                                            "Filter_array_Microsoft_Contact": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "Foreach"
+                                                    },
+                                                    "Create_Flow_Microsoft_Contact": {
+                                                        "runAfter": {
+                                                            "Apply_to_each_Microsoft_Contact": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "OpenApiConnection",
+                                                        "inputs": {
+                                                            "host": {
+                                                                "connectionName": "shared_flowmanagement",
+                                                                "operationId": "CreateFlow",
+                                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                                            },
+                                                            "parameters": {
+                                                                "environmentName": "@{workflow()?['tags']?['environmentName']}",
+                                                                "Flow/properties/displayName": "@replace(replace(outputs('Get_Flow_Microsoft_Contact')?['body/properties/displayName'], parameters('envpar_config__CycleZeroName'), items('Apply_to_each')?['Cycle1GroupName']), 'tplparam_cyclname', items('Apply_to_each')?['Cycle1GroupName'])",
+                                                                "Flow/properties/definition": "@json(\r\nreplace(replace(replace(replace(string(outputs('Get_Flow_Microsoft_Contact')?['body/properties/definition']), 'parameters(''envpar_config__CycleZeroName'')', concat('''', items('Apply_to_each')?['Cycle1GroupName'], '''')), \r\n'tplparam_cyclname', items('Apply_to_each')?['Cycle1GroupName'] ),\r\n'tplparam_cyclgroupslistitemid' , string(items('Apply_to_each')?['ID']) ),\r\n'tplparam_cyclmygroupsitemid'  , string(triggerOutputs()?['body/ID']) ))",
+                                                                "Flow/properties/state": "Started"
+                                                            },
+                                                            "authentication": "@parameters('$authentication')"
+                                                        }
+                                                    },
+                                                    "Turn_Off_Flow_2_Microsoft_Contact": {
+                                                        "runAfter": {
+                                                            "Create_Flow_Microsoft_Contact": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "OpenApiConnection",
+                                                        "inputs": {
+                                                            "host": {
+                                                                "connectionName": "shared_flowmanagement",
+                                                                "operationId": "StopFlow",
+                                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                                            },
+                                                            "parameters": {
+                                                                "environmentName": "@workflow()?['tags']?['environmentName']",
+                                                                "flowName": "@outputs('Create_Flow_Microsoft_Contact')?['body/name']"
+                                                            },
+                                                            "authentication": "@parameters('$authentication')"
+                                                        }
+                                                    },
+                                                    "Turn_On_Flow_2_Microsoft_Contact": {
+                                                        "runAfter": {
+                                                            "Turn_Off_Flow_2_Microsoft_Contact": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "OpenApiConnection",
+                                                        "inputs": {
+                                                            "host": {
+                                                                "connectionName": "shared_flowmanagement",
+                                                                "operationId": "StartFlow",
+                                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                                            },
+                                                            "parameters": {
+                                                                "environmentName": "@workflow()?['tags']?['environmentName']",
+                                                                "flowName": "@outputs('Create_Flow_Microsoft_Contact')?['body/name']"
+                                                            },
+                                                            "authentication": "@parameters('$authentication')"
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "expression": {
+                                                "equals": [
+                                                    "@triggerOutputs()?['body/MicrosoftPrice0']",
+                                                    "@null"
+                                                ]
+                                            },
+                                            "type": "If"
+                                        }
+                                    },
+                                    "runAfter": {
+                                        "Scope_7": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "Scope"
+                                },
+                                "Scope_Microsoft_Meter": {
+                                    "actions": {
+                                        "Condition_6": {
+                                            "actions": {},
+                                            "runAfter": {},
+                                            "else": {
+                                                "actions": {
+                                                    "Get_Flow_Microsoft_Meter": {
+                                                        "runAfter": {},
+                                                        "type": "OpenApiConnection",
+                                                        "inputs": {
+                                                            "host": {
+                                                                "connectionName": "shared_flowmanagement",
+                                                                "operationId": "GetFlow",
+                                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                                            },
+                                                            "parameters": {
+                                                                "environmentName": "@{workflow()?['tags']?['environmentName']}",
+                                                                "flowName": "@{json(parameters('envpar_id__AllFlows'))?['cycle0__Microsoft_Meter__Template']}"
+                                                            },
+                                                            "authentication": "@parameters('$authentication')"
+                                                        }
+                                                    },
+                                                    "List_My_Flows_Microsoft_Meter": {
+                                                        "runAfter": {
+                                                            "Get_Flow_Microsoft_Meter": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "OpenApiConnection",
+                                                        "inputs": {
+                                                            "host": {
+                                                                "connectionName": "shared_flowmanagement",
+                                                                "operationId": "ListMyFlows",
+                                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                                            },
+                                                            "parameters": {
+                                                                "environmentName": "@{workflow()?['tags']?['environmentName']}"
+                                                            },
+                                                            "authentication": "@parameters('$authentication')"
+                                                        }
+                                                    },
+                                                    "Filter_array_Microsoft_Meter": {
+                                                        "runAfter": {
+                                                            "List_My_Flows_Microsoft_Meter": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "Query",
+                                                        "inputs": {
+                                                            "from": "@outputs('List_My_Flows_Microsoft_Meter')?['body/value']",
+                                                            "where": "@startsWith(item()?['properties/displayName'], replace(replace(outputs('Get_Flow_Microsoft_Meter')?['body/properties/displayName'], parameters('envpar_config__CycleZeroName'), items('Apply_to_each')?['Cycle1GroupName']), 'tplparam_cyclname', items('Apply_to_each')?['Cycle1GroupName']))"
+                                                        }
+                                                    },
+                                                    "Create_Flow_Microsoft_Meter": {
+                                                        "runAfter": {
+                                                            "Apply_to_each_Microsoft_Meter": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "OpenApiConnection",
+                                                        "inputs": {
+                                                            "host": {
+                                                                "connectionName": "shared_flowmanagement",
+                                                                "operationId": "CreateFlow",
+                                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                                            },
+                                                            "parameters": {
+                                                                "environmentName": "@{workflow()?['tags']?['environmentName']}",
+                                                                "Flow/properties/displayName": "@replace(replace(outputs('Get_Flow_Microsoft_Meter')?['body/properties/displayName'], parameters('envpar_config__CycleZeroName'), items('Apply_to_each')?['Cycle1GroupName']), 'tplparam_cyclname', items('Apply_to_each')?['Cycle1GroupName'])",
+                                                                "Flow/properties/definition": "@json(\nreplace(replace(replace(replace(string(outputs('Get_Flow_Microsoft_Meter')?['body/properties/definition']), 'parameters(''envpar_config__CycleZeroName'')', concat('''', items('Apply_to_each')?['Cycle1GroupName'], '''')), \n'tplparam_cyclname', items('Apply_to_each')?['Cycle1GroupName'] ),\n'tplparam_cyclgroupslistitemid' , string(items('Apply_to_each')?['ID']) ),\n'tplparam_cyclmygroupsitemid'  , string(triggerOutputs()?['body/ID']) ))",
+                                                                "Flow/properties/state": "Started"
+                                                            },
+                                                            "authentication": "@parameters('$authentication')"
+                                                        }
+                                                    },
+                                                    "Apply_to_each_Microsoft_Meter": {
+                                                        "foreach": "@body('Filter_array_Microsoft_Meter')",
+                                                        "actions": {
+                                                            "Turn_Off_Flow_Microsoft_Meter": {
+                                                                "runAfter": {},
+                                                                "type": "OpenApiConnection",
+                                                                "inputs": {
+                                                                    "host": {
+                                                                        "connectionName": "shared_flowmanagement",
+                                                                        "operationId": "StopFlow",
+                                                                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                                                    },
+                                                                    "parameters": {
+                                                                        "environmentName": "@{workflow()?['tags']?['environmentName']}",
+                                                                        "flowName": "@items('Apply_to_each_Microsoft_Meter')?['name']"
+                                                                    },
+                                                                    "authentication": "@parameters('$authentication')"
+                                                                }
+                                                            },
+                                                            "Delete_Flow_Microsoft_Meter": {
+                                                                "runAfter": {
+                                                                    "Turn_Off_Flow_Microsoft_Meter": [
+                                                                        "Succeeded"
+                                                                    ]
+                                                                },
+                                                                "type": "OpenApiConnection",
+                                                                "inputs": {
+                                                                    "host": {
+                                                                        "connectionName": "shared_flowmanagement",
+                                                                        "operationId": "DeleteFlow",
+                                                                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                                                    },
+                                                                    "parameters": {
+                                                                        "environmentName": "@{workflow()?['tags']?['environmentName']}",
+                                                                        "flowName": "@items('Apply_to_each_Microsoft_Meter')?['name']"
+                                                                    },
+                                                                    "authentication": "@parameters('$authentication')"
+                                                                }
+                                                            }
+                                                        },
+                                                        "runAfter": {
+                                                            "Filter_array_Microsoft_Meter": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "Foreach"
+                                                    },
+                                                    "Turn_Off_Flow_2_Microsoft_Meter": {
+                                                        "runAfter": {
+                                                            "Create_Flow_Microsoft_Meter": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "OpenApiConnection",
+                                                        "inputs": {
+                                                            "host": {
+                                                                "connectionName": "shared_flowmanagement",
+                                                                "operationId": "StopFlow",
+                                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                                            },
+                                                            "parameters": {
+                                                                "environmentName": "@workflow()?['tags']?['environmentName']",
+                                                                "flowName": "@outputs('Create_Flow_Microsoft_Meter')?['body/name']"
+                                                            },
+                                                            "authentication": "@parameters('$authentication')"
+                                                        }
+                                                    },
+                                                    "Turn_On_Flow_2_Microsoft_Meter": {
+                                                        "runAfter": {
+                                                            "Turn_Off_Flow_2_Microsoft_Meter": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "OpenApiConnection",
+                                                        "inputs": {
+                                                            "host": {
+                                                                "connectionName": "shared_flowmanagement",
+                                                                "operationId": "StartFlow",
+                                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                                                            },
+                                                            "parameters": {
+                                                                "environmentName": "@workflow()?['tags']?['environmentName']",
+                                                                "flowName": "@outputs('Create_Flow_Microsoft_Meter')?['body/name']"
+                                                            },
+                                                            "authentication": "@parameters('$authentication')"
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "expression": {
+                                                "equals": [
+                                                    "@triggerOutputs()?['body/MicrosoftPrice0']",
+                                                    "@null"
+                                                ]
+                                            },
+                                            "type": "If"
+                                        }
+                                    },
+                                    "runAfter": {
+                                        "Scope_7": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "Scope"
+                                }
+                            },
+                            "runAfter": {
+                                "Update_item_GroupsList_2": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Scope"
+                        },
+                        "Scope_CyclesGroups": {
+                            "actions": {
+                                "Parse_JSON": {
+                                    "runAfter": {},
+                                    "type": "ParseJson",
+                                    "inputs": {
+                                        "content": "@json(items('Apply_to_each')?['CyclesGroups'])",
+                                        "schema": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "CyclesGroupName": {
+                                                        "type": "string"
+                                                    },
+                                                    "CyclesGroupId": {
+                                                        "type": "string"
+                                                    },
+                                                    "StripePrices": {
+                                                        "type": "string"
+                                                    },
+                                                    "MicrosoftPrices": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "CyclesGroupName",
+                                                    "CyclesGroupId",
+                                                    "StripePrices",
+                                                    "MicrosoftPrices"
+                                                ]
+                                            }
+                                        }
+                                    }
+                                },
+                                "Parse_JSON_2": {
+                                    "runAfter": {
+                                        "Parse_JSON": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "ParseJson",
+                                    "inputs": {
+                                        "content": "@json(coalesce(triggerOutputs()?['body/StripePrices'],'[]'))",
+                                        "schema": {}
+                                    }
+                                },
+                                "Parse_JSON_3": {
+                                    "runAfter": {
+                                        "Parse_JSON_2": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "ParseJson",
+                                    "inputs": {
+                                        "content": "@json(coalesce(triggerOutputs()?['body/MicrosoftPrices'], '[]'))",
+                                        "schema": {}
+                                    }
+                                },
+                                "Condition_13": {
+                                    "actions": {},
+                                    "runAfter": {
+                                        "Parse_JSON_3": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "else": {
+                                        "actions": {
+                                            "Do_until_2": {
+                                                "actions": {
+                                                    "Append_to_array_variable": {
+                                                        "runAfter": {},
+                                                        "type": "AppendToArrayVariable",
+                                                        "inputs": {
+                                                            "name": "varCyclesGroup",
+                                                            "value": "@setProperty(setProperty(body('Parse_JSON')[iterationIndexes('Do_until_2')], 'StripePrices', body('Parse_JSON_2')?[iterationIndexes('Do_until_2')])\r\n, 'MicrosoftPrices', body('Parse_JSON_3')?[iterationIndexes('Do_until_2')])"
+                                                        }
+                                                    },
+                                                    "Increment_variable": {
+                                                        "runAfter": {
+                                                            "Append_to_array_variable": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "IncrementVariable",
+                                                        "inputs": {
+                                                            "name": "varCounter",
+                                                            "value": 1
+                                                        }
+                                                    }
+                                                },
+                                                "runAfter": {},
+                                                "expression": "@equals(variables('varCounter'), length(body('Parse_JSON')))",
+                                                "limit": {
+                                                    "count": 60,
+                                                    "timeout": "PT1H"
+                                                },
+                                                "type": "Until"
+                                            }
+                                        }
+                                    },
+                                    "expression": {
+                                        "equals": [
+                                            "@length(body('Parse_JSON'))",
+                                            0
+                                        ]
+                                    },
+                                    "type": "If"
+                                }
+                            },
+                            "runAfter": {},
+                            "type": "Scope"
+                        },
+                        "Update_item_MyGroups": {
+                            "runAfter": {
+                                "Scope_Flows": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "OpenApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connectionName": "shared_sharepointonline",
+                                    "operationId": "PatchItem",
+                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                },
+                                "parameters": {
+                                    "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{parameters('envpar_config__CycleZeroName')}",
+                                    "table": "MyGroups",
+                                    "id": "@triggerOutputs()?['body/ID']",
+                                    "item/Title": "@items('Apply_to_each')?['Title']",
+                                    "item/StatusDescription": "SUCCESS! Setup of Stripe webhooks and Paypal webhooks was completed automatically by me; Setup of Microsoft webhooks will be manually by you.",
+                                    "item/MicrosoftAppId": "@if(equals(string(triggerOutputs()?['body/MicrosoftPrice0']),''), '', parameters('envpar_config__MicrosoftAppId') )",
+                                    "item/SignUrl": "@{parameters('envpar_http__AzureAD_Signed')}&state=%2Fsign/@{items('Apply_to_each')?['Cycle1GroupName']}",
+                                    "item/SignMicrosoftUrl": "@{parameters('envpar_http__AzureAD_Signed')}&state=%2Fsign/@{items('Apply_to_each')?['Cycle1GroupName']}",
+                                    "item/SignEmailFormUrl": "@{parameters('envpar_http__AzureAD_Signed')}&state=%2Fsign_up_email/@{items('Apply_to_each')?['Cycle1GroupName']}",
+                                    "item/SignEmailUrl": "@{parameters('envpar_http__AzureAD_Signed')}&state=%2Fsign_up_email/@{items('Apply_to_each')?['Cycle1GroupName']}?email=example@example"
+                                },
+                                "authentication": "@parameters('$authentication')"
+                            }
+                        },
+                        "Update_item_GroupsList_2": {
+                            "runAfter": {
+                                "Scope_CyclesGroups": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "OpenApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connectionName": "shared_sharepointonline",
+                                    "operationId": "PatchItem",
+                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                },
+                                "parameters": {
+                                    "dataset": "@concat('https://', parameters('envpar_config__TenantName'), '.sharepoint.com/sites/', parameters('envpar_config__CycleZeroName'))",
+                                    "table": "GroupsList",
+                                    "id": "@items('Apply_to_each')?['ID']",
+                                    "item": {
+                                        "CyclesGroups": "@string(variables('varCyclesGroup'))",
+                                        "StripeKey": "@triggerOutputs()?['body/StripeKey']",
+                                        "PaypalKey": "@triggerOutputs()?['body/PaypalKey']",
+                                        "PaypalSecret": "@triggerOutputs()?['body/PaypalSecret']",
+                                        "StripePrice0": "@triggerOutputs()?['body/StripePrice0']",
+                                        "StripePrices": "@triggerOutputs()?['body/StripePrices']",
+                                        "MicrosoftPrice0": "@triggerOutputs()?['body/MicrosoftPrice0']",
+                                        "MicrosoftPrices": "@triggerOutputs()?['body/MicrosoftPrices']",
+                                        "MicrosoftMeterDict": "@triggerOutputs()?['body/MicrosoftMeterDict']",
+                                        "CurrencyUnit": "@triggerOutputs()?['body/CurrencyUnit']",
+                                        "CurrencyCode": "@triggerOutputs()?['body/CurrencyCode']",
+                                        "MicrosoftAppId": "@parameters('envpar_config__MicrosoftAppId')"
+                                    }
+                                },
+                                "authentication": "@parameters('$authentication')"
+                            }
+                        }
+                    },
+                    "runAfter": {
+                        "Get_items_GroupsList": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "Foreach"
+                }
+            },
+            "outputs": {}
+        }
+    },
+    "schemaVersion": "1.0.0.0"
+}

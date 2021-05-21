@@ -1,0 +1,12 @@
+<environmentvariabledefinition schemaname="new_envpar_config__GraphAppId">
+  <description default="Service Principal Id for Graph Api. Enter space character ( ) for none. Filled automatically.">
+    <label description="Service Principal Id for Graph Api. Enter space character ( ) for none. Filled automatically." languagecode="1033" />
+  </description>
+  <displayname default="envpar_config__GraphAppId">
+    <label description="envpar_config__GraphAppId" languagecode="1033" />
+  </displayname>
+  <introducedversion>3.0.0.16</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <type>100000000</type>
+</environmentvariabledefinition>

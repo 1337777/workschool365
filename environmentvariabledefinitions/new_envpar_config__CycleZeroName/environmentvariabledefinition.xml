@@ -1,0 +1,13 @@
+<environmentvariabledefinition schemaname="new_envpar_config__CycleZeroName">
+  <defaultvalue>cycle0</defaultvalue>
+  <description default="Required. Could have many environments N each with its envN_cycle0 template">
+    <label description="Required. Could have many environments N each with its envN_cycle0 template" languagecode="1033" />
+  </description>
+  <displayname default="envpar_config__CycleZeroName">
+    <label description="envpar_config__CycleZeroName" languagecode="1033" />
+  </displayname>
+  <introducedversion>3.0.0.16</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <type>100000000</type>
+</environmentvariabledefinition>

@@ -1,0 +1,50 @@
+{
+    "properties": {
+        "connectionReferences": {},
+        "definition": {
+            "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+            "contentVersion": "1.0.0.0",
+            "parameters": {
+                "$authentication": {
+                    "defaultValue": {},
+                    "type": "SecureObject"
+                }
+            },
+            "triggers": {
+                "manual": {
+                    "type": "Request",
+                    "kind": "Http",
+                    "inputs": {
+                        "schema": {},
+                        "method": "GET"
+                    }
+                }
+            },
+            "actions": {
+                "Response": {
+                    "runAfter": {
+                        "Compose": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "Response",
+                    "kind": "Http",
+                    "inputs": {
+                        "statusCode": 200,
+                        "headers": {
+                            "content-type": "text/html"
+                        },
+                        "body": "<html><head>\n    <title>WorkSchool 365</title>\n    <meta charset=\"utf-8\">\n    <meta http-equiv=\"Content-type\" content=\"text/html; charset=utf-8\">\n</head>\n<body>\n<div>\n<form method=\"GET\" action=\"@{parameters('envpar_http__AzureAD_Signed')}&state=%2Fsign_up_email@{outputs('Compose')}\">\n<div>WorkSchool 365 @{outputs('Compose')}</div>\n <input name=\"email\" placeholder=\"Enter Email\"/> <input type=\"submit\" value=\"Sign-up with Email\"/> \n</form>\n</div>\n</body></html>\n"
+                    }
+                },
+                "Compose": {
+                    "runAfter": {},
+                    "type": "Compose",
+                    "inputs": "@triggerOutputs()?['queries']?['cycle1']"
+                }
+            },
+            "outputs": {}
+        }
+    },
+    "schemaVersion": "1.0.0.0"
+}

@@ -1,0 +1,1090 @@
+{
+    "properties": {
+        "connectionReferences": {
+            "shared_sharepointonline": {
+                "runtimeSource": "embedded",
+                "connection": {
+                    "connectionReferenceLogicalName": "new_sharedsharepointonline_9ad14"
+                },
+                "api": {
+                    "name": "shared_sharepointonline"
+                }
+            }
+        },
+        "definition": {
+            "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+            "contentVersion": "1.0.0.0",
+            "parameters": {
+                "$connections": {
+                    "defaultValue": {},
+                    "type": "Object"
+                },
+                "$authentication": {
+                    "defaultValue": {},
+                    "type": "SecureObject"
+                },
+                "envpar_config__TenantName": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__TenantName"
+                    }
+                },
+                "envpar_config__CycleZeroName": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__CycleZeroName"
+                    }
+                },
+                "envpar_config__PaypalApiPrefix": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__PaypalApiPrefix"
+                    }
+                }
+            },
+            "triggers": {
+                "manual": {
+                    "type": "Request",
+                    "kind": "Http",
+                    "inputs": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "Cycle1GroupName": {
+                                    "type": "string"
+                                },
+                                "ID": {
+                                    "type": "integer"
+                                },
+                                "CreatedByEmail": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "actions": {
+                "Initialize_variable_PaypalApproveUrl": {
+                    "runAfter": {
+                        "Initialize_variable_WechatLink": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "PaypalApproveUrl",
+                                "type": "string"
+                            }
+                        ]
+                    }
+                },
+                "Get_items_GroupsList": {
+                    "runAfter": {
+                        "Get_item_MySubscriptions": [
+                            "Succeeded"
+                        ]
+                    },
+                    "metadata": {
+                        "flowSystemMetadata": {
+                            "swaggerOperationId": "GetItems"
+                        }
+                    },
+                    "type": "ApiConnection",
+                    "inputs": {
+                        "host": {
+                            "connection": {
+                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                            }
+                        },
+                        "method": "get",
+                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent('https://' , parameters('envpar_config__TenantName') , '.sharepoint.com/sites/', parameters('envpar_config__CycleZeroName')))}/tables/@{encodeURIComponent(encodeURIComponent('GroupsList'))}/items",
+                        "queries": {
+                            "$filter": "Cycle1GroupName eq '@{triggerBody()?['Cycle1GroupName']}'",
+                            "$top": 1
+                        },
+                        "authentication": "@parameters('$authentication')"
+                    }
+                },
+                "Get_item_MySubscriptions": {
+                    "runAfter": {
+                        "Initialize_variable_customerId": [
+                            "Succeeded"
+                        ]
+                    },
+                    "metadata": {
+                        "flowSystemMetadata": {
+                            "swaggerOperationId": "GetItem"
+                        }
+                    },
+                    "type": "ApiConnection",
+                    "inputs": {
+                        "host": {
+                            "connection": {
+                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                            }
+                        },
+                        "method": "get",
+                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent('https://' , parameters('envpar_config__TenantName') , '.sharepoint.com/sites/',triggerBody()?['Cycle1GroupName']))}/tables/@{encodeURIComponent(encodeURIComponent('MySubscriptions'))}/items/@{encodeURIComponent(triggerBody()?['ID'])}",
+                        "authentication": "@parameters('$authentication')"
+                    }
+                },
+                "Get_items_UsersList": {
+                    "runAfter": {
+                        "Get_items_GroupsList": [
+                            "Succeeded"
+                        ]
+                    },
+                    "metadata": {
+                        "flowSystemMetadata": {
+                            "swaggerOperationId": "GetItems"
+                        }
+                    },
+                    "type": "ApiConnection",
+                    "inputs": {
+                        "host": {
+                            "connection": {
+                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                            }
+                        },
+                        "method": "get",
+                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent('https://' , parameters('envpar_config__TenantName') , '.sharepoint.com/sites/',triggerBody()?['Cycle1GroupName']))}/tables/@{encodeURIComponent(encodeURIComponent('UsersList'))}/items",
+                        "queries": {
+                            "$filter": "Title eq '@{body('Get_item_MySubscriptions')?['Author']?['Email']}'",
+                            "$top": 1
+                        },
+                        "authentication": "@parameters('$authentication')"
+                    }
+                },
+                "Initialize_variable_SubscriptionLink": {
+                    "runAfter": {
+                        "Initialize_variable_StripeNextInvoice": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "SubscriptionLink",
+                                "type": "string"
+                            }
+                        ]
+                    }
+                },
+                "Initialize_variable_WechatLink": {
+                    "runAfter": {
+                        "Initialize_variable_AlipayLink": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "WechatLink",
+                                "type": "string"
+                            }
+                        ]
+                    }
+                },
+                "Initialize_variable_AlipayLink": {
+                    "runAfter": {
+                        "Initialize_variable_SubscriptionLink": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "AlipayLink",
+                                "type": "string"
+                            }
+                        ]
+                    }
+                },
+                "Initialize_variable_StripeBalance": {
+                    "runAfter": {},
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "StripeBalance",
+                                "type": "float",
+                                "value": 0
+                            }
+                        ]
+                    }
+                },
+                "Initialize_variable_StripeNextInvoice": {
+                    "runAfter": {
+                        "Initialize_variable_StripeBalance": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "StripeNextInvoice",
+                                "type": "string"
+                            }
+                        ]
+                    }
+                },
+                "Initialize_variable_MicrosoftLink": {
+                    "runAfter": {
+                        "Initialize_variable_PaypalApproveUrl": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "MicrosoftLink",
+                                "type": "string"
+                            }
+                        ]
+                    }
+                },
+                "Initialize_variable_customerId": {
+                    "runAfter": {
+                        "Initialize_variable_MicrosoftLink": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "customerId",
+                                "type": "string"
+                            }
+                        ]
+                    }
+                },
+                "Apply_to_each_GroupsList": {
+                    "foreach": "@body('Get_items_GroupsList')?['value']",
+                    "actions": {
+                        "Apply_to_each_UsersList": {
+                            "foreach": "@body('Get_items_UsersList')?['value']",
+                            "actions": {
+                                "Update_item_MySubscriptions": {
+                                    "runAfter": {
+                                        "Condition_Microsoft": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "metadata": {
+                                        "flowSystemMetadata": {
+                                            "swaggerOperationId": "PatchItem"
+                                        }
+                                    },
+                                    "type": "ApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connection": {
+                                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                                            }
+                                        },
+                                        "method": "patch",
+                                        "body": {
+                                            "Title": "@body('Get_item_MySubscriptions')?['Author']?['Email']",
+                                            "SubscriptionLink": "@{variables('SubscriptionLink')}",
+                                            "NextInvoice": "@{variables('StripeNextInvoice')}",
+                                            "Balance": "@variables('StripeBalance')",
+                                            "AlipayLink": "@{variables('AlipayLink')}",
+                                            "WechatLink": "@{variables('WechatLink')}",
+                                            "PayPalLink": "@variables('PaypalApproveUrl')",
+                                            "CreditCardLink": "@{variables('SubscriptionLink')}",
+                                            "MicrosoftLink": "@{variables('MicrosoftLink')}",
+                                            "Status": "READY",
+                                            "StatusDescription": "READY! Click on the links before it is expired or request new links"
+                                        },
+                                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent('https://' , parameters('envpar_config__TenantName') , '.sharepoint.com/sites/',items('Apply_to_each_GroupsList')?['Cycle1GroupName']))}/tables/@{encodeURIComponent(encodeURIComponent('MySubscriptions'))}/items/@{encodeURIComponent(body('Get_item_MySubscriptions')?['ID'])}",
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Condition_StripeKey": {
+                                    "actions": {},
+                                    "runAfter": {},
+                                    "else": {
+                                        "actions": {
+                                            "Parse_JSON_Customer": {
+                                                "runAfter": {
+                                                    "HTTP_Get_customer": [
+                                                        "Succeeded"
+                                                    ]
+                                                },
+                                                "type": "ParseJson",
+                                                "inputs": {
+                                                    "content": "@body('HTTP_Get_customer')",
+                                                    "schema": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "balance": {
+                                                                "type": "integer"
+                                                            },
+                                                            "currency": {
+                                                                "type": "string"
+                                                            },
+                                                            "subscriptions": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "data": {
+                                                                        "type": "array",
+                                                                        "items": {
+                                                                            "type": "object",
+                                                                            "properties": {
+                                                                                "id": {
+                                                                                    "type": "string"
+                                                                                },
+                                                                                "current_period_end": {
+                                                                                    "type": "integer"
+                                                                                }
+                                                                            },
+                                                                            "required": [
+                                                                                "id",
+                                                                                "current_period_end"
+                                                                            ]
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "Set_variable_StripeBalance": {
+                                                "runAfter": {
+                                                    "Parse_JSON_Customer": [
+                                                        "Succeeded"
+                                                    ]
+                                                },
+                                                "type": "SetVariable",
+                                                "inputs": {
+                                                    "name": "StripeBalance",
+                                                    "value": "@div(body('Parse_JSON_Customer')?['balance'], float(-100))"
+                                                }
+                                            },
+                                            "Set_variable_StripeNextInvoice": {
+                                                "runAfter": {
+                                                    "Set_variable_StripeBalance": [
+                                                        "Succeeded"
+                                                    ]
+                                                },
+                                                "type": "SetVariable",
+                                                "inputs": {
+                                                    "name": "StripeNextInvoice",
+                                                    "value": "@{addDays('1970-01-01T00:00:00Z', div(first(body('Parse_JSON_Customer')?['subscriptions']?['data'])?['current_period_end'], 86400))}"
+                                                }
+                                            },
+                                            "HTTP_Create_Session": {
+                                                "runAfter": {
+                                                    "Set_variable_StripeNextInvoice": [
+                                                        "Succeeded"
+                                                    ]
+                                                },
+                                                "type": "Http",
+                                                "inputs": {
+                                                    "method": "POST",
+                                                    "uri": "https://api.stripe.com/v1/billing_portal/sessions",
+                                                    "headers": {
+                                                        "Content-type": "application/x-www-form-urlencoded"
+                                                    },
+                                                    "body": "customer=@{variables('customerId')}&return_url=@{uriComponent(concat('https://', concat(parameters('envpar_config__TenantName'), '.sharepoint.com'), '/sites/', items('Apply_to_each_GroupsList')?['Cycle1GroupName'], '/Lists/MySubscriptions'))}",
+                                                    "authentication": {
+                                                        "type": "Raw",
+                                                        "value": "Bearer @{items('Apply_to_each_GroupsList')?['StripeKey']}"
+                                                    }
+                                                }
+                                            },
+                                            "Parse_JSON_Session": {
+                                                "runAfter": {
+                                                    "HTTP_Create_Session": [
+                                                        "Succeeded"
+                                                    ]
+                                                },
+                                                "type": "ParseJson",
+                                                "inputs": {
+                                                    "content": "@body('HTTP_Create_Session')",
+                                                    "schema": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "customer": {
+                                                                "type": "string"
+                                                            },
+                                                            "url": {
+                                                                "type": "string"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "Set_variable_SubscriptionLink": {
+                                                "runAfter": {
+                                                    "Parse_JSON_Session": [
+                                                        "Succeeded"
+                                                    ]
+                                                },
+                                                "type": "SetVariable",
+                                                "inputs": {
+                                                    "name": "SubscriptionLink",
+                                                    "value": "@body('Parse_JSON_Session')?['url']"
+                                                }
+                                            },
+                                            "Condition_Alipay": {
+                                                "actions": {
+                                                    "HTTP_Create_Alipay_Source": {
+                                                        "runAfter": {},
+                                                        "type": "Http",
+                                                        "inputs": {
+                                                            "method": "POST",
+                                                            "uri": "https://api.stripe.com/v1/sources",
+                                                            "headers": {
+                                                                "Content-type": "application/x-www-form-urlencoded"
+                                                            },
+                                                            "body": "type=alipay&amount=@{outputs('Compose_amount')}&currency=@{items('Apply_to_each_GroupsList')?['CurrencyCode']}&@{uriComponent('metadata[customer]')}=@{items('Apply_to_each_UsersList')?['StripeCustomerId']}&@{uriComponent('redirect[return_url]')}=@{uriComponent(body('Parse_JSON_Session')?['url'])}",
+                                                            "authentication": {
+                                                                "type": "Raw",
+                                                                "value": "Bearer @{items('Apply_to_each_GroupsList')?['StripeKey']}"
+                                                            }
+                                                        }
+                                                    },
+                                                    "Parse_JSON_Alipay_Source_id_and_url": {
+                                                        "runAfter": {
+                                                            "HTTP_Create_Alipay_Source": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "ParseJson",
+                                                        "inputs": {
+                                                            "content": "@body('HTTP_Create_Alipay_Source')",
+                                                            "schema": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "redirect": {
+                                                                        "type": "object",
+                                                                        "properties": {
+                                                                            "url": {
+                                                                                "type": "string"
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "Set_variable_AlipayLink": {
+                                                        "runAfter": {
+                                                            "Parse_JSON_Alipay_Source_id_and_url": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "SetVariable",
+                                                        "inputs": {
+                                                            "name": "AlipayLink",
+                                                            "value": "@body('Parse_JSON_Alipay_Source_id_and_url')?['redirect']?['url']"
+                                                        }
+                                                    }
+                                                },
+                                                "runAfter": {
+                                                    "Compose_amount": [
+                                                        "Succeeded"
+                                                    ]
+                                                },
+                                                "expression": {
+                                                    "equals": [
+                                                        "@body('Get_item_MySubscriptions')?['GetAlipayLink']",
+                                                        "@true"
+                                                    ]
+                                                },
+                                                "type": "If"
+                                            },
+                                            "Condition_Wechatpay": {
+                                                "actions": {
+                                                    "HTTP_Create_WechatPay_Source": {
+                                                        "runAfter": {},
+                                                        "type": "Http",
+                                                        "inputs": {
+                                                            "method": "POST",
+                                                            "uri": "https://api.stripe.com/v1/sources",
+                                                            "headers": {
+                                                                "Content-type": "application/x-www-form-urlencoded"
+                                                            },
+                                                            "body": "type=wechat&amount=@{outputs('Compose_amount')}&currency=@{items('Apply_to_each_GroupsList')?['CurrencyCode']}&@{uriComponent('metadata[customer]')}=@{items('Apply_to_each_UsersList')?['StripeCustomerId']}&@{uriComponent('redirect[return_url]')}=@{uriComponent(body('Parse_JSON_Session')?['url'])}",
+                                                            "authentication": {
+                                                                "type": "Raw",
+                                                                "value": "Bearer @{items('Apply_to_each_GroupsList')?['StripeKey']}"
+                                                            }
+                                                        }
+                                                    },
+                                                    "Parse_JSON_WechatPay_Source_id_and_url": {
+                                                        "runAfter": {
+                                                            "HTTP_Create_WechatPay_Source": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "ParseJson",
+                                                        "inputs": {
+                                                            "content": "@body('HTTP_Create_WechatPay_Source')",
+                                                            "schema": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "wechat": {
+                                                                        "type": "object",
+                                                                        "properties": {
+                                                                            "qr_code_url": {
+                                                                                "type": "string"
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "Set_variable_WechatLink": {
+                                                        "runAfter": {
+                                                            "Parse_JSON_WechatPay_Source_id_and_url": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "SetVariable",
+                                                        "inputs": {
+                                                            "name": "WechatLink",
+                                                            "value": "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=@{body('Parse_JSON_WechatPay_Source_id_and_url')?['wechat']?['qr_code_url']}"
+                                                        }
+                                                    }
+                                                },
+                                                "runAfter": {
+                                                    "Condition_Alipay": [
+                                                        "Succeeded"
+                                                    ]
+                                                },
+                                                "expression": {
+                                                    "equals": [
+                                                        "@body('Get_item_MySubscriptions')?['GetWechatpayLink']",
+                                                        "@true"
+                                                    ]
+                                                },
+                                                "type": "If"
+                                            },
+                                            "Condition_Paypal": {
+                                                "actions": {
+                                                    "HTTP_ClientSecret": {
+                                                        "runAfter": {},
+                                                        "type": "Http",
+                                                        "inputs": {
+                                                            "method": "POST",
+                                                            "uri": "@{parameters('envpar_config__PaypalApiPrefix')}/v1/oauth2/token",
+                                                            "headers": {
+                                                                "Accept": "application/json",
+                                                                "Accept-Language": "en_US",
+                                                                "content-type": "application/x-www-form-urlencoded"
+                                                            },
+                                                            "body": "grant_type=client_credentials",
+                                                            "authentication": {
+                                                                "type": "Basic",
+                                                                "username": "@items('Apply_to_each_GroupsList')?['PaypalKey']",
+                                                                "password": "@items('Apply_to_each_GroupsList')?['PaypalSecret']"
+                                                            }
+                                                        }
+                                                    },
+                                                    "Parse_JSON_Http_ClientSecret": {
+                                                        "runAfter": {
+                                                            "HTTP_ClientSecret": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "ParseJson",
+                                                        "inputs": {
+                                                            "content": "@body('HTTP_ClientSecret')",
+                                                            "schema": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "scope": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "access_token": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "token_type": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "app_id": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "expires_in": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "nonce": {
+                                                                        "type": "string"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "HTTP_Create_order": {
+                                                        "runAfter": {
+                                                            "Parse_JSON_Http_ClientSecret": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "Http",
+                                                        "inputs": {
+                                                            "method": "POST",
+                                                            "uri": "@{parameters('envpar_config__PaypalApiPrefix')}/v2/checkout/orders",
+                                                            "headers": {
+                                                                "Accept": "application/json",
+                                                                "Accept-Language": "en_US",
+                                                                "content-type": "application/json"
+                                                            },
+                                                            "body": {
+                                                                "intent": "CAPTURE",
+                                                                "purchase_units": [
+                                                                    {
+                                                                        "reference_id": "@{items('Apply_to_each_UsersList')?['StripeCustomerId']}",
+                                                                        "amount": {
+                                                                            "currency_code": "@{toUpper(items('Apply_to_each_GroupsList')?['CurrencyCode'])}",
+                                                                            "value": "@{outputs('Compose_amount_paypal')}"
+                                                                        }
+                                                                    }
+                                                                ],
+                                                                "application_context": {
+                                                                    "return_url": "@{body('Parse_JSON_Session')?['url']}",
+                                                                    "cancel_url": "@{body('Parse_JSON_Session')?['url']}"
+                                                                }
+                                                            },
+                                                            "authentication": {
+                                                                "type": "Raw",
+                                                                "value": "Bearer @{body('Parse_JSON_Http_ClientSecret')?['access_token']}"
+                                                            }
+                                                        }
+                                                    },
+                                                    "Parse_JSON_Create_order": {
+                                                        "runAfter": {
+                                                            "HTTP_Create_order": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "ParseJson",
+                                                        "inputs": {
+                                                            "content": "@body('HTTP_Create_order')",
+                                                            "schema": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "links": {
+                                                                        "type": "array",
+                                                                        "items": {
+                                                                            "type": "object",
+                                                                            "properties": {
+                                                                                "href": {
+                                                                                    "type": "string"
+                                                                                },
+                                                                                "rel": {
+                                                                                    "type": "string"
+                                                                                },
+                                                                                "method": {
+                                                                                    "type": "string"
+                                                                                }
+                                                                            },
+                                                                            "required": [
+                                                                                "href",
+                                                                                "rel",
+                                                                                "method"
+                                                                            ]
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "Apply_to_each_Create_order_links": {
+                                                        "foreach": "@body('Parse_JSON_Create_order')?['links']",
+                                                        "actions": {
+                                                            "Condition_Create_order_links_rel": {
+                                                                "actions": {
+                                                                    "Set_variable_PaypalApproveUrl": {
+                                                                        "runAfter": {},
+                                                                        "type": "SetVariable",
+                                                                        "inputs": {
+                                                                            "name": "PaypalApproveUrl",
+                                                                            "value": "@items('Apply_to_each_Create_order_links')?['href']"
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "runAfter": {},
+                                                                "expression": {
+                                                                    "contains": [
+                                                                        "@items('Apply_to_each_Create_order_links')?['rel']",
+                                                                        "@'approve'"
+                                                                    ]
+                                                                },
+                                                                "type": "If"
+                                                            }
+                                                        },
+                                                        "runAfter": {
+                                                            "Parse_JSON_Create_order": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "Foreach"
+                                                    }
+                                                },
+                                                "runAfter": {
+                                                    "Compose_amount_paypal": [
+                                                        "Succeeded"
+                                                    ]
+                                                },
+                                                "expression": {
+                                                    "and": [
+                                                        {
+                                                            "equals": [
+                                                                "@body('Get_item_MySubscriptions')?['GetPaypalLink']",
+                                                                "@true"
+                                                            ]
+                                                        },
+                                                        {
+                                                            "not": {
+                                                                "equals": [
+                                                                    "@items('Apply_to_each_GroupsList')?['PaypalKey']",
+                                                                    "@null"
+                                                                ]
+                                                            }
+                                                        }
+                                                    ]
+                                                },
+                                                "type": "If"
+                                            },
+                                            "Condition_StripeSubscriptionId": {
+                                                "actions": {
+                                                    "Scope_Create_StripeSubscription": {
+                                                        "actions": {
+                                                            "HTTP_4": {
+                                                                "runAfter": {},
+                                                                "type": "Http",
+                                                                "inputs": {
+                                                                    "method": "GET",
+                                                                    "uri": "https://api.stripe.com/v1/customers?email=@{uriComponent(items('Apply_to_each_UsersList')?['Title'])}&expand%5B%5D=data.subscriptions",
+                                                                    "authentication": {
+                                                                        "type": "Raw",
+                                                                        "value": "Bearer @{items('Apply_to_each_GroupsList')?['StripeKey']}"
+                                                                    }
+                                                                }
+                                                            },
+                                                            "Condition_no_customer": {
+                                                                "actions": {
+                                                                    "HTTP_3": {
+                                                                        "runAfter": {},
+                                                                        "type": "Http",
+                                                                        "inputs": {
+                                                                            "method": "POST",
+                                                                            "uri": "https://api.stripe.com/v1/customers",
+                                                                            "headers": {
+                                                                                "Content-type": "application/x-www-form-urlencoded"
+                                                                            },
+                                                                            "body": "email=@{uriComponent(items('Apply_to_each_UsersList')?['Title'])}&metadata%5Buid%5D=@{uriComponent(items('Apply_to_each_UsersList')?['UID'])}&metadata%5Bgid%5D=@{uriComponent(items('Apply_to_each_GroupsList')?['Cycle1GroupId'])}",
+                                                                            "authentication": {
+                                                                                "type": "Raw",
+                                                                                "value": "Bearer @{items('Apply_to_each_GroupsList')?['StripeKey']}"
+                                                                            }
+                                                                        }
+                                                                    },
+                                                                    "Set_variable_customerId": {
+                                                                        "runAfter": {
+                                                                            "HTTP_3": [
+                                                                                "Succeeded"
+                                                                            ]
+                                                                        },
+                                                                        "type": "SetVariable",
+                                                                        "inputs": {
+                                                                            "name": "customerId",
+                                                                            "value": "@{body('HTTP_3')?['id']}"
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "runAfter": {
+                                                                    "HTTP_4": [
+                                                                        "Succeeded"
+                                                                    ]
+                                                                },
+                                                                "else": {
+                                                                    "actions": {
+                                                                        "Set_variable_customerId_2": {
+                                                                            "runAfter": {},
+                                                                            "type": "SetVariable",
+                                                                            "inputs": {
+                                                                                "name": "customerId",
+                                                                                "value": "@{body('HTTP_4')?['data']?[0]?['id']}"
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "expression": {
+                                                                    "equals": [
+                                                                        "@length(body('HTTP_4')?['data'])",
+                                                                        0
+                                                                    ]
+                                                                },
+                                                                "type": "If"
+                                                            },
+                                                            "Parse_JSON_4": {
+                                                                "runAfter": {
+                                                                    "Condition_no_subscription": [
+                                                                        "Succeeded"
+                                                                    ]
+                                                                },
+                                                                "type": "ParseJson",
+                                                                "inputs": {
+                                                                    "content": "@coalesce(body('HTTP'), body('HTTP_4')?['data']?[0]?['subscriptions']?['data']?[0])",
+                                                                    "schema": {
+                                                                        "type": "object",
+                                                                        "properties": {
+                                                                            "id": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "current_period_start": {
+                                                                                "type": "integer"
+                                                                            },
+                                                                            "current_period_end": {
+                                                                                "type": "integer"
+                                                                            },
+                                                                            "plan": {
+                                                                                "type": "object",
+                                                                                "properties": {
+                                                                                    "id": {
+                                                                                        "type": "string"
+                                                                                    }
+                                                                                }
+                                                                            },
+                                                                            "status": {
+                                                                                "type": "string"
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            },
+                                                            "Update_item_UsersList": {
+                                                                "runAfter": {
+                                                                    "Parse_JSON_4": [
+                                                                        "Succeeded"
+                                                                    ]
+                                                                },
+                                                                "type": "OpenApiConnection",
+                                                                "inputs": {
+                                                                    "host": {
+                                                                        "connectionName": "shared_sharepointonline",
+                                                                        "operationId": "PatchItem",
+                                                                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                                    },
+                                                                    "parameters": {
+                                                                        "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{items('Apply_to_each_GroupsList')?['Cycle1GroupName']}",
+                                                                        "table": "UsersList",
+                                                                        "id": "@items('Apply_to_each_UsersList')?['ID']",
+                                                                        "item": {
+                                                                            "StripeCustomerId": "@{variables('customerId')}",
+                                                                            "StripeSubscriptionId": "@{body('Parse_JSON_4')?['id']}",
+                                                                            "StripePriceId": "@{body('Parse_JSON_4')?['plan']?['id']}",
+                                                                            "StripePriceStatus": "@{body('Parse_JSON_4')?['status']}",
+                                                                            "StripeLastMetered": "@{utcNow()}"
+                                                                        }
+                                                                    },
+                                                                    "authentication": "@parameters('$authentication')"
+                                                                }
+                                                            },
+                                                            "Create_item_LogsList": {
+                                                                "runAfter": {
+                                                                    "Update_item_UsersList": [
+                                                                        "Succeeded"
+                                                                    ]
+                                                                },
+                                                                "type": "OpenApiConnection",
+                                                                "inputs": {
+                                                                    "host": {
+                                                                        "connectionName": "shared_sharepointonline",
+                                                                        "operationId": "PostItem",
+                                                                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                                    },
+                                                                    "parameters": {
+                                                                        "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{items('Apply_to_each_GroupsList')?['Cycle1GroupName']}",
+                                                                        "table": "LogsList",
+                                                                        "item": {
+                                                                            "Title": "Updated @{items('Apply_to_each_UsersList')?['Title']} to Stripe customer @{variables('customerId')}  ",
+                                                                            "Resource": "UsersList",
+                                                                            "ResourceId": "@{items('Apply_to_each_UsersList')?['Title']}",
+                                                                            "ChangeType": "UPDATE",
+                                                                            "Source": "cycle0__Graph_Groups_Webhook",
+                                                                            "LogDescription": ""
+                                                                        }
+                                                                    },
+                                                                    "authentication": "@parameters('$authentication')"
+                                                                }
+                                                            },
+                                                            "Condition_no_subscription": {
+                                                                "actions": {
+                                                                    "HTTP": {
+                                                                        "runAfter": {},
+                                                                        "type": "Http",
+                                                                        "inputs": {
+                                                                            "method": "POST",
+                                                                            "uri": "https://api.stripe.com/v1/subscriptions",
+                                                                            "headers": {
+                                                                                "Content-type": "application/x-www-form-urlencoded"
+                                                                            },
+                                                                            "body": "customer=@{variables('customerId')}&@{uriComponent('items[0][price]')}=@{items('Apply_to_each_GroupsList')?['StripePrice0']}",
+                                                                            "authentication": {
+                                                                                "type": "Raw",
+                                                                                "value": "Bearer @{items('Apply_to_each_GroupsList')?['StripeKey']}"
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "runAfter": {
+                                                                    "Condition_no_customer": [
+                                                                        "Succeeded"
+                                                                    ]
+                                                                },
+                                                                "expression": {
+                                                                    "equals": [
+                                                                        "@body('HTTP_4')?['data']?[0]?['subscriptions']?['data']?[0]",
+                                                                        "@null"
+                                                                    ]
+                                                                },
+                                                                "type": "If"
+                                                            }
+                                                        },
+                                                        "runAfter": {},
+                                                        "type": "Scope"
+                                                    }
+                                                },
+                                                "runAfter": {},
+                                                "else": {
+                                                    "actions": {
+                                                        "Set_variable_customerId_3": {
+                                                            "runAfter": {},
+                                                            "type": "SetVariable",
+                                                            "inputs": {
+                                                                "name": "customerId",
+                                                                "value": "@{items('Apply_to_each_UsersList')?['StripeCustomerId']}"
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "expression": {
+                                                    "equals": [
+                                                        "@items('Apply_to_each_UsersList')?['StripeSubscriptionId']",
+                                                        "@null"
+                                                    ]
+                                                },
+                                                "type": "If"
+                                            },
+                                            "HTTP_Get_customer": {
+                                                "runAfter": {
+                                                    "Condition_StripeSubscriptionId": [
+                                                        "Succeeded"
+                                                    ]
+                                                },
+                                                "type": "Http",
+                                                "inputs": {
+                                                    "method": "GET",
+                                                    "uri": "https://api.stripe.com/v1/customers/@{variables('customerId')}",
+                                                    "authentication": {
+                                                        "type": "Raw",
+                                                        "value": "Bearer @{items('Apply_to_each_GroupsList')?['StripeKey']}"
+                                                    }
+                                                }
+                                            },
+                                            "Compose_amount": {
+                                                "runAfter": {
+                                                    "Set_variable_SubscriptionLink": [
+                                                        "Succeeded"
+                                                    ]
+                                                },
+                                                "type": "Compose",
+                                                "inputs": "@if(contains(createArray('bif', 'clp', 'djf', 'gnf', 'jpy', 'kmf', 'krw', 'mga', 'pyg', 'rwf', 'vnd', 'vuv', 'xaf', 'xof', 'xpf'), items('Apply_to_each_GroupsList')?['CurrencyCode']), int(items('Apply_to_each_GroupsList')?['CurrencyUnit']) , int(mul(float(items('Apply_to_each_GroupsList')?['CurrencyUnit']), 100)) )"
+                                            },
+                                            "Compose_amount_paypal": {
+                                                "runAfter": {
+                                                    "Condition_Wechatpay": [
+                                                        "Succeeded"
+                                                    ]
+                                                },
+                                                "type": "Compose",
+                                                "inputs": "@float(items('Apply_to_each_GroupsList')?['CurrencyUnit'])"
+                                            }
+                                        }
+                                    },
+                                    "expression": {
+                                        "equals": [
+                                            "@items('Apply_to_each_GroupsList')?['StripeKey']",
+                                            "@null"
+                                        ]
+                                    },
+                                    "type": "If"
+                                },
+                                "Condition_Microsoft": {
+                                    "actions": {},
+                                    "runAfter": {
+                                        "Condition_StripeKey": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "else": {
+                                        "actions": {
+                                            "Set_variable_MicrosoftLink": {
+                                                "runAfter": {},
+                                                "type": "SetVariable",
+                                                "inputs": {
+                                                    "name": "MicrosoftLink",
+                                                    "value": "https://azuremarketplace.microsoft.com"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "expression": {
+                                        "equals": [
+                                            "@items('Apply_to_each_UsersList')?['MicrosoftSubscriptionId']",
+                                            "@null"
+                                        ]
+                                    },
+                                    "type": "If"
+                                }
+                            },
+                            "runAfter": {},
+                            "type": "Foreach"
+                        }
+                    },
+                    "runAfter": {
+                        "Get_items_UsersList": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "Foreach"
+                }
+            }
+        }
+    },
+    "schemaVersion": "1.0.0.0"
+}

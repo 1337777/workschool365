@@ -1,0 +1,12 @@
+<environmentvariabledefinition schemaname="new_envpar_config__OwnerEmail">
+  <description default="Owner (Billing, Cycles,...) Email. Enter space character ( ) for none">
+    <label description="Owner (Billing, Cycles,...) Email. Enter space character ( ) for none" languagecode="1033" />
+  </description>
+  <displayname default="envpar_config__OwnerEmail">
+    <label description="envpar_config__OwnerEmail" languagecode="1033" />
+  </displayname>
+  <introducedversion>3.0.0.23</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <type>100000000</type>
+</environmentvariabledefinition>

@@ -1,0 +1,213 @@
+{
+    "properties": {
+        "connectionReferences": {
+            "shared_outlook": {
+                "runtimeSource": "embedded",
+                "connection": {
+                    "connectionReferenceLogicalName": "new_sharedoutlook_63eeb"
+                },
+                "api": {
+                    "name": "shared_outlook"
+                }
+            },
+            "shared_sharepointonline": {
+                "runtimeSource": "embedded",
+                "connection": {
+                    "connectionReferenceLogicalName": "new_sharedsharepointonline_9ad14"
+                },
+                "api": {
+                    "name": "shared_sharepointonline"
+                }
+            }
+        },
+        "definition": {
+            "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+            "contentVersion": "1.0.0.0",
+            "parameters": {
+                "$connections": {
+                    "defaultValue": {},
+                    "type": "Object"
+                },
+                "$authentication": {
+                    "defaultValue": {},
+                    "type": "SecureObject"
+                },
+                "envpar_config__TenantName": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__TenantName"
+                    }
+                },
+                "envpar_config__CycleZeroName": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__CycleZeroName"
+                    }
+                }
+            },
+            "triggers": {
+                "manual": {
+                    "type": "Request",
+                    "kind": "Http",
+                    "inputs": {
+                        "schema": {
+                            "$schema": "https://json-schema.org/draft-04/schema#",
+                            "definitions": {},
+                            "id": "http://example.com/example.json",
+                            "properties": {
+                                "ActionCode": {
+                                    "id": "/properties/ActionCode",
+                                    "type": "string"
+                                },
+                                "OfferTitle": {
+                                    "id": "/properties/OfferTitle",
+                                    "type": "string"
+                                },
+                                "LeadSource": {
+                                    "id": "/properties/LeadSource",
+                                    "type": "string"
+                                },
+                                "UserDetails": {
+                                    "id": "/properties/UserDetails",
+                                    "properties": {
+                                        "Company": {
+                                            "id": "/properties/UserDetails/properties/Company",
+                                            "type": "string"
+                                        },
+                                        "Country": {
+                                            "id": "/properties/UserDetails/properties/Country",
+                                            "type": "string"
+                                        },
+                                        "Email": {
+                                            "id": "/properties/UserDetails/properties/Email",
+                                            "type": "string"
+                                        },
+                                        "FirstName": {
+                                            "id": "/properties/UserDetails/properties/FirstName",
+                                            "type": "string"
+                                        },
+                                        "LastName": {
+                                            "id": "/properties/UserDetails/properties/LastName",
+                                            "type": "string"
+                                        },
+                                        "Phone": {
+                                            "id": "/properties/UserDetails/properties/Phone",
+                                            "type": "string"
+                                        },
+                                        "Title": {
+                                            "id": "/properties/UserDetails/properties/Title",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                },
+                                "Cycle1GroupName": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "actions": {
+                "Response_OK": {
+                    "runAfter": {},
+                    "type": "Response",
+                    "kind": "Http",
+                    "inputs": {
+                        "statusCode": 200
+                    }
+                },
+                "Get_items_GroupsList": {
+                    "runAfter": {
+                        "Response_OK": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                        "host": {
+                            "connectionName": "shared_sharepointonline",
+                            "operationId": "GetItems",
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                        },
+                        "parameters": {
+                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{parameters('envpar_config__CycleZeroName')}",
+                            "table": "GroupsList",
+                            "$filter": "Cycle1GroupName eq '@{triggerBody()?['Cycle1GroupName']}'",
+                            "$top": 1
+                        },
+                        "authentication": "@parameters('$authentication')"
+                    }
+                },
+                "Apply_to_each_GroupsList": {
+                    "foreach": "@outputs('Get_items_GroupsList')?['body/value']",
+                    "actions": {
+                        "Create_item_LogsList": {
+                            "runAfter": {
+                                "Send_an_email_(V2)_Outlook_Live": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "OpenApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connectionName": "shared_sharepointonline",
+                                    "operationId": "PostItem",
+                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                },
+                                "parameters": {
+                                    "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{items('Apply_to_each_GroupsList')?['Cycle1GroupName']}",
+                                    "table": "LogsList",
+                                    "item": {
+                                        "Title": "New Microsoft contact @{triggerBody()?['UserDetails']?['Email']}",
+                                        "Resource": "LogsList",
+                                        "ResourceId": "",
+                                        "ChangeType": "CREATE",
+                                        "Source": "cycle0__Microsoft_Contact_Webhook",
+                                        "LogDescription": "@{triggerBody()}"
+                                    }
+                                },
+                                "authentication": "@parameters('$authentication')"
+                            }
+                        },
+                        "Send_an_email_(V2)_Outlook_Live": {
+                            "runAfter": {},
+                            "metadata": {
+                                "flowSystemMetadata": {
+                                    "swaggerOperationId": "SendEmailV2"
+                                }
+                            },
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['shared_outlook']['connectionId']"
+                                    }
+                                },
+                                "method": "post",
+                                "body": {
+                                    "To": "@{items('Apply_to_each_GroupsList')?['CyclesGroupOwner']}",
+                                    "Subject": "New Microsoft Contact @{triggerBody()?['UserDetails']?['Email']} for @{items('Apply_to_each_GroupsList')?['Cycle1GroupName']}",
+                                    "Body": "<p>@{triggerBody()}</p>"
+                                },
+                                "path": "/v2/Mail",
+                                "authentication": "@parameters('$authentication')"
+                            }
+                        }
+                    },
+                    "runAfter": {
+                        "Get_items_GroupsList": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "Foreach"
+                }
+            }
+        }
+    },
+    "schemaVersion": "1.0.0.0"
+}

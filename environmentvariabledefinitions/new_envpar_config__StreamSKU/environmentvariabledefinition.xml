@@ -1,0 +1,13 @@
+<environmentvariabledefinition schemaname="new_envpar_config__StreamSKU">
+  <defaultvalue>1f2f344a-700d-42c9-9427-5cea1d5d7ba6</defaultvalue>
+  <description default="Microsoft Stream free product SKU">
+    <label description="Microsoft Stream free product SKU" languagecode="1033" />
+  </description>
+  <displayname default="envpar_config__StreamSKU">
+    <label description="envpar_config__StreamSKU" languagecode="1033" />
+  </displayname>
+  <introducedversion>3.0.0.16</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <type>100000000</type>
+</environmentvariabledefinition>

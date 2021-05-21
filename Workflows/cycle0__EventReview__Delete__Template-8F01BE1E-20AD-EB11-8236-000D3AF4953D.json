@@ -1,0 +1,97 @@
+{
+    "properties": {
+        "connectionReferences": {
+            "shared_sharepointonline": {
+                "runtimeSource": "embedded",
+                "connection": {
+                    "connectionReferenceLogicalName": "new_sharedsharepointonline_9ad14"
+                },
+                "api": {
+                    "name": "shared_sharepointonline"
+                }
+            }
+        },
+        "definition": {
+            "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+            "contentVersion": "1.0.0.0",
+            "parameters": {
+                "$connections": {
+                    "defaultValue": {},
+                    "type": "Object"
+                },
+                "$authentication": {
+                    "defaultValue": {},
+                    "type": "SecureObject"
+                },
+                "envpar_http__EventReview__Delete": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_http__EventReview__Delete"
+                    }
+                },
+                "envpar_config__TenantName": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__TenantName"
+                    }
+                },
+                "envpar_config__CycleZeroName": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__CycleZeroName"
+                    }
+                }
+            },
+            "triggers": {
+                "When_a_file_is_deleted": {
+                    "recurrence": {
+                        "interval": 3,
+                        "frequency": "Minute"
+                    },
+                    "splitOn": "@triggerBody()?['value']",
+                    "metadata": {
+                        "flowSystemMetadata": {
+                            "swaggerOperationId": "GetOnDeletedFileItems"
+                        }
+                    },
+                    "type": "ApiConnection",
+                    "inputs": {
+                        "host": {
+                            "connection": {
+                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                            }
+                        },
+                        "method": "get",
+                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent('https://' , parameters('envpar_config__TenantName') , '.sharepoint.com/sites/', parameters('envpar_config__CycleZeroName')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/ondeletedfileitems",
+                        "authentication": "@parameters('$authentication')"
+                    },
+                    "conditions": [],
+                    "description": "old: @not(startsWith( triggerBody()?['{Path}'], 'EventReview/Receipts/' ))"
+                }
+            },
+            "actions": {
+                "HTTP": {
+                    "runAfter": {},
+                    "type": "Http",
+                    "inputs": {
+                        "method": "POST",
+                        "uri": "@parameters('envpar_http__EventReview__Delete')",
+                        "body": {
+                            "siteName": "tplparam_cyclname",
+                            "Id": "@triggerBody()?['ID']",
+                            "driveId": "tplparam_cycldriveid",
+                            "Cycle1GroupName": "tplparam_cyclaltname"
+                        },
+                        "retryPolicy": {
+                            "type": "none"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "schemaVersion": "1.0.0.0"
+}

@@ -1,0 +1,1418 @@
+{
+    "properties": {
+        "connectionReferences": {
+            "shared_sharepointonline": {
+                "runtimeSource": "embedded",
+                "connection": {
+                    "connectionReferenceLogicalName": "new_sharedsharepointonline_9ad14"
+                },
+                "api": {
+                    "name": "shared_sharepointonline"
+                }
+            },
+            "shared_wordonlinebusiness": {
+                "runtimeSource": "embedded",
+                "connection": {
+                    "connectionReferenceLogicalName": "new_WordOnlineBusiness"
+                },
+                "api": {
+                    "name": "shared_wordonlinebusiness"
+                }
+            }
+        },
+        "definition": {
+            "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+            "contentVersion": "1.0.0.0",
+            "parameters": {
+                "$connections": {
+                    "defaultValue": {},
+                    "type": "Object"
+                },
+                "$authentication": {
+                    "defaultValue": {},
+                    "type": "SecureObject"
+                },
+                "envpar_config__TenantName": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__TenantName",
+                        "description": "Required. Org Name orgname (this is the prefix of the auto assigned domain orgname.onmicrosoft.com)"
+                    }
+                }
+            },
+            "triggers": {
+                "manual": {
+                    "type": "Request",
+                    "kind": "Http",
+                    "inputs": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "siteName": {
+                                    "type": "string"
+                                },
+                                "fileItemId": {
+                                    "type": "integer"
+                                },
+                                "groupId": {
+                                    "type": "string"
+                                },
+                                "driveId": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "actions": {
+                "SolutionTables": {
+                    "runAfter": {
+                        "Get_file_properties_SolutionFile": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "Workflow",
+                    "inputs": {
+                        "host": {
+                            "workflowReferenceName": "d6535eaf-cd58-eb11-a812-000d3af4b0ba"
+                        },
+                        "body": {
+                            "siteName": "@variables('siteName')",
+                            "fileIdentifier": "@body('Get_file_properties_SolutionFile')?['{FullPath}']"
+                        }
+                    }
+                },
+                "Initialize_variable_autograde": {
+                    "runAfter": {
+                        "Get_file_properties_ResponseFile": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "autograde",
+                                "type": "integer",
+                                "value": 0
+                            }
+                        ]
+                    }
+                },
+                "Initialize_variable_AutoWeight": {
+                    "runAfter": {
+                        "Initialize_variable_autograde": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "AutoWeight",
+                                "type": "integer",
+                                "value": 0
+                            }
+                        ]
+                    }
+                },
+                "Initialize_variable_commentAndGrade": {
+                    "runAfter": {
+                        "Initialize_variable_AutoWeight": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "commentAndGrade",
+                                "type": "string"
+                            }
+                        ]
+                    }
+                },
+                "Initialize_variable_reviewerGrade": {
+                    "runAfter": {
+                        "Initialize_variable_commentAndGrade": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "reviewerGrade",
+                                "type": "integer",
+                                "value": 0
+                            }
+                        ]
+                    }
+                },
+                "Stop_sharing_an_item_or_a_file_ResponseFIle": {
+                    "runAfter": {
+                        "ResponseTables": [
+                            "Succeeded"
+                        ]
+                    },
+                    "metadata": {
+                        "flowSystemMetadata": {
+                            "swaggerOperationId": "UnshareItem"
+                        }
+                    },
+                    "type": "ApiConnection",
+                    "inputs": {
+                        "host": {
+                            "connection": {
+                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                            }
+                        },
+                        "method": "post",
+                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('SurveyQuiz'))}/items/@{encodeURIComponent(encodeURIComponent(body('Get_file_properties_ResponseFile')?['ID']))}/unshare",
+                        "authentication": "@parameters('$authentication')"
+                    }
+                },
+                "Grant_access_to_an_item_or_a_folder_ResponseFIle": {
+                    "runAfter": {
+                        "Set_content_approval_Approve_ResponseFIle": [
+                            "Succeeded"
+                        ]
+                    },
+                    "metadata": {
+                        "flowSystemMetadata": {
+                            "swaggerOperationId": "GrantAccess"
+                        }
+                    },
+                    "type": "ApiConnection",
+                    "inputs": {
+                        "host": {
+                            "connection": {
+                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                            }
+                        },
+                        "method": "post",
+                        "body": {
+                            "recipients": "@{body('Get_file_properties_ResponseFile')?['Author']?['Email']}",
+                            "roleValue": "role:1073741827",
+                            "sendEmail": false
+                        },
+                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('SurveyQuiz'))}/items/@{encodeURIComponent(encodeURIComponent(body('Get_file_properties_ResponseFile')?['ID']))}/grantaccess",
+                        "authentication": "@parameters('$authentication')"
+                    }
+                },
+                "Get_a_row_SolutionTables_Total": {
+                    "runAfter": {
+                        "SolutionTables": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "Compose",
+                    "inputs": {
+                        "ReviewerWeight": "@body('Get_file_properties_SolutionFile')?['ReviewerWeight']",
+                        "ReviewerComments": "@{body('Get_file_properties_SolutionFile')?['ReviewerComments']}",
+                        "Deadline": "@{body('Get_file_properties_SolutionFile')?['Deadline']}"
+                    }
+                },
+                "Parse_JSON_SolutionTables_Total": {
+                    "runAfter": {
+                        "Get_a_row_SolutionTables_Total": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "ParseJson",
+                    "inputs": {
+                        "content": "@outputs('Get_a_row_SolutionTables_Total')",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "ReviewerWeight": {},
+                                "ReviewerComments": {
+                                    "type": "string"
+                                },
+                                "Deadline": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "Get_file_metadata_using_path_SolutionFIle": {
+                    "runAfter": {
+                        "Grant_access_to_an_item_or_a_folder_ResponseFIle": [
+                            "Succeeded"
+                        ]
+                    },
+                    "metadata": {
+                        "flowSystemMetadata": {
+                            "swaggerOperationId": "GetFileMetadataByPath"
+                        }
+                    },
+                    "type": "ApiConnection",
+                    "inputs": {
+                        "host": {
+                            "connection": {
+                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                            }
+                        },
+                        "method": "get",
+                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/GetFileByPath",
+                        "queries": {
+                            "path": "@{concat(body('Get_file_properties_ResponseFile')?['{Path}'], body('Get_file_properties_ResponseFile')?['{ContentType}']?['Name'], '__SOLUTION.docx')}",
+                            "queryParametersSingleEncoded": true
+                        },
+                        "authentication": "@parameters('$authentication')"
+                    }
+                },
+                "Get_file_properties_SolutionFile": {
+                    "runAfter": {
+                        "Get_file_metadata_using_path_SolutionFIle": [
+                            "Succeeded"
+                        ]
+                    },
+                    "metadata": {
+                        "flowSystemMetadata": {
+                            "swaggerOperationId": "GetFileItem"
+                        }
+                    },
+                    "type": "ApiConnection",
+                    "inputs": {
+                        "host": {
+                            "connection": {
+                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                            }
+                        },
+                        "method": "get",
+                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('SurveyQuiz'))}/items/@{encodeURIComponent(body('Get_file_metadata_using_path_SolutionFIle')?['ItemId'])}/getfileitem",
+                        "authentication": "@parameters('$authentication')"
+                    }
+                },
+                "Initialize_variable_reviewerWeight": {
+                    "runAfter": {
+                        "Initialize_variable_reviewerGrade": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "reviewerWeight",
+                                "type": "integer",
+                                "value": 0
+                            }
+                        ]
+                    }
+                },
+                "Initialize_variable_siteAddress": {
+                    "runAfter": {
+                        "Initialize_variable_driveId": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "siteAddress",
+                                "type": "string",
+                                "value": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{variables('siteName')}"
+                            }
+                        ]
+                    }
+                },
+                "Initialize_variable_deadline": {
+                    "runAfter": {
+                        "Initialize_variable_reviewerWeight": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "deadline",
+                                "type": "string"
+                            }
+                        ]
+                    }
+                },
+                "Delay_until": {
+                    "runAfter": {
+                        "Set_variable_deadline": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "Wait",
+                    "inputs": {
+                        "until": {
+                            "timestamp": "@{addMinutes(variables('deadline'), 5)}"
+                        }
+                    }
+                },
+                "Set_variable_deadline": {
+                    "runAfter": {
+                        "Parse_JSON_SolutionTables_Total": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "SetVariable",
+                    "inputs": {
+                        "name": "deadline",
+                        "value": "@body('Parse_JSON_SolutionTables_Total')?['Deadline']"
+                    }
+                },
+                "Set_variable_deadline_2": {
+                    "runAfter": {
+                        "Delay_until": [
+                            "Failed"
+                        ]
+                    },
+                    "type": "SetVariable",
+                    "inputs": {
+                        "name": "deadline",
+                        "value": "@{getFutureTime(1, 'Day')}"
+                    }
+                },
+                "Compose_InvalidDeadline": {
+                    "runAfter": {
+                        "Get_files_Transcripts": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "Compose",
+                    "inputs": "@greater( ticks(body('Get_file_properties_ResponseFile')?['Modified']) , ticks(addMinutes(variables('deadline'), 5)) )"
+                },
+                "Compose_InvalidRepeat": {
+                    "runAfter": {
+                        "Compose_InvalidDeadline": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "Compose",
+                    "inputs": "@greater(length( body('Get_files_Transcripts')?['value'] ), 0)"
+                },
+                "Initialize_variable_fileItemId": {
+                    "runAfter": {
+                        "Initialize_variable_siteName": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "fileItemId",
+                                "type": "integer",
+                                "value": "@triggerBody()?['fileItemId']"
+                            }
+                        ]
+                    }
+                },
+                "Get_file_properties_ResponseFile": {
+                    "runAfter": {
+                        "Initialize_variable_siteAddress": [
+                            "Succeeded"
+                        ]
+                    },
+                    "metadata": {
+                        "flowSystemMetadata": {
+                            "swaggerOperationId": "GetFileItem"
+                        }
+                    },
+                    "type": "ApiConnection",
+                    "inputs": {
+                        "host": {
+                            "connection": {
+                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                            }
+                        },
+                        "method": "get",
+                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('SurveyQuiz'))}/items/@{encodeURIComponent(variables('fileItemId'))}/getfileitem",
+                        "authentication": "@parameters('$authentication')"
+                    }
+                },
+                "Initialize_variable_siteName": {
+                    "runAfter": {},
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "siteName",
+                                "type": "string",
+                                "value": "@triggerBody()?['siteName']"
+                            }
+                        ]
+                    }
+                },
+                "Initialize_variable_groupId": {
+                    "runAfter": {
+                        "Initialize_variable_fileItemId": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "groupId",
+                                "type": "string",
+                                "value": "@triggerBody()?['groupId']"
+                            }
+                        ]
+                    }
+                },
+                "Initialize_variable_driveId": {
+                    "runAfter": {
+                        "Initialize_variable_groupId": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "driveId",
+                                "type": "string",
+                                "value": "@triggerBody()?['driveId']"
+                            }
+                        ]
+                    }
+                },
+                "Response": {
+                    "runAfter": {
+                        "Scope_2": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "Response",
+                    "kind": "Http",
+                    "inputs": {
+                        "statusCode": 200
+                    }
+                },
+                "Get_file_metadata_ResponseFile": {
+                    "runAfter": {
+                        "Stop_sharing_an_item_or_a_file_ResponseFIle": [
+                            "Succeeded"
+                        ]
+                    },
+                    "metadata": {
+                        "flowSystemMetadata": {
+                            "swaggerOperationId": "GetFileMetadata"
+                        }
+                    },
+                    "type": "ApiConnection",
+                    "inputs": {
+                        "host": {
+                            "connection": {
+                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                            }
+                        },
+                        "method": "get",
+                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/files/@{encodeURIComponent(body('Get_file_properties_ResponseFile')?['{Identifier}'])}",
+                        "authentication": "@parameters('$authentication')"
+                    }
+                },
+                "Set_content_approval_Approve_ResponseFIle": {
+                    "runAfter": {
+                        "Get_file_metadata_ResponseFile": [
+                            "Succeeded"
+                        ]
+                    },
+                    "metadata": {
+                        "flowSystemMetadata": {
+                            "swaggerOperationId": "SetApprovalStatus"
+                        }
+                    },
+                    "type": "ApiConnection",
+                    "inputs": {
+                        "host": {
+                            "connection": {
+                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                            }
+                        },
+                        "method": "post",
+                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('SurveyQuiz'))}/items/@{encodeURIComponent(encodeURIComponent(body('Get_file_properties_ResponseFile')?['ID']))}/setapprovalstatus",
+                        "queries": {
+                            "approvalAction": "Approve",
+                            "comments": "",
+                            "entityTag": "@body('Get_file_metadata_ResponseFile')?['ETag']"
+                        },
+                        "authentication": "@parameters('$authentication')",
+                        "retryPolicy": {
+                            "type": "fixed",
+                            "count": 10,
+                            "interval": "PT10S"
+                        }
+                    }
+                },
+                "Update_file_properties_Transcripts_3": {
+                    "runAfter": {
+                        "Update_file_properties_Transcripts_2": [
+                            "Succeeded"
+                        ]
+                    },
+                    "metadata": {
+                        "flowSystemMetadata": {
+                            "swaggerOperationId": "PatchFileItem"
+                        }
+                    },
+                    "type": "ApiConnection",
+                    "inputs": {
+                        "host": {
+                            "connection": {
+                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                            }
+                        },
+                        "method": "patch",
+                        "body": {
+                            "AutoWeight": "@variables('AutoWeight')",
+                            "AutoGrade": "@variables('autograde')",
+                            "TimeViewed": "@{body('Get_file_properties_ResponseFile')?['Created']}",
+                            "InvalidDeadline": "@outputs('Compose_InvalidDeadline')",
+                            "InvalidRepeat": "@outputs('Compose_InvalidRepeat')",
+                            "Title": "@{body('Get_file_properties_ResponseFile')?['Author']?['Email']}",
+                            "{ContentType}": {
+                                "Id": "@{body('Get_file_properties_ResponseFile')?['{ContentType}']?['Id']}"
+                            },
+                            "QuizzedRef": {
+                                "@@odata.type": "#Microsoft.Azure.Connectors.SharePoint.SPListExpandedReference",
+                                "Id": "@body('Get_file_properties_ResponseFile')?['ID']",
+                                "Value": "@{body('Get_file_properties_ResponseFile')?['ID']}"
+                            },
+                            "Deadline": "@{body('Get_file_properties_SolutionFile')?['Deadline']}"
+                        },
+                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('SurveyQuiz'))}/items/@{encodeURIComponent(body('Create_file_Transcripts_0')?['ItemId'])}/patchfileitem",
+                        "authentication": "@parameters('$authentication')"
+                    }
+                },
+                "Get_files_Transcripts": {
+                    "runAfter": {
+                        "Set_variable_deadline_2": [
+                            "Succeeded",
+                            "Failed",
+                            "Skipped",
+                            "TimedOut"
+                        ]
+                    },
+                    "metadata": {
+                        "flowSystemMetadata": {
+                            "swaggerOperationId": "GetFileItems"
+                        }
+                    },
+                    "type": "ApiConnection",
+                    "inputs": {
+                        "host": {
+                            "connection": {
+                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                            }
+                        },
+                        "method": "get",
+                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('SurveyQuiz'))}/getfileitems",
+                        "queries": {
+                            "folderPath": "TranscriptsCopy",
+                            "$filter": "Title eq '@{body('Get_file_properties_ResponseFile')?['Author']?['Email']}' and QuizName eq '@{body('Get_file_properties_ResponseFile')?['{ContentType}']?['Name']}'",
+                            "$top": 1
+                        },
+                        "authentication": "@parameters('$authentication')"
+                    }
+                },
+                "Create_file_Transcripts_0": {
+                    "runAfter": {
+                        "Compose_InvalidRepeat": [
+                            "Succeeded"
+                        ]
+                    },
+                    "metadata": {
+                        "flowSystemMetadata": {
+                            "swaggerOperationId": "CreateFile"
+                        }
+                    },
+                    "type": "ApiConnection",
+                    "inputs": {
+                        "host": {
+                            "connection": {
+                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                            }
+                        },
+                        "method": "post",
+                        "body": "{\"$content-type\":\"application/vnd.openxmlformats-officedocument.wordprocessingml.document\",\"$content\":\"\"}",
+                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/files",
+                        "queries": {
+                            "folderPath": "SurveyQuiz/Transcripts",
+                            "name": "@{body('Get_file_properties_ResponseFile')?['Author']?['Email']} @{body('Get_file_properties_ResponseFile')?['{ContentType}']?['Name']} @{body('Get_file_properties_ResponseFile')?['ID']}.docx",
+                            "queryParametersSingleEncoded": true
+                        },
+                        "authentication": "@parameters('$authentication')"
+                    },
+                    "runtimeConfiguration": {
+                        "contentTransfer": {
+                            "transferMode": "Chunked"
+                        }
+                    }
+                },
+                "Copy_file_Transcripts": {
+                    "runAfter": {
+                        "Update_file_properties_Transcripts_3": [
+                            "Succeeded"
+                        ]
+                    },
+                    "metadata": {
+                        "flowSystemMetadata": {
+                            "swaggerOperationId": "CopyFileAsync"
+                        }
+                    },
+                    "type": "ApiConnection",
+                    "inputs": {
+                        "host": {
+                            "connection": {
+                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                            }
+                        },
+                        "method": "post",
+                        "body": {
+                            "sourceFileId": "@body('Create_file_Transcripts_0')?['Id']",
+                            "destinationDataset": "@variables('siteAddress')",
+                            "destinationFolderPath": "SurveyQuiz/TranscriptsCopy",
+                            "nameConflictBehavior": 2
+                        },
+                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/copyFileAsync",
+                        "authentication": "@parameters('$authentication')"
+                    }
+                },
+                "Scope_2": {
+                    "actions": {
+                        "Get_file_metadata_using_path": {
+                            "runAfter": {
+                                "Grant_view_to_Transcript_to_Author": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "metadata": {
+                                "flowSystemMetadata": {
+                                    "swaggerOperationId": "GetFileMetadataByPath"
+                                }
+                            },
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                                    }
+                                },
+                                "method": "get",
+                                "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/GetFileByPath",
+                                "queries": {
+                                    "path": "@body('Create_file_Transcripts_0')?['Path']",
+                                    "queryParametersSingleEncoded": true
+                                },
+                                "authentication": "@parameters('$authentication')"
+                            }
+                        },
+                        "Set_content_approval_status": {
+                            "runAfter": {
+                                "Get_file_metadata_using_path": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "metadata": {
+                                "flowSystemMetadata": {
+                                    "swaggerOperationId": "SetApprovalStatus"
+                                }
+                            },
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                                    }
+                                },
+                                "method": "post",
+                                "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('SurveyQuiz'))}/items/@{encodeURIComponent(encodeURIComponent(body('Create_file_Transcripts_0')?['ItemId']))}/setapprovalstatus",
+                                "queries": {
+                                    "approvalAction": "Submit",
+                                    "comments": "",
+                                    "entityTag": "@body('Get_file_metadata_using_path')?['ETag']"
+                                },
+                                "authentication": "@parameters('$authentication')"
+                            }
+                        },
+                        "Set_content_approval_status_2": {
+                            "runAfter": {
+                                "Set_content_approval_status": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "metadata": {
+                                "flowSystemMetadata": {
+                                    "swaggerOperationId": "SetApprovalStatus"
+                                }
+                            },
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                                    }
+                                },
+                                "method": "post",
+                                "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('SurveyQuiz'))}/items/@{encodeURIComponent(encodeURIComponent(body('Create_file_Transcripts_0')?['ItemId']))}/setapprovalstatus",
+                                "queries": {
+                                    "approvalAction": "Approve",
+                                    "comments": "",
+                                    "entityTag": "@body('Set_content_approval_status')?['ETag']"
+                                },
+                                "authentication": "@parameters('$authentication')"
+                            }
+                        },
+                        "Compose_SiteGroupIdMembers": {
+                            "runAfter": {
+                                "Send_an_HTTP_request_to_SharePoint_4": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Compose",
+                            "inputs": 5
+                        },
+                        "Compose_ItemsViewAddUpdateNoDelete": {
+                            "runAfter": {
+                                "Compose_SiteGroupIdMembers": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Compose",
+                            "inputs": "ItemsViewAddUpdateNoDelete"
+                        },
+                        "Get_ItemsViewAddUpdateNoDelete": {
+                            "runAfter": {
+                                "Compose_ItemsViewAddUpdateNoDelete": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "metadata": {
+                                "flowSystemMetadata": {
+                                    "swaggerOperationId": "HttpRequest"
+                                }
+                            },
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                                    }
+                                },
+                                "method": "post",
+                                "body": {
+                                    "method": "GET",
+                                    "uri": "_api/web/roledefinitions/getbyname('@{outputs('Compose_ItemsViewAddUpdateNoDelete')}')"
+                                },
+                                "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/httprequest",
+                                "authentication": "@parameters('$authentication')"
+                            }
+                        },
+                        "Send_an_HTTP_request_to_SharePoint_3": {
+                            "runAfter": {
+                                "Get_ItemsViewAddUpdateNoDelete": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "metadata": {
+                                "flowSystemMetadata": {
+                                    "swaggerOperationId": "HttpRequest"
+                                }
+                            },
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                                    }
+                                },
+                                "method": "post",
+                                "body": {
+                                    "method": "POST",
+                                    "uri": "_api/web/lists/getByTitle('SurveyQuiz')/items/getbyid(@{body('Create_file_Transcripts_0')?['ItemId']})/roleassignments/removeroleassignment(principalid=@{outputs('Compose_SiteGroupIdMembers')}, roledefid=@{body('Get_ItemsViewAddUpdateNoDelete')?['d']?['Id']})",
+                                    "headers": {
+                                        "accept": "application/json;odata=verbose",
+                                        "content-type": "application/json;odata=verbose"
+                                    }
+                                },
+                                "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/httprequest",
+                                "authentication": "@parameters('$authentication')"
+                            }
+                        },
+                        "Scope_3": {
+                            "actions": {},
+                            "runAfter": {},
+                            "type": "Scope"
+                        },
+                        "Send_an_HTTP_request_to_SharePoint_4": {
+                            "runAfter": {
+                                "Scope_3": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "metadata": {
+                                "flowSystemMetadata": {
+                                    "swaggerOperationId": "HttpRequest"
+                                }
+                            },
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                                    }
+                                },
+                                "method": "post",
+                                "body": {
+                                    "method": "POST",
+                                    "uri": "_api/web/lists/getByTitle('SurveyQuiz')/items/getbyid(@{body('Create_file_Transcripts_0')?['ItemId']})/breakroleinheritance(copyRoleAssignments=true, clearSubscopes=true)",
+                                    "headers": {
+                                        "accept": "application/json;odata=verbose",
+                                        "content-type": "application/json;odata=verbose"
+                                    }
+                                },
+                                "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/httprequest",
+                                "authentication": "@parameters('$authentication')"
+                            }
+                        },
+                        "Grant_view_to_SolutionFile": {
+                            "runAfter": {
+                                "Scope_3": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "metadata": {
+                                "flowSystemMetadata": {
+                                    "swaggerOperationId": "GrantAccess"
+                                }
+                            },
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                                    }
+                                },
+                                "method": "post",
+                                "body": {
+                                    "recipients": "@{body('Get_file_properties_ResponseFile')?['Author']?['Email']}",
+                                    "roleValue": "role:1073741826",
+                                    "sendEmail": false
+                                },
+                                "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('SurveyQuiz'))}/items/@{encodeURIComponent(encodeURIComponent(body('Get_file_metadata_using_path_SolutionFIle')?['ItemId']))}/grantaccess",
+                                "authentication": "@parameters('$authentication')"
+                            }
+                        },
+                        "Grant_view_to_Transcript_to_Author": {
+                            "runAfter": {
+                                "Send_an_HTTP_request_to_SharePoint_3": [
+                                    "Succeeded",
+                                    "Failed"
+                                ]
+                            },
+                            "metadata": {
+                                "flowSystemMetadata": {
+                                    "swaggerOperationId": "GrantAccess"
+                                }
+                            },
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                                    }
+                                },
+                                "method": "post",
+                                "body": {
+                                    "recipients": "@{body('Get_file_properties_ResponseFile')?['Author']?['Email']}",
+                                    "roleValue": "role:1073741826",
+                                    "sendEmail": false
+                                },
+                                "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('SurveyQuiz'))}/items/@{encodeURIComponent(encodeURIComponent(body('Create_file_Transcripts_0')?['ItemId']))}/grantaccess",
+                                "authentication": "@parameters('$authentication')"
+                            }
+                        }
+                    },
+                    "runAfter": {
+                        "Copy_file_Transcripts": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "Scope"
+                },
+                "Parse_JSON_SolutionRows": {
+                    "runAfter": {
+                        "Create_file_Transcripts_0": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "ParseJson",
+                    "inputs": {
+                        "content": "@body('SolutionTables')",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "Quest": {
+                                        "type": "string"
+                                    },
+                                    "Survey": {
+                                        "type": "string"
+                                    },
+                                    "Weight": {
+                                        "type": "integer"
+                                    },
+                                    "Grader": {
+                                        "type": "string"
+                                    },
+                                    "You": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "ResponseTables": {
+                    "runAfter": {
+                        "Initialize_variable_transcriptalt": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "Workflow",
+                    "inputs": {
+                        "host": {
+                            "workflowReferenceName": "d6535eaf-cd58-eb11-a812-000d3af4b0ba"
+                        },
+                        "body": {
+                            "siteName": "@variables('siteName')",
+                            "fileIdentifier": "@body('Get_file_properties_ResponseFile')?['{FullPath}']"
+                        }
+                    }
+                },
+                "Apply_to_each_SolutionRows": {
+                    "foreach": "@body('Parse_JSON_SolutionRows')",
+                    "actions": {
+                        "Condition_Correct": {
+                            "actions": {
+                                "Increment_variable_autograde": {
+                                    "runAfter": {},
+                                    "type": "IncrementVariable",
+                                    "inputs": {
+                                        "name": "autograde",
+                                        "value": "@int(items('Apply_to_each_SolutionRows')['Weight'])"
+                                    }
+                                },
+                                "Set_variable_correct_Yes": {
+                                    "runAfter": {
+                                        "Increment_variable_autograde": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "SetVariable",
+                                    "inputs": {
+                                        "name": "correct",
+                                        "value": "@{if(equals(items('Apply_to_each_SolutionRows')['Survey'], 'Yes'), body('Parse_JSON_ResponseRow')?['You'], 'OK')}"
+                                    }
+                                }
+                            },
+                            "runAfter": {
+                                "Increment_variable_AutoWeight": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "else": {
+                                "actions": {
+                                    "Set_variable_correct_No": {
+                                        "runAfter": {},
+                                        "type": "SetVariable",
+                                        "inputs": {
+                                            "name": "correct",
+                                            "value": "@{'KO'}"
+                                        }
+                                    }
+                                }
+                            },
+                            "expression": {
+                                "or": [
+                                    {
+                                        "equals": [
+                                            "@toLower(trim(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(\r\n    replace(replace(replace(replace(replace(\r\n        replace(replace(replace(replace(replace(\r\n            replace(replace(replace(replace(replace(\r\n                replace(replace(replace(replace(replace(\r\n                    replace(replace(replace(replace(replace(\r\nreplace(items('Apply_to_each_SolutionRows')?['You']\r\n, '`', ' ')\r\n, '~', ' ')\r\n, '!', ' ')\r\n, '@', ' ')\r\n, '#', ' ')\r\n, '$', ' ')\r\n, '%', ' ')\r\n, '^', ' ')\r\n, '&', ' ')\r\n, '*', ' ')\r\n, '(', ' ')\r\n, ')', ' ')\r\n, '-', ' ')\r\n, '=', ' ')\r\n, '+', ' ')\r\n, '[', ' ')\r\n, '{', ' ')\r\n, ']', ' ')\r\n, '}', ' ')\r\n, '\\\\', ' ')\r\n, '|', ' ')\r\n, ';', ' ')\r\n, ':', ' ')\r\n, '\"', ' ')\r\n, ',', ' ')\r\n, '.', ' ')\r\n, '<', ' ')\r\n, '>', ' ')\r\n, '/', ' ')\r\n, '?', ' ')\r\n, '''', ' ')\r\n, '\\n', ' ')\r\n, '     ', ' ')\r\n, '    ', ' ')\r\n, '   ', ' ')\r\n, '  ', ' ')))",
+                                            "@toLower(trim(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(\r\n    replace(replace(replace(replace(replace(\r\n        replace(replace(replace(replace(replace(\r\n            replace(replace(replace(replace(replace(\r\n                replace(replace(replace(replace(replace(\r\n                    replace(replace(replace(replace(replace(\r\nreplace(body('Parse_JSON_ResponseRow')?['You']\r\n, '`', ' ')\r\n, '~', ' ')\r\n, '!', ' ')\r\n, '@', ' ')\r\n, '#', ' ')\r\n, '$', ' ')\r\n, '%', ' ')\r\n, '^', ' ')\r\n, '&', ' ')\r\n, '*', ' ')\r\n, '(', ' ')\r\n, ')', ' ')\r\n, '-', ' ')\r\n, '=', ' ')\r\n, '+', ' ')\r\n, '[', ' ')\r\n, '{', ' ')\r\n, ']', ' ')\r\n, '}', ' ')\r\n, '\\\\', ' ')\r\n, '|', ' ')\r\n, ';', ' ')\r\n, ':', ' ')\r\n, '\"', ' ')\r\n, ',', ' ')\r\n, '.', ' ')\r\n, '<', ' ')\r\n, '>', ' ')\r\n, '/', ' ')\r\n, '?', ' ')\r\n, '''', ' ')\r\n, '\\n', ' ')\r\n, '     ', ' ')\r\n, '    ', ' ')\r\n, '   ', ' ')\r\n, '  ', ' ')))"
+                                        ]
+                                    },
+                                    {
+                                        "equals": [
+                                            "@items('Apply_to_each_SolutionRows')['Survey']",
+                                            "@'Yes'"
+                                        ]
+                                    }
+                                ]
+                            },
+                            "type": "If"
+                        },
+                        "Parse_JSON_ResponseRow": {
+                            "runAfter": {
+                                "Get_a_row_ResponseRow_Question": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "ParseJson",
+                            "inputs": {
+                                "content": "@body('Get_a_row_ResponseRow_Question')?[0]",
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "Quest": {
+                                            "type": "string"
+                                        },
+                                        "Survey": {
+                                            "type": "string"
+                                        },
+                                        "Weight": {
+                                            "type": "integer"
+                                        },
+                                        "Grader": {
+                                            "type": "string"
+                                        },
+                                        "You": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "Increment_variable_AutoWeight": {
+                            "runAfter": {
+                                "Parse_JSON_ResponseRow": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "IncrementVariable",
+                            "inputs": {
+                                "name": "AutoWeight",
+                                "value": "@int(items('Apply_to_each_SolutionRows')['Weight'])"
+                            }
+                        },
+                        "Send_an_HTTP_request_to_SharePoint_Get_Field": {
+                            "runAfter": {
+                                "Condition_Correct": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "metadata": {
+                                "flowSystemMetadata": {
+                                    "swaggerOperationId": "HttpRequest"
+                                }
+                            },
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                                    }
+                                },
+                                "method": "post",
+                                "body": {
+                                    "method": "GET",
+                                    "uri": "_api/web/lists/getbytitle('SurveyQuiz')/fields/getbytitle('@{items('Apply_to_each_SolutionRows')['Quest']}_workschool365')",
+                                    "headers": {
+                                        "accept": "application/json;odata=verbose",
+                                        "content-type": "application/json;odata=verbose"
+                                    }
+                                },
+                                "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/httprequest",
+                                "authentication": "@parameters('$authentication')"
+                            }
+                        },
+                        "Scope": {
+                            "actions": {
+                                "Send_an_HTTP_request_to_SharePoint": {
+                                    "runAfter": {},
+                                    "metadata": {
+                                        "flowSystemMetadata": {
+                                            "swaggerOperationId": "HttpRequest"
+                                        }
+                                    },
+                                    "type": "ApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connection": {
+                                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                                            }
+                                        },
+                                        "method": "post",
+                                        "body": {
+                                            "method": "POST",
+                                            "uri": "_api/web/lists/getbytitle('SurveyQuiz')/fields",
+                                            "headers": {
+                                                "accept": "application/json;odata=verbose",
+                                                "content-type": "application/json;odata=verbose"
+                                            },
+                                            "body": "{\n    \"__metadata\" : {\n        \"type\": \"SP.Field\"\n    },\n    \"FieldTypeKind\" : 2,\n    \"Title\" : \"@{items('Apply_to_each_SolutionRows')['Quest']}_workschool365\",\n    \"StaticName\" : \"@{items('Apply_to_each_SolutionRows')['Quest']}_workschool365\",\n    \"InternalName\" : \"@{items('Apply_to_each_SolutionRows')['Quest']}_workschool365\",\n    \"EntityPropertyName\" : \"@{items('Apply_to_each_SolutionRows')['Quest']}_workschool365\"\n}"
+                                        },
+                                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/httprequest",
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Send_an_HTTP_request_to_SharePoint_2": {
+                                    "runAfter": {
+                                        "Send_an_HTTP_request_to_SharePoint": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "metadata": {
+                                        "flowSystemMetadata": {
+                                            "swaggerOperationId": "HttpRequest"
+                                        }
+                                    },
+                                    "type": "ApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connection": {
+                                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                                            }
+                                        },
+                                        "method": "post",
+                                        "body": {
+                                            "method": "POST",
+                                            "uri": "_api/web/lists/getbytitle('SurveyQuiz')/views/getbytitle('TranscriptsView')/viewfields/addviewfield",
+                                            "headers": {
+                                                "accept": "application/json;odata=verbose",
+                                                "content-type": "application/json;odata=verbose"
+                                            },
+                                            "body": "{\"strField\":\"@{items('Apply_to_each_SolutionRows')['Quest']}_workschool365\"}"
+                                        },
+                                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/httprequest",
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                }
+                            },
+                            "runAfter": {
+                                "Send_an_HTTP_request_to_SharePoint_Get_Field": [
+                                    "Failed",
+                                    "Skipped",
+                                    "TimedOut"
+                                ]
+                            },
+                            "type": "Scope"
+                        },
+                        "Get_a_row_ResponseRow_Question": {
+                            "runAfter": {},
+                            "type": "Query",
+                            "inputs": {
+                                "from": "@body('ResponseTables')",
+                                "where": "@equals(item()?['Quest'], items('Apply_to_each_SolutionRows')?['Quest'])"
+                            }
+                        },
+                        "Append_to_string_variable_transcript": {
+                            "runAfter": {
+                                "Set_variable_transcriptalt": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "AppendToStringVariable",
+                            "inputs": {
+                                "name": "transcript",
+                                "value": "@{items('Apply_to_each_SolutionRows')['Quest']}: @{variables('correct')}; "
+                            }
+                        },
+                        "Compose_transcriptalt": {
+                            "runAfter": {
+                                "Scope": [
+                                    "Skipped",
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Compose",
+                            "inputs": "@setProperty(variables('transcriptalt'), concat(items('Apply_to_each_SolutionRows')['Quest'], '_workschool365'), variables('correct'))"
+                        },
+                        "Set_variable_transcriptalt": {
+                            "runAfter": {
+                                "Compose_transcriptalt": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "SetVariable",
+                            "inputs": {
+                                "name": "transcriptalt",
+                                "value": "@outputs('Compose_transcriptalt')"
+                            }
+                        }
+                    },
+                    "runAfter": {
+                        "Parse_JSON_SolutionRows": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "Foreach"
+                },
+                "Populate_a_Microsoft_Word_template_Transcript": {
+                    "runAfter": {
+                        "Create_sharing_link_for_a_file_Transcript": [
+                            "Succeeded"
+                        ]
+                    },
+                    "metadata": {
+                        "flowSystemMetadata": {
+                            "swaggerOperationId": "CreateFileItem"
+                        }
+                    },
+                    "type": "ApiConnection",
+                    "inputs": {
+                        "host": {
+                            "connection": {
+                                "name": "@parameters('$connections')['shared_wordonlinebusiness']['connectionId']"
+                            }
+                        },
+                        "method": "post",
+                        "body": {
+                            "447753704": "@{body('Create_sharing_link_for_a_file_Transcript')?['link']?['webUrl']}",
+                            "925700911": "    @{variables('autograde')} /@{variables('AutoWeight')}; Deadlined: @{outputs('Compose_InvalidDeadline')}; Repeated: @{outputs('Compose_InvalidRepeat')};\n    @{variables('transcript')}",
+                            "1292476084": "@{body('Get_file_properties_SolutionFile')?['Editor']?['Email']}",
+                            "-321128028": "@{body('Get_file_properties_ResponseFile')?['Author']?['Email']}",
+                            "-1222045053": "@{body('Get_file_properties_ResponseFile')?['{ContentType}']?['Name']}"
+                        },
+                        "path": "/api/templates/getFile",
+                        "queries": {
+                            "source": "@variables('siteAddress')",
+                            "drive": "@variables('driveId')",
+                            "file": "@{'/General/transcripts_template.docx'}"
+                        },
+                        "authentication": "@parameters('$authentication')"
+                    }
+                },
+                "Create_sharing_link_for_a_file_Transcript": {
+                    "runAfter": {
+                        "Apply_to_each_SolutionRows": [
+                            "Succeeded"
+                        ]
+                    },
+                    "metadata": {
+                        "flowSystemMetadata": {
+                            "swaggerOperationId": "CreateSharingLink"
+                        }
+                    },
+                    "type": "ApiConnection",
+                    "inputs": {
+                        "host": {
+                            "connection": {
+                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                            }
+                        },
+                        "method": "post",
+                        "body": {
+                            "type": "view",
+                            "scope": "anonymous"
+                        },
+                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/codeless/_api/v2.0/sites/root/lists/@{encodeURIComponent(encodeURIComponent('SurveyQuiz'))}/items/@{encodeURIComponent(encodeURIComponent(body('Create_file_Transcripts_0')?['ItemId']))}/driveItem/createLink",
+                        "authentication": "@parameters('$authentication')"
+                    }
+                },
+                "Initialize_variable_transcript": {
+                    "runAfter": {
+                        "Initialize_variable_deadline": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "transcript",
+                                "type": "string"
+                            }
+                        ]
+                    }
+                },
+                "Update_file_Transcript": {
+                    "runAfter": {
+                        "Populate_a_Microsoft_Word_template_Transcript": [
+                            "Succeeded"
+                        ]
+                    },
+                    "metadata": {
+                        "flowSystemMetadata": {
+                            "swaggerOperationId": "UpdateFile"
+                        }
+                    },
+                    "type": "ApiConnection",
+                    "inputs": {
+                        "host": {
+                            "connection": {
+                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                            }
+                        },
+                        "method": "put",
+                        "body": "@body('Populate_a_Microsoft_Word_template_Transcript')",
+                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/files/@{encodeURIComponent(encodeURIComponent(body('Create_file_Transcripts_0')?['Id']))}",
+                        "authentication": "@parameters('$authentication')"
+                    }
+                },
+                "Initialize_variable_correct": {
+                    "runAfter": {
+                        "Initialize_variable_transcript": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "correct",
+                                "type": "string"
+                            }
+                        ]
+                    }
+                },
+                "Initialize_variable_transcriptalt": {
+                    "runAfter": {
+                        "Initialize_variable_correct": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable",
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "transcriptalt",
+                                "type": "object",
+                                "value": {}
+                            }
+                        ]
+                    }
+                },
+                "Update_file_properties_Transcripts_2": {
+                    "runAfter": {
+                        "Update_file_Transcript": [
+                            "Succeeded"
+                        ]
+                    },
+                    "metadata": {
+                        "flowSystemMetadata": {
+                            "swaggerOperationId": "PatchFileItem"
+                        }
+                    },
+                    "type": "ApiConnection",
+                    "inputs": {
+                        "host": {
+                            "connection": {
+                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                            }
+                        },
+                        "method": "patch",
+                        "body": "@variables('transcriptalt')",
+                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('SurveyQuiz'))}/items/@{encodeURIComponent(body('Create_file_Transcripts_0')?['ItemId'])}/patchfileitem",
+                        "authentication": "@parameters('$authentication')"
+                    }
+                }
+            }
+        }
+    },
+    "schemaVersion": "1.0.0.0"
+}

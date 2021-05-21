@@ -1,0 +1,769 @@
+{
+    "properties": {
+        "connectionReferences": {
+            "shared_sharepointonline": {
+                "runtimeSource": "embedded",
+                "connection": {
+                    "connectionReferenceLogicalName": "new_sharedsharepointonline_9ad14"
+                },
+                "api": {
+                    "name": "shared_sharepointonline"
+                }
+            },
+            "shared_sharepointonline_1": {
+                "runtimeSource": "embedded",
+                "connection": {
+                    "connectionReferenceLogicalName": "new_sharedsharepointonline_9ad14"
+                },
+                "api": {
+                    "name": "shared_sharepointonline"
+                }
+            }
+        },
+        "definition": {
+            "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+            "contentVersion": "1.0.0.0",
+            "parameters": {
+                "$connections": {
+                    "defaultValue": {},
+                    "type": "Object"
+                },
+                "$authentication": {
+                    "defaultValue": {},
+                    "type": "SecureObject"
+                },
+                "envpar_config__TenantName": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__TenantName"
+                    }
+                },
+                "envpar_config__CycleZeroName": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__CycleZeroName"
+                    }
+                },
+                "envpar_config__PaypalApiPrefix": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__PaypalApiPrefix"
+                    }
+                }
+            },
+            "triggers": {
+                "manual": {
+                    "type": "Request",
+                    "kind": "Http",
+                    "inputs": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "Cycle1GroupName": {
+                                    "type": "string"
+                                },
+                                "MyGroupsId": {
+                                    "type": "string"
+                                },
+                                "GroupsListId": {
+                                    "type": "string"
+                                },
+                                "FlowName": {
+                                    "type": "string"
+                                },
+                                "TriggerUri": {
+                                    "type": "string"
+                                },
+                                "SubscribeOrUnsubscribe": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "actions": {
+                "Get_item_GroupsList": {
+                    "runAfter": {},
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                        "host": {
+                            "connectionName": "shared_sharepointonline",
+                            "operationId": "GetItem",
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                        },
+                        "parameters": {
+                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{parameters('envpar_config__CycleZeroName')}",
+                            "table": "GroupsList",
+                            "id": "@triggerBody()?['GroupsListId']"
+                        },
+                        "authentication": "@parameters('$authentication')"
+                    }
+                },
+                "Scope": {
+                    "actions": {},
+                    "runAfter": {
+                        "Switch_FlowName": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "Scope"
+                },
+                "Switch_FlowName": {
+                    "runAfter": {
+                        "Get_item_GroupsList": [
+                            "Succeeded"
+                        ]
+                    },
+                    "cases": {
+                        "Case_Stripe": {
+                            "case": "Stripe",
+                            "actions": {
+                                "Condition_Stripe_SubscribeOrUnsubscribe": {
+                                    "actions": {
+                                        "HTTP_Stripe_Webhook": {
+                                            "runAfter": {},
+                                            "type": "Http",
+                                            "inputs": {
+                                                "method": "POST",
+                                                "uri": "https://api.stripe.com/v1/webhook_endpoints",
+                                                "headers": {
+                                                    "Content-type": "application/x-www-form-urlencoded"
+                                                },
+                                                "body": "url=@{uriComponent(triggerBody()?['TriggerUri'])}&enabled_events%5B%5D=invoice.paid&enabled_events%5B%5D=customer.subscription.updated&enabled_events%5B%5D=source.chargeable",
+                                                "authentication": {
+                                                    "type": "Raw",
+                                                    "value": "Bearer @{outputs('Get_item_GroupsList')?['body/StripeKey']}"
+                                                }
+                                            }
+                                        },
+                                        "Update_item_GroupsLists": {
+                                            "runAfter": {
+                                                "Delay_Stripe_5sec": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "OpenApiConnection",
+                                            "inputs": {
+                                                "host": {
+                                                    "connectionName": "shared_sharepointonline",
+                                                    "operationId": "PatchItem",
+                                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                },
+                                                "parameters": {
+                                                    "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{parameters('envpar_config__CycleZeroName')}",
+                                                    "table": "GroupsList",
+                                                    "id": "@triggerBody()?['GroupsListId']",
+                                                    "item/StripeWebhookUrl": "@triggerBody()?['TriggerUri']"
+                                                },
+                                                "authentication": "@parameters('$authentication')"
+                                            }
+                                        },
+                                        "Update_item_MyGroups": {
+                                            "runAfter": {
+                                                "Update_item_GroupsLists": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "OpenApiConnection",
+                                            "inputs": {
+                                                "host": {
+                                                    "connectionName": "shared_sharepointonline",
+                                                    "operationId": "PatchItem",
+                                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                },
+                                                "parameters": {
+                                                    "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{parameters('envpar_config__CycleZeroName')}",
+                                                    "table": "MyGroups",
+                                                    "id": "@triggerBody()?['MyGroupsId']",
+                                                    "item/StripeWebhookUrl": "@triggerBody()?['TriggerUri']"
+                                                },
+                                                "authentication": "@parameters('$authentication')"
+                                            }
+                                        },
+                                        "Delay_Stripe_5sec": {
+                                            "runAfter": {
+                                                "HTTP_Stripe_Webhook": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "Wait",
+                                            "inputs": {
+                                                "interval": {
+                                                    "count": 5,
+                                                    "unit": "Second"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "runAfter": {},
+                                    "else": {
+                                        "actions": {
+                                            "HTTP_Stripe_Get_Webhooks": {
+                                                "runAfter": {},
+                                                "type": "Http",
+                                                "inputs": {
+                                                    "method": "GET",
+                                                    "uri": "https://api.stripe.com/v1/webhook_endpoints",
+                                                    "authentication": {
+                                                        "type": "Raw",
+                                                        "value": "Bearer @{outputs('Get_item_GroupsList')?['body/StripeKey']}"
+                                                    }
+                                                }
+                                            },
+                                            "Filter_array_Stripe_Webhooks": {
+                                                "runAfter": {
+                                                    "Parse_JSON_Stripe_Webhooks": [
+                                                        "Succeeded"
+                                                    ]
+                                                },
+                                                "type": "Query",
+                                                "inputs": {
+                                                    "from": "@body('Parse_JSON_Stripe_Webhooks')?['data']",
+                                                    "where": "@equals(item()?['url'], triggerBody()?['TriggerUri'])"
+                                                }
+                                            },
+                                            "Parse_JSON_Stripe_Webhooks": {
+                                                "runAfter": {
+                                                    "HTTP_Stripe_Get_Webhooks": [
+                                                        "Succeeded"
+                                                    ]
+                                                },
+                                                "type": "ParseJson",
+                                                "inputs": {
+                                                    "content": "@body('HTTP_Stripe_Get_Webhooks')",
+                                                    "schema": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "data": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "id": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "url": {
+                                                                            "type": "string"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "id",
+                                                                        "url"
+                                                                    ]
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "Apply_to_each_Stripe_Webhooks": {
+                                                "foreach": "@body('Filter_array_Stripe_Webhooks')",
+                                                "actions": {
+                                                    "HTTP_Stripe_Delete_Webhook": {
+                                                        "runAfter": {},
+                                                        "type": "Http",
+                                                        "inputs": {
+                                                            "method": "DELETE",
+                                                            "uri": "https://api.stripe.com/v1/webhook_endpoints/@{items('Apply_to_each_Stripe_Webhooks')?['id']}",
+                                                            "authentication": {
+                                                                "type": "Raw",
+                                                                "value": "Bearer @{outputs('Get_item_GroupsList')?['body/StripeKey']}"
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "runAfter": {
+                                                    "Filter_array_Stripe_Webhooks": [
+                                                        "Succeeded"
+                                                    ]
+                                                },
+                                                "type": "Foreach"
+                                            }
+                                        }
+                                    },
+                                    "expression": {
+                                        "equals": [
+                                            "@triggerBody()?['SubscribeOrUnsubscribe']",
+                                            "Subscribe"
+                                        ]
+                                    },
+                                    "type": "If"
+                                }
+                            }
+                        },
+                        "Case_Paypal": {
+                            "case": "Paypal",
+                            "actions": {
+                                "HTTP_Paypal_auth": {
+                                    "runAfter": {},
+                                    "type": "Http",
+                                    "inputs": {
+                                        "method": "POST",
+                                        "uri": "@{parameters('envpar_config__PaypalApiPrefix')}/v1/oauth2/token",
+                                        "headers": {
+                                            "Accept": "application/json",
+                                            "Accept-Language": "en_US",
+                                            "content-type": "application/x-www-form-urlencoded"
+                                        },
+                                        "body": "grant_type=client_credentials",
+                                        "authentication": {
+                                            "type": "Basic",
+                                            "username": "@outputs('Get_item_GroupsList')?['body/PaypalKey']",
+                                            "password": "@outputs('Get_item_GroupsList')?['body/PaypalSecret']"
+                                        }
+                                    }
+                                },
+                                "Parse_JSON_Paypal": {
+                                    "runAfter": {
+                                        "HTTP_Paypal_auth": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "ParseJson",
+                                    "inputs": {
+                                        "content": "@body('HTTP_Paypal_auth')",
+                                        "schema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "scope": {
+                                                    "type": "string"
+                                                },
+                                                "access_token": {
+                                                    "type": "string"
+                                                },
+                                                "token_type": {
+                                                    "type": "string"
+                                                },
+                                                "app_id": {
+                                                    "type": "string"
+                                                },
+                                                "expires_in": {
+                                                    "type": "integer"
+                                                },
+                                                "nonce": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "Condition_Paypal_SubscribeOrUnsubscribe": {
+                                    "actions": {
+                                        "HTTP_Paypal_Webhook": {
+                                            "runAfter": {},
+                                            "type": "Http",
+                                            "inputs": {
+                                                "method": "POST",
+                                                "uri": "@{parameters('envpar_config__PaypalApiPrefix')}/v1/notifications/webhooks",
+                                                "headers": {
+                                                    "Content-type": "application/json"
+                                                },
+                                                "body": {
+                                                    "url": "@{triggerBody()?['TriggerUri']}",
+                                                    "event_types": [
+                                                        {
+                                                            "name": "CHECKOUT.ORDER.APPROVED"
+                                                        }
+                                                    ]
+                                                },
+                                                "authentication": {
+                                                    "type": "Raw",
+                                                    "value": "Bearer @{body('Parse_JSON_Paypal')?['access_token']}"
+                                                }
+                                            }
+                                        },
+                                        "Update_item_GroupsList_Paypal": {
+                                            "runAfter": {
+                                                "Delay_PayPal_10sec": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "OpenApiConnection",
+                                            "inputs": {
+                                                "host": {
+                                                    "connectionName": "shared_sharepointonline_1",
+                                                    "operationId": "PatchItem",
+                                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                },
+                                                "parameters": {
+                                                    "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{parameters('envpar_config__CycleZeroName')}",
+                                                    "table": "GroupsList",
+                                                    "id": "@triggerBody()?['GroupsListId']",
+                                                    "item/PaypalWebhookUrl": "@triggerBody()?['TriggerUri']"
+                                                },
+                                                "authentication": "@parameters('$authentication')"
+                                            }
+                                        },
+                                        "Update_item_MyGroups_Paypal": {
+                                            "runAfter": {
+                                                "Update_item_GroupsList_Paypal": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "OpenApiConnection",
+                                            "inputs": {
+                                                "host": {
+                                                    "connectionName": "shared_sharepointonline_1",
+                                                    "operationId": "PatchItem",
+                                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                },
+                                                "parameters": {
+                                                    "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{parameters('envpar_config__CycleZeroName')}",
+                                                    "table": "MyGroups",
+                                                    "id": "@triggerBody()?['MyGroupsId']",
+                                                    "item/PaypalWebhookUrl": "@triggerBody()?['TriggerUri']"
+                                                },
+                                                "authentication": "@parameters('$authentication')"
+                                            }
+                                        },
+                                        "Delay_PayPal_10sec": {
+                                            "runAfter": {
+                                                "HTTP_Paypal_Webhook": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "Wait",
+                                            "inputs": {
+                                                "interval": {
+                                                    "count": 10,
+                                                    "unit": "Second"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "runAfter": {
+                                        "Parse_JSON_Paypal": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "else": {
+                                        "actions": {
+                                            "HTTP_Paypal_Get_Webhooks": {
+                                                "runAfter": {},
+                                                "type": "Http",
+                                                "inputs": {
+                                                    "method": "GET",
+                                                    "uri": "@{parameters('envpar_config__PaypalApiPrefix')}/v1/notifications/webhooks",
+                                                    "headers": {
+                                                        "Content-type": "application/json"
+                                                    },
+                                                    "authentication": {
+                                                        "type": "Raw",
+                                                        "value": "Bearer @{body('Parse_JSON_Paypal')?['access_token']}"
+                                                    }
+                                                }
+                                            },
+                                            "Parse_JSON_Paypal_Webhooks": {
+                                                "runAfter": {
+                                                    "HTTP_Paypal_Get_Webhooks": [
+                                                        "Succeeded"
+                                                    ]
+                                                },
+                                                "type": "ParseJson",
+                                                "inputs": {
+                                                    "content": "@body('HTTP_Paypal_Get_Webhooks')",
+                                                    "schema": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "webhooks": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "id": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "url": {
+                                                                            "type": "string"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "id",
+                                                                        "url"
+                                                                    ]
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "Filter_array_Paypal_Webhooks": {
+                                                "runAfter": {
+                                                    "Parse_JSON_Paypal_Webhooks": [
+                                                        "Succeeded"
+                                                    ]
+                                                },
+                                                "type": "Query",
+                                                "inputs": {
+                                                    "from": "@body('Parse_JSON_Paypal_Webhooks')?['webhooks']",
+                                                    "where": "@equals(item()?['url'], triggerBody()?['TriggerUri'])"
+                                                }
+                                            },
+                                            "Apply_to_each_Paypal_Webhooks": {
+                                                "foreach": "@body('Filter_array_Paypal_Webhooks')",
+                                                "actions": {
+                                                    "HTTP_Paypal_Delete_Webhook": {
+                                                        "runAfter": {},
+                                                        "type": "Http",
+                                                        "inputs": {
+                                                            "method": "DELETE",
+                                                            "uri": "@{parameters('envpar_config__PaypalApiPrefix')}/v1/notifications/webhooks/@{items('Apply_to_each_Paypal_Webhooks')?['id']}",
+                                                            "headers": {
+                                                                "Content-type": "application/json"
+                                                            },
+                                                            "authentication": {
+                                                                "type": "Raw",
+                                                                "value": "Bearer @{body('Parse_JSON_Paypal')?['access_token']}"
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "runAfter": {
+                                                    "Filter_array_Paypal_Webhooks": [
+                                                        "Succeeded"
+                                                    ]
+                                                },
+                                                "type": "Foreach"
+                                            }
+                                        }
+                                    },
+                                    "expression": {
+                                        "equals": [
+                                            "@triggerBody()?['SubscribeOrUnsubscribe']",
+                                            "Subscribe"
+                                        ]
+                                    },
+                                    "type": "If"
+                                }
+                            }
+                        },
+                        "Case_Microsoft_Create": {
+                            "case": "Microsoft_Create",
+                            "actions": {
+                                "Condition_Microsoft_Create_SubscribeOrUnsubscribe": {
+                                    "actions": {
+                                        "Update_item_MyGroups_Microsoft_Create": {
+                                            "runAfter": {
+                                                "Update_item_GroupsList_Microsoft_Create": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "OpenApiConnection",
+                                            "inputs": {
+                                                "host": {
+                                                    "connectionName": "shared_sharepointonline_1",
+                                                    "operationId": "PatchItem",
+                                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                },
+                                                "parameters": {
+                                                    "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{parameters('envpar_config__CycleZeroName')}",
+                                                    "table": "MyGroups",
+                                                    "id": "@triggerBody()?['MyGroupsId']",
+                                                    "item/MicrosoftCreateUrl": "@triggerBody()?['TriggerUri']"
+                                                },
+                                                "authentication": "@parameters('$authentication')"
+                                            }
+                                        },
+                                        "Delay_Microsoft_Create_15sec": {
+                                            "runAfter": {},
+                                            "type": "Wait",
+                                            "inputs": {
+                                                "interval": {
+                                                    "count": 15,
+                                                    "unit": "Second"
+                                                }
+                                            }
+                                        },
+                                        "Update_item_GroupsList_Microsoft_Create": {
+                                            "runAfter": {
+                                                "Delay_Microsoft_Create_15sec": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "OpenApiConnection",
+                                            "inputs": {
+                                                "host": {
+                                                    "connectionName": "shared_sharepointonline_1",
+                                                    "operationId": "PatchItem",
+                                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                },
+                                                "parameters": {
+                                                    "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{parameters('envpar_config__CycleZeroName')}",
+                                                    "table": "GroupsList",
+                                                    "id": "@triggerBody()?['GroupsListId']",
+                                                    "item/MicrosoftCreateUrl": "@triggerBody()?['TriggerUri']"
+                                                },
+                                                "authentication": "@parameters('$authentication')"
+                                            }
+                                        }
+                                    },
+                                    "runAfter": {},
+                                    "expression": {
+                                        "equals": [
+                                            "@triggerBody()?['SubscribeOrUnsubscribe']",
+                                            "Subscribe"
+                                        ]
+                                    },
+                                    "type": "If"
+                                }
+                            }
+                        },
+                        "Case_Microsoft_Update": {
+                            "case": "Microsoft_Update",
+                            "actions": {
+                                "Condition_Microsoft_Update_SubscribeOrUnsubscribe": {
+                                    "actions": {
+                                        "Delay_Microsoft_Update_20sec": {
+                                            "runAfter": {},
+                                            "type": "Wait",
+                                            "inputs": {
+                                                "interval": {
+                                                    "count": 20,
+                                                    "unit": "Second"
+                                                }
+                                            }
+                                        },
+                                        "Update_item_MyGroups_Microsoft_Update": {
+                                            "runAfter": {
+                                                "Update_item_GroupsList_Microsoft_Update": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "OpenApiConnection",
+                                            "inputs": {
+                                                "host": {
+                                                    "connectionName": "shared_sharepointonline_1",
+                                                    "operationId": "PatchItem",
+                                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                },
+                                                "parameters": {
+                                                    "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{parameters('envpar_config__CycleZeroName')}",
+                                                    "table": "MyGroups",
+                                                    "id": "@triggerBody()?['MyGroupsId']",
+                                                    "item/MicrosoftUpdateUrl": "@triggerBody()?['TriggerUri']"
+                                                },
+                                                "authentication": "@parameters('$authentication')"
+                                            }
+                                        },
+                                        "Update_item_GroupsList_Microsoft_Update": {
+                                            "runAfter": {
+                                                "Delay_Microsoft_Update_20sec": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "OpenApiConnection",
+                                            "inputs": {
+                                                "host": {
+                                                    "connectionName": "shared_sharepointonline_1",
+                                                    "operationId": "PatchItem",
+                                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                },
+                                                "parameters": {
+                                                    "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{parameters('envpar_config__CycleZeroName')}",
+                                                    "table": "GroupsList",
+                                                    "id": "@triggerBody()?['GroupsListId']",
+                                                    "item/MicrosoftUpdateUrl": "@triggerBody()?['TriggerUri']"
+                                                },
+                                                "authentication": "@parameters('$authentication')"
+                                            }
+                                        }
+                                    },
+                                    "runAfter": {},
+                                    "expression": {
+                                        "equals": [
+                                            "@triggerBody()?['SubscribeOrUnsubscribe']",
+                                            "Subscribe"
+                                        ]
+                                    },
+                                    "type": "If"
+                                }
+                            }
+                        },
+                        "Case_Microsoft_Contact": {
+                            "case": "Microsoft_Contact",
+                            "actions": {
+                                "Condition_Microsoft_Contact_SubscribeOrUnsubscribe": {
+                                    "actions": {
+                                        "Update_item_MyGroups_Microsoft_Contact": {
+                                            "runAfter": {
+                                                "Update_item_GroupsList_Microsoft_Contact": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "OpenApiConnection",
+                                            "inputs": {
+                                                "host": {
+                                                    "connectionName": "shared_sharepointonline_1",
+                                                    "operationId": "PatchItem",
+                                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                },
+                                                "parameters": {
+                                                    "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{parameters('envpar_config__CycleZeroName')}",
+                                                    "table": "MyGroups",
+                                                    "id": "@triggerBody()?['MyGroupsId']",
+                                                    "item/MicrosoftContactUrl": "@triggerBody()?['TriggerUri']"
+                                                },
+                                                "authentication": "@parameters('$authentication')"
+                                            }
+                                        },
+                                        "Delay_Microsoft_Contact_25sec": {
+                                            "runAfter": {},
+                                            "type": "Wait",
+                                            "inputs": {
+                                                "interval": {
+                                                    "count": 25,
+                                                    "unit": "Second"
+                                                }
+                                            }
+                                        },
+                                        "Update_item_GroupsList_Microsoft_Contact": {
+                                            "runAfter": {
+                                                "Delay_Microsoft_Contact_25sec": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "OpenApiConnection",
+                                            "inputs": {
+                                                "host": {
+                                                    "connectionName": "shared_sharepointonline_1",
+                                                    "operationId": "PatchItem",
+                                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                },
+                                                "parameters": {
+                                                    "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{parameters('envpar_config__CycleZeroName')}",
+                                                    "table": "GroupsList",
+                                                    "id": "@triggerBody()?['GroupsListId']",
+                                                    "item/MicrosoftContactUrl": "@triggerBody()?['TriggerUri']"
+                                                },
+                                                "authentication": "@parameters('$authentication')"
+                                            }
+                                        }
+                                    },
+                                    "runAfter": {},
+                                    "expression": {
+                                        "equals": [
+                                            "@triggerBody()?['SubscribeOrUnsubscribe']",
+                                            "Subscribe"
+                                        ]
+                                    },
+                                    "type": "If"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "actions": {}
+                    },
+                    "expression": "@triggerBody()?['FlowName']",
+                    "type": "Switch"
+                }
+            },
+            "outputs": {}
+        }
+    },
+    "schemaVersion": "1.0.0.0"
+}

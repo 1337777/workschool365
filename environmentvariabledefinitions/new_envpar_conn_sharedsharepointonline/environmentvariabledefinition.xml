@@ -1,0 +1,12 @@
+<environmentvariabledefinition schemaname="new_envpar_conn_sharedsharepointonline">
+  <description default="Enter space character ( ) for none. Filled automatically.">
+    <label description="Enter space character ( ) for none. Filled automatically." languagecode="1033" />
+  </description>
+  <displayname default="envpar_conn_sharedsharepointonline">
+    <label description="envpar_conn_sharedsharepointonline" languagecode="1033" />
+  </displayname>
+  <introducedversion>3.0.0.13</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <type>100000000</type>
+</environmentvariabledefinition>

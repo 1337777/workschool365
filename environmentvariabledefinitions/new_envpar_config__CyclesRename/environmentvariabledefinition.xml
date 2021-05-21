@@ -1,0 +1,13 @@
+<environmentvariabledefinition schemaname="new_envpar_config__CyclesRename">
+  <defaultvalue>cycle</defaultvalue>
+  <description default="Required. Rename cycle to class, for example. So now class1, ... classN">
+    <label description="Required. Rename cycle to class, for example. So now class1, ... classN" languagecode="1033" />
+  </description>
+  <displayname default="envpar_config__CyclesRename">
+    <label description="envpar_config__CyclesRename" languagecode="1033" />
+  </displayname>
+  <introducedversion>3.0.0.16</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <type>100000000</type>
+</environmentvariabledefinition>

@@ -1,0 +1,272 @@
+{
+    "properties": {
+        "connectionReferences": {
+            "shared_sharepointonline": {
+                "runtimeSource": "embedded",
+                "connection": {
+                    "connectionReferenceLogicalName": "new_sharedsharepointonline_9ad14"
+                },
+                "api": {
+                    "name": "shared_sharepointonline"
+                }
+            }
+        },
+        "definition": {
+            "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+            "contentVersion": "1.0.0.0",
+            "parameters": {
+                "$connections": {
+                    "defaultValue": {},
+                    "type": "Object"
+                },
+                "$authentication": {
+                    "defaultValue": {},
+                    "type": "SecureObject"
+                },
+                "envpar_config__TenantName": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__TenantName"
+                    }
+                },
+                "envpar_config__CycleZeroName": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__CycleZeroName"
+                    }
+                },
+                "envpar_config__TenantDomain": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__TenantDomain"
+                    }
+                },
+                "envpar_config__MicrosoftAppId": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__MicrosoftAppId",
+                        "description": "enter space character ( ) for none"
+                    }
+                },
+                "envpar_config__MicrosoftAppSecret": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__MicrosoftAppSecret",
+                        "description": "enter space character ( ) for none"
+                    }
+                }
+            },
+            "triggers": {
+                "manual": {
+                    "type": "Request",
+                    "kind": "Http",
+                    "inputs": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "Cycle1GroupName": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "actions": {
+                "Get_items_GroupsList": {
+                    "runAfter": {
+                        "Compose_recurrenceHour": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                        "host": {
+                            "connectionName": "shared_sharepointonline",
+                            "operationId": "GetItems",
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                        },
+                        "parameters": {
+                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{parameters('envpar_config__CycleZeroName')}",
+                            "table": "GroupsList",
+                            "$filter": "Cycle1GroupName eq '@{triggerBody()?['Cycle1GroupName']}'",
+                            "$top": 1
+                        },
+                        "authentication": "@parameters('$authentication')"
+                    }
+                },
+                "Response_OK": {
+                    "runAfter": {
+                        "Apply_to_each_GroupsList": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "Response",
+                    "kind": "Http",
+                    "inputs": {
+                        "statusCode": 200
+                    }
+                },
+                "Compose_recurrenceHour": {
+                    "runAfter": {},
+                    "type": "Compose",
+                    "inputs": 8
+                },
+                "Apply_to_each_GroupsList": {
+                    "foreach": "@outputs('Get_items_GroupsList')?['body/value']",
+                    "actions": {
+                        "Scope": {
+                            "actions": {
+                                "Get_items_UsersList": {
+                                    "runAfter": {},
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connectionName": "shared_sharepointonline",
+                                            "operationId": "GetItems",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                        },
+                                        "parameters": {
+                                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{items('Apply_to_each_GroupsList')?['Cycle1GroupName']}",
+                                            "table": "UsersList",
+                                            "$filter": "MicrosoftSubscriptionId ne null and MicrosoftPriceId ne '@{items('Apply_to_each_GroupsList')?['MicrosoftPrice0']}'  and MicrosoftSubscriptionStatus eq 'Subscribed' and ( MicrosoftLastMetered eq null or MicrosoftLastMetered lt '@{subtractFromTime(utcNow(),outputs('Compose_recurrenceHour'),'Hour')}') "
+                                        },
+                                        "authentication": "@parameters('$authentication')"
+                                    }
+                                },
+                                "Apply_to_each_4": {
+                                    "foreach": "@outputs('Get_items_UsersList')?['body/value']",
+                                    "actions": {
+                                        "Compose_dimension": {
+                                            "runAfter": {},
+                                            "type": "Compose",
+                                            "inputs": "@json(items('Apply_to_each_GroupsList')?['MicrosoftMeterDict'])?[items('Apply_to_each_4')?['MicrosoftPriceId']]"
+                                        },
+                                        "Condition": {
+                                            "actions": {},
+                                            "runAfter": {
+                                                "Compose_dimension": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "else": {
+                                                "actions": {
+                                                    "HTTP": {
+                                                        "runAfter": {},
+                                                        "type": "Http",
+                                                        "inputs": {
+                                                            "method": "POST",
+                                                            "uri": "https://marketplaceapi.microsoft.com/api/usageEvent?api-version=2018-08-31",
+                                                            "headers": {
+                                                                "Content-type": "application/json"
+                                                            },
+                                                            "body": {
+                                                                "resourceId": "@{items('Apply_to_each_4')?['MicrosoftSubscriptionId']}",
+                                                                "quantity": "@div(div(sub(ticks(utcNow()), ticks(items('Apply_to_each_4')?['MicrosoftLastMetered'])), float(36000000000)), 720)",
+                                                                "dimension": "@{json(items('Apply_to_each_GroupsList')?['MicrosoftMeterDict'])?[items('Apply_to_each_4')?['MicrosoftPriceId']]}",
+                                                                "effectiveStartTime": "@{items('Apply_to_each_4')?['MicrosoftLastMetered']}",
+                                                                "planId": "@{items('Apply_to_each_4')?['MicrosoftPriceId']}"
+                                                            },
+                                                            "authentication": {
+                                                                "type": "ActiveDirectoryOAuth",
+                                                                "tenant": "@parameters('envpar_config__TenantDomain')",
+                                                                "audience": "20e940b3-4c77-4b0b-9a53-9e16a1b010a7",
+                                                                "clientId": "@parameters('envpar_config__MicrosoftAppId')",
+                                                                "secret": "@parameters('envpar_config__MicrosoftAppSecret')"
+                                                            }
+                                                        }
+                                                    },
+                                                    "Update_item_UsersList": {
+                                                        "runAfter": {
+                                                            "HTTP": [
+                                                                "Succeeded",
+                                                                "Failed"
+                                                            ]
+                                                        },
+                                                        "type": "OpenApiConnection",
+                                                        "inputs": {
+                                                            "host": {
+                                                                "connectionName": "shared_sharepointonline",
+                                                                "operationId": "PatchItem",
+                                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                            },
+                                                            "parameters": {
+                                                                "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{items('Apply_to_each_GroupsList')?['Cycle1GroupName']}",
+                                                                "table": "UsersList",
+                                                                "id": "@items('Apply_to_each_4')?['ID']",
+                                                                "item": {
+                                                                    "Title": "@items('Apply_to_each_4')?['Title']",
+                                                                    "MicrosoftLastMetered": "@{utcNow()}"
+                                                                }
+                                                            },
+                                                            "authentication": "@parameters('$authentication')"
+                                                        }
+                                                    },
+                                                    "Create_item_LogsList": {
+                                                        "runAfter": {
+                                                            "Update_item_UsersList": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "type": "OpenApiConnection",
+                                                        "inputs": {
+                                                            "host": {
+                                                                "connectionName": "shared_sharepointonline",
+                                                                "operationId": "PostItem",
+                                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                            },
+                                                            "parameters": {
+                                                                "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{items('Apply_to_each_GroupsList')?['Cycle1GroupName']}",
+                                                                "table": "LogsList",
+                                                                "item": {
+                                                                    "Title": "Update subscription @{items('Apply_to_each_4')?['Title']} to last metered @{utcNow()}",
+                                                                    "Resource": "UsersList",
+                                                                    "ResourceId": "@items('Apply_to_each_4')?['Title']",
+                                                                    "ChangeType": "UPDATE",
+                                                                    "Source": "cycle0__Microsoft_Meter",
+                                                                    "LogDescription": "@{body('HTTP')}"
+                                                                }
+                                                            },
+                                                            "authentication": "@parameters('$authentication')"
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "expression": {
+                                                "equals": [
+                                                    "@string(outputs('Compose_dimension'))",
+                                                    "@''"
+                                                ]
+                                            },
+                                            "type": "If"
+                                        }
+                                    },
+                                    "runAfter": {
+                                        "Get_items_UsersList": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "Foreach"
+                                }
+                            },
+                            "runAfter": {},
+                            "type": "Scope"
+                        }
+                    },
+                    "runAfter": {
+                        "Get_items_GroupsList": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "Foreach"
+                }
+            }
+        }
+    },
+    "schemaVersion": "1.0.0.0"
+}
