@@ -177,6 +177,31 @@
         <LocalizedName languagecode="1033" description="cycle0__Graph_Users_Webhook" />
       </LocalizedNames>
     </Workflow>
+    <Workflow WorkflowId="{520aa3a9-29e3-ea11-a818-000d3af42a37}" Name="cycle0__AzureAD_Signed">
+      <JsonFileName>/Workflows/cycle0__AzureAD_Signed-520AA3A9-29E3-EA11-A818-000D3AF42A37.json</JsonFileName>
+      <Type>1</Type>
+      <Subprocess>0</Subprocess>
+      <Category>5</Category>
+      <Mode>0</Mode>
+      <Scope>4</Scope>
+      <OnDemand>0</OnDemand>
+      <TriggerOnCreate>0</TriggerOnCreate>
+      <TriggerOnDelete>0</TriggerOnDelete>
+      <AsyncAutodelete>0</AsyncAutodelete>
+      <SyncWorkflowLogOnFailure>0</SyncWorkflowLogOnFailure>
+      <StateCode>1</StateCode>
+      <StatusCode>2</StatusCode>
+      <RunAs>1</RunAs>
+      <IsTransacted>1</IsTransacted>
+      <IntroducedVersion>1.0.0.0</IntroducedVersion>
+      <IsCustomizable>1</IsCustomizable>
+      <BusinessProcessType>0</BusinessProcessType>
+      <IsCustomProcessingStepAllowedForOtherPublishers>1</IsCustomProcessingStepAllowedForOtherPublishers>
+      <PrimaryEntity>none</PrimaryEntity>
+      <LocalizedNames>
+        <LocalizedName languagecode="1033" description="cycle0__AzureAD_Signed" />
+      </LocalizedNames>
+    </Workflow>
     <Workflow WorkflowId="{bc0ce95d-c8dc-ea11-a815-000d3af42a37}" Name="cycle0__Sharepoint_Copy_List">
       <JsonFileName>/Workflows/cycle0__Sharepoint_Copy_List-BC0CE95D-C8DC-EA11-A815-000D3AF42A37.json</JsonFileName>
       <Type>1</Type>
@@ -450,31 +475,6 @@
       <PrimaryEntity>none</PrimaryEntity>
       <LocalizedNames>
         <LocalizedName languagecode="1033" description="cycle0__Microsoft_Contact_Webhook" />
-      </LocalizedNames>
-    </Workflow>
-    <Workflow WorkflowId="{520aa3a9-29e3-ea11-a818-000d3af42a37}" Name="cycle0__AzureAD_Signed">
-      <JsonFileName>/Workflows/cycle0__AzureAD_Signed-520AA3A9-29E3-EA11-A818-000D3AF42A37.json</JsonFileName>
-      <Type>1</Type>
-      <Subprocess>0</Subprocess>
-      <Category>5</Category>
-      <Mode>0</Mode>
-      <Scope>4</Scope>
-      <OnDemand>0</OnDemand>
-      <TriggerOnCreate>0</TriggerOnCreate>
-      <TriggerOnDelete>0</TriggerOnDelete>
-      <AsyncAutodelete>0</AsyncAutodelete>
-      <SyncWorkflowLogOnFailure>0</SyncWorkflowLogOnFailure>
-      <StateCode>1</StateCode>
-      <StatusCode>2</StatusCode>
-      <RunAs>1</RunAs>
-      <IsTransacted>1</IsTransacted>
-      <IntroducedVersion>1.0.0.0</IntroducedVersion>
-      <IsCustomizable>1</IsCustomizable>
-      <BusinessProcessType>0</BusinessProcessType>
-      <IsCustomProcessingStepAllowedForOtherPublishers>1</IsCustomProcessingStepAllowedForOtherPublishers>
-      <PrimaryEntity>none</PrimaryEntity>
-      <LocalizedNames>
-        <LocalizedName languagecode="1033" description="cycle0__AzureAD_Signed" />
       </LocalizedNames>
     </Workflow>
     <Workflow WorkflowId="{8c01be1e-20ad-eb11-8236-000d3af4953d}" Name="cycle0__Paypal_Webhook__Template">

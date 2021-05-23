@@ -11,15 +11,15 @@ https://appsource.microsoft.com/en-us/product/web-apps/anthroplogicworkschool365
 
 1. Create Tenant Organization with Sharepoint free, Microsoft Teams free, Microsoft Power Automate free, and Microsoft Stream free /!\
 
-2. In Sharepoint Admin, create new site (with name cycle0) only from the Sharepoint template file ws365_template_zero.wsp . 
+2. In Sharepoint Admin, create new blank site (with name cycle0) only from custom template to be uploaded later. Enter the homepage of the newly create site (/sites/cycle0), in Solution Gallery, upload and activate the Sharepoint template file ws365_template_zero.wsp into this site. Enter again the homepage of the newly create site, finish the setup of the site by choosing this newly activated custom template.
 
-3. In Power Automate, sign-out sign-in as admin (admin@orgname.onmicrosoft.com). In My flows, create sample test flow with premium HTTP action to start free trial. In Solutions, create Microsoft Dataverse (Common Data Service) database, while In Environment settings, add current user as Admin user, 
+3. In Power Automate, sign-out sign-in as admin (admin@orgname.onmicrosoft.com). In My flows, create sample test flow with premium HTTP action to start free trial. In Environment settings, add current user as Admin user. In Solutions, create Microsoft Dataverse (Common Data Service) database.
 
-4. The exported Power Automate solution file is workschool365_solution.zip, ( where all "defaultValue":".+?","type": has been erased with "defaultValue":"","type": , and in customizations.xml , cycle0__Graph_Notifications_Interface is listed before cycle0__Graph_Users_Webhook and cycle0__Graph_Groups_Webhook )
+4. The exported Power Automate solution file is workschool365_solution.zip . (Reminder: all secret-values "defaultValue":".+?","type": has been regexp-erased with "defaultValue":"","type": , and in customizations.xml there is this listing dependence cycle0__Graph_Notifications_Interface then cycle0__Graph_Users_Webhook then cycle0__Graph_Groups_Webhook, also there is this listing dependence cycle0__AzureAD_Signed then cycle0__Sharepoint_Copy_List then cycle0__GroupsList then cycle0__Setup )
 
-5. In Power Automate, import this solution file into Power Automate, enter the required configuration environment variables envpar_config__TenantName (orgname) and envpar_config__TenantDomain (orgname.onmicrosoft.com). And for the others configuration simply enter the space character ( ) as value, these will be filled automatically.
+5. In Power Automate, import this solution file into Power Automate, enter the connections (where for the HTTP with Azure AD connection, https://graph.microsoft.com is both the base url and app id uri),  enter the required configuration environment variables envpar_config__TenantName (orgname) and envpar_config__TenantDomain (orgname.onmicrosoft.com). And for the others configuration simply enter the space character ( ) as value, these will be filled automatically.
 
-6. In Power Automate, In the importer Solutions, Turn on these flows in this dependent sequence: starting with cycle0__Sharepoint_Copy_List then cycle0__GroupsList then cycle0__Setup. Then do the 1st run of the flow cycle0__Setup by copying its HTTP trigger url address in any web browser. Wait for this run to finish.
+6. In Power Automate, In this imported Solution, (Turn off then) Turn on these flows in this dependent sequence: starting with cycle0__AzureAD_Signed then cycle0__Sharepoint_Copy_List then cycle0__GroupsList then cycle0__Setup. Also Turn on each and all the remaining flows. Then do the 1st run of the flow cycle0__Setup by copying its HTTP trigger url address in any web browser. Wait for this run to finish.
 
 7. In Azure Portal, in App Registrations, give admin consents to the three generated Service Principals apps: WorkSchool 365 Graph App__cycle0, WorkSchool 365 Sign App__cycle0 and WorkSchool 365 Microsoft App__cycle0 .
 
