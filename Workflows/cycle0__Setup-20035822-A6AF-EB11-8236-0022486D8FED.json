@@ -99,6 +99,14 @@
                         "schemaName": "new_envpar_config__TenantDomain",
                         "description": "Required. Org Domain name such as orgname.onmicrosoft.com or orgname.com"
                     }
+                },
+                "envpar_config__CyclesNumber": {
+                    "defaultValue": 5,
+                    "type": "Int",
+                    "metadata": {
+                        "schemaName": "new_envpar_config__CyclesNumber",
+                        "description": "Required. Total number N of cycles from cycle1 to cycleN"
+                    }
                 }
             },
             "triggers": {
@@ -3512,7 +3520,7 @@
                                             "Failed"
                                         ]
                                     },
-                                    "expression": "@equals(variables('varCounter1'), sub(int(outputs('Get_a_row_by_AllEnvs_CyclesNumber')?['body/value']), 1))",
+                                    "expression": "@equals(variables('varCounter1'), sub(int(parameters('envpar_config__CyclesNumber')), 1))",
                                     "limit": {
                                         "count": 60,
                                         "timeout": "PT1H"
@@ -3744,28 +3752,8 @@
                                         }
                                     }
                                 },
-                                "Get_a_row_by_AllEnvs_CyclesNumber": {
-                                    "runAfter": {},
-                                    "type": "OpenApiConnection",
-                                    "inputs": {
-                                        "host": {
-                                            "connectionName": "shared_commondataserviceforapps",
-                                            "operationId": "GetItem",
-                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
-                                        },
-                                        "parameters": {
-                                            "entityName": "environmentvariablevalues",
-                                            "recordId": "@variables('AllEnvs')?['new_envpar_config__CyclesNumber']"
-                                        },
-                                        "authentication": "@parameters('$authentication')"
-                                    }
-                                },
                                 "Run_a_Child_Flow_Cycle1": {
-                                    "runAfter": {
-                                        "Get_a_row_by_AllEnvs_CyclesNumber": [
-                                            "Succeeded"
-                                        ]
-                                    },
+                                    "runAfter": {},
                                     "type": "Workflow",
                                     "inputs": {
                                         "host": {
@@ -3822,28 +3810,28 @@
                             "runAfter": {},
                             "type": "Compose",
                             "inputs": [
-                                "cycle0__Graph_Notifications_Interface",
-                                "cycle0__Graph_Users_Webhook",
-                                "cycle0__Graph_Groups_Webhook",
+                                "cycle0__AzureAD_Signed",
+                                "cycle0__Sharepoint_Copy_List",
+                                "cycle0__GroupsList",
+                                "cycle0__Setup",
                                 "cycle0__ParseWordDocument",
                                 "cycle0__ParseWordEventReview",
-                                "cycle0__AzureAD_Signed",
                                 "cycle0__SurveyQuiz",
                                 "cycle0__EventReview",
                                 "cycle0__EventReview__Delete",
                                 "cycle0__MySubscriptions",
-                                "cycle0__Flow_TriggerUri",
                                 "cycle0__Stripe_Webhook",
                                 "cycle0__Paypal_Webhook",
                                 "cycle0__Microsoft_Contact_Webhook",
                                 "cycle0__Microsoft_Create_Webhook",
                                 "cycle0__Microsoft_Update_Webhook",
                                 "cycle0__Microsoft_Meter",
-                                "cycle0__Sharepoint_Copy_List",
+                                "cycle0__Flow_TriggerUri",
                                 "cycle0__MyGroups",
-                                "cycle0__GroupsList",
                                 "cycle0__Form_Email",
-                                "cycle0__Setup"
+                                "cycle0__Graph_Notifications_Interface",
+                                "cycle0__Graph_Users_Webhook",
+                                "cycle0__Graph_Groups_Webhook"
                             ]
                         },
                         "Apply_to_each_TurnOnOff": {
