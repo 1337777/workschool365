@@ -69,7 +69,7 @@
                     "type": "SecureObject"
                 },
                 "envpar_config__CycleZeroName": {
-                    "defaultValue": "",
+                    "defaultValue": "cycle0",
                     "type": "String",
                     "metadata": {
                         "schemaName": "new_envpar_config__CycleZeroName",
@@ -77,7 +77,7 @@
                     }
                 },
                 "envpar_config__TenantName": {
-                    "defaultValue": "",
+                    "defaultValue": "anthroplogic",
                     "type": "String",
                     "metadata": {
                         "schemaName": "new_envpar_config__TenantName",
@@ -85,7 +85,7 @@
                     }
                 },
                 "envpar_config__CyclesRename": {
-                    "defaultValue": "",
+                    "defaultValue": "cycle",
                     "type": "String",
                     "metadata": {
                         "schemaName": "new_envpar_config__CyclesRename",
@@ -93,7 +93,7 @@
                     }
                 },
                 "envpar_config__TenantDomain": {
-                    "defaultValue": "",
+                    "defaultValue": "anthroplogic.onmicrosoft.com",
                     "type": "String",
                     "metadata": {
                         "schemaName": "new_envpar_config__TenantDomain",
@@ -133,7 +133,8 @@
                             "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
                         },
                         "parameters": {
-                            "entityName": "environmentvariablevalues"
+                            "entityName": "environmentvariablevalues",
+                            "$top": 1000
                         },
                         "authentication": "@parameters('$authentication')"
                     }
@@ -777,30 +778,6 @@
                         },
                         "Scope_User_Flow": {
                             "actions": {
-                                "Create_User_Flow": {
-                                    "runAfter": {
-                                        "Get_User_Flow": [
-                                            "Failed"
-                                        ]
-                                    },
-                                    "type": "OpenApiConnection",
-                                    "inputs": {
-                                        "host": {
-                                            "connectionName": "shared_webcontents_1",
-                                            "operationId": "InvokeHttp",
-                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_webcontents"
-                                        },
-                                        "parameters": {
-                                            "request/method": "POST",
-                                            "request/url": "https://graph.microsoft.com/v1.0/identity/b2xUserFlows",
-                                            "request/headers": {
-                                                "Content-type": "application/json"
-                                            },
-                                            "request/body": "{\n    \"id\": \"WorkSchool365__@{parameters('envpar_config__CycleZeroName')}\",\n    \"userFlowType\": \"signUpOrSignIn\",\n    \"userFlowTypeVersion\": 1\n}"
-                                        },
-                                        "authentication": "@parameters('$authentication')"
-                                    }
-                                },
                                 "User_Flow_Add_Identity_Email": {
                                     "runAfter": {
                                         "Delay_30s": [
@@ -1162,7 +1139,7 @@
                                 },
                                 "Delay_30s": {
                                     "runAfter": {
-                                        "Create_User_Flow": [
+                                        "Scope_Create_User_Flow": [
                                             "Succeeded",
                                             "Skipped"
                                         ]
@@ -1211,6 +1188,50 @@
                                             "secret": "@variables('GraphAppSecret')"
                                         }
                                     }
+                                },
+                                "Scope_Create_User_Flow": {
+                                    "actions": {
+                                        "Delay_To_Create_User_Flow": {
+                                            "runAfter": {},
+                                            "type": "Wait",
+                                            "inputs": {
+                                                "interval": {
+                                                    "count": 30,
+                                                    "unit": "Second"
+                                                }
+                                            }
+                                        },
+                                        "Create_User_Flow": {
+                                            "runAfter": {
+                                                "Delay_To_Create_User_Flow": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "OpenApiConnection",
+                                            "inputs": {
+                                                "host": {
+                                                    "connectionName": "shared_webcontents_1",
+                                                    "operationId": "InvokeHttp",
+                                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_webcontents"
+                                                },
+                                                "parameters": {
+                                                    "request/method": "POST",
+                                                    "request/url": "https://graph.microsoft.com/v1.0/identity/b2xUserFlows",
+                                                    "request/headers": {
+                                                        "Content-type": "application/json"
+                                                    },
+                                                    "request/body": "{\n    \"id\": \"WorkSchool365__@{parameters('envpar_config__CycleZeroName')}\",\n    \"userFlowType\": \"signUpOrSignIn\",\n    \"userFlowTypeVersion\": 1\n}"
+                                                },
+                                                "authentication": "@parameters('$authentication')"
+                                            }
+                                        }
+                                    },
+                                    "runAfter": {
+                                        "Get_User_Flow": [
+                                            "Failed"
+                                        ]
+                                    },
+                                    "type": "Scope"
                                 }
                             },
                             "runAfter": {
@@ -1354,16 +1375,17 @@
                                     "actions": {},
                                     "runAfter": {
                                         "HTTP_Tenant_Branding": [
-                                            "Succeeded",
-                                            "Failed"
+                                            "Failed",
+                                            "Skipped",
+                                            "Succeeded"
                                         ]
                                     },
                                     "type": "Scope"
                                 },
                                 "HTTP_Tenant_Branding": {
                                     "runAfter": {
-                                        "HTTP_TenantId": [
-                                            "Succeeded"
+                                        "HTTP_Patch_Tenant_Branding": [
+                                            "Failed"
                                         ]
                                     },
                                     "type": "Http",
@@ -1374,7 +1396,7 @@
                                             "Content-type": "application/json"
                                         },
                                         "body": {
-                                            "signInPageText": "++**@{parameters('envpar_config__TenantName')} WorkSchool 365**++\r\n\r\nNot Yet Enrolled?\r\n\r\nSign-up here: [@{parameters('envpar_config__TenantName')}.WorkSchool365.com](https://@{parameters('envpar_config__TenantName')}.WorkSchool365.com), click *«Create one!»* via **Microsoft** or **Google** or **Facebook** or **Any Email** (or **Azure AD** Email), or click *«Sign-in options»*\r\n\r\n**Preview As Anonymous: [@{parameters('envpar_config__TenantName')}-reviews.WorkSchool365.com](https://@{parameters('envpar_config__TenantName')}-reviews.WorkSchool365.com) — [@{parameters('envpar_config__TenantName')}-quiz.WorkSchool365.com](https://@{parameters('envpar_config__TenantName')}-quiz.WorkSchool365.com)\r\n\r\nWorkSchool 365 CRM & LMS — for Quiz & Review with Transcript & Receipt + Payments\r\n\r\n[Terms](https://WorkSchool365.com) | [Privacy](https://WorkSchool365.com) | © 2021 Canada",
+                                            "signInPageText": "@{outputs('Compose_Branding')}",
                                             "usernameHintText": "Already Enrolled? Enter your Email",
                                             "id": "en"
                                         },
@@ -1397,6 +1419,41 @@
                                                 "Content-type": "application/json"
                                             },
                                             "request/body": "{\n\"signInPageText\": \"++**@{parameters('envpar_config__TenantName')} WorkSchool 365**++\\nNot Yet Enrolled?\\nSign-up here: [@{parameters('envpar_config__TenantName')}.WorkSchool365.com](https://@{parameters('envpar_config__TenantName')}.WorkSchool365.com), click *«Create one!»* via **Microsoft** or **Google** or **Facebook** or **Any Email** (or **Azure AD** Email), or click *«Sign-in options»*\\n**Preview As Anonymous: [@{parameters('envpar_config__TenantName')}-reviews.WorkSchool365.com](https://@{parameters('envpar_config__TenantName')}-reviews.WorkSchool365.com)\\nWorkSchool 365 CRM & LMS — for Quiz & Review with Transcript & Receipt + Payments\\n[Terms](https://WorkSchool365.com) | [Privacy](https://WorkSchool365.com) | © 2021\",\n            \"usernameHintText\": \"Already Enrolled? Enter your Email\"\n}"
+                                        }
+                                    }
+                                },
+                                "Compose_Branding": {
+                                    "runAfter": {
+                                        "HTTP_TenantId": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "Compose",
+                                    "inputs": "++**@{parameters('envpar_config__TenantName')} WorkSchool 365**++\n\nNot Yet Enrolled?\n\nSign-up here: [@{parameters('envpar_config__TenantName')}.WorkSchool365.com](https://@{parameters('envpar_config__TenantName')}.WorkSchool365.com), click *«Create one!»* via **Microsoft** or **Google** or **Facebook** or **Any Email** (or **Azure AD** Email), or click *«Sign-in options»*\n\nBuy Your Own: **[Microsoft Marketplace](https://appsource.microsoft.com/en-us/product/web-apps/anthroplogicworkschool3651593890930054.anthroplogic_workschool_365)**\n\nPreview As Anonymous: [@{parameters('envpar_config__TenantName')}-reviews.WorkSchool365.com](https://@{parameters('envpar_config__TenantName')}-reviews.WorkSchool365.com) — [@{parameters('envpar_config__TenantName')}-quiz.WorkSchool365.com](https://@{parameters('envpar_config__TenantName')}-quiz.WorkSchool365.com)\n\nWorkSchool 365 CRM & LMS for SharePoint Teams — [Open Source Code](https://github.com/1337777/workschool365) Secure Microsoft 365 App with PayPal + Stripe Payments\n\n[Terms](https://WorkSchool365.com) | [Privacy](https://WorkSchool365.com) | © @{utcNow('yyyy')} Canada"
+                                },
+                                "HTTP_Patch_Tenant_Branding": {
+                                    "runAfter": {
+                                        "Compose_Branding": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "Http",
+                                    "inputs": {
+                                        "method": "PATCH",
+                                        "uri": "https://graph.microsoft.com/v1.0/organization/@{body('HTTP_TenantId')?['value']?[0]?['id']}/branding/localizations/en",
+                                        "headers": {
+                                            "Content-type": "application/json"
+                                        },
+                                        "body": {
+                                            "signInPageText": "@{outputs('Compose_Branding')}",
+                                            "usernameHintText": "Already Enrolled? Enter your Email"
+                                        },
+                                        "authentication": {
+                                            "type": "ActiveDirectoryOAuth",
+                                            "tenant": "@parameters('envpar_config__TenantDomain')",
+                                            "audience": "https://graph.microsoft.com",
+                                            "clientId": "@variables('GraphAppId')",
+                                            "secret": "@variables('GraphAppSecret')"
                                         }
                                     }
                                 }
