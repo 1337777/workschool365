@@ -608,7 +608,7 @@
                                                     "type": "Http",
                                                     "inputs": {
                                                         "method": "POST",
-                                                        "uri": "https://login.microsoftonline.com/common/oauth2/v2.0/token",
+                                                        "uri": "https://login.microsoftonline.com/@{parameters('envpar_config__TenantDomain')}/oauth2/v2.0/token",
                                                         "headers": {
                                                             "Content-Type": "application/x-www-form-urlencoded"
                                                         },
