@@ -36,12 +36,16 @@
                     "defaultValue": "",
                     "type": "String",
                     "metadata": {
-                        "schemaName": "new_envpar_config__TenantName"
+                        "schemaName": "new_envpar_config__TenantName",
+                        "description": "Required. Org Name orgname (this is the prefix of the auto assigned domain orgname.onmicrosoft.com)"
                     }
                 }
             },
             "triggers": {
                 "manual": {
+                    "metadata": {
+                        "operationMetadataId": "6a56b51e-b8d3-4831-9f77-d8227e92b76a"
+                    },
                     "type": "Request",
                     "kind": "Http",
                     "inputs": {
@@ -69,9 +73,12 @@
             "actions": {
                 "Response": {
                     "runAfter": {
-                        "Set_content_approval_status_5": [
+                        "Scope": [
                             "Succeeded"
                         ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "8506a8e8-3e98-4ce5-bb46-5125229f6351"
                     },
                     "type": "Response",
                     "kind": "Http",
@@ -84,6 +91,9 @@
                         "Initialize_variable_Cycle1GroupName": [
                             "Succeeded"
                         ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "af9ede4f-c8ab-43cb-b03b-2fcf301e3196"
                     },
                     "type": "InitializeVariable",
                     "inputs": {
@@ -102,6 +112,9 @@
                             "Succeeded"
                         ]
                     },
+                    "metadata": {
+                        "operationMetadataId": "c45d8dc5-77df-4e50-80de-39d25f9302ce"
+                    },
                     "type": "InitializeVariable",
                     "inputs": {
                         "variables": [
@@ -118,6 +131,9 @@
                         "Initialize_variable_fileItemId": [
                             "Succeeded"
                         ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "0494679d-aad1-4410-8bac-b180cc291f95"
                     },
                     "type": "InitializeVariable",
                     "inputs": {
@@ -136,6 +152,9 @@
                             "Succeeded"
                         ]
                     },
+                    "metadata": {
+                        "operationMetadataId": "3239f9a8-3797-4a53-8660-915cea30e638"
+                    },
                     "type": "InitializeVariable",
                     "inputs": {
                         "variables": [
@@ -153,6 +172,9 @@
                             "Succeeded"
                         ]
                     },
+                    "metadata": {
+                        "operationMetadataId": "716cb392-b28f-415c-9d3a-e71240fbff0a"
+                    },
                     "type": "InitializeVariable",
                     "inputs": {
                         "variables": [
@@ -166,6 +188,9 @@
                 },
                 "Compose_TenantName": {
                     "runAfter": {},
+                    "metadata": {
+                        "operationMetadataId": "a0468a82-d9fa-4935-88cc-af086a850218"
+                    },
                     "type": "Compose",
                     "inputs": "@{parameters('envpar_config__TenantName')}"
                 },
@@ -174,6 +199,9 @@
                         "Initialize_variable_siteAddress": [
                             "Succeeded"
                         ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "11bf076d-faf3-4ee3-89ed-0e12e433f62c"
                     },
                     "type": "InitializeVariable",
                     "inputs": {
@@ -185,112 +213,160 @@
                         ]
                     }
                 },
-                "Delete_a_row": {
+                "Scope": {
+                    "actions": {
+                        "Delete_a_row": {
+                            "runAfter": {},
+                            "metadata": {
+                                "operationMetadataId": "53b50674-07af-48fe-b6ec-e0400411afb6",
+                                "tableId": "Table1"
+                            },
+                            "type": "OpenApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connectionName": "shared_excelonlinebusiness_1",
+                                    "operationId": "DeleteItem",
+                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_excelonlinebusiness"
+                                },
+                                "parameters": {
+                                    "source": "sites/@{parameters('envpar_config__TenantName')}.sharepoint.com:/sites/@{variables('siteName')}:",
+                                    "drive": "@variables('driveId')",
+                                    "file": "EventReview%252FPublic_Listing_Receipts.xlsx",
+                                    "table": "Table1",
+                                    "idColumn": "ID",
+                                    "id": "@variables('fileItemId')"
+                                },
+                                "authentication": "@parameters('$authentication')"
+                            }
+                        },
+                        "Delay": {
+                            "runAfter": {
+                                "Delete_a_row": [
+                                    "Succeeded",
+                                    "TimedOut",
+                                    "Failed"
+                                ]
+                            },
+                            "metadata": {
+                                "operationMetadataId": "fc6d085d-fe5b-42a9-961f-b4ba57b5fbd5"
+                            },
+                            "type": "Wait",
+                            "inputs": {
+                                "interval": {
+                                    "count": 60,
+                                    "unit": "Second"
+                                }
+                            }
+                        },
+                        "Get_file_metadata_3": {
+                            "runAfter": {
+                                "Delay": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "metadata": {
+                                "operationMetadataId": "82e6ffb4-43d9-4090-b2da-f8cbe5e2a121"
+                            },
+                            "type": "OpenApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connectionName": "shared_sharepointonline_1",
+                                    "operationId": "GetFileMetadata",
+                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                },
+                                "parameters": {
+                                    "dataset": "@variables('siteAddress')",
+                                    "id": "EventReview%252FPublic_Listing_Receipts.xlsx"
+                                },
+                                "authentication": "@parameters('$authentication')"
+                            }
+                        },
+                        "Set_content_approval_status_4": {
+                            "runAfter": {
+                                "Get_file_metadata_3": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "metadata": {
+                                "operationMetadataId": "66d482f6-e1c1-41b1-88d8-69851e0fc7d4"
+                            },
+                            "type": "OpenApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connectionName": "shared_sharepointonline_1",
+                                    "operationId": "SetApprovalStatus",
+                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                },
+                                "parameters": {
+                                    "dataset": "@variables('siteAddress')",
+                                    "table": "EventReview",
+                                    "id": "@outputs('Get_file_metadata_3')?['body/ItemId']",
+                                    "approvalAction": "Submit",
+                                    "comments": "",
+                                    "entityTag": "@outputs('Get_file_metadata_3')?['body/ETag']"
+                                },
+                                "authentication": "@parameters('$authentication')",
+                                "retryPolicy": {
+                                    "type": "none"
+                                }
+                            }
+                        },
+                        "Set_content_approval_status_5": {
+                            "runAfter": {
+                                "Set_content_approval_status_4": [
+                                    "Succeeded",
+                                    "Failed",
+                                    "TimedOut"
+                                ]
+                            },
+                            "metadata": {
+                                "operationMetadataId": "9c96dd93-e459-44f3-a4f8-0e56cb654731"
+                            },
+                            "type": "OpenApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connectionName": "shared_sharepointonline_1",
+                                    "operationId": "SetApprovalStatus",
+                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                },
+                                "parameters": {
+                                    "dataset": "@variables('siteAddress')",
+                                    "table": "EventReview",
+                                    "id": "@outputs('Get_file_metadata_3')?['body/ItemId']",
+                                    "approvalAction": "Approve",
+                                    "comments": "",
+                                    "entityTag": "@outputs('Set_content_approval_status_4')?['body/ETag']"
+                                },
+                                "authentication": "@parameters('$authentication')",
+                                "retryPolicy": {
+                                    "type": "none"
+                                }
+                            }
+                        },
+                        "Scope_catch": {
+                            "actions": {},
+                            "runAfter": {
+                                "Set_content_approval_status_5": [
+                                    "Succeeded",
+                                    "Failed",
+                                    "TimedOut"
+                                ]
+                            },
+                            "metadata": {
+                                "operationMetadataId": "667302fe-8ba9-4608-9e1e-9c20d94af1c3"
+                            },
+                            "type": "Scope"
+                        }
+                    },
                     "runAfter": {
                         "Initialize_variable_StatusDescription": [
                             "Succeeded"
                         ]
                     },
-                    "type": "OpenApiConnection",
-                    "inputs": {
-                        "host": {
-                            "connectionName": "shared_excelonlinebusiness_1",
-                            "operationId": "DeleteItem",
-                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_excelonlinebusiness"
-                        },
-                        "parameters": {
-                            "source": "sites/@{parameters('envpar_config__TenantName')}.sharepoint.com:/sites/@{variables('siteName')}:",
-                            "drive": "@variables('driveId')",
-                            "file": "EventReview%252FReceipts%252FEventReview.xlsx",
-                            "table": "Table1",
-                            "idColumn": "ID",
-                            "id": "@variables('fileItemId')"
-                        },
-                        "authentication": "@parameters('$authentication')"
-                    }
-                },
-                "Get_file_metadata_3": {
-                    "runAfter": {
-                        "Delay": [
-                            "Succeeded"
-                        ]
+                    "metadata": {
+                        "operationMetadataId": "ba6afd5b-7517-4ecf-bc1e-d9304bc92b85"
                     },
-                    "type": "OpenApiConnection",
-                    "inputs": {
-                        "host": {
-                            "connectionName": "shared_sharepointonline_1",
-                            "operationId": "GetFileMetadata",
-                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
-                        },
-                        "parameters": {
-                            "dataset": "@variables('siteAddress')",
-                            "id": "EventReview%252fReceipts%252fEventReview.xlsx"
-                        },
-                        "authentication": "@parameters('$authentication')"
-                    }
-                },
-                "Set_content_approval_status_4": {
-                    "runAfter": {
-                        "Get_file_metadata_3": [
-                            "Succeeded"
-                        ]
-                    },
-                    "type": "OpenApiConnection",
-                    "inputs": {
-                        "host": {
-                            "connectionName": "shared_sharepointonline_1",
-                            "operationId": "SetApprovalStatus",
-                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
-                        },
-                        "parameters": {
-                            "dataset": "@variables('siteAddress')",
-                            "table": "EventReview",
-                            "id": "@outputs('Get_file_metadata_3')?['body/ItemId']",
-                            "approvalAction": "Submit",
-                            "comments": "",
-                            "entityTag": "@outputs('Get_file_metadata_3')?['body/ETag']"
-                        },
-                        "authentication": "@parameters('$authentication')"
-                    }
-                },
-                "Set_content_approval_status_5": {
-                    "runAfter": {
-                        "Set_content_approval_status_4": [
-                            "Succeeded"
-                        ]
-                    },
-                    "type": "OpenApiConnection",
-                    "inputs": {
-                        "host": {
-                            "connectionName": "shared_sharepointonline_1",
-                            "operationId": "SetApprovalStatus",
-                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
-                        },
-                        "parameters": {
-                            "dataset": "@variables('siteAddress')",
-                            "table": "EventReview",
-                            "id": "@outputs('Get_file_metadata_3')?['body/ItemId']",
-                            "approvalAction": "Approve",
-                            "comments": "",
-                            "entityTag": "@outputs('Set_content_approval_status_4')?['body/ETag']"
-                        },
-                        "authentication": "@parameters('$authentication')"
-                    }
-                },
-                "Delay": {
-                    "runAfter": {
-                        "Delete_a_row": [
-                            "Succeeded",
-                            "Failed"
-                        ]
-                    },
-                    "type": "Wait",
-                    "inputs": {
-                        "interval": {
-                            "count": 60,
-                            "unit": "Second"
-                        }
-                    }
+                    "type": "Scope"
                 }
             },
             "outputs": {}

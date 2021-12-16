@@ -27,21 +27,24 @@
                     "defaultValue": "",
                     "type": "String",
                     "metadata": {
-                        "schemaName": "new_envpar_config__TenantName"
+                        "schemaName": "new_envpar_config__TenantName",
+                        "description": "Required. Org Name orgname (this is the prefix of the auto assigned domain orgname.onmicrosoft.com)"
                     }
                 },
                 "envpar_config__TenantDomain": {
                     "defaultValue": "",
                     "type": "String",
                     "metadata": {
-                        "schemaName": "new_envpar_config__TenantDomain"
+                        "schemaName": "new_envpar_config__TenantDomain",
+                        "description": "Required. Org Domain name such as orgname.onmicrosoft.com or orgname.com"
                     }
                 },
                 "envpar_config__CycleZeroName": {
                     "defaultValue": "",
                     "type": "String",
                     "metadata": {
-                        "schemaName": "new_envpar_config__CycleZeroName"
+                        "schemaName": "new_envpar_config__CycleZeroName",
+                        "description": "Required. Could have many environments N each with its envN_cycle0 template"
                     }
                 },
                 "envpar_config__GraphAppId": {
@@ -49,7 +52,7 @@
                     "type": "String",
                     "metadata": {
                         "schemaName": "new_envpar_config__GraphAppId",
-                        "description": "enter space character ( ) for none"
+                        "description": "Service Principal Id for Graph Api. Enter space character ( ) for none. Filled automatically."
                     }
                 },
                 "envpar_config__GraphAppSecret": {
@@ -57,7 +60,7 @@
                     "type": "String",
                     "metadata": {
                         "schemaName": "new_envpar_config__GraphAppSecret",
-                        "description": "enter space character ( ) for none"
+                        "description": "Service Principal Secret for Graph Api. Enter space character ( ) for none. Filled automatically."
                     }
                 },
                 "envpar_config__LoginAppId": {
@@ -65,7 +68,7 @@
                     "type": "String",
                     "metadata": {
                         "schemaName": "new_envpar_config__LoginAppId",
-                        "description": "enter space character ( ) for none"
+                        "description": "Service Principal Id for Auth Api. Enter space character ( ) for none. Filled automatically."
                     }
                 },
                 "envpar_config__LoginAppSecret": {
@@ -73,26 +76,31 @@
                     "type": "String",
                     "metadata": {
                         "schemaName": "new_envpar_config__LoginAppSecret",
-                        "description": "enter space character ( ) for none"
+                        "description": "Service Principal Secret for Auth Api. Enter space character ( ) for none. Filled automatically."
                     }
                 },
                 "envpar_config__CyclesRename": {
                     "defaultValue": "",
                     "type": "String",
                     "metadata": {
-                        "schemaName": "new_envpar_config__CyclesRename"
+                        "schemaName": "new_envpar_config__CyclesRename",
+                        "description": "Required. Rename cycle to class, for example. So now class1, ... classN"
                     }
                 },
                 "envpar_http__AzureAD_Signed": {
                     "defaultValue": "",
                     "type": "String",
                     "metadata": {
-                        "schemaName": "new_envpar_http__AzureAD_Signed"
+                        "schemaName": "new_envpar_http__AzureAD_Signed",
+                        "description": "This flow HTTP trigger URL. Enter space character ( ) for none. Filled automatically."
                     }
                 }
             },
             "triggers": {
                 "manual": {
+                    "metadata": {
+                        "operationMetadataId": "fe4569d6-e35a-4288-b2d3-fc65be477bd2"
+                    },
                     "type": "Request",
                     "kind": "Http",
                     "inputs": {
@@ -109,6 +117,9 @@
                             "Succeeded"
                         ]
                     },
+                    "metadata": {
+                        "operationMetadataId": "84dfc9ad-2100-45d8-bfd8-2cf49806ba4e"
+                    },
                     "type": "InitializeVariable",
                     "inputs": {
                         "variables": [
@@ -121,6 +132,9 @@
                 },
                 "Initialize_variable_state": {
                     "runAfter": {},
+                    "metadata": {
+                        "operationMetadataId": "dffda443-e42c-41c1-82e0-955e559ad7e6"
+                    },
                     "type": "InitializeVariable",
                     "inputs": {
                         "variables": [
@@ -138,6 +152,9 @@
                             "Succeeded"
                         ]
                     },
+                    "metadata": {
+                        "operationMetadataId": "ceacbc3b-3761-43c1-9c36-77e462809032"
+                    },
                     "type": "Response",
                     "kind": "Http",
                     "inputs": {
@@ -153,6 +170,9 @@
                         "Initialize_variable_redirectUrl": [
                             "Succeeded"
                         ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "22338675-a879-4593-8ff2-35e5872f0238"
                     },
                     "type": "InitializeVariable",
                     "inputs": {
@@ -170,6 +190,9 @@
                             "Succeeded"
                         ]
                     },
+                    "metadata": {
+                        "operationMetadataId": "e470693c-3d0d-4621-9424-1fdd4c4296ae"
+                    },
                     "type": "InitializeVariable",
                     "inputs": {
                         "variables": [
@@ -185,6 +208,9 @@
                         "Initialize_variable_userId": [
                             "Succeeded"
                         ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "fc5bc294-3723-4a37-a257-c4a32dcbfc05"
                     },
                     "type": "InitializeVariable",
                     "inputs": {
@@ -202,6 +228,9 @@
                             "Succeeded"
                         ]
                     },
+                    "metadata": {
+                        "operationMetadataId": "f99be9f5-ed73-4f85-b0a2-95b708d43d3f"
+                    },
                     "type": "InitializeVariable",
                     "inputs": {
                         "variables": [
@@ -216,6 +245,9 @@
                     "actions": {
                         "Compose_Delay": {
                             "runAfter": {},
+                            "metadata": {
+                                "operationMetadataId": "74db4039-71b6-4c0b-80b7-2b47949e3674"
+                            },
                             "type": "Compose",
                             "inputs": 10
                         },
@@ -224,6 +256,9 @@
                                 "Compose_Delay": [
                                     "Succeeded"
                                 ]
+                            },
+                            "metadata": {
+                                "operationMetadataId": "e8a5166b-5c2e-4eec-8c77-5a900e6bf936"
                             },
                             "type": "Wait",
                             "inputs": {
@@ -238,6 +273,9 @@
                                 "Delay": [
                                     "Succeeded"
                                 ]
+                            },
+                            "metadata": {
+                                "operationMetadataId": "b3591781-d0e2-4e2d-b930-5b79789a73ca"
                             },
                             "type": "Http",
                             "inputs": {
@@ -257,6 +295,9 @@
                                 "HTTP_Get_user": [
                                     "Succeeded"
                                 ]
+                            },
+                            "metadata": {
+                                "operationMetadataId": "f48a81e4-520b-4252-bf79-6f98138895d1"
                             },
                             "type": "ParseJson",
                             "inputs": {
@@ -378,6 +419,9 @@
                                             "Succeeded"
                                         ]
                                     },
+                                    "metadata": {
+                                        "operationMetadataId": "ccfa3fc0-7aa4-40a4-b5fe-1ce2a47ab56b"
+                                    },
                                     "type": "OpenApiConnection",
                                     "inputs": {
                                         "host": {
@@ -399,6 +443,9 @@
                                 },
                                 "HTTP_Delete_email_user": {
                                     "runAfter": {},
+                                    "metadata": {
+                                        "operationMetadataId": "711f7dc0-ae2a-41d5-8642-4f9bffacce1b"
+                                    },
                                     "type": "Http",
                                     "inputs": {
                                         "method": "DELETE",
@@ -417,6 +464,9 @@
                                         "HTTP_Delete_email_user": [
                                             "Succeeded"
                                         ]
+                                    },
+                                    "metadata": {
+                                        "operationMetadataId": "e7e1ae04-af8a-41e9-b430-5416b2d83562"
                                     },
                                     "type": "OpenApiConnection",
                                     "inputs": {
@@ -439,6 +489,9 @@
                                     "actions": {
                                         "Delete_item": {
                                             "runAfter": {},
+                                            "metadata": {
+                                                "operationMetadataId": "8ab6b9ff-49c4-47c0-806b-e523277fe706"
+                                            },
                                             "type": "OpenApiConnection",
                                             "inputs": {
                                                 "host": {
@@ -460,6 +513,9 @@
                                             "Succeeded"
                                         ]
                                     },
+                                    "metadata": {
+                                        "operationMetadataId": "99fbe5d7-1239-4581-91e6-91045cb2562f"
+                                    },
                                     "type": "Foreach"
                                 }
                             },
@@ -473,6 +529,9 @@
                                     "Scope_8": {
                                         "actions": {},
                                         "runAfter": {},
+                                        "metadata": {
+                                            "operationMetadataId": "a24926c8-32b4-4c9b-a902-38d695eee743"
+                                        },
                                         "type": "Scope"
                                     },
                                     "Apply_to_each_GroupsList_3": {
@@ -480,6 +539,9 @@
                                         "actions": {
                                             "HTTP_Add_Cycle1GroupId": {
                                                 "runAfter": {},
+                                                "metadata": {
+                                                    "operationMetadataId": "c154ad51-c1e2-400c-8207-e23a78ef763e"
+                                                },
                                                 "type": "Http",
                                                 "inputs": {
                                                     "method": "POST",
@@ -505,6 +567,9 @@
                                                         "TimedOut"
                                                     ]
                                                 },
+                                                "metadata": {
+                                                    "operationMetadataId": "93f34a79-5e26-4502-b2dc-f4ec44fba988"
+                                                },
                                                 "type": "Scope"
                                             }
                                         },
@@ -513,6 +578,9 @@
                                                 "Succeeded"
                                             ]
                                         },
+                                        "metadata": {
+                                            "operationMetadataId": "e1660266-2f58-4024-bdbe-342f8710cf3f"
+                                        },
                                         "type": "Foreach"
                                     },
                                     "Get_items_GroupsList_3": {
@@ -520,6 +588,9 @@
                                             "Scope_8": [
                                                 "Failed"
                                             ]
+                                        },
+                                        "metadata": {
+                                            "operationMetadataId": "30fc8bd0-9857-4484-9f29-190440e26092"
                                         },
                                         "type": "OpenApiConnection",
                                         "inputs": {
@@ -562,19 +633,36 @@
                                     }
                                 ]
                             },
+                            "metadata": {
+                                "operationMetadataId": "3cc113c4-0d75-4eaf-a16e-94f8867fc9f0"
+                            },
                             "type": "If"
                         }
                     },
                     "runAfter": {
                         "Response": [
-                            "Succeeded"
+                            "Succeeded",
+                            "Failed"
                         ]
                     },
                     "expression": {
-                        "equals": [
-                            "@split(variables('state'), '/')?[1]",
-                            "sign_up_email"
+                        "and": [
+                            {
+                                "equals": [
+                                    "@split(variables('state'), '/')?[1]",
+                                    "sign_up_email"
+                                ]
+                            },
+                            {
+                                "equals": [
+                                    "@length(body('HTTP_Already_user')?['value'])",
+                                    "@0"
+                                ]
+                            }
                         ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "e99a4364-3f31-48b2-a656-fa8418cf6f6d"
                     },
                     "type": "If"
                 },
@@ -582,6 +670,9 @@
                     "actions": {
                         "Set_variable_email": {
                             "runAfter": {},
+                            "metadata": {
+                                "operationMetadataId": "f9b851de-cb0d-4ad7-aa09-41ea3e6fb5a2"
+                            },
                             "type": "SetVariable",
                             "inputs": {
                                 "name": "email",
@@ -590,7 +681,7 @@
                         }
                     },
                     "runAfter": {
-                        "Initialize_variable_responseBody": [
+                        "Condition_sign_teams": [
                             "Succeeded"
                         ]
                     },
@@ -605,6 +696,9 @@
                                             "actions": {
                                                 "HTTP_Post_code": {
                                                     "runAfter": {},
+                                                    "metadata": {
+                                                        "operationMetadataId": "09df6247-d456-43da-966c-376f64d92fc2"
+                                                    },
                                                     "type": "Http",
                                                     "inputs": {
                                                         "method": "POST",
@@ -621,6 +715,9 @@
                                                             "Succeeded"
                                                         ]
                                                     },
+                                                    "metadata": {
+                                                        "operationMetadataId": "0a9cf7a5-db51-44f0-9053-4fb56c8fbca2"
+                                                    },
                                                     "type": "SetVariable",
                                                     "inputs": {
                                                         "name": "access_token",
@@ -632,6 +729,9 @@
                                                         "Compose_token_content": [
                                                             "Succeeded"
                                                         ]
+                                                    },
+                                                    "metadata": {
+                                                        "operationMetadataId": "2ce775f7-9787-42ab-a9f7-ef8d6a19cc74"
                                                     },
                                                     "type": "ParseJson",
                                                     "inputs": {
@@ -743,6 +843,9 @@
                                                             "Skipped"
                                                         ]
                                                     },
+                                                    "metadata": {
+                                                        "operationMetadataId": "a6549bd2-ba62-4db2-990b-1ba0e652258a"
+                                                    },
                                                     "type": "Compose",
                                                     "inputs": "@first(skip(split(variables('access_token'), '.'), 1))"
                                                 },
@@ -751,6 +854,9 @@
                                                         "Parse_JSON_decode_token": [
                                                             "Succeeded"
                                                         ]
+                                                    },
+                                                    "metadata": {
+                                                        "operationMetadataId": "f64df14e-b294-496b-90b0-f001bdeb1765"
                                                     },
                                                     "type": "SetVariable",
                                                     "inputs": {
@@ -762,6 +868,9 @@
                                                     "actions": {
                                                         "HTTP": {
                                                             "runAfter": {},
+                                                            "metadata": {
+                                                                "operationMetadataId": "5006b6e3-94e5-45ab-9183-04b6fe15d6b9"
+                                                            },
                                                             "type": "Http",
                                                             "inputs": {
                                                                 "method": "GET",
@@ -778,6 +887,9 @@
                                                                     "Succeeded"
                                                                 ]
                                                             },
+                                                            "metadata": {
+                                                                "operationMetadataId": "61557bad-bdab-4152-81cb-2d4984497a91"
+                                                            },
                                                             "type": "SetVariable",
                                                             "inputs": {
                                                                 "name": "email",
@@ -789,6 +901,9 @@
                                                         "Parse_JSON_decode_token": [
                                                             "Failed"
                                                         ]
+                                                    },
+                                                    "metadata": {
+                                                        "operationMetadataId": "497a7c09-c12b-420c-ab8c-db6e7ee0dc23"
                                                     },
                                                     "type": "Scope"
                                                 },
@@ -803,12 +918,18 @@
                                                             "Succeeded"
                                                         ]
                                                     },
+                                                    "metadata": {
+                                                        "operationMetadataId": "332a96ff-df32-40e5-889b-80b36d7d314d"
+                                                    },
                                                     "type": "Scope"
                                                 },
                                                 "Scope_7": {
                                                     "actions": {
                                                         "HTTP_2": {
                                                             "runAfter": {},
+                                                            "metadata": {
+                                                                "operationMetadataId": "1947f467-4a3d-4267-a39d-b5cd2836caf7"
+                                                            },
                                                             "type": "Http",
                                                             "inputs": {
                                                                 "method": "POST",
@@ -825,6 +946,9 @@
                                                                     "Succeeded"
                                                                 ]
                                                             },
+                                                            "metadata": {
+                                                                "operationMetadataId": "949839d4-f076-4d4b-b4d8-2864b42792dc"
+                                                            },
                                                             "type": "SetVariable",
                                                             "inputs": {
                                                                 "name": "access_token",
@@ -837,10 +961,16 @@
                                                             "Skipped"
                                                         ]
                                                     },
+                                                    "metadata": {
+                                                        "operationMetadataId": "2579ce8d-379b-4642-b03f-48e600907e48"
+                                                    },
                                                     "type": "Scope"
                                                 }
                                             },
                                             "runAfter": {},
+                                            "metadata": {
+                                                "operationMetadataId": "65fe687b-59c1-483c-89ea-4e3c945b570a"
+                                            },
                                             "type": "Scope"
                                         }
                                     }
@@ -850,6 +980,9 @@
                                         "@string(triggerOutputs()?['queries']?['code'])",
                                         "@''"
                                     ]
+                                },
+                                "metadata": {
+                                    "operationMetadataId": "077fb780-05b9-4684-b03d-f1bc765d605d"
                                 },
                                 "type": "If"
                             }
@@ -861,68 +994,22 @@
                             "sign_up_email"
                         ]
                     },
+                    "metadata": {
+                        "operationMetadataId": "c39b0bf5-f6f2-4659-b6af-029771091aef"
+                    },
                     "type": "If"
                 },
                 "Condition_sign_up": {
                     "actions": {
                         "Set_variable_redirectUrl_2": {
                             "runAfter": {},
+                            "metadata": {
+                                "operationMetadataId": "ec729cf7-fc41-411f-9c84-95c74895f830"
+                            },
                             "type": "SetVariable",
                             "inputs": {
                                 "name": "redirectUrl",
-                                "value": "https://login.microsoftonline.com/@{parameters('envpar_config__TenantDomain')}/oauth2/v2.0/authorize?client_id=@{parameters('envpar_config__LoginAppId')}&response_mode=query&response_type=code&scope=user.read+openid+profile+email&login_hint=@{uriComponent(variables('email'))}&redirect_uri=@{uriComponent(parameters('envpar_http__AzureAD_Signed'))}&state=%2Fsign"
-                            }
-                        },
-                        "Set_variable_responseBody": {
-                            "runAfter": {
-                                "Set_variable_redirectUrl_2": [
-                                    "Succeeded"
-                                ]
-                            },
-                            "type": "SetVariable",
-                            "inputs": {
-                                "name": "responseBody",
-                                "value": "<html><head>\n<meta http-equiv=\"Refresh\" content=\"30; URL=@{variables('redirectUrl')}\">\n    <title>WorkSchool 365</title>\n    <meta charset=\"utf-8\">\n    <meta http-equiv=\"Content-type\" content=\"text/html; charset=utf-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n    <style type=\"text/css\">\n    body {\n        background-color: #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system, system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n    }\n    div {\n        width: 600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color: #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n        text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n    </style>    \n</head>\n<body>\n<div>\n    <h1>Wait 30 seconds to be automatically redirected to your signed-in personalized page... </h1>\n    <p><a href=\"@{variables('redirectUrl')}\">Click here to be redirected manually ( after 30 seconds 😊 ) </a> </p>\n</div>\n</body></html>"
-                            }
-                        },
-                        "HTTP_Add_invitation": {
-                            "runAfter": {
-                                "Set_variable_responseBody": [
-                                    "Succeeded"
-                                ]
-                            },
-                            "type": "Http",
-                            "inputs": {
-                                "method": "POST",
-                                "uri": "https://graph.microsoft.com/v1.0/invitations",
-                                "headers": {
-                                    "Content-type": "application/json"
-                                },
-                                "body": {
-                                    "invitedUserEmailAddress": "@{variables('email')}",
-                                    "sendInvitationMessage": false,
-                                    "invitedUserType": "Member",
-                                    "inviteRedirectUrl": "@{variables('redirectUrl')}"
-                                },
-                                "authentication": {
-                                    "type": "ActiveDirectoryOAuth",
-                                    "tenant": "@parameters('envpar_config__TenantDomain')",
-                                    "audience": "https://graph.microsoft.com",
-                                    "clientId": "@parameters('envpar_config__GraphAppId')",
-                                    "secret": "@parameters('envpar_config__GraphAppSecret')"
-                                }
-                            }
-                        },
-                        "Set_variable_userId": {
-                            "runAfter": {
-                                "HTTP_Add_invitation": [
-                                    "Succeeded"
-                                ]
-                            },
-                            "type": "SetVariable",
-                            "inputs": {
-                                "name": "userId",
-                                "value": "@{body('Http_Add_invitation')?['invitedUser']?['id']}"
+                                "value": "https://login.microsoftonline.com/@{parameters('envpar_config__TenantDomain')}/oauth2/v2.0/authorize?client_id=@{parameters('envpar_config__LoginAppId')}&response_mode=query&response_type=code&scope=user.read+openid+profile+email&login_hint=@{uriComponent(variables('email'))}&redirect_uri=@{uriComponent(parameters('envpar_http__AzureAD_Signed'))}&state=@{if(equals(triggerOutputs()?['queries']?['mode'], 'teams'),'%2Fsign_teams',  concat('%2Fsign%2F', \r\n if(equals(string(split(variables('state'), '/')?[2]), ''), concat(parameters('envpar_config__CyclesRename'), '1'), string(split(variables('state'), '/')?[2]))\r\n))}"
                             }
                         },
                         "Create_item_LogsList_2": {
@@ -930,6 +1017,9 @@
                                 "Apply_to_each_GroupsList": [
                                     "Succeeded"
                                 ]
+                            },
+                            "metadata": {
+                                "operationMetadataId": "554db79f-7c53-40a0-a002-13ca6d270d45"
                             },
                             "type": "OpenApiConnection",
                             "inputs": {
@@ -953,7 +1043,7 @@
                         "Condition_sign_up_microsoft": {
                             "actions": {},
                             "runAfter": {
-                                "Set_variable_userId": [
+                                "Condition_Already_user": [
                                     "Succeeded"
                                 ]
                             },
@@ -963,6 +1053,9 @@
                                     "sign_up_microsoft"
                                 ]
                             },
+                            "metadata": {
+                                "operationMetadataId": "f6f850ea-597e-44e1-9bbc-1d77f4c1f979"
+                            },
                             "type": "If"
                         },
                         "Apply_to_each_GroupsList": {
@@ -970,6 +1063,9 @@
                             "actions": {
                                 "HTTP_Add_to_Cycle1": {
                                     "runAfter": {},
+                                    "metadata": {
+                                        "operationMetadataId": "7f349d21-63a1-478e-ad83-47b190d18874"
+                                    },
                                     "type": "Http",
                                     "inputs": {
                                         "method": "POST",
@@ -998,6 +1094,9 @@
                                             "TimedOut"
                                         ]
                                     },
+                                    "metadata": {
+                                        "operationMetadataId": "5af510cb-ba03-4864-bafd-725f3c0954b9"
+                                    },
                                     "type": "Scope"
                                 }
                             },
@@ -1006,6 +1105,9 @@
                                     "Succeeded"
                                 ]
                             },
+                            "metadata": {
+                                "operationMetadataId": "8d23d370-dbb8-461b-bab2-6cfdd0280bee"
+                            },
                             "type": "Foreach"
                         },
                         "Get_items_GroupsList": {
@@ -1013,6 +1115,9 @@
                                 "Condition_sign_up_microsoft": [
                                     "Succeeded"
                                 ]
+                            },
+                            "metadata": {
+                                "operationMetadataId": "af2f5e3f-86a2-4533-a19a-6ba235afdc61"
                             },
                             "type": "OpenApiConnection",
                             "inputs": {
@@ -1029,6 +1134,137 @@
                                 },
                                 "authentication": "@parameters('$authentication')"
                             }
+                        },
+                        "HTTP_Already_user": {
+                            "runAfter": {
+                                "Set_variable_redirectUrl_2": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "metadata": {
+                                "operationMetadataId": "acdec576-d2c2-4adc-830e-07e89a1fb9a8"
+                            },
+                            "type": "Http",
+                            "inputs": {
+                                "method": "GET",
+                                "uri": "https://graph.microsoft.com/v1.0/users/?$filter=mail eq '@{variables('email')}'",
+                                "headers": {
+                                    "Content-type": "application/json"
+                                },
+                                "authentication": {
+                                    "type": "ActiveDirectoryOAuth",
+                                    "tenant": "@parameters('envpar_config__TenantDomain')",
+                                    "audience": "https://graph.microsoft.com",
+                                    "clientId": "@parameters('envpar_config__GraphAppId')",
+                                    "secret": "@parameters('envpar_config__GraphAppSecret')"
+                                }
+                            }
+                        },
+                        "Condition_Already_user": {
+                            "actions": {
+                                "HTTP_Add_invitation": {
+                                    "runAfter": {},
+                                    "metadata": {
+                                        "operationMetadataId": "ced9ff3e-78ed-47ae-825f-46d7e8b7c5fd"
+                                    },
+                                    "type": "Http",
+                                    "inputs": {
+                                        "method": "POST",
+                                        "uri": "https://graph.microsoft.com/v1.0/invitations",
+                                        "headers": {
+                                            "Content-type": "application/json"
+                                        },
+                                        "body": {
+                                            "invitedUserEmailAddress": "@{variables('email')}",
+                                            "sendInvitationMessage": false,
+                                            "invitedUserType": "Member",
+                                            "inviteRedirectUrl": "@{variables('redirectUrl')}"
+                                        },
+                                        "authentication": {
+                                            "type": "ActiveDirectoryOAuth",
+                                            "tenant": "@parameters('envpar_config__TenantDomain')",
+                                            "audience": "https://graph.microsoft.com",
+                                            "clientId": "@parameters('envpar_config__GraphAppId')",
+                                            "secret": "@parameters('envpar_config__GraphAppSecret')"
+                                        }
+                                    }
+                                },
+                                "Set_variable_userId": {
+                                    "runAfter": {
+                                        "HTTP_Add_invitation": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "metadata": {
+                                        "operationMetadataId": "86adc7d6-b31d-4f17-981a-269b0b693b20"
+                                    },
+                                    "type": "SetVariable",
+                                    "inputs": {
+                                        "name": "userId",
+                                        "value": "@{body('Http_Add_invitation')?['invitedUser']?['id']}"
+                                    }
+                                },
+                                "Set_variable_responseBody": {
+                                    "runAfter": {
+                                        "Set_variable_userId": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "metadata": {
+                                        "operationMetadataId": "8631dc82-1ade-41fd-a898-a959fbf076da"
+                                    },
+                                    "type": "SetVariable",
+                                    "inputs": {
+                                        "name": "responseBody",
+                                        "value": "<html><head>\n<meta http-equiv=\"Refresh\" content=\"70; URL=@{variables('redirectUrl')}\">\n    <title>WorkSchool 365</title>\n    <meta charset=\"utf-8\">\n    <meta http-equiv=\"Content-type\" content=\"text/html; charset=utf-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n    <style type=\"text/css\">\n    body {\n        background-color: #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system, system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n    }\n    div {\n        width: 600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color: #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n        text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n    </style>    \n</head>\n<body>\n<div>\n    <h1>Wait 60 seconds to be automatically redirected to your signed-in personalized page... </h1>\n    <p><a href=\"@{variables('redirectUrl')}\">Click here to be redirected manually ( after 60 seconds 😊 ) </a> </p>\n</div>\n</body></html>"
+                                    }
+                                }
+                            },
+                            "runAfter": {
+                                "HTTP_Already_user": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "else": {
+                                "actions": {
+                                    "Set_variable_userId_existing": {
+                                        "runAfter": {},
+                                        "metadata": {
+                                            "operationMetadataId": "74c85a46-f9ab-4b88-a78d-815f98ad6d87"
+                                        },
+                                        "type": "SetVariable",
+                                        "inputs": {
+                                            "name": "userId",
+                                            "value": "@{body('HTTP_Already_user')?['value']?[0]?['id']}"
+                                        }
+                                    },
+                                    "Set_variable_responseBody_existing": {
+                                        "runAfter": {
+                                            "Set_variable_userId_existing": [
+                                                "Succeeded"
+                                            ]
+                                        },
+                                        "metadata": {
+                                            "operationMetadataId": "3ce99bfa-8676-4dd6-8bc4-636d386b6505"
+                                        },
+                                        "type": "SetVariable",
+                                        "inputs": {
+                                            "name": "responseBody",
+                                            "value": "<html><head>\n<meta http-equiv=\"Refresh\" content=\"0; URL=@{variables('redirectUrl')}\">\n    <title>WorkSchool 365</title>\n    <meta charset=\"utf-8\">\n    <meta http-equiv=\"Content-type\" content=\"text/html; charset=utf-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"> \n</head>\n<body>\n<div>\n    <h1>You are being automatically redirected to your signed-in personalized page... </h1>\n    <p><a href=\"@{variables('redirectUrl')}\">Click here to be redirected manually </a> </p>\n</div>\n</body></html>"
+                                        }
+                                    }
+                                }
+                            },
+                            "expression": {
+                                "equals": [
+                                    "@length(body('HTTP_Already_user')?['value'])",
+                                    "@0"
+                                ]
+                            },
+                            "metadata": {
+                                "operationMetadataId": "a6d7ae00-68da-471e-9277-066635002872"
+                            },
+                            "type": "If"
                         }
                     },
                     "runAfter": {
@@ -1042,6 +1278,9 @@
                                 "actions": {
                                     "Set_variable_userId_2": {
                                         "runAfter": {},
+                                        "metadata": {
+                                            "operationMetadataId": "3dd080d8-b2b8-4ff8-a560-a709e248861a"
+                                        },
                                         "type": "SetVariable",
                                         "inputs": {
                                             "name": "userId",
@@ -1053,6 +1292,9 @@
                                             "Set_variable_userId_2": [
                                                 "Succeeded"
                                             ]
+                                        },
+                                        "metadata": {
+                                            "operationMetadataId": "ac0e500e-029d-495e-b3b6-4fb9cfca3b11"
                                         },
                                         "type": "Http",
                                         "inputs": {
@@ -1079,6 +1321,9 @@
                                                 "TimedOut"
                                             ]
                                         },
+                                        "metadata": {
+                                            "operationMetadataId": "a18bf584-92a8-46d0-a5a8-8460d2f9b311"
+                                        },
                                         "type": "Scope"
                                     },
                                     "Parse_JSON_identities": {
@@ -1086,6 +1331,9 @@
                                             "Scope_4": [
                                                 "Skipped"
                                             ]
+                                        },
+                                        "metadata": {
+                                            "operationMetadataId": "b3a1de73-263c-4413-9b2e-0e10d0ff1925"
                                         },
                                         "type": "ParseJson",
                                         "inputs": {
@@ -1133,6 +1381,9 @@
                                                         "Succeeded"
                                                     ]
                                                 },
+                                                "metadata": {
+                                                    "operationMetadataId": "90849a1a-c1fe-47ac-993d-3bf8b6df44c5"
+                                                },
                                                 "type": "OpenApiConnection",
                                                 "inputs": {
                                                     "host": {
@@ -1154,6 +1405,9 @@
                                                 "actions": {
                                                     "HTTP_Add_to_Cycle1GroupName_2": {
                                                         "runAfter": {},
+                                                        "metadata": {
+                                                            "operationMetadataId": "cd2e5551-c549-454f-9354-4cab54db833c"
+                                                        },
                                                         "type": "Http",
                                                         "inputs": {
                                                             "method": "POST",
@@ -1179,6 +1433,9 @@
                                                                 "TimedOut"
                                                             ]
                                                         },
+                                                        "metadata": {
+                                                            "operationMetadataId": "0d5df4df-35d4-4437-acea-3ab6079ec60b"
+                                                        },
                                                         "type": "Scope"
                                                     }
                                                 },
@@ -1187,6 +1444,9 @@
                                                         "Succeeded"
                                                     ]
                                                 },
+                                                "metadata": {
+                                                    "operationMetadataId": "c086514a-9ffc-4dd6-903b-2c3053cbbc92"
+                                                },
                                                 "type": "Foreach"
                                             },
                                             "Create_item_LogsList_3": {
@@ -1194,6 +1454,9 @@
                                                     "Apply_to_each_GroupsList_2": [
                                                         "Succeeded"
                                                     ]
+                                                },
+                                                "metadata": {
+                                                    "operationMetadataId": "da1c92ae-25c8-46bd-8a30-49a9b1d168be"
                                                 },
                                                 "type": "OpenApiConnection",
                                                 "inputs": {
@@ -1221,6 +1484,9 @@
                                                             "Set_variable_redirectUrl_3": [
                                                                 "Succeeded"
                                                             ]
+                                                        },
+                                                        "metadata": {
+                                                            "operationMetadataId": "20838121-652e-44e0-9f91-b417947f4857"
                                                         },
                                                         "type": "Http",
                                                         "inputs": {
@@ -1250,6 +1516,9 @@
                                                                 "Succeeded"
                                                             ]
                                                         },
+                                                        "metadata": {
+                                                            "operationMetadataId": "4bab7b3d-6120-4d90-a1ad-2ed39761873f"
+                                                        },
                                                         "type": "Http",
                                                         "inputs": {
                                                             "method": "DELETE",
@@ -1269,6 +1538,9 @@
                                                                 "Succeeded"
                                                             ]
                                                         },
+                                                        "metadata": {
+                                                            "operationMetadataId": "e41cb850-3224-4c3c-87e4-98f6db190be8"
+                                                        },
                                                         "type": "SetVariable",
                                                         "inputs": {
                                                             "name": "userId",
@@ -1277,6 +1549,9 @@
                                                     },
                                                     "HTTP_RevokeSignInSessions": {
                                                         "runAfter": {},
+                                                        "metadata": {
+                                                            "operationMetadataId": "4d0f456c-5957-47d2-886b-f21f5d4061de"
+                                                        },
                                                         "type": "Http",
                                                         "inputs": {
                                                             "method": "POST",
@@ -1296,6 +1571,9 @@
                                                                 "Succeeded"
                                                             ]
                                                         },
+                                                        "metadata": {
+                                                            "operationMetadataId": "d28cff00-2621-4d4d-bfa0-61c88f256687"
+                                                        },
                                                         "type": "SetVariable",
                                                         "inputs": {
                                                             "name": "responseBody",
@@ -1308,6 +1586,9 @@
                                                                 "Succeeded"
                                                             ]
                                                         },
+                                                        "metadata": {
+                                                            "operationMetadataId": "c5b9a748-6ddf-4cf8-88bb-6dc80a51a1af"
+                                                        },
                                                         "type": "SetVariable",
                                                         "inputs": {
                                                             "name": "redirectUrl",
@@ -1319,6 +1600,9 @@
                                                             "HTTP_Reinvite_send_message": [
                                                                 "Succeeded"
                                                             ]
+                                                        },
+                                                        "metadata": {
+                                                            "operationMetadataId": "487065f2-5024-43d9-bad1-c7f431ef35cf"
                                                         },
                                                         "type": "ParseJson",
                                                         "inputs": {
@@ -1347,6 +1631,9 @@
                                                                 "Succeeded"
                                                             ]
                                                         },
+                                                        "metadata": {
+                                                            "operationMetadataId": "ee54cfb4-d560-4724-85e8-fc0d2c400d85"
+                                                        },
                                                         "type": "SetVariable",
                                                         "inputs": {
                                                             "name": "redirectUrl",
@@ -1358,6 +1645,9 @@
                                                             "HTTP_Delete_facebook_user": [
                                                                 "Succeeded"
                                                             ]
+                                                        },
+                                                        "metadata": {
+                                                            "operationMetadataId": "bbe09281-7e48-4106-90b8-340715954f6b"
                                                         },
                                                         "type": "Wait",
                                                         "inputs": {
@@ -1377,6 +1667,9 @@
                                                     "actions": {
                                                         "Set_variable_responseBody_not_facebook_delay30sec": {
                                                             "runAfter": {},
+                                                            "metadata": {
+                                                                "operationMetadataId": "08cdfa70-66cc-4290-817f-d113a8bd40c8"
+                                                            },
                                                             "type": "SetVariable",
                                                             "inputs": {
                                                                 "name": "responseBody",
@@ -1401,10 +1694,16 @@
                                                         }
                                                     ]
                                                 },
+                                                "metadata": {
+                                                    "operationMetadataId": "27b05537-eaa0-49cd-8d9c-62c7c2d55738"
+                                                },
                                                 "type": "If"
                                             },
                                             "Select_identities": {
                                                 "runAfter": {},
+                                                "metadata": {
+                                                    "operationMetadataId": "92db9e81-694a-4997-9a9b-1207dfbc906c"
+                                                },
                                                 "type": "Select",
                                                 "inputs": {
                                                     "from": "@body('Parse_JSON_identities')?['identities']",
@@ -1435,6 +1734,9 @@
                                                 }
                                             ]
                                         },
+                                        "metadata": {
+                                            "operationMetadataId": "cf21379e-2f34-4bac-b30b-bc77fda6edcd"
+                                        },
                                         "type": "If"
                                     }
                                 },
@@ -1461,14 +1763,20 @@
                                         }
                                     ]
                                 },
+                                "metadata": {
+                                    "operationMetadataId": "5208f879-ec28-411b-ab6d-0a2ad2ea6cbc"
+                                },
                                 "type": "If"
                             },
                             "Set_variable_redirectUrl": {
                                 "runAfter": {},
+                                "metadata": {
+                                    "operationMetadataId": "055d7ce5-dbc8-4f1c-93f1-5cd7a615c1cb"
+                                },
                                 "type": "SetVariable",
                                 "inputs": {
                                     "name": "redirectUrl",
-                                    "value": "@concat('https://', parameters('envpar_config__TenantName'), '.sharepoint.com/sites/', parameters('envpar_config__CyclesRename'), '1')"
+                                    "value": "@{concat('https://', parameters('envpar_config__TenantName'), '.sharepoint.com/sites/', if(equals(string(split(variables('state'), '/')?[2]), ''), concat(parameters('envpar_config__CyclesRename'), '1'), string(split(variables('state'), '/')?[2])))}"
                                 }
                             },
                             "Set_variable_responseBody_2": {
@@ -1476,6 +1784,9 @@
                                     "Set_variable_redirectUrl": [
                                         "Succeeded"
                                     ]
+                                },
+                                "metadata": {
+                                    "operationMetadataId": "396ef104-2319-4c0c-8d54-fb767f768f09"
                                 },
                                 "type": "SetVariable",
                                 "inputs": {
@@ -1500,6 +1811,87 @@
                                 ]
                             }
                         ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "e18ae5c4-4250-415f-a1b7-955715a20ee1"
+                    },
+                    "type": "If"
+                },
+                "Condition_sign_teams": {
+                    "actions": {
+                        "Set_variable_responseBody_teams": {
+                            "runAfter": {
+                                "Set_variable_redirectUrl_teams": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "metadata": {
+                                "operationMetadataId": "35f23a1a-9539-47a4-a73a-02577f814247"
+                            },
+                            "type": "SetVariable",
+                            "inputs": {
+                                "name": "responseBody",
+                                "value": "<html><head>\n<meta http-equiv=\"Refresh\" content=\"0; URL=@{variables('redirectUrl')}\">\n    <title>WorkSchool 365</title>\n</head>\n<body>\n<div>\n    <h1>Wait 1 second to be automatically redirected to your signed-in personalized page... </h1>\n    <p><a href=\"@{variables('redirectUrl')}\">Click here to be redirected manually ( after 1 seconds 😊 ) </a> </p>\n</div>\n</body></html>"
+                            }
+                        },
+                        "Set_variable_redirectUrl_teams": {
+                            "runAfter": {},
+                            "metadata": {
+                                "operationMetadataId": "a1132765-0b33-4b2b-a094-d46d53c4cd5d"
+                            },
+                            "type": "SetVariable",
+                            "inputs": {
+                                "name": "redirectUrl",
+                                "value": "https://admin.workschool365.com/connect-end.html"
+                            }
+                        },
+                        "Response_teams": {
+                            "runAfter": {
+                                "Set_variable_responseBody_teams": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "metadata": {
+                                "operationMetadataId": "2dba7c54-fd03-46c2-bb7d-84d3e16d96a1"
+                            },
+                            "type": "Response",
+                            "kind": "Http",
+                            "inputs": {
+                                "statusCode": 200,
+                                "headers": {
+                                    "content-type": "text/html"
+                                },
+                                "body": "@variables('responseBody')"
+                            }
+                        },
+                        "Terminate_teams": {
+                            "runAfter": {
+                                "Response_teams": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "metadata": {
+                                "operationMetadataId": "4614ccf4-a8eb-4084-b4ea-b160c63bc7df"
+                            },
+                            "type": "Terminate",
+                            "inputs": {
+                                "runStatus": "Succeeded"
+                            }
+                        }
+                    },
+                    "runAfter": {
+                        "Initialize_variable_responseBody": [
+                            "Succeeded"
+                        ]
+                    },
+                    "expression": {
+                        "equals": [
+                            "@split(variables('state'), '/')?[1]",
+                            "sign_teams"
+                        ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "5645075a-e4f7-4e57-b854-92125032a208"
                     },
                     "type": "If"
                 }

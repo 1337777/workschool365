@@ -27,12 +27,16 @@
                     "defaultValue": "",
                     "type": "String",
                     "metadata": {
-                        "schemaName": "new_envpar_config__TenantName"
+                        "schemaName": "new_envpar_config__TenantName",
+                        "description": "Required. Org Name orgname (this is the prefix of the auto assigned domain orgname.onmicrosoft.com)"
                     }
                 }
             },
             "triggers": {
                 "manual": {
+                    "metadata": {
+                        "operationMetadataId": "f835a2fd-47d5-4307-9c63-087bcdd2f686"
+                    },
                     "type": "Request",
                     "kind": "Http",
                     "inputs": {
@@ -57,6 +61,9 @@
                             "Succeeded"
                         ]
                     },
+                    "metadata": {
+                        "operationMetadataId": "aabc2f2d-2012-4faf-a107-2575d2788772"
+                    },
                     "type": "OpenApiConnection",
                     "inputs": {
                         "host": {
@@ -78,6 +85,9 @@
                             "Succeeded"
                         ]
                     },
+                    "metadata": {
+                        "operationMetadataId": "571d1c3f-f0ba-43a5-aed5-4fc2fab7700e"
+                    },
                     "type": "Select",
                     "inputs": {
                         "from": "@xpath(xml(outputs('Get_file_content_using_path')?['body']), '//*[local-name()=\"sdtPr\"]/*[local-name()=\"tag\"][@*[local-name()=\"val\" and .=\"ws365_quiz\"]]/parent::*[local-name()=\"sdtPr\"]/parent::*[local-name()=\"sdt\"]')",
@@ -92,6 +102,9 @@
                         "tmpFolder": [
                             "Succeeded"
                         ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "47287c86-26b1-4aab-a473-4bd74793d05b"
                     },
                     "type": "OpenApiConnection",
                     "inputs": {
@@ -111,6 +124,9 @@
                 },
                 "tmpFolder": {
                     "runAfter": {},
+                    "metadata": {
+                        "operationMetadataId": "873acd1c-232e-4adb-9c8a-5568b4e26770"
+                    },
                     "type": "Compose",
                     "inputs": "@concat('/FormServerTemplates/tmp_', string(ticks(utcNow())), '_', guid())"
                 },
@@ -119,6 +135,9 @@
                         "Select": [
                             "Succeeded"
                         ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "4a49a2f6-3030-4330-a623-1e508809a9e3"
                     },
                     "type": "Select",
                     "inputs": {
@@ -137,6 +156,9 @@
                         "Get_folder_metadata_using_path": [
                             "Succeeded"
                         ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "36c9f0e9-a00b-4c86-83f6-a736ea4d1a65"
                     },
                     "type": "OpenApiConnection",
                     "inputs": {
@@ -159,6 +181,9 @@
                             "Succeeded"
                         ]
                     },
+                    "metadata": {
+                        "operationMetadataId": "e99c4755-b36c-4905-874e-f9acfadbe583"
+                    },
                     "type": "OpenApiConnection",
                     "inputs": {
                         "host": {
@@ -180,6 +205,9 @@
                             "Succeeded"
                         ]
                     },
+                    "metadata": {
+                        "operationMetadataId": "f6d3ce63-5a2a-4852-96b9-fe493966f286"
+                    },
                     "type": "Compose",
                     "inputs": "@json(xpath(xml(outputs('Get_file_content_using_path_rels')?['body']), '//*[name()=\"Relationship\" and @Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument\"]/self::*[1]')?[0])"
                 },
@@ -188,6 +216,9 @@
                         "Response": [
                             "Succeeded"
                         ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "2d27fb6f-bbbe-4e4a-b140-6a7ac4916e02"
                     },
                     "type": "OpenApiConnection",
                     "inputs": {
@@ -208,6 +239,9 @@
                         "Select_3": [
                             "Succeeded"
                         ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "bf875443-6379-4001-b7d8-066920858167"
                     },
                     "type": "Response",
                     "kind": "Http",

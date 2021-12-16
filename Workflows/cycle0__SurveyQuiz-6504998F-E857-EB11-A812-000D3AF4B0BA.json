@@ -18,6 +18,15 @@
                 "api": {
                     "name": "shared_wordonlinebusiness"
                 }
+            },
+            "shared_sharepointonline_1": {
+                "runtimeSource": "embedded",
+                "connection": {
+                    "connectionReferenceLogicalName": "new_sharedsharepointonline_9ad14"
+                },
+                "api": {
+                    "name": "shared_sharepointonline"
+                }
             }
         },
         "definition": {
@@ -43,6 +52,9 @@
             },
             "triggers": {
                 "manual": {
+                    "metadata": {
+                        "operationMetadataId": "37726d3a-2478-4d75-8af7-c8b3f5e29d90"
+                    },
                     "type": "Request",
                     "kind": "Http",
                     "inputs": {
@@ -73,6 +85,9 @@
                             "Succeeded"
                         ]
                     },
+                    "metadata": {
+                        "operationMetadataId": "a8bc2121-a4fe-48e8-94cc-9a4fc7f3160b"
+                    },
                     "type": "Workflow",
                     "inputs": {
                         "host": {
@@ -86,9 +101,12 @@
                 },
                 "Initialize_variable_autograde": {
                     "runAfter": {
-                        "Get_file_properties_ResponseFile": [
+                        "Initialize_variable_siteAddress": [
                             "Succeeded"
                         ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "9de55714-63f2-4170-a33b-56b60302241b"
                     },
                     "type": "InitializeVariable",
                     "inputs": {
@@ -107,6 +125,9 @@
                             "Succeeded"
                         ]
                     },
+                    "metadata": {
+                        "operationMetadataId": "b13ad1ef-f949-404e-a5cb-db4b51ad60bb"
+                    },
                     "type": "InitializeVariable",
                     "inputs": {
                         "variables": [
@@ -124,6 +145,9 @@
                             "Succeeded"
                         ]
                     },
+                    "metadata": {
+                        "operationMetadataId": "3f199a47-ba3a-4ca5-989b-7e2499de3178"
+                    },
                     "type": "InitializeVariable",
                     "inputs": {
                         "variables": [
@@ -140,6 +164,9 @@
                             "Succeeded"
                         ]
                     },
+                    "metadata": {
+                        "operationMetadataId": "372e4e15-e07c-49bb-9a4a-88ecfca207df"
+                    },
                     "type": "InitializeVariable",
                     "inputs": {
                         "variables": [
@@ -153,14 +180,15 @@
                 },
                 "Stop_sharing_an_item_or_a_file_ResponseFIle": {
                     "runAfter": {
-                        "ResponseTables": [
+                        "Run_a_Child_Flow_Response": [
                             "Succeeded"
                         ]
                     },
                     "metadata": {
                         "flowSystemMetadata": {
                             "swaggerOperationId": "UnshareItem"
-                        }
+                        },
+                        "operationMetadataId": "05342977-9e9d-4127-8266-b5e9db1f8ae9"
                     },
                     "type": "ApiConnection",
                     "inputs": {
@@ -170,7 +198,7 @@
                             }
                         },
                         "method": "post",
-                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('SurveyQuiz'))}/items/@{encodeURIComponent(encodeURIComponent(body('Get_file_properties_ResponseFile')?['ID']))}/unshare",
+                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(encodeURIComponent(body('Get_file_properties_ResponseFile')?['ID']))}/unshare",
                         "authentication": "@parameters('$authentication')"
                     }
                 },
@@ -183,7 +211,8 @@
                     "metadata": {
                         "flowSystemMetadata": {
                             "swaggerOperationId": "GrantAccess"
-                        }
+                        },
+                        "operationMetadataId": "08c0223c-f0a9-452f-b1a1-04971ff8289f"
                     },
                     "type": "ApiConnection",
                     "inputs": {
@@ -198,7 +227,7 @@
                             "roleValue": "role:1073741827",
                             "sendEmail": false
                         },
-                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('SurveyQuiz'))}/items/@{encodeURIComponent(encodeURIComponent(body('Get_file_properties_ResponseFile')?['ID']))}/grantaccess",
+                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(encodeURIComponent(body('Get_file_properties_ResponseFile')?['ID']))}/grantaccess",
                         "authentication": "@parameters('$authentication')"
                     }
                 },
@@ -208,11 +237,14 @@
                             "Succeeded"
                         ]
                     },
+                    "metadata": {
+                        "operationMetadataId": "6400e714-0480-4df1-9219-093f6dabe911"
+                    },
                     "type": "Compose",
                     "inputs": {
-                        "ReviewerWeight": "@body('Get_file_properties_SolutionFile')?['ReviewerWeight']",
-                        "ReviewerComments": "@{body('Get_file_properties_SolutionFile')?['ReviewerComments']}",
-                        "Deadline": "@{body('Get_file_properties_SolutionFile')?['Deadline']}"
+                        "ReviewerWeight": 0,
+                        "ReviewerComments": "",
+                        "Deadline": "@{body('Get_file_properties_SolutionFile')?['DueDate']}"
                     }
                 },
                 "Parse_JSON_SolutionTables_Total": {
@@ -220,6 +252,9 @@
                         "Get_a_row_SolutionTables_Total": [
                             "Succeeded"
                         ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "1068a72c-afa1-447f-9b52-4719eab3daa0"
                     },
                     "type": "ParseJson",
                     "inputs": {
@@ -238,43 +273,17 @@
                         }
                     }
                 },
-                "Get_file_metadata_using_path_SolutionFIle": {
-                    "runAfter": {
-                        "Grant_access_to_an_item_or_a_folder_ResponseFIle": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "flowSystemMetadata": {
-                            "swaggerOperationId": "GetFileMetadataByPath"
-                        }
-                    },
-                    "type": "ApiConnection",
-                    "inputs": {
-                        "host": {
-                            "connection": {
-                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
-                            }
-                        },
-                        "method": "get",
-                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/GetFileByPath",
-                        "queries": {
-                            "path": "@{concat(body('Get_file_properties_ResponseFile')?['{Path}'], body('Get_file_properties_ResponseFile')?['{ContentType}']?['Name'], '__SOLUTION.docx')}",
-                            "queryParametersSingleEncoded": true
-                        },
-                        "authentication": "@parameters('$authentication')"
-                    }
-                },
                 "Get_file_properties_SolutionFile": {
                     "runAfter": {
-                        "Get_file_metadata_using_path_SolutionFIle": [
+                        "Condition_Has_No_SolutionFIle": [
                             "Succeeded"
                         ]
                     },
                     "metadata": {
                         "flowSystemMetadata": {
                             "swaggerOperationId": "GetFileItem"
-                        }
+                        },
+                        "operationMetadataId": "8e563134-42ca-4209-bf73-5ba9b46e9dd3"
                     },
                     "type": "ApiConnection",
                     "inputs": {
@@ -284,7 +293,7 @@
                             }
                         },
                         "method": "get",
-                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('SurveyQuiz'))}/items/@{encodeURIComponent(body('Get_file_metadata_using_path_SolutionFIle')?['ItemId'])}/getfileitem",
+                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(body('Get_file_properties_PromptFile')?['Predecessors']?['Id'])}/getfileitem",
                         "authentication": "@parameters('$authentication')"
                     }
                 },
@@ -293,6 +302,9 @@
                         "Initialize_variable_reviewerGrade": [
                             "Succeeded"
                         ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "49548167-e1f5-4793-a620-302b7e8b3ef9"
                     },
                     "type": "InitializeVariable",
                     "inputs": {
@@ -311,6 +323,9 @@
                             "Succeeded"
                         ]
                     },
+                    "metadata": {
+                        "operationMetadataId": "bcd7ec13-6edb-4f6b-89b0-79e8468cb553"
+                    },
                     "type": "InitializeVariable",
                     "inputs": {
                         "variables": [
@@ -328,6 +343,9 @@
                             "Succeeded"
                         ]
                     },
+                    "metadata": {
+                        "operationMetadataId": "34a9b4d7-548d-4358-9905-f1a51e6e011d"
+                    },
                     "type": "InitializeVariable",
                     "inputs": {
                         "variables": [
@@ -344,6 +362,9 @@
                             "Succeeded"
                         ]
                     },
+                    "metadata": {
+                        "operationMetadataId": "642db1d3-6fde-4d43-8ca9-4a19e98bb351"
+                    },
                     "type": "Wait",
                     "inputs": {
                         "until": {
@@ -357,10 +378,13 @@
                             "Succeeded"
                         ]
                     },
+                    "metadata": {
+                        "operationMetadataId": "fb13f06a-71d5-4ea4-acf0-62122f8f4f70"
+                    },
                     "type": "SetVariable",
                     "inputs": {
                         "name": "deadline",
-                        "value": "@body('Parse_JSON_SolutionTables_Total')?['Deadline']"
+                        "value": "@{body('Parse_JSON_SolutionTables_Total')?['DueDate']}"
                     }
                 },
                 "Set_variable_deadline_2": {
@@ -368,6 +392,9 @@
                         "Delay_until": [
                             "Failed"
                         ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "c53359c1-1f68-48b8-9c2e-1c44165de41f"
                     },
                     "type": "SetVariable",
                     "inputs": {
@@ -377,9 +404,12 @@
                 },
                 "Compose_InvalidDeadline": {
                     "runAfter": {
-                        "Get_files_Transcripts": [
+                        "Filter_array_Get_files_Transcripts": [
                             "Succeeded"
                         ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "456d4b69-9f94-4fd4-b54a-55ac0ef1361a"
                     },
                     "type": "Compose",
                     "inputs": "@greater( ticks(body('Get_file_properties_ResponseFile')?['Modified']) , ticks(addMinutes(variables('deadline'), 5)) )"
@@ -390,14 +420,20 @@
                             "Succeeded"
                         ]
                     },
+                    "metadata": {
+                        "operationMetadataId": "aca17352-3409-4e1c-a979-964be8fab1a0"
+                    },
                     "type": "Compose",
-                    "inputs": "@greater(length( body('Get_files_Transcripts')?['value'] ), 0)"
+                    "inputs": "@greater(length( body('Filter_array_Get_files_Transcripts') ), 0)"
                 },
                 "Initialize_variable_fileItemId": {
                     "runAfter": {
                         "Initialize_variable_siteName": [
                             "Succeeded"
                         ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "89b7b75f-5c55-4388-9f8e-87d6f4093706"
                     },
                     "type": "InitializeVariable",
                     "inputs": {
@@ -410,31 +446,11 @@
                         ]
                     }
                 },
-                "Get_file_properties_ResponseFile": {
-                    "runAfter": {
-                        "Initialize_variable_siteAddress": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "flowSystemMetadata": {
-                            "swaggerOperationId": "GetFileItem"
-                        }
-                    },
-                    "type": "ApiConnection",
-                    "inputs": {
-                        "host": {
-                            "connection": {
-                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
-                            }
-                        },
-                        "method": "get",
-                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('SurveyQuiz'))}/items/@{encodeURIComponent(variables('fileItemId'))}/getfileitem",
-                        "authentication": "@parameters('$authentication')"
-                    }
-                },
                 "Initialize_variable_siteName": {
                     "runAfter": {},
+                    "metadata": {
+                        "operationMetadataId": "e6d62f28-4d1b-4a52-92ce-85e5e3369961"
+                    },
                     "type": "InitializeVariable",
                     "inputs": {
                         "variables": [
@@ -451,6 +467,9 @@
                         "Initialize_variable_fileItemId": [
                             "Succeeded"
                         ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "7389ecf9-cc45-4054-8c7a-eadd4f2c9744"
                     },
                     "type": "InitializeVariable",
                     "inputs": {
@@ -469,6 +488,9 @@
                             "Succeeded"
                         ]
                     },
+                    "metadata": {
+                        "operationMetadataId": "8eef3618-0eef-439c-a6fb-e029f5d26943"
+                    },
                     "type": "InitializeVariable",
                     "inputs": {
                         "variables": [
@@ -486,6 +508,9 @@
                             "Succeeded"
                         ]
                     },
+                    "metadata": {
+                        "operationMetadataId": "1c05c74c-037a-41c9-a4cc-c88e1bec015d"
+                    },
                     "type": "Response",
                     "kind": "Http",
                     "inputs": {
@@ -501,7 +526,8 @@
                     "metadata": {
                         "flowSystemMetadata": {
                             "swaggerOperationId": "GetFileMetadata"
-                        }
+                        },
+                        "operationMetadataId": "7c5b74b7-f72c-4901-8632-c36932ca22a0"
                     },
                     "type": "ApiConnection",
                     "inputs": {
@@ -524,7 +550,8 @@
                     "metadata": {
                         "flowSystemMetadata": {
                             "swaggerOperationId": "SetApprovalStatus"
-                        }
+                        },
+                        "operationMetadataId": "198adc99-d447-49a8-8dda-fa28aa3217f9"
                     },
                     "type": "ApiConnection",
                     "inputs": {
@@ -534,7 +561,7 @@
                             }
                         },
                         "method": "post",
-                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('SurveyQuiz'))}/items/@{encodeURIComponent(encodeURIComponent(body('Get_file_properties_ResponseFile')?['ID']))}/setapprovalstatus",
+                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(encodeURIComponent(body('Get_file_properties_ResponseFile')?['ID']))}/setapprovalstatus",
                         "queries": {
                             "approvalAction": "Approve",
                             "comments": "",
@@ -550,14 +577,15 @@
                 },
                 "Update_file_properties_Transcripts_3": {
                     "runAfter": {
-                        "Update_file_properties_Transcripts_2": [
+                        "Update_file_Transcript": [
                             "Succeeded"
                         ]
                     },
                     "metadata": {
                         "flowSystemMetadata": {
                             "swaggerOperationId": "PatchFileItem"
-                        }
+                        },
+                        "operationMetadataId": "8a1d8be0-c40d-4773-924d-2a24ca65a6f7"
                     },
                     "type": "ApiConnection",
                     "inputs": {
@@ -568,23 +596,24 @@
                         },
                         "method": "patch",
                         "body": {
-                            "AutoWeight": "@variables('AutoWeight')",
-                            "AutoGrade": "@variables('autograde')",
-                            "TimeViewed": "@{body('Get_file_properties_ResponseFile')?['Created']}",
-                            "InvalidDeadline": "@outputs('Compose_InvalidDeadline')",
-                            "InvalidRepeat": "@outputs('Compose_InvalidRepeat')",
-                            "Title": "@{body('Get_file_properties_ResponseFile')?['Author']?['Email']}",
-                            "{ContentType}": {
-                                "Id": "@{body('Get_file_properties_ResponseFile')?['{ContentType}']?['Id']}"
+                            "Title": "@{toLower(body('Get_file_properties_ResponseFile')?['Author']?['Email'])}",
+                            "QuizGrade": "@if(equals( float(variables('AutoWeight')), 0), 0 , div( float(variables('autograde')),  variables('AutoWeight')) )",
+                            "QuizDeadlineInvalid": "@outputs('Compose_InvalidDeadline')",
+                            "QuizRepeatInvalid": "@outputs('Compose_InvalidRepeat')",
+                            "Predecessors": {
+                                "@@odata.type": "#Microsoft.Azure.Connectors.SharePoint.SPListExpandedReference",
+                                "Id": "@body('Get_file_properties_PromptFile')?['ID']",
+                                "Value": "@{body('Get_file_properties_PromptFile')?['ID']}"
                             },
-                            "QuizzedRef": {
+                            "AssignmentRef": {
                                 "@@odata.type": "#Microsoft.Azure.Connectors.SharePoint.SPListExpandedReference",
                                 "Id": "@body('Get_file_properties_ResponseFile')?['ID']",
                                 "Value": "@{body('Get_file_properties_ResponseFile')?['ID']}"
                             },
-                            "Deadline": "@{body('Get_file_properties_SolutionFile')?['Deadline']}"
+                            "SharingLink": "@{body('Create_sharing_link_for_a_file_Transcript')?['link']?['webUrl']}",
+                            "DueDate": "@{body('Get_file_properties_SolutionFile')?['DueDate']}"
                         },
-                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('SurveyQuiz'))}/items/@{encodeURIComponent(body('Create_file_Transcripts_0')?['ItemId'])}/patchfileitem",
+                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(body('Create_file_Transcripts_0')?['ItemId'])}/patchfileitem",
                         "authentication": "@parameters('$authentication')"
                     }
                 },
@@ -600,7 +629,8 @@
                     "metadata": {
                         "flowSystemMetadata": {
                             "swaggerOperationId": "GetFileItems"
-                        }
+                        },
+                        "operationMetadataId": "18d8f313-d250-4111-85ce-19f8cee63d70"
                     },
                     "type": "ApiConnection",
                     "inputs": {
@@ -610,10 +640,10 @@
                             }
                         },
                         "method": "get",
-                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('SurveyQuiz'))}/getfileitems",
+                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/getfileitems",
                         "queries": {
                             "folderPath": "TranscriptsCopy",
-                            "$filter": "Title eq '@{body('Get_file_properties_ResponseFile')?['Author']?['Email']}' and QuizName eq '@{body('Get_file_properties_ResponseFile')?['{ContentType}']?['Name']}'",
+                            "$filter": "(Predecessors eq '@{body('Get_file_properties_PromptFile')?['ID']}') and ((AssignmentRef eq '@{body('Get_file_properties_ResponseFile')?['ID']}') or (Title eq '@{toLower(body('Get_file_properties_ResponseFile')?['Author']?['Email'])}'))",
                             "$top": 1
                         },
                         "authentication": "@parameters('$authentication')"
@@ -628,7 +658,8 @@
                     "metadata": {
                         "flowSystemMetadata": {
                             "swaggerOperationId": "CreateFile"
-                        }
+                        },
+                        "operationMetadataId": "7f9e0321-a010-4b0e-a1e9-132185327f44"
                     },
                     "type": "ApiConnection",
                     "inputs": {
@@ -641,8 +672,8 @@
                         "body": "{\"$content-type\":\"application/vnd.openxmlformats-officedocument.wordprocessingml.document\",\"$content\":\"\"}",
                         "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/files",
                         "queries": {
-                            "folderPath": "SurveyQuiz/Transcripts",
-                            "name": "@{body('Get_file_properties_ResponseFile')?['Author']?['Email']} @{body('Get_file_properties_ResponseFile')?['{ContentType}']?['Name']} @{body('Get_file_properties_ResponseFile')?['ID']}.docx",
+                            "folderPath": "EventReview/Transcripts",
+                            "name": "@{toLower(body('Get_file_properties_ResponseFile')?['Author']?['Email'])} - Transcripts - Prompt @{body('Get_file_properties_PromptFile')?['ID']} - Review @{body('Get_file_properties_ResponseFile')?['ID']} - @{body('Get_file_properties_ResponseFile')?['Modified']} - @{body('Get_file_properties_PromptFile')?['{Name}']}.docx",
                             "queryParametersSingleEncoded": true
                         },
                         "authentication": "@parameters('$authentication')"
@@ -662,7 +693,8 @@
                     "metadata": {
                         "flowSystemMetadata": {
                             "swaggerOperationId": "CopyFileAsync"
-                        }
+                        },
+                        "operationMetadataId": "97faeda0-8c3a-4833-8f74-87fbfb45a579"
                     },
                     "type": "ApiConnection",
                     "inputs": {
@@ -675,7 +707,7 @@
                         "body": {
                             "sourceFileId": "@body('Create_file_Transcripts_0')?['Id']",
                             "destinationDataset": "@variables('siteAddress')",
-                            "destinationFolderPath": "SurveyQuiz/TranscriptsCopy",
+                            "destinationFolderPath": "EventReview/TranscriptsCopy",
                             "nameConflictBehavior": 2
                         },
                         "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/copyFileAsync",
@@ -693,7 +725,8 @@
                             "metadata": {
                                 "flowSystemMetadata": {
                                     "swaggerOperationId": "GetFileMetadataByPath"
-                                }
+                                },
+                                "operationMetadataId": "6be2b02b-7728-41ff-8cef-4da4718293ec"
                             },
                             "type": "ApiConnection",
                             "inputs": {
@@ -720,7 +753,8 @@
                             "metadata": {
                                 "flowSystemMetadata": {
                                     "swaggerOperationId": "SetApprovalStatus"
-                                }
+                                },
+                                "operationMetadataId": "cf7b6080-abc7-4627-a023-ee2bb2e6e660"
                             },
                             "type": "ApiConnection",
                             "inputs": {
@@ -730,7 +764,7 @@
                                     }
                                 },
                                 "method": "post",
-                                "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('SurveyQuiz'))}/items/@{encodeURIComponent(encodeURIComponent(body('Create_file_Transcripts_0')?['ItemId']))}/setapprovalstatus",
+                                "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(encodeURIComponent(body('Create_file_Transcripts_0')?['ItemId']))}/setapprovalstatus",
                                 "queries": {
                                     "approvalAction": "Submit",
                                     "comments": "",
@@ -748,7 +782,8 @@
                             "metadata": {
                                 "flowSystemMetadata": {
                                     "swaggerOperationId": "SetApprovalStatus"
-                                }
+                                },
+                                "operationMetadataId": "5f0a5f11-c4f2-4a86-969f-f92233760e17"
                             },
                             "type": "ApiConnection",
                             "inputs": {
@@ -758,7 +793,7 @@
                                     }
                                 },
                                 "method": "post",
-                                "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('SurveyQuiz'))}/items/@{encodeURIComponent(encodeURIComponent(body('Create_file_Transcripts_0')?['ItemId']))}/setapprovalstatus",
+                                "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(encodeURIComponent(body('Create_file_Transcripts_0')?['ItemId']))}/setapprovalstatus",
                                 "queries": {
                                     "approvalAction": "Approve",
                                     "comments": "",
@@ -773,6 +808,9 @@
                                     "Succeeded"
                                 ]
                             },
+                            "metadata": {
+                                "operationMetadataId": "9637e3d7-6880-4bd1-a1f5-52f06141b76e"
+                            },
                             "type": "Compose",
                             "inputs": 5
                         },
@@ -781,6 +819,9 @@
                                 "Compose_SiteGroupIdMembers": [
                                     "Succeeded"
                                 ]
+                            },
+                            "metadata": {
+                                "operationMetadataId": "e818122d-3875-4834-9b28-5ffb5698574f"
                             },
                             "type": "Compose",
                             "inputs": "ItemsViewAddUpdateNoDelete"
@@ -794,7 +835,8 @@
                             "metadata": {
                                 "flowSystemMetadata": {
                                     "swaggerOperationId": "HttpRequest"
-                                }
+                                },
+                                "operationMetadataId": "ec663183-7c2a-48b7-b3f3-ef823a527950"
                             },
                             "type": "ApiConnection",
                             "inputs": {
@@ -821,7 +863,8 @@
                             "metadata": {
                                 "flowSystemMetadata": {
                                     "swaggerOperationId": "HttpRequest"
-                                }
+                                },
+                                "operationMetadataId": "5d457277-5c13-405c-9834-fe3888245da5"
                             },
                             "type": "ApiConnection",
                             "inputs": {
@@ -833,7 +876,7 @@
                                 "method": "post",
                                 "body": {
                                     "method": "POST",
-                                    "uri": "_api/web/lists/getByTitle('SurveyQuiz')/items/getbyid(@{body('Create_file_Transcripts_0')?['ItemId']})/roleassignments/removeroleassignment(principalid=@{outputs('Compose_SiteGroupIdMembers')}, roledefid=@{body('Get_ItemsViewAddUpdateNoDelete')?['d']?['Id']})",
+                                    "uri": "_api/web/lists/getByTitle('EventReview')/items/getbyid(@{body('Create_file_Transcripts_0')?['ItemId']})/roleassignments/removeroleassignment(principalid=@{outputs('Compose_SiteGroupIdMembers')}, roledefid=@{body('Get_ItemsViewAddUpdateNoDelete')?['d']?['Id']})",
                                     "headers": {
                                         "accept": "application/json;odata=verbose",
                                         "content-type": "application/json;odata=verbose"
@@ -846,6 +889,9 @@
                         "Scope_3": {
                             "actions": {},
                             "runAfter": {},
+                            "metadata": {
+                                "operationMetadataId": "f07c6429-b03e-45f8-9bd9-e8e1cb3f5975"
+                            },
                             "type": "Scope"
                         },
                         "Send_an_HTTP_request_to_SharePoint_4": {
@@ -857,7 +903,8 @@
                             "metadata": {
                                 "flowSystemMetadata": {
                                     "swaggerOperationId": "HttpRequest"
-                                }
+                                },
+                                "operationMetadataId": "d324dfd8-5ac8-47a0-a502-f819f4b5d170"
                             },
                             "type": "ApiConnection",
                             "inputs": {
@@ -869,7 +916,7 @@
                                 "method": "post",
                                 "body": {
                                     "method": "POST",
-                                    "uri": "_api/web/lists/getByTitle('SurveyQuiz')/items/getbyid(@{body('Create_file_Transcripts_0')?['ItemId']})/breakroleinheritance(copyRoleAssignments=true, clearSubscopes=true)",
+                                    "uri": "_api/web/lists/getByTitle('EventReview')/items/getbyid(@{body('Create_file_Transcripts_0')?['ItemId']})/breakroleinheritance(copyRoleAssignments=true, clearSubscopes=true)",
                                     "headers": {
                                         "accept": "application/json;odata=verbose",
                                         "content-type": "application/json;odata=verbose"
@@ -888,7 +935,8 @@
                             "metadata": {
                                 "flowSystemMetadata": {
                                     "swaggerOperationId": "GrantAccess"
-                                }
+                                },
+                                "operationMetadataId": "2522d1c1-e287-4ac5-8401-514793839348"
                             },
                             "type": "ApiConnection",
                             "inputs": {
@@ -903,7 +951,7 @@
                                     "roleValue": "role:1073741826",
                                     "sendEmail": false
                                 },
-                                "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('SurveyQuiz'))}/items/@{encodeURIComponent(encodeURIComponent(body('Get_file_metadata_using_path_SolutionFIle')?['ItemId']))}/grantaccess",
+                                "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(encodeURIComponent(body('Get_file_properties_SolutionFile')?['ID']))}/grantaccess",
                                 "authentication": "@parameters('$authentication')"
                             }
                         },
@@ -917,7 +965,8 @@
                             "metadata": {
                                 "flowSystemMetadata": {
                                     "swaggerOperationId": "GrantAccess"
-                                }
+                                },
+                                "operationMetadataId": "5234b423-4b8d-4691-9edb-cb09f497f203"
                             },
                             "type": "ApiConnection",
                             "inputs": {
@@ -932,7 +981,7 @@
                                     "roleValue": "role:1073741826",
                                     "sendEmail": false
                                 },
-                                "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('SurveyQuiz'))}/items/@{encodeURIComponent(encodeURIComponent(body('Create_file_Transcripts_0')?['ItemId']))}/grantaccess",
+                                "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(encodeURIComponent(body('Create_file_Transcripts_0')?['ItemId']))}/grantaccess",
                                 "authentication": "@parameters('$authentication')"
                             }
                         }
@@ -942,6 +991,9 @@
                             "Succeeded"
                         ]
                     },
+                    "metadata": {
+                        "operationMetadataId": "58137cc8-f348-4deb-b644-59c8117a067a"
+                    },
                     "type": "Scope"
                 },
                 "Parse_JSON_SolutionRows": {
@@ -949,6 +1001,9 @@
                         "Create_file_Transcripts_0": [
                             "Succeeded"
                         ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "d67c6d69-4a30-48fe-92c5-c582a49ac634"
                     },
                     "type": "ParseJson",
                     "inputs": {
@@ -978,23 +1033,6 @@
                         }
                     }
                 },
-                "ResponseTables": {
-                    "runAfter": {
-                        "Initialize_variable_transcriptalt": [
-                            "Succeeded"
-                        ]
-                    },
-                    "type": "Workflow",
-                    "inputs": {
-                        "host": {
-                            "workflowReferenceName": "d6535eaf-cd58-eb11-a812-000d3af4b0ba"
-                        },
-                        "body": {
-                            "siteName": "@variables('siteName')",
-                            "fileIdentifier": "@body('Get_file_properties_ResponseFile')?['{FullPath}']"
-                        }
-                    }
-                },
                 "Apply_to_each_SolutionRows": {
                     "foreach": "@body('Parse_JSON_SolutionRows')",
                     "actions": {
@@ -1002,6 +1040,9 @@
                             "actions": {
                                 "Increment_variable_autograde": {
                                     "runAfter": {},
+                                    "metadata": {
+                                        "operationMetadataId": "9f78ba44-4fa3-4839-8305-6bc3f022d661"
+                                    },
                                     "type": "IncrementVariable",
                                     "inputs": {
                                         "name": "autograde",
@@ -1013,6 +1054,9 @@
                                         "Increment_variable_autograde": [
                                             "Succeeded"
                                         ]
+                                    },
+                                    "metadata": {
+                                        "operationMetadataId": "c438b603-9a34-4e82-95c7-47c42ae40dc9"
                                     },
                                     "type": "SetVariable",
                                     "inputs": {
@@ -1030,6 +1074,9 @@
                                 "actions": {
                                     "Set_variable_correct_No": {
                                         "runAfter": {},
+                                        "metadata": {
+                                            "operationMetadataId": "acadcad8-ae95-4706-aeb2-a4123f9dda49"
+                                        },
                                         "type": "SetVariable",
                                         "inputs": {
                                             "name": "correct",
@@ -1054,6 +1101,9 @@
                                     }
                                 ]
                             },
+                            "metadata": {
+                                "operationMetadataId": "bcc6b1df-870b-4244-be62-5ccd72ac9c20"
+                            },
                             "type": "If"
                         },
                         "Parse_JSON_ResponseRow": {
@@ -1061,6 +1111,9 @@
                                 "Get_a_row_ResponseRow_Question": [
                                     "Succeeded"
                                 ]
+                            },
+                            "metadata": {
+                                "operationMetadataId": "23761835-2cd4-4878-aace-e0aaea0e9314"
                             },
                             "type": "ParseJson",
                             "inputs": {
@@ -1093,117 +1146,20 @@
                                     "Succeeded"
                                 ]
                             },
+                            "metadata": {
+                                "operationMetadataId": "47fe3c65-d934-473f-bd47-0bdc9b5865e7"
+                            },
                             "type": "IncrementVariable",
                             "inputs": {
                                 "name": "AutoWeight",
                                 "value": "@int(items('Apply_to_each_SolutionRows')['Weight'])"
                             }
                         },
-                        "Send_an_HTTP_request_to_SharePoint_Get_Field": {
-                            "runAfter": {
-                                "Condition_Correct": [
-                                    "Succeeded"
-                                ]
-                            },
-                            "metadata": {
-                                "flowSystemMetadata": {
-                                    "swaggerOperationId": "HttpRequest"
-                                }
-                            },
-                            "type": "ApiConnection",
-                            "inputs": {
-                                "host": {
-                                    "connection": {
-                                        "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
-                                    }
-                                },
-                                "method": "post",
-                                "body": {
-                                    "method": "GET",
-                                    "uri": "_api/web/lists/getbytitle('SurveyQuiz')/fields/getbytitle('@{items('Apply_to_each_SolutionRows')['Quest']}_workschool365')",
-                                    "headers": {
-                                        "accept": "application/json;odata=verbose",
-                                        "content-type": "application/json;odata=verbose"
-                                    }
-                                },
-                                "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/httprequest",
-                                "authentication": "@parameters('$authentication')"
-                            }
-                        },
-                        "Scope": {
-                            "actions": {
-                                "Send_an_HTTP_request_to_SharePoint": {
-                                    "runAfter": {},
-                                    "metadata": {
-                                        "flowSystemMetadata": {
-                                            "swaggerOperationId": "HttpRequest"
-                                        }
-                                    },
-                                    "type": "ApiConnection",
-                                    "inputs": {
-                                        "host": {
-                                            "connection": {
-                                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
-                                            }
-                                        },
-                                        "method": "post",
-                                        "body": {
-                                            "method": "POST",
-                                            "uri": "_api/web/lists/getbytitle('SurveyQuiz')/fields",
-                                            "headers": {
-                                                "accept": "application/json;odata=verbose",
-                                                "content-type": "application/json;odata=verbose"
-                                            },
-                                            "body": "{\n    \"__metadata\" : {\n        \"type\": \"SP.Field\"\n    },\n    \"FieldTypeKind\" : 2,\n    \"Title\" : \"@{items('Apply_to_each_SolutionRows')['Quest']}_workschool365\",\n    \"StaticName\" : \"@{items('Apply_to_each_SolutionRows')['Quest']}_workschool365\",\n    \"InternalName\" : \"@{items('Apply_to_each_SolutionRows')['Quest']}_workschool365\",\n    \"EntityPropertyName\" : \"@{items('Apply_to_each_SolutionRows')['Quest']}_workschool365\"\n}"
-                                        },
-                                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/httprequest",
-                                        "authentication": "@parameters('$authentication')"
-                                    }
-                                },
-                                "Send_an_HTTP_request_to_SharePoint_2": {
-                                    "runAfter": {
-                                        "Send_an_HTTP_request_to_SharePoint": [
-                                            "Succeeded"
-                                        ]
-                                    },
-                                    "metadata": {
-                                        "flowSystemMetadata": {
-                                            "swaggerOperationId": "HttpRequest"
-                                        }
-                                    },
-                                    "type": "ApiConnection",
-                                    "inputs": {
-                                        "host": {
-                                            "connection": {
-                                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
-                                            }
-                                        },
-                                        "method": "post",
-                                        "body": {
-                                            "method": "POST",
-                                            "uri": "_api/web/lists/getbytitle('SurveyQuiz')/views/getbytitle('TranscriptsView')/viewfields/addviewfield",
-                                            "headers": {
-                                                "accept": "application/json;odata=verbose",
-                                                "content-type": "application/json;odata=verbose"
-                                            },
-                                            "body": "{\"strField\":\"@{items('Apply_to_each_SolutionRows')['Quest']}_workschool365\"}"
-                                        },
-                                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/httprequest",
-                                        "authentication": "@parameters('$authentication')"
-                                    }
-                                }
-                            },
-                            "runAfter": {
-                                "Send_an_HTTP_request_to_SharePoint_Get_Field": [
-                                    "Failed",
-                                    "Skipped",
-                                    "TimedOut"
-                                ]
-                            },
-                            "type": "Scope"
-                        },
                         "Get_a_row_ResponseRow_Question": {
                             "runAfter": {},
+                            "metadata": {
+                                "operationMetadataId": "851d9467-3bef-4e14-8fa9-695188d00d1f"
+                            },
                             "type": "Query",
                             "inputs": {
                                 "from": "@body('ResponseTables')",
@@ -1216,6 +1172,9 @@
                                     "Succeeded"
                                 ]
                             },
+                            "metadata": {
+                                "operationMetadataId": "1e05fb8d-200f-4ced-a94f-767f91ada1f4"
+                            },
                             "type": "AppendToStringVariable",
                             "inputs": {
                                 "name": "transcript",
@@ -1224,10 +1183,12 @@
                         },
                         "Compose_transcriptalt": {
                             "runAfter": {
-                                "Scope": [
-                                    "Skipped",
+                                "Condition_Correct": [
                                     "Succeeded"
                                 ]
+                            },
+                            "metadata": {
+                                "operationMetadataId": "9456aeaf-5dc6-4604-978d-67c9b6fb2074"
                             },
                             "type": "Compose",
                             "inputs": "@setProperty(variables('transcriptalt'), concat(items('Apply_to_each_SolutionRows')['Quest'], '_workschool365'), variables('correct'))"
@@ -1237,6 +1198,9 @@
                                 "Compose_transcriptalt": [
                                     "Succeeded"
                                 ]
+                            },
+                            "metadata": {
+                                "operationMetadataId": "73f85c5b-85de-4599-bdf8-08195acec238"
                             },
                             "type": "SetVariable",
                             "inputs": {
@@ -1250,6 +1214,9 @@
                             "Succeeded"
                         ]
                     },
+                    "metadata": {
+                        "operationMetadataId": "5fdca90d-aa73-4e8d-958e-0ef28725b80f"
+                    },
                     "type": "Foreach"
                 },
                 "Populate_a_Microsoft_Word_template_Transcript": {
@@ -1261,7 +1228,8 @@
                     "metadata": {
                         "flowSystemMetadata": {
                             "swaggerOperationId": "CreateFileItem"
-                        }
+                        },
+                        "operationMetadataId": "bc81e88f-5d1b-4fe3-bf8b-52202635024c"
                     },
                     "type": "ApiConnection",
                     "inputs": {
@@ -1273,16 +1241,16 @@
                         "method": "post",
                         "body": {
                             "447753704": "@{body('Create_sharing_link_for_a_file_Transcript')?['link']?['webUrl']}",
-                            "925700911": "    @{variables('autograde')} /@{variables('AutoWeight')}; Deadlined: @{outputs('Compose_InvalidDeadline')}; Repeated: @{outputs('Compose_InvalidRepeat')};\n    @{variables('transcript')}",
+                            "925700911": "    @{variables('autograde')} /@{variables('AutoWeight')}; Late?: @{outputs('Compose_InvalidDeadline')}; Repeated?: @{outputs('Compose_InvalidRepeat')};\n    @{variables('transcript')}",
                             "1292476084": "@{body('Get_file_properties_SolutionFile')?['Editor']?['Email']}",
                             "-321128028": "@{body('Get_file_properties_ResponseFile')?['Author']?['Email']}",
-                            "-1222045053": "@{body('Get_file_properties_ResponseFile')?['{ContentType}']?['Name']}"
+                            "-1222045053": "@{body('Get_file_properties_PromptFile')?['{FilenameWithExtension}']}"
                         },
                         "path": "/api/templates/getFile",
                         "queries": {
                             "source": "@variables('siteAddress')",
                             "drive": "@variables('driveId')",
-                            "file": "@{'/General/transcripts_template.docx'}"
+                            "file": "/Template_Transcripts_GroupOwnerOnly.docx"
                         },
                         "authentication": "@parameters('$authentication')"
                     }
@@ -1296,7 +1264,8 @@
                     "metadata": {
                         "flowSystemMetadata": {
                             "swaggerOperationId": "CreateSharingLink"
-                        }
+                        },
+                        "operationMetadataId": "e9448ac6-6371-4ec9-b9ba-1c73c293bdf2"
                     },
                     "type": "ApiConnection",
                     "inputs": {
@@ -1310,7 +1279,7 @@
                             "type": "view",
                             "scope": "anonymous"
                         },
-                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/codeless/_api/v2.0/sites/root/lists/@{encodeURIComponent(encodeURIComponent('SurveyQuiz'))}/items/@{encodeURIComponent(encodeURIComponent(body('Create_file_Transcripts_0')?['ItemId']))}/driveItem/createLink",
+                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/codeless/_api/v2.0/sites/root/lists/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(encodeURIComponent(body('Create_file_Transcripts_0')?['ItemId']))}/driveItem/createLink",
                         "authentication": "@parameters('$authentication')"
                     }
                 },
@@ -1319,6 +1288,9 @@
                         "Initialize_variable_deadline": [
                             "Succeeded"
                         ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "3cf7b0ee-f348-4d37-b9a6-be7a97f70a87"
                     },
                     "type": "InitializeVariable",
                     "inputs": {
@@ -1339,7 +1311,8 @@
                     "metadata": {
                         "flowSystemMetadata": {
                             "swaggerOperationId": "UpdateFile"
-                        }
+                        },
+                        "operationMetadataId": "98f720fd-e116-4ef9-bcdf-b29db5ff4afa"
                     },
                     "type": "ApiConnection",
                     "inputs": {
@@ -1360,6 +1333,9 @@
                             "Succeeded"
                         ]
                     },
+                    "metadata": {
+                        "operationMetadataId": "7c7aaaf8-7e19-4b36-a43f-3e3c0cd6beab"
+                    },
                     "type": "InitializeVariable",
                     "inputs": {
                         "variables": [
@@ -1376,6 +1352,9 @@
                             "Succeeded"
                         ]
                     },
+                    "metadata": {
+                        "operationMetadataId": "d068a3a4-c68e-4502-b469-9ea19bd2abee"
+                    },
                     "type": "InitializeVariable",
                     "inputs": {
                         "variables": [
@@ -1387,15 +1366,177 @@
                         ]
                     }
                 },
-                "Update_file_properties_Transcripts_2": {
+                "Filter_array_Get_files_Transcripts": {
                     "runAfter": {
-                        "Update_file_Transcript": [
+                        "Get_files_Transcripts": [
+                            "Succeeded"
+                        ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "4f249b70-a6fe-451f-a0c4-d778b76b2194"
+                    },
+                    "type": "Query",
+                    "inputs": {
+                        "from": "@body('Get_files_Transcripts')?['value']",
+                        "where": "@equals(item()?['Predecessors']?['Id'], body('Get_file_properties_ResponseFile')?['Predecessors']?['Id'])"
+                    }
+                },
+                "Condition_Has_No_SolutionFIle": {
+                    "actions": {
+                        "Response_2": {
+                            "runAfter": {},
+                            "metadata": {
+                                "operationMetadataId": "5ba737d7-9ea3-4734-ad29-1ee866fa8237"
+                            },
+                            "type": "Response",
+                            "kind": "Http",
+                            "inputs": {
+                                "statusCode": 200
+                            }
+                        },
+                        "Terminate": {
+                            "runAfter": {
+                                "Response_2": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "metadata": {
+                                "operationMetadataId": "4e009ba4-2f16-4efb-8177-70a66b61ec76"
+                            },
+                            "type": "Terminate",
+                            "inputs": {
+                                "runStatus": "Succeeded"
+                            }
+                        }
+                    },
+                    "runAfter": {
+                        "Grant_access_ResponseFile_to_Prompter": [
+                            "Succeeded"
+                        ]
+                    },
+                    "expression": {
+                        "equals": [
+                            "@string(body('Get_file_properties_PromptFile')?['Predecessors']?['Value'])",
+                            "@''"
+                        ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "5575a460-d009-4d4c-852c-8e2be0251207"
+                    },
+                    "type": "If"
+                },
+                "Get_file_properties_PromptFile": {
+                    "runAfter": {
+                        "ResponseTables": [
                             "Succeeded"
                         ]
                     },
                     "metadata": {
                         "flowSystemMetadata": {
-                            "swaggerOperationId": "PatchFileItem"
+                            "swaggerOperationId": "GetFileItem"
+                        },
+                        "operationMetadataId": "8e563134-42ca-4209-bf73-5ba9b46e9dd3"
+                    },
+                    "type": "ApiConnection",
+                    "inputs": {
+                        "host": {
+                            "connection": {
+                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                            }
+                        },
+                        "method": "get",
+                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(body('Get_file_properties_ResponseFile')?['Predecessors']?['Id'])}/getfileitem",
+                        "authentication": "@parameters('$authentication')"
+                    }
+                },
+                "Get_file_properties_ResponseFile": {
+                    "runAfter": {
+                        "Condition_Trigger_Conditions": [
+                            "Succeeded"
+                        ]
+                    },
+                    "metadata": {
+                        "flowSystemMetadata": {
+                            "swaggerOperationId": "GetFileItem"
+                        },
+                        "operationMetadataId": "ced8de2e-fb59-4964-9939-77536e2f60dc"
+                    },
+                    "type": "ApiConnection",
+                    "inputs": {
+                        "host": {
+                            "connection": {
+                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                            }
+                        },
+                        "method": "get",
+                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(variables('fileItemId'))}/getfileitem",
+                        "authentication": "@parameters('$authentication')"
+                    }
+                },
+                "Condition_Is_SolutionFile": {
+                    "actions": {
+                        "Response_3": {
+                            "runAfter": {},
+                            "metadata": {
+                                "operationMetadataId": "5ba737d7-9ea3-4734-ad29-1ee866fa8237"
+                            },
+                            "type": "Response",
+                            "kind": "Http",
+                            "inputs": {
+                                "statusCode": 200
+                            }
+                        },
+                        "Terminate_2": {
+                            "runAfter": {
+                                "Response_3": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "metadata": {
+                                "operationMetadataId": "4e009ba4-2f16-4efb-8177-70a66b61ec76"
+                            },
+                            "type": "Terminate",
+                            "inputs": {
+                                "runStatus": "Succeeded"
+                            }
+                        }
+                    },
+                    "runAfter": {
+                        "Condition": [
+                            "Succeeded"
+                        ]
+                    },
+                    "expression": {
+                        "or": [
+                            {
+                                "equals": [
+                                    "@toLower(body('Get_file_properties_ResponseFile')?['RoleType']?['Value'])",
+                                    "@toLower('PrompterSolution')"
+                                ]
+                            },
+                            {
+                                "equals": [
+                                    "@body('Get_file_properties_ResponseFile')?['Predecessors']?['Value']",
+                                    "@''"
+                                ]
+                            }
+                        ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "5575a460-d009-4d4c-852c-8e2be0251207"
+                    },
+                    "type": "If"
+                },
+                "Grant_access_ResponseFile_to_Prompter": {
+                    "runAfter": {
+                        "Get_file_properties_PromptFile": [
+                            "Succeeded"
+                        ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "bf8720dc-f6c8-49e0-96f1-8e3c9275c97c",
+                        "flowSystemMetadata": {
+                            "swaggerOperationId": "GrantAccess"
                         }
                     },
                     "type": "ApiConnection",
@@ -1405,11 +1546,429 @@
                                 "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
                             }
                         },
-                        "method": "patch",
-                        "body": "@variables('transcriptalt')",
-                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('SurveyQuiz'))}/items/@{encodeURIComponent(body('Create_file_Transcripts_0')?['ItemId'])}/patchfileitem",
+                        "method": "post",
+                        "body": {
+                            "recipients": "@{body('Get_file_properties_PromptFile')?['Author']?['Email']}",
+                            "roleValue": "role:1073741826",
+                            "sendEmail": false
+                        },
+                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(encodeURIComponent(body('Get_file_properties_ResponseFile')?['ID']))}/grantaccess",
                         "authentication": "@parameters('$authentication')"
                     }
+                },
+                "Get_file_properties": {
+                    "runAfter": {
+                        "Initialize_variable_transcriptalt": [
+                            "Succeeded"
+                        ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "023202f6-5160-4c4d-ad15-adf9e5b17e56",
+                        "flowSystemMetadata": {
+                            "swaggerOperationId": "GetFileItem"
+                        }
+                    },
+                    "type": "ApiConnection",
+                    "inputs": {
+                        "host": {
+                            "connection": {
+                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                            }
+                        },
+                        "method": "get",
+                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(variables('fileItemId'))}/getfileitem",
+                        "authentication": "@parameters('$authentication')"
+                    }
+                },
+                "Condition_Trigger_Conditions": {
+                    "actions": {
+                        "Response_Trigger_Conditions": {
+                            "runAfter": {},
+                            "metadata": {
+                                "operationMetadataId": "d0bb3657-1665-4d0f-9cce-5edfbb37f439"
+                            },
+                            "type": "Response",
+                            "kind": "Http",
+                            "inputs": {
+                                "statusCode": 200
+                            }
+                        },
+                        "Terminate_Trigger_Conditions": {
+                            "runAfter": {
+                                "Response_Trigger_Conditions": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "metadata": {
+                                "operationMetadataId": "990c70cb-05f3-4ab0-8929-fea26fb4d8ad"
+                            },
+                            "type": "Terminate",
+                            "inputs": {
+                                "runStatus": "Cancelled"
+                            }
+                        }
+                    },
+                    "runAfter": {
+                        "Get_file_properties": [
+                            "Succeeded"
+                        ]
+                    },
+                    "else": {
+                        "actions": {
+                            "Condition_RoleType": {
+                                "actions": {},
+                                "runAfter": {},
+                                "else": {
+                                    "actions": {
+                                        "Get_file_metadata_RoleType": {
+                                            "runAfter": {},
+                                            "metadata": {
+                                                "operationMetadataId": "e1f64a2d-0a9f-4637-b7de-b442c22944a0"
+                                            },
+                                            "type": "OpenApiConnection",
+                                            "inputs": {
+                                                "host": {
+                                                    "connectionName": "shared_sharepointonline_1",
+                                                    "operationId": "GetFileMetadata",
+                                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                },
+                                                "parameters": {
+                                                    "dataset": "@variables('siteAddress')",
+                                                    "id": "@body('Get_file_properties')?['{Identifier}']"
+                                                },
+                                                "authentication": "@parameters('$authentication')"
+                                            }
+                                        },
+                                        "Set_content_approval_status_RoleType": {
+                                            "runAfter": {
+                                                "Get_file_metadata_RoleType": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "metadata": {
+                                                "operationMetadataId": "17c59ad6-37a5-4f38-904c-8573c31a2df7"
+                                            },
+                                            "type": "OpenApiConnection",
+                                            "inputs": {
+                                                "host": {
+                                                    "connectionName": "shared_sharepointonline_1",
+                                                    "operationId": "SetApprovalStatus",
+                                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                },
+                                                "parameters": {
+                                                    "dataset": "@variables('siteAddress')",
+                                                    "table": "EventReview",
+                                                    "id": "@body('Get_file_properties')?['ID']",
+                                                    "approvalAction": "Reject",
+                                                    "comments": "",
+                                                    "entityTag": "@outputs('Get_file_metadata_RoleType')?['body/ETag']"
+                                                },
+                                                "authentication": "@parameters('$authentication')",
+                                                "retryPolicy": {
+                                                    "type": "none"
+                                                }
+                                            }
+                                        },
+                                        "Terminate_3": {
+                                            "runAfter": {
+                                                "Response_RoleType": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "metadata": {
+                                                "operationMetadataId": "71040fa9-6092-4cd4-ab22-4780be898583"
+                                            },
+                                            "type": "Terminate",
+                                            "inputs": {
+                                                "runStatus": "Cancelled"
+                                            }
+                                        },
+                                        "Response_RoleType": {
+                                            "runAfter": {
+                                                "Set_content_approval_status_RoleType": [
+                                                    "Succeeded",
+                                                    "Failed",
+                                                    "TimedOut"
+                                                ]
+                                            },
+                                            "metadata": {
+                                                "operationMetadataId": "179d0ad5-152d-45e6-95be-ceb21e84c85a"
+                                            },
+                                            "type": "Response",
+                                            "kind": "Http",
+                                            "inputs": {
+                                                "statusCode": 200
+                                            }
+                                        }
+                                    }
+                                },
+                                "expression": {
+                                    "and": [
+                                        {
+                                            "or": [
+                                                {
+                                                    "equals": [
+                                                        "@toLower(string(body('Get_file_properties')?['RoleType']?['Value']))",
+                                                        "@toLower('Reviewer')"
+                                                    ]
+                                                },
+                                                {
+                                                    "equals": [
+                                                        "@toLower(string(body('Get_file_properties')?['RoleType']?['Value']))",
+                                                        "@toLower('PrompterSolution')"
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "endsWith": [
+                                                "@body('Get_file_properties')?['{FullPath}']",
+                                                ".docx"
+                                            ]
+                                        }
+                                    ]
+                                },
+                                "metadata": {
+                                    "operationMetadataId": "85c1d5c7-0cb8-4bae-a26b-da110459f9fc"
+                                },
+                                "type": "If"
+                            }
+                        }
+                    },
+                    "expression": {
+                        "or": [
+                            {
+                                "startsWith": [
+                                    "@body('Get_file_properties')?['{Path}']",
+                                    "EventReview/Receipts/"
+                                ]
+                            },
+                            {
+                                "startsWith": [
+                                    "@body('Get_file_properties')?['{Path}']",
+                                    "EventReview/Transcripts/"
+                                ]
+                            },
+                            {
+                                "startsWith": [
+                                    "@body('Get_file_properties')?['{Path}']",
+                                    "EventReview/TranscriptsCopy/"
+                                ]
+                            },
+                            {
+                                "equals": [
+                                    "@body('Get_file_properties')?['{FullPath}']",
+                                    "EventReview/Public_Listing_Receipts.xlsx"
+                                ]
+                            },
+                            {
+                                "equals": [
+                                    "@body('Get_file_properties')?['{FullPath}']",
+                                    "EventReview/Template_Prompter_Reviewer_Copy_Me.docx"
+                                ]
+                            },
+                            {
+                                "equals": [
+                                    "@body('Get_file_properties')?['{FullPath}']",
+                                    "EventReview/Template_Prompter_Reviewer_Copy_Me.docx"
+                                ]
+                            },
+                            {
+                                "equals": [
+                                    "@body('Get_file_properties')?['{IsFolder}']",
+                                    "@true"
+                                ]
+                            },
+                            {
+                                "equals": [
+                                    "@toLower(string(body('Get_file_properties')?['RoleType']?['Value']))",
+                                    "@toLower('Prompter')"
+                                ]
+                            }
+                        ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "bdd420fe-8192-45c1-8404-e81d2fb5ea3b"
+                    },
+                    "type": "If"
+                },
+                "Run_a_Child_Flow_Response": {
+                    "runAfter": {
+                        "Get_file_properties_ResponseFile": [
+                            "Succeeded"
+                        ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "ffabe1a5-10f1-4013-9b64-532f64e56771"
+                    },
+                    "type": "Workflow",
+                    "inputs": {
+                        "host": {
+                            "workflowReferenceName": "d04f0d38-b776-eb11-a812-0022486d6717"
+                        },
+                        "body": {
+                            "siteName": "@variables('siteName')",
+                            "fileIdentifier": "@body('Get_file_properties_ResponseFile')?['{FullPath}']"
+                        }
+                    }
+                },
+                "ResponseTables": {
+                    "runAfter": {
+                        "Condition_Is_SolutionFile": [
+                            "Succeeded"
+                        ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "3e58e84d-08dc-4822-ae55-9ef6fffb149a"
+                    },
+                    "type": "Workflow",
+                    "inputs": {
+                        "host": {
+                            "workflowReferenceName": "d6535eaf-cd58-eb11-a812-000d3af4b0ba"
+                        },
+                        "body": {
+                            "siteName": "@variables('siteName')",
+                            "fileIdentifier": "@body('Get_file_properties_ResponseFile')?['{FullPath}']"
+                        }
+                    }
+                },
+                "Condition": {
+                    "actions": {},
+                    "runAfter": {
+                        "Grant_access_to_an_item_or_a_folder_ResponseFIle": [
+                            "Succeeded"
+                        ]
+                    },
+                    "else": {
+                        "actions": {
+                            "Scope_Title": {
+                                "actions": {
+                                    "Update_file_properties_Title": {
+                                        "runAfter": {},
+                                        "metadata": {
+                                            "operationMetadataId": "3a7eb4ce-6e32-451b-a446-d161a97eb35d",
+                                            "flowSystemMetadata": {
+                                                "swaggerOperationId": "PatchFileItem"
+                                            }
+                                        },
+                                        "type": "ApiConnection",
+                                        "inputs": {
+                                            "host": {
+                                                "connection": {
+                                                    "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                                                }
+                                            },
+                                            "method": "patch",
+                                            "body": {
+                                                "Title": "@{body('Get_file_properties_ResponseFile')?['RoleType']?['Value']} - @{body('Run_a_Child_Flow_Response')?['title']}",
+                                                "Short": "@{body('Run_a_Child_Flow_Response')?['short']}",
+                                                "StateDescription": "@{concat('\"' , add(1 , int(split(replace(body('Set_content_approval_Approve_ResponseFIle')?['ETag'], '\"' , ''), ',')?[1]) ) , '\"')}"
+                                            },
+                                            "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(body('Get_file_properties_ResponseFile')?['ID'])}/patchfileitem",
+                                            "authentication": "@parameters('$authentication')"
+                                        }
+                                    },
+                                    "Get_file_metadata_Title": {
+                                        "runAfter": {
+                                            "Update_file_properties_Title": [
+                                                "Succeeded"
+                                            ]
+                                        },
+                                        "metadata": {
+                                            "operationMetadataId": "449ec57c-c75f-4659-a6c7-70ed9564ee4f",
+                                            "flowSystemMetadata": {
+                                                "swaggerOperationId": "GetFileMetadata"
+                                            }
+                                        },
+                                        "type": "ApiConnection",
+                                        "inputs": {
+                                            "host": {
+                                                "connection": {
+                                                    "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                                                }
+                                            },
+                                            "method": "get",
+                                            "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/files/@{encodeURIComponent(body('Get_file_properties_ResponseFile')?['{Identifier}'])}",
+                                            "authentication": "@parameters('$authentication')"
+                                        }
+                                    },
+                                    "Set_content_approval_status_Title": {
+                                        "runAfter": {
+                                            "Get_file_metadata_Title": [
+                                                "Succeeded"
+                                            ]
+                                        },
+                                        "metadata": {
+                                            "operationMetadataId": "a39ec1b3-d06c-41b2-a589-fefcd1b8e1f3",
+                                            "flowSystemMetadata": {
+                                                "swaggerOperationId": "SetApprovalStatus"
+                                            }
+                                        },
+                                        "type": "ApiConnection",
+                                        "inputs": {
+                                            "host": {
+                                                "connection": {
+                                                    "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                                                }
+                                            },
+                                            "method": "post",
+                                            "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(encodeURIComponent(body('Get_file_properties_ResponseFile')?['ID']))}/setapprovalstatus",
+                                            "queries": {
+                                                "approvalAction": "Submit",
+                                                "comments": "",
+                                                "entityTag": "@{outputs('Get_file_metadata_Title')?['body/ETag']}"
+                                            },
+                                            "authentication": "@parameters('$authentication')"
+                                        }
+                                    },
+                                    "Set_content_approval_status_Title_2": {
+                                        "runAfter": {
+                                            "Set_content_approval_status_Title": [
+                                                "Succeeded"
+                                            ]
+                                        },
+                                        "metadata": {
+                                            "operationMetadataId": "a6a3c5d5-2c0d-448d-ae89-897cdc5ee4fe",
+                                            "flowSystemMetadata": {
+                                                "swaggerOperationId": "SetApprovalStatus"
+                                            }
+                                        },
+                                        "type": "ApiConnection",
+                                        "inputs": {
+                                            "host": {
+                                                "connection": {
+                                                    "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                                                }
+                                            },
+                                            "method": "post",
+                                            "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(encodeURIComponent(body('Get_file_properties_ResponseFile')?['ID']))}/setapprovalstatus",
+                                            "queries": {
+                                                "approvalAction": "Approve",
+                                                "comments": "",
+                                                "entityTag": "@{outputs('Set_content_approval_status_Title')?['body/ETag']}"
+                                            },
+                                            "authentication": "@parameters('$authentication')"
+                                        }
+                                    }
+                                },
+                                "runAfter": {},
+                                "metadata": {
+                                    "operationMetadataId": "f5c06c4d-271a-47cf-8a3c-257e0c311f47"
+                                },
+                                "type": "Scope"
+                            }
+                        }
+                    },
+                    "expression": {
+                        "equals": [
+                            "@true",
+                            "@true"
+                        ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "d12ae841-31ac-44bd-a40f-c8e618e0fa1b"
+                    },
+                    "type": "If"
                 }
             }
         }

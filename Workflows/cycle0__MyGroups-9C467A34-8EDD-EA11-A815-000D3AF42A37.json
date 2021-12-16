@@ -104,6 +104,9 @@
                         "frequency": "Minute"
                     },
                     "splitOn": "@triggerOutputs()?['body/value']",
+                    "metadata": {
+                        "operationMetadataId": "cf85233e-0abf-4a33-81bb-2cff77ca4ceb"
+                    },
                     "type": "OpenApiConnection",
                     "inputs": {
                         "host": {
@@ -122,6 +125,9 @@
             "actions": {
                 "Initialize_variable_varCyclesGroup": {
                     "runAfter": {},
+                    "metadata": {
+                        "operationMetadataId": "0b647c71-6ca2-4cdc-b94a-fdf9dddf7017"
+                    },
                     "type": "InitializeVariable",
                     "inputs": {
                         "variables": [
@@ -139,6 +145,9 @@
                             "Succeeded"
                         ]
                     },
+                    "metadata": {
+                        "operationMetadataId": "23fe4980-fe0f-4aa3-91d3-7f6490983f95"
+                    },
                     "type": "InitializeVariable",
                     "inputs": {
                         "variables": [
@@ -155,6 +164,9 @@
                         "Initialize_variable_varCounter": [
                             "Succeeded"
                         ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "3528286e-08f7-4c5f-a367-588b1a2dff1d"
                     },
                     "type": "OpenApiConnection",
                     "inputs": {
@@ -180,6 +192,9 @@
                                 "Scope_7": {
                                     "actions": {},
                                     "runAfter": {},
+                                    "metadata": {
+                                        "operationMetadataId": "7a23c263-ef6f-4451-91cd-aa43dbf4b3cb"
+                                    },
                                     "type": "Scope"
                                 },
                                 "Scope_Stripe": {
@@ -191,6 +206,9 @@
                                                 "actions": {
                                                     "Get_Flow_Stripe": {
                                                         "runAfter": {},
+                                                        "metadata": {
+                                                            "operationMetadataId": "d34d5370-736f-4a3e-b52d-91f53df97e39"
+                                                        },
                                                         "type": "OpenApiConnection",
                                                         "inputs": {
                                                             "host": {
@@ -211,6 +229,9 @@
                                                                 "Succeeded"
                                                             ]
                                                         },
+                                                        "metadata": {
+                                                            "operationMetadataId": "d5f74daa-8e9c-48bc-8c3e-dce342f61547"
+                                                        },
                                                         "type": "OpenApiConnection",
                                                         "inputs": {
                                                             "host": {
@@ -230,6 +251,9 @@
                                                                 "Succeeded"
                                                             ]
                                                         },
+                                                        "metadata": {
+                                                            "operationMetadataId": "5cd9d9d4-895a-4838-b659-e943c5ec60c1"
+                                                        },
                                                         "type": "Query",
                                                         "inputs": {
                                                             "from": "@outputs('List_My_Flows_Stripe')?['body/value']",
@@ -241,6 +265,9 @@
                                                         "actions": {
                                                             "Turn_Off_Flow_Stripe": {
                                                                 "runAfter": {},
+                                                                "metadata": {
+                                                                    "operationMetadataId": "24f319b2-f9d1-43f0-b537-4078d685fd94"
+                                                                },
                                                                 "type": "OpenApiConnection",
                                                                 "inputs": {
                                                                     "host": {
@@ -260,6 +287,9 @@
                                                                     "Turn_Off_Flow_Stripe": [
                                                                         "Succeeded"
                                                                     ]
+                                                                },
+                                                                "metadata": {
+                                                                    "operationMetadataId": "009c1824-a3a3-4108-b541-5ce1f71f4406"
                                                                 },
                                                                 "type": "OpenApiConnection",
                                                                 "inputs": {
@@ -281,6 +311,9 @@
                                                                 "Succeeded"
                                                             ]
                                                         },
+                                                        "metadata": {
+                                                            "operationMetadataId": "e0d4e3b5-e83e-4dad-b270-c3561e3657a6"
+                                                        },
                                                         "type": "Foreach"
                                                     },
                                                     "Create_Flow_Stripe": {
@@ -288,6 +321,9 @@
                                                             "Apply_to_each_Stripe": [
                                                                 "Succeeded"
                                                             ]
+                                                        },
+                                                        "metadata": {
+                                                            "operationMetadataId": "5c1e450a-be59-46d8-b130-e1410c787f20"
                                                         },
                                                         "type": "OpenApiConnection",
                                                         "inputs": {
@@ -311,6 +347,9 @@
                                                                 "Succeeded",
                                                                 "Failed"
                                                             ]
+                                                        },
+                                                        "metadata": {
+                                                            "operationMetadataId": "d0b0499d-83e9-48e5-8875-39697979cf98"
                                                         },
                                                         "type": "Http",
                                                         "inputs": {
@@ -337,6 +376,9 @@
                                                                 "Succeeded"
                                                             ]
                                                         },
+                                                        "metadata": {
+                                                            "operationMetadataId": "62ae8197-f4ae-4220-a917-eaed24bb6739"
+                                                        },
                                                         "type": "Http",
                                                         "inputs": {
                                                             "method": "DELETE",
@@ -360,6 +402,9 @@
                                                                 "Failed"
                                                             ]
                                                         },
+                                                        "metadata": {
+                                                            "operationMetadataId": "c023f8b7-ea8d-40ac-aa15-7ddccd4a9e1a"
+                                                        },
                                                         "type": "Scope"
                                                     },
                                                     "Turn_Off_Flow_2_Stripe": {
@@ -367,6 +412,9 @@
                                                             "Create_Flow_Stripe": [
                                                                 "Succeeded"
                                                             ]
+                                                        },
+                                                        "metadata": {
+                                                            "operationMetadataId": "68425bad-bd76-4151-aa52-97bdd1208b35"
                                                         },
                                                         "type": "OpenApiConnection",
                                                         "inputs": {
@@ -387,6 +435,9 @@
                                                             "Turn_Off_Flow_2_Stripe": [
                                                                 "Succeeded"
                                                             ]
+                                                        },
+                                                        "metadata": {
+                                                            "operationMetadataId": "5357d4a4-bfe6-4a52-b8fd-60f803bf5988"
                                                         },
                                                         "type": "OpenApiConnection",
                                                         "inputs": {
@@ -410,6 +461,9 @@
                                                     "@null"
                                                 ]
                                             },
+                                            "metadata": {
+                                                "operationMetadataId": "fc050615-2a9d-4b5a-b23a-93ad208a3004"
+                                            },
                                             "type": "If"
                                         }
                                     },
@@ -417,6 +471,9 @@
                                         "Scope_7": [
                                             "Succeeded"
                                         ]
+                                    },
+                                    "metadata": {
+                                        "operationMetadataId": "48e53614-f038-4334-a417-4e5c3e41bdd4"
                                     },
                                     "type": "Scope"
                                 },
@@ -429,6 +486,9 @@
                                                 "actions": {
                                                     "Get_Flow_Paypal": {
                                                         "runAfter": {},
+                                                        "metadata": {
+                                                            "operationMetadataId": "4492d603-940d-41de-80d3-f8f6a9028950"
+                                                        },
                                                         "type": "OpenApiConnection",
                                                         "inputs": {
                                                             "host": {
@@ -449,6 +509,9 @@
                                                                 "Succeeded"
                                                             ]
                                                         },
+                                                        "metadata": {
+                                                            "operationMetadataId": "16b26daa-a28b-47b6-8da3-ef185a6266c9"
+                                                        },
                                                         "type": "OpenApiConnection",
                                                         "inputs": {
                                                             "host": {
@@ -468,6 +531,9 @@
                                                                 "Succeeded"
                                                             ]
                                                         },
+                                                        "metadata": {
+                                                            "operationMetadataId": "a84797a5-ea19-4d71-a9dc-ba98bb8f852f"
+                                                        },
                                                         "type": "Query",
                                                         "inputs": {
                                                             "from": "@outputs('List_My_Flows_Paypal')?['body/value']",
@@ -479,6 +545,9 @@
                                                             "Apply_to_each_Paypal": [
                                                                 "Succeeded"
                                                             ]
+                                                        },
+                                                        "metadata": {
+                                                            "operationMetadataId": "eb401377-c407-45c5-b166-d549143f0d88"
                                                         },
                                                         "type": "OpenApiConnection",
                                                         "inputs": {
@@ -501,6 +570,9 @@
                                                         "actions": {
                                                             "Turn_Off_Flow_Paypal": {
                                                                 "runAfter": {},
+                                                                "metadata": {
+                                                                    "operationMetadataId": "225baa78-0437-497f-bfb1-bb8acc5ab652"
+                                                                },
                                                                 "type": "OpenApiConnection",
                                                                 "inputs": {
                                                                     "host": {
@@ -520,6 +592,9 @@
                                                                     "Turn_Off_Flow_Paypal": [
                                                                         "Succeeded"
                                                                     ]
+                                                                },
+                                                                "metadata": {
+                                                                    "operationMetadataId": "a870813b-a3b4-4802-b293-808eb6e78289"
                                                                 },
                                                                 "type": "OpenApiConnection",
                                                                 "inputs": {
@@ -541,6 +616,9 @@
                                                                 "Succeeded"
                                                             ]
                                                         },
+                                                        "metadata": {
+                                                            "operationMetadataId": "99448919-c7d0-4459-bc4a-a8a59dae037b"
+                                                        },
                                                         "type": "Foreach"
                                                     },
                                                     "Turn_Off_Flow_2_Paypal": {
@@ -548,6 +626,9 @@
                                                             "Create_Flow_Paypal": [
                                                                 "Succeeded"
                                                             ]
+                                                        },
+                                                        "metadata": {
+                                                            "operationMetadataId": "073212fb-07bc-45d4-a9fe-5ff55363f940"
                                                         },
                                                         "type": "OpenApiConnection",
                                                         "inputs": {
@@ -568,6 +649,9 @@
                                                             "Turn_Off_Flow_2_Paypal": [
                                                                 "Succeeded"
                                                             ]
+                                                        },
+                                                        "metadata": {
+                                                            "operationMetadataId": "7238b960-3a52-478c-b977-4a27dcdd2f0e"
                                                         },
                                                         "type": "OpenApiConnection",
                                                         "inputs": {
@@ -591,6 +675,9 @@
                                                     "@null"
                                                 ]
                                             },
+                                            "metadata": {
+                                                "operationMetadataId": "5469f75d-c2bf-4187-a781-af42a082df07"
+                                            },
                                             "type": "If"
                                         }
                                     },
@@ -598,6 +685,9 @@
                                         "Scope_7": [
                                             "Succeeded"
                                         ]
+                                    },
+                                    "metadata": {
+                                        "operationMetadataId": "7b10a362-c4a0-4bf9-a2d4-e4888e66db04"
                                     },
                                     "type": "Scope"
                                 },
@@ -610,6 +700,9 @@
                                                 "actions": {
                                                     "Get_Flow_Microsoft_Create": {
                                                         "runAfter": {},
+                                                        "metadata": {
+                                                            "operationMetadataId": "9585a760-1910-4ac2-a290-eac05811540f"
+                                                        },
                                                         "type": "OpenApiConnection",
                                                         "inputs": {
                                                             "host": {
@@ -630,6 +723,9 @@
                                                                 "Succeeded"
                                                             ]
                                                         },
+                                                        "metadata": {
+                                                            "operationMetadataId": "b632df4b-95eb-49af-8de2-c7b350207dd2"
+                                                        },
                                                         "type": "OpenApiConnection",
                                                         "inputs": {
                                                             "host": {
@@ -649,6 +745,9 @@
                                                                 "Succeeded"
                                                             ]
                                                         },
+                                                        "metadata": {
+                                                            "operationMetadataId": "b20df474-8fc4-4c88-93db-00df4f051ab1"
+                                                        },
                                                         "type": "Query",
                                                         "inputs": {
                                                             "from": "@outputs('List_My_Flows_Microsoft_Create')?['body/value']",
@@ -660,6 +759,9 @@
                                                             "Apply_to_each_Microsoft_Create": [
                                                                 "Succeeded"
                                                             ]
+                                                        },
+                                                        "metadata": {
+                                                            "operationMetadataId": "53d5cee8-f409-4755-abf4-d5db7ce38883"
                                                         },
                                                         "type": "OpenApiConnection",
                                                         "inputs": {
@@ -682,6 +784,9 @@
                                                         "actions": {
                                                             "Turn_Off_Flow_Microsoft_Create": {
                                                                 "runAfter": {},
+                                                                "metadata": {
+                                                                    "operationMetadataId": "704435a8-e080-4b8f-bd4b-ec7c55db5cfa"
+                                                                },
                                                                 "type": "OpenApiConnection",
                                                                 "inputs": {
                                                                     "host": {
@@ -701,6 +806,9 @@
                                                                     "Turn_Off_Flow_Microsoft_Create": [
                                                                         "Succeeded"
                                                                     ]
+                                                                },
+                                                                "metadata": {
+                                                                    "operationMetadataId": "26b4e378-6ed2-4f7a-b92e-fdd5478d1fff"
                                                                 },
                                                                 "type": "OpenApiConnection",
                                                                 "inputs": {
@@ -722,6 +830,9 @@
                                                                 "Succeeded"
                                                             ]
                                                         },
+                                                        "metadata": {
+                                                            "operationMetadataId": "2a3fb5c4-9d3b-4aa6-b39e-99b7ff9aa841"
+                                                        },
                                                         "type": "Foreach"
                                                     },
                                                     "Turn_Off_Flow_2_Microsoft_Create": {
@@ -729,6 +840,9 @@
                                                             "Create_Flow_Microsoft_Create": [
                                                                 "Succeeded"
                                                             ]
+                                                        },
+                                                        "metadata": {
+                                                            "operationMetadataId": "597ef6b0-e086-471e-8320-bd9e1c403ba7"
                                                         },
                                                         "type": "OpenApiConnection",
                                                         "inputs": {
@@ -749,6 +863,9 @@
                                                             "Turn_Off_Flow_2_Microsoft_Create": [
                                                                 "Succeeded"
                                                             ]
+                                                        },
+                                                        "metadata": {
+                                                            "operationMetadataId": "19193275-427a-4a84-befe-655c4312060a"
                                                         },
                                                         "type": "OpenApiConnection",
                                                         "inputs": {
@@ -772,6 +889,9 @@
                                                     "@null"
                                                 ]
                                             },
+                                            "metadata": {
+                                                "operationMetadataId": "caea0841-ec68-4f9f-87e7-9c15149ab2fb"
+                                            },
                                             "type": "If"
                                         }
                                     },
@@ -779,6 +899,9 @@
                                         "Scope_7": [
                                             "Succeeded"
                                         ]
+                                    },
+                                    "metadata": {
+                                        "operationMetadataId": "37f929a6-2ada-424c-a476-b77f7d96e266"
                                     },
                                     "type": "Scope"
                                 },
@@ -791,6 +914,9 @@
                                                 "actions": {
                                                     "Get_Flow_Microsoft_Update": {
                                                         "runAfter": {},
+                                                        "metadata": {
+                                                            "operationMetadataId": "29567e66-3404-4d4b-835f-09895def8f51"
+                                                        },
                                                         "type": "OpenApiConnection",
                                                         "inputs": {
                                                             "host": {
@@ -811,6 +937,9 @@
                                                                 "Succeeded"
                                                             ]
                                                         },
+                                                        "metadata": {
+                                                            "operationMetadataId": "11f21c7e-543f-409a-b7d3-f49197474767"
+                                                        },
                                                         "type": "OpenApiConnection",
                                                         "inputs": {
                                                             "host": {
@@ -830,6 +959,9 @@
                                                                 "Succeeded"
                                                             ]
                                                         },
+                                                        "metadata": {
+                                                            "operationMetadataId": "d7d7e0dd-8da2-4254-b767-19f06da9b017"
+                                                        },
                                                         "type": "Query",
                                                         "inputs": {
                                                             "from": "@outputs('List_My_Flows_Microsoft_Update')?['body/value']",
@@ -841,6 +973,9 @@
                                                             "Apply_to_each_Microsoft_Update": [
                                                                 "Succeeded"
                                                             ]
+                                                        },
+                                                        "metadata": {
+                                                            "operationMetadataId": "cff8adfe-dd70-4151-ad0c-a7412b300f88"
                                                         },
                                                         "type": "OpenApiConnection",
                                                         "inputs": {
@@ -863,6 +998,9 @@
                                                         "actions": {
                                                             "Turn_Off_Flow_Microsoft_Update": {
                                                                 "runAfter": {},
+                                                                "metadata": {
+                                                                    "operationMetadataId": "b3e4d894-9041-4e1d-8182-1c0a9da9c618"
+                                                                },
                                                                 "type": "OpenApiConnection",
                                                                 "inputs": {
                                                                     "host": {
@@ -882,6 +1020,9 @@
                                                                     "Turn_Off_Flow_Microsoft_Update": [
                                                                         "Succeeded"
                                                                     ]
+                                                                },
+                                                                "metadata": {
+                                                                    "operationMetadataId": "efd38e0b-cf9b-42fb-85f0-174b4b1ea200"
                                                                 },
                                                                 "type": "OpenApiConnection",
                                                                 "inputs": {
@@ -903,6 +1044,9 @@
                                                                 "Succeeded"
                                                             ]
                                                         },
+                                                        "metadata": {
+                                                            "operationMetadataId": "6adff527-8052-433a-bff6-1896aa21225d"
+                                                        },
                                                         "type": "Foreach"
                                                     },
                                                     "Turn_Off_Flow_2_Microsoft_Update": {
@@ -910,6 +1054,9 @@
                                                             "Create_Flow_Microsoft_Update": [
                                                                 "Succeeded"
                                                             ]
+                                                        },
+                                                        "metadata": {
+                                                            "operationMetadataId": "a8d52d7c-3ba0-4ca7-937a-7bcb7f66aa72"
                                                         },
                                                         "type": "OpenApiConnection",
                                                         "inputs": {
@@ -930,6 +1077,9 @@
                                                             "Turn_Off_Flow_2_Microsoft_Update": [
                                                                 "Succeeded"
                                                             ]
+                                                        },
+                                                        "metadata": {
+                                                            "operationMetadataId": "c26f419c-63bb-4c24-b743-a6c5c799e7e0"
                                                         },
                                                         "type": "OpenApiConnection",
                                                         "inputs": {
@@ -953,6 +1103,9 @@
                                                     "@null"
                                                 ]
                                             },
+                                            "metadata": {
+                                                "operationMetadataId": "7d243593-5c8a-4894-a5ee-3365119642af"
+                                            },
                                             "type": "If"
                                         }
                                     },
@@ -960,6 +1113,9 @@
                                         "Scope_7": [
                                             "Succeeded"
                                         ]
+                                    },
+                                    "metadata": {
+                                        "operationMetadataId": "9185f10a-94bd-4968-b7da-724c140707ab"
                                     },
                                     "type": "Scope"
                                 },
@@ -972,6 +1128,9 @@
                                                 "actions": {
                                                     "Get_Flow_Microsoft_Contact": {
                                                         "runAfter": {},
+                                                        "metadata": {
+                                                            "operationMetadataId": "d94668eb-e62d-47af-9486-971b82d3959b"
+                                                        },
                                                         "type": "OpenApiConnection",
                                                         "inputs": {
                                                             "host": {
@@ -992,6 +1151,9 @@
                                                                 "Succeeded"
                                                             ]
                                                         },
+                                                        "metadata": {
+                                                            "operationMetadataId": "0a97366e-057d-435f-a95f-0b438caa2ff8"
+                                                        },
                                                         "type": "OpenApiConnection",
                                                         "inputs": {
                                                             "host": {
@@ -1011,6 +1173,9 @@
                                                                 "Succeeded"
                                                             ]
                                                         },
+                                                        "metadata": {
+                                                            "operationMetadataId": "2587c50c-12a6-454a-9856-f6398daf2684"
+                                                        },
                                                         "type": "Query",
                                                         "inputs": {
                                                             "from": "@outputs('List_My_Flows_Microsoft_Contact')?['body/value']",
@@ -1022,6 +1187,9 @@
                                                         "actions": {
                                                             "Turn_Off_Flow_Microsoft_Contact": {
                                                                 "runAfter": {},
+                                                                "metadata": {
+                                                                    "operationMetadataId": "3f096f4e-db2c-4453-8160-9f9f3e08932e"
+                                                                },
                                                                 "type": "OpenApiConnection",
                                                                 "inputs": {
                                                                     "host": {
@@ -1041,6 +1209,9 @@
                                                                     "Turn_Off_Flow_Microsoft_Contact": [
                                                                         "Succeeded"
                                                                     ]
+                                                                },
+                                                                "metadata": {
+                                                                    "operationMetadataId": "cf36387f-6855-420a-b100-a966eb18703e"
                                                                 },
                                                                 "type": "OpenApiConnection",
                                                                 "inputs": {
@@ -1062,6 +1233,9 @@
                                                                 "Succeeded"
                                                             ]
                                                         },
+                                                        "metadata": {
+                                                            "operationMetadataId": "6bd6d8e2-28ac-4de5-9e31-dbf1dda62034"
+                                                        },
                                                         "type": "Foreach"
                                                     },
                                                     "Create_Flow_Microsoft_Contact": {
@@ -1069,6 +1243,9 @@
                                                             "Apply_to_each_Microsoft_Contact": [
                                                                 "Succeeded"
                                                             ]
+                                                        },
+                                                        "metadata": {
+                                                            "operationMetadataId": "4d04f5a9-d013-4788-8519-a97f223de95e"
                                                         },
                                                         "type": "OpenApiConnection",
                                                         "inputs": {
@@ -1092,6 +1269,9 @@
                                                                 "Succeeded"
                                                             ]
                                                         },
+                                                        "metadata": {
+                                                            "operationMetadataId": "a06460c1-db33-42b8-9465-3cb563a80229"
+                                                        },
                                                         "type": "OpenApiConnection",
                                                         "inputs": {
                                                             "host": {
@@ -1111,6 +1291,9 @@
                                                             "Turn_Off_Flow_2_Microsoft_Contact": [
                                                                 "Succeeded"
                                                             ]
+                                                        },
+                                                        "metadata": {
+                                                            "operationMetadataId": "eda89c84-1a12-46f8-86f8-67bc04050753"
                                                         },
                                                         "type": "OpenApiConnection",
                                                         "inputs": {
@@ -1134,6 +1317,9 @@
                                                     "@null"
                                                 ]
                                             },
+                                            "metadata": {
+                                                "operationMetadataId": "30b2ed39-b98c-4b48-b153-ba1c60aaa298"
+                                            },
                                             "type": "If"
                                         }
                                     },
@@ -1141,6 +1327,9 @@
                                         "Scope_7": [
                                             "Succeeded"
                                         ]
+                                    },
+                                    "metadata": {
+                                        "operationMetadataId": "283ed808-9206-4c8b-941e-8c35ad7fc79d"
                                     },
                                     "type": "Scope"
                                 },
@@ -1153,6 +1342,9 @@
                                                 "actions": {
                                                     "Get_Flow_Microsoft_Meter": {
                                                         "runAfter": {},
+                                                        "metadata": {
+                                                            "operationMetadataId": "8062288b-e5ae-4cf3-8319-8f949355fd1b"
+                                                        },
                                                         "type": "OpenApiConnection",
                                                         "inputs": {
                                                             "host": {
@@ -1173,6 +1365,9 @@
                                                                 "Succeeded"
                                                             ]
                                                         },
+                                                        "metadata": {
+                                                            "operationMetadataId": "4b7c01e5-831f-43e6-97ae-2b60b2f29b76"
+                                                        },
                                                         "type": "OpenApiConnection",
                                                         "inputs": {
                                                             "host": {
@@ -1192,6 +1387,9 @@
                                                                 "Succeeded"
                                                             ]
                                                         },
+                                                        "metadata": {
+                                                            "operationMetadataId": "16efa405-1af7-4dd0-9fe2-f357cfb68134"
+                                                        },
                                                         "type": "Query",
                                                         "inputs": {
                                                             "from": "@outputs('List_My_Flows_Microsoft_Meter')?['body/value']",
@@ -1203,6 +1401,9 @@
                                                             "Apply_to_each_Microsoft_Meter": [
                                                                 "Succeeded"
                                                             ]
+                                                        },
+                                                        "metadata": {
+                                                            "operationMetadataId": "d01e2757-d39d-40a8-8bd3-0544f8becc79"
                                                         },
                                                         "type": "OpenApiConnection",
                                                         "inputs": {
@@ -1225,6 +1426,9 @@
                                                         "actions": {
                                                             "Turn_Off_Flow_Microsoft_Meter": {
                                                                 "runAfter": {},
+                                                                "metadata": {
+                                                                    "operationMetadataId": "6701700b-ac57-4f00-b3e3-64cd7fb2af8e"
+                                                                },
                                                                 "type": "OpenApiConnection",
                                                                 "inputs": {
                                                                     "host": {
@@ -1244,6 +1448,9 @@
                                                                     "Turn_Off_Flow_Microsoft_Meter": [
                                                                         "Succeeded"
                                                                     ]
+                                                                },
+                                                                "metadata": {
+                                                                    "operationMetadataId": "3e5960d6-b4d9-4d3d-a883-79908e2e099f"
                                                                 },
                                                                 "type": "OpenApiConnection",
                                                                 "inputs": {
@@ -1265,6 +1472,9 @@
                                                                 "Succeeded"
                                                             ]
                                                         },
+                                                        "metadata": {
+                                                            "operationMetadataId": "828c621b-51c4-470c-abf4-7dbd2d386051"
+                                                        },
                                                         "type": "Foreach"
                                                     },
                                                     "Turn_Off_Flow_2_Microsoft_Meter": {
@@ -1272,6 +1482,9 @@
                                                             "Create_Flow_Microsoft_Meter": [
                                                                 "Succeeded"
                                                             ]
+                                                        },
+                                                        "metadata": {
+                                                            "operationMetadataId": "c2dd12e5-9c88-426a-893b-cb25da55b6b8"
                                                         },
                                                         "type": "OpenApiConnection",
                                                         "inputs": {
@@ -1292,6 +1505,9 @@
                                                             "Turn_Off_Flow_2_Microsoft_Meter": [
                                                                 "Succeeded"
                                                             ]
+                                                        },
+                                                        "metadata": {
+                                                            "operationMetadataId": "3403bc3d-1074-43c0-ad52-2ff8a8a259d3"
                                                         },
                                                         "type": "OpenApiConnection",
                                                         "inputs": {
@@ -1315,6 +1531,9 @@
                                                     "@null"
                                                 ]
                                             },
+                                            "metadata": {
+                                                "operationMetadataId": "c7c44e55-fdca-4be8-aaba-93aa374b72f5"
+                                            },
                                             "type": "If"
                                         }
                                     },
@@ -1322,6 +1541,9 @@
                                         "Scope_7": [
                                             "Succeeded"
                                         ]
+                                    },
+                                    "metadata": {
+                                        "operationMetadataId": "9e6f0dbb-384c-47be-8281-a004b3610c05"
                                     },
                                     "type": "Scope"
                                 }
@@ -1331,12 +1553,18 @@
                                     "Succeeded"
                                 ]
                             },
+                            "metadata": {
+                                "operationMetadataId": "8ca220d0-f262-4477-9eec-fbda7f5b16fc"
+                            },
                             "type": "Scope"
                         },
                         "Scope_CyclesGroups": {
                             "actions": {
                                 "Parse_JSON": {
                                     "runAfter": {},
+                                    "metadata": {
+                                        "operationMetadataId": "5bf98803-65a9-4a03-a8e5-ade6765cf107"
+                                    },
                                     "type": "ParseJson",
                                     "inputs": {
                                         "content": "@json(items('Apply_to_each')?['CyclesGroups'])",
@@ -1374,6 +1602,9 @@
                                             "Succeeded"
                                         ]
                                     },
+                                    "metadata": {
+                                        "operationMetadataId": "4e3c8a68-24ce-4ded-8618-d7540f0ea79d"
+                                    },
                                     "type": "ParseJson",
                                     "inputs": {
                                         "content": "@json(coalesce(triggerOutputs()?['body/StripePrices'],'[]'))",
@@ -1385,6 +1616,9 @@
                                         "Parse_JSON_2": [
                                             "Succeeded"
                                         ]
+                                    },
+                                    "metadata": {
+                                        "operationMetadataId": "7cc74267-a525-4327-ab7d-35303f03ff86"
                                     },
                                     "type": "ParseJson",
                                     "inputs": {
@@ -1405,6 +1639,9 @@
                                                 "actions": {
                                                     "Append_to_array_variable": {
                                                         "runAfter": {},
+                                                        "metadata": {
+                                                            "operationMetadataId": "afc79fe2-f795-47a5-974c-d180141a4924"
+                                                        },
                                                         "type": "AppendToArrayVariable",
                                                         "inputs": {
                                                             "name": "varCyclesGroup",
@@ -1416,6 +1653,9 @@
                                                             "Append_to_array_variable": [
                                                                 "Succeeded"
                                                             ]
+                                                        },
+                                                        "metadata": {
+                                                            "operationMetadataId": "29d10f26-fb40-41f0-a52b-847ad4c68836"
                                                         },
                                                         "type": "IncrementVariable",
                                                         "inputs": {
@@ -1430,6 +1670,9 @@
                                                     "count": 60,
                                                     "timeout": "PT1H"
                                                 },
+                                                "metadata": {
+                                                    "operationMetadataId": "5926872b-6df1-4778-8dc6-d5f264d2d7e5"
+                                                },
                                                 "type": "Until"
                                             }
                                         }
@@ -1440,10 +1683,16 @@
                                             0
                                         ]
                                     },
+                                    "metadata": {
+                                        "operationMetadataId": "846a9386-ba8e-4487-9efa-18713a8b7dc2"
+                                    },
                                     "type": "If"
                                 }
                             },
                             "runAfter": {},
+                            "metadata": {
+                                "operationMetadataId": "e96e4d4e-7b9a-4fc8-85cf-1aaec72c2e7f"
+                            },
                             "type": "Scope"
                         },
                         "Update_item_MyGroups": {
@@ -1451,6 +1700,9 @@
                                 "Scope_Flows": [
                                     "Succeeded"
                                 ]
+                            },
+                            "metadata": {
+                                "operationMetadataId": "e4b6e32f-78bb-4b8d-8e10-ea0027377de6"
                             },
                             "type": "OpenApiConnection",
                             "inputs": {
@@ -1479,6 +1731,9 @@
                                 "Scope_CyclesGroups": [
                                     "Succeeded"
                                 ]
+                            },
+                            "metadata": {
+                                "operationMetadataId": "1135bb69-68a6-430d-a5c6-c3b8723051e3"
                             },
                             "type": "OpenApiConnection",
                             "inputs": {
@@ -1514,6 +1769,9 @@
                         "Get_items_GroupsList": [
                             "Succeeded"
                         ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "d086d88b-2405-46f0-a5fe-356a64a80b3f"
                     },
                     "type": "Foreach"
                 }

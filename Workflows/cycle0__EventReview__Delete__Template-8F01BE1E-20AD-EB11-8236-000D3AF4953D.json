@@ -27,21 +27,24 @@
                     "defaultValue": "",
                     "type": "String",
                     "metadata": {
-                        "schemaName": "new_envpar_http__EventReview__Delete"
+                        "schemaName": "new_envpar_http__EventReview__Delete",
+                        "description": "This flow HTTP trigger URL. Enter space character ( ) for none. Filled automatically."
                     }
                 },
                 "envpar_config__TenantName": {
                     "defaultValue": "",
                     "type": "String",
                     "metadata": {
-                        "schemaName": "new_envpar_config__TenantName"
+                        "schemaName": "new_envpar_config__TenantName",
+                        "description": "Required. Org Name orgname (this is the prefix of the auto assigned domain orgname.onmicrosoft.com)"
                     }
                 },
                 "envpar_config__CycleZeroName": {
                     "defaultValue": "",
                     "type": "String",
                     "metadata": {
-                        "schemaName": "new_envpar_config__CycleZeroName"
+                        "schemaName": "new_envpar_config__CycleZeroName",
+                        "description": "Required. Could have many environments N each with its envN_cycle0 template"
                     }
                 }
             },
@@ -55,7 +58,8 @@
                     "metadata": {
                         "flowSystemMetadata": {
                             "swaggerOperationId": "GetOnDeletedFileItems"
-                        }
+                        },
+                        "operationMetadataId": "efebf303-b80d-4fcb-8be2-2aa0812cead4"
                     },
                     "type": "ApiConnection",
                     "inputs": {
@@ -75,6 +79,9 @@
             "actions": {
                 "HTTP": {
                     "runAfter": {},
+                    "metadata": {
+                        "operationMetadataId": "52ce2eda-98e4-4e02-8a46-8f84c413b1d3"
+                    },
                     "type": "Http",
                     "inputs": {
                         "method": "POST",

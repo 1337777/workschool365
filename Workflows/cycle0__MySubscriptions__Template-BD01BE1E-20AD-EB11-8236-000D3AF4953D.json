@@ -27,21 +27,24 @@
                     "defaultValue": "",
                     "type": "String",
                     "metadata": {
-                        "schemaName": "new_envpar_http__MySubscriptions"
+                        "schemaName": "new_envpar_http__MySubscriptions",
+                        "description": "This flow HTTP trigger URL. Enter space character ( ) for none. Filled automatically."
                     }
                 },
                 "envpar_config__TenantName": {
                     "defaultValue": "",
                     "type": "String",
                     "metadata": {
-                        "schemaName": "new_envpar_config__TenantName"
+                        "schemaName": "new_envpar_config__TenantName",
+                        "description": "Required. Org Name orgname (this is the prefix of the auto assigned domain orgname.onmicrosoft.com)"
                     }
                 },
                 "envpar_config__CycleZeroName": {
                     "defaultValue": "",
                     "type": "String",
                     "metadata": {
-                        "schemaName": "new_envpar_config__CycleZeroName"
+                        "schemaName": "new_envpar_config__CycleZeroName",
+                        "description": "Required. Could have many environments N each with its envN_cycle0 template"
                     }
                 }
             },
@@ -52,6 +55,9 @@
                         "frequency": "Minute"
                     },
                     "splitOn": "@triggerOutputs()?['body/value']",
+                    "metadata": {
+                        "operationMetadataId": "86334872-a739-4e89-a5cd-bca1edc7a9fc"
+                    },
                     "type": "OpenApiConnection",
                     "inputs": {
                         "host": {
@@ -70,6 +76,9 @@
             "actions": {
                 "HTTP_2": {
                     "runAfter": {},
+                    "metadata": {
+                        "operationMetadataId": "ded96448-27dc-469c-b6cc-157f8013162f"
+                    },
                     "type": "Http",
                     "inputs": {
                         "method": "POST",

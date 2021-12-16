@@ -1,4 +1,4 @@
-<ImportExportXml version="9.2.21051.130" SolutionPackageVersion="9.2" languagecode="1033" generatedBy="CrmLive" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<ImportExportXml version="9.2.21114.126" SolutionPackageVersion="9.2" languagecode="1033" generatedBy="CrmLive" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <SolutionManifest>
     <UniqueName>WorkSchool365</UniqueName>
     <LocalizedNames>
@@ -114,11 +114,13 @@
     </RootComponents>
     <MissingDependencies>
       <MissingDependency>
-        <Required type="1" schemaName="connectionreference" displayName="Connection Reference" solution="PowerPlatformConnectionReferences (1.2.3.0)" />
+        <Required type="1" schemaName="connectionreference" displayName="Connection Reference" solution="PowerPlatformConnectionReferences (1.2.7.0)">
+          <package>PowerPlatformConnectionReferencesAnchor (1.2.0.0)</package>
+        </Required>
         <Dependent type="29" displayName="cycle0__Setup" id="{20035822-a6af-eb11-8236-0022486d8fed}" />
       </MissingDependency>
       <MissingDependency>
-        <Required type="1" schemaName="environmentvariablevalue" displayName="Environment Variable Value" solution="EnvironmentVariables (1.0.2.77)" />
+        <Required type="1" schemaName="environmentvariablevalue" displayName="Environment Variable Value" solution="EnvironmentVariables (1.0.2.113)" />
         <Dependent type="29" displayName="cycle0__Setup" id="{20035822-a6af-eb11-8236-0022486d8fed}" />
       </MissingDependency>
     </MissingDependencies>

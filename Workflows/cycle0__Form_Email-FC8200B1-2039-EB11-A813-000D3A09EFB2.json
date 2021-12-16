@@ -8,10 +8,21 @@
                 "$authentication": {
                     "defaultValue": {},
                     "type": "SecureObject"
+                },
+                "envpar_http__AzureAD_Signed": {
+                    "defaultValue": "",
+                    "type": "String",
+                    "metadata": {
+                        "schemaName": "new_envpar_http__AzureAD_Signed",
+                        "description": "This flow HTTP trigger URL. Enter space character ( ) for none. Filled automatically."
+                    }
                 }
             },
             "triggers": {
                 "manual": {
+                    "metadata": {
+                        "operationMetadataId": "cf8c9ad2-65fd-424d-9e4c-2bbb34d071ff"
+                    },
                     "type": "Request",
                     "kind": "Http",
                     "inputs": {
@@ -27,6 +38,9 @@
                             "Succeeded"
                         ]
                     },
+                    "metadata": {
+                        "operationMetadataId": "da0046e5-2425-4c1f-a5ae-67138b85128e"
+                    },
                     "type": "Response",
                     "kind": "Http",
                     "inputs": {
@@ -34,11 +48,14 @@
                         "headers": {
                             "content-type": "text/html"
                         },
-                        "body": "<html><head>\n    <title>WorkSchool 365</title>\n    <meta charset=\"utf-8\">\n    <meta http-equiv=\"Content-type\" content=\"text/html; charset=utf-8\">\n</head>\n<body>\n<div>\n<form method=\"GET\" action=\"@{parameters('envpar_http__AzureAD_Signed')}&state=%2Fsign_up_email@{outputs('Compose')}\">\n<div>WorkSchool 365 @{outputs('Compose')}</div>\n <input name=\"email\" placeholder=\"Enter Email\"/> <input type=\"submit\" value=\"Sign-up with Email\"/> \n</form>\n</div>\n</body></html>\n"
+                        "body": "<html><head>\n    <title>WorkSchool 365</title>\n    <meta charset=\"utf-8\">\n    <meta http-equiv=\"Content-type\" content=\"text/html; charset=utf-8\">\n</head>\n<body>\n<div>\n<form method=\"GET\" action=\"@{parameters('envpar_http__AzureAD_Signed')}&state=%2Fsign_up_email%2F@{outputs('Compose')}\">\n<div>WorkSchool 365 @{outputs('Compose')}</div>\n <input name=\"email\" placeholder=\"Enter Email\"/> <input type=\"submit\" value=\"Sign-up with Email\"/> \n</form>\n</div>\n</body></html>\n"
                     }
                 },
                 "Compose": {
                     "runAfter": {},
+                    "metadata": {
+                        "operationMetadataId": "626a7e9a-74cf-45e4-b599-830a17cc3481"
+                    },
                     "type": "Compose",
                     "inputs": "@triggerOutputs()?['queries']?['cycle1']"
                 }

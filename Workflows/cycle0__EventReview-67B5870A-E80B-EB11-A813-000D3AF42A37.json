@@ -54,19 +54,24 @@
                     "defaultValue": "",
                     "type": "String",
                     "metadata": {
-                        "schemaName": "new_envpar_config__TenantName"
+                        "schemaName": "new_envpar_config__TenantName",
+                        "description": "Required. Org Name orgname (this is the prefix of the auto assigned domain orgname.onmicrosoft.com)"
                     }
                 },
                 "envpar_config__CycleZeroName": {
                     "defaultValue": "",
                     "type": "String",
                     "metadata": {
-                        "schemaName": "new_envpar_config__CycleZeroName"
+                        "schemaName": "new_envpar_config__CycleZeroName",
+                        "description": "Required. Could have many environments N each with its envN_cycle0 template"
                     }
                 }
             },
             "triggers": {
                 "manual": {
+                    "metadata": {
+                        "operationMetadataId": "27fb74e8-497f-4efd-9666-4357947014b2"
+                    },
                     "type": "Request",
                     "kind": "Http",
                     "inputs": {
@@ -98,6 +103,9 @@
                             "Succeeded"
                         ]
                     },
+                    "metadata": {
+                        "operationMetadataId": "ba383590-8c67-487c-8716-aabcf780338f"
+                    },
                     "type": "Response",
                     "kind": "Http",
                     "inputs": {
@@ -109,6 +117,9 @@
                         "Initialize_variable_Cycle1GroupName": [
                             "Succeeded"
                         ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "e422ea09-f5d5-4fde-8f13-f21a1ecfc8f9"
                     },
                     "type": "InitializeVariable",
                     "inputs": {
@@ -127,6 +138,9 @@
                             "Succeeded"
                         ]
                     },
+                    "metadata": {
+                        "operationMetadataId": "e8c17f49-d840-401b-a1ea-0f45f1bf28bb"
+                    },
                     "type": "InitializeVariable",
                     "inputs": {
                         "variables": [
@@ -143,6 +157,9 @@
                         "Initialize_variable_fileItemId": [
                             "Succeeded"
                         ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "97105a3b-e20a-48ce-9d7e-71d46a870848"
                     },
                     "type": "InitializeVariable",
                     "inputs": {
@@ -161,6 +178,9 @@
                             "Succeeded"
                         ]
                     },
+                    "metadata": {
+                        "operationMetadataId": "d599c746-3606-48b2-8348-0bff345bfeda"
+                    },
                     "type": "InitializeVariable",
                     "inputs": {
                         "variables": [
@@ -174,14 +194,17 @@
                 },
                 "Select_AssignedTo": {
                     "runAfter": {
-                        "Set_content_approval_status": [
+                        "Condition_Title": [
                             "Succeeded"
                         ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "ef8a9bb3-d2f9-44e9-95f7-4fd3dbac4b28"
                     },
                     "type": "Select",
                     "inputs": {
                         "from": "@body('Parse_JSON')?['AssignedTo']",
-                        "select": "@item()?['Email']"
+                        "select": "@toLower(item()?['Email'])"
                     }
                 },
                 "Get_file_properties": {
@@ -189,6 +212,9 @@
                         "Initialize_variable_reviews": [
                             "Succeeded"
                         ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "ecca1029-0a53-41df-b321-72016c4b558f"
                     },
                     "type": "OpenApiConnection",
                     "inputs": {
@@ -205,214 +231,14 @@
                         "authentication": "@parameters('$authentication')"
                     }
                 },
-                "Parse_JSON": {
-                    "runAfter": {
-                        "Get_file_properties": [
-                            "Succeeded"
-                        ]
-                    },
-                    "type": "ParseJson",
-                    "inputs": {
-                        "content": "@body('Get_file_properties')",
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "@@odata.etag": {
-                                    "type": "string"
-                                },
-                                "ItemInternalId": {
-                                    "type": "string"
-                                },
-                                "ID": {
-                                    "type": "integer"
-                                },
-                                "Title": {
-                                    "type": "string"
-                                },
-                                "Author": {
-                                    "type": "object",
-                                    "properties": {
-                                        "@@odata.type": {
-                                            "type": "string"
-                                        },
-                                        "Claims": {
-                                            "type": "string"
-                                        },
-                                        "DisplayName": {
-                                            "type": "string"
-                                        },
-                                        "Email": {
-                                            "type": "string"
-                                        },
-                                        "Picture": {
-                                            "type": "string"
-                                        },
-                                        "Department": {},
-                                        "JobTitle": {}
-                                    }
-                                },
-                                "Author#Claims": {
-                                    "type": "string"
-                                },
-                                "StartDate": {
-                                    "type": "string"
-                                },
-                                "TaskLink": {
-                                    "type": "string"
-                                },
-                                "AssignedTo": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "object",
-                                        "properties": {
-                                            "@@odata.type": {
-                                                "type": "string"
-                                            },
-                                            "Claims": {
-                                                "type": "string"
-                                            },
-                                            "DisplayName": {
-                                                "type": "string"
-                                            },
-                                            "Email": {
-                                                "type": "string"
-                                            },
-                                            "Picture": {
-                                                "type": "string"
-                                            },
-                                            "Department": {},
-                                            "JobTitle": {}
-                                        }
-                                    }
-                                },
-                                "AssignedTo@odata.type": {
-                                    "type": "string"
-                                },
-                                "AssignedTo#Claims": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "string"
-                                    }
-                                },
-                                "AssignedTo#Claims@odata.type": {
-                                    "type": "string"
-                                },
-                                "PayAmount": {
-                                    "type": "number"
-                                },
-                                "PayNowAction": {
-                                    "type": "boolean"
-                                },
-                                "DueDate": {
-                                    "type": "string"
-                                },
-                                "Predecessors": {
-                                    "type": "array"
-                                },
-                                "Predecessors@odata.type": {
-                                    "type": "string"
-                                },
-                                "Predecessors#Id": {
-                                    "type": "array"
-                                },
-                                "Predecessors#Id@odata.type": {
-                                    "type": "string"
-                                },
-                                "PercentComplete": {
-                                    "type": "number"
-                                },
-                                "Editor": {
-                                    "type": "object",
-                                    "properties": {
-                                        "@@odata.type": {
-                                            "type": "string"
-                                        },
-                                        "Claims": {
-                                            "type": "string"
-                                        },
-                                        "DisplayName": {
-                                            "type": "string"
-                                        },
-                                        "Email": {
-                                            "type": "string"
-                                        },
-                                        "Picture": {
-                                            "type": "string"
-                                        },
-                                        "Department": {
-                                            "type": "string"
-                                        },
-                                        "JobTitle": {
-                                            "type": "string"
-                                        }
-                                    }
-                                },
-                                "Editor#Claims": {
-                                    "type": "string"
-                                },
-                                "Modified": {
-                                    "type": "string"
-                                },
-                                "CountryOrRegion": {
-                                    "type": "string"
-                                },
-                                "State": {
-                                    "type": "string"
-                                },
-                                "City": {
-                                    "type": "string"
-                                },
-                                "Street": {
-                                    "type": "string"
-                                },
-                                "DispName": {
-                                    "type": "string"
-                                },
-                                "Created": {
-                                    "type": "string"
-                                },
-                                "OData__DisplayName": {
-                                    "type": "string"
-                                },
-                                "{Identifier}": {
-                                    "type": "string"
-                                },
-                                "{IsFolder}": {
-                                    "type": "boolean"
-                                },
-                                "{Link}": {
-                                    "type": "string"
-                                },
-                                "{Name}": {
-                                    "type": "string"
-                                },
-                                "{FilenameWithExtension}": {
-                                    "type": "string"
-                                },
-                                "{Path}": {
-                                    "type": "string"
-                                },
-                                "{FullPath}": {
-                                    "type": "string"
-                                },
-                                "{ModerationStatus}": {
-                                    "type": "string"
-                                },
-                                "{IsCheckedOut}": {
-                                    "type": "boolean"
-                                },
-                                "{VersionNumber}": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                },
                 "Set_content_approval_status": {
                     "runAfter": {
                         "Get_file_metadata": [
                             "Succeeded"
                         ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "5f4fb683-4113-4c84-a612-c9b29a51af46"
                     },
                     "type": "OpenApiConnection",
                     "inputs": {
@@ -434,9 +260,12 @@
                 },
                 "Get_file_metadata": {
                     "runAfter": {
-                        "Parse_JSON": [
+                        "Run_a_Child_Flow_Author": [
                             "Succeeded"
                         ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "d1ddfa21-1a1d-45bc-ac41-835a8ba94378"
                     },
                     "type": "OpenApiConnection",
                     "inputs": {
@@ -458,6 +287,9 @@
                             "Succeeded"
                         ]
                     },
+                    "metadata": {
+                        "operationMetadataId": "a8f43502-92b2-4c7a-b09c-8012ed7e8fe7"
+                    },
                     "type": "InitializeVariable",
                     "inputs": {
                         "variables": [
@@ -471,6 +303,9 @@
                 },
                 "Compose_TenantName": {
                     "runAfter": {},
+                    "metadata": {
+                        "operationMetadataId": "5f38a0af-a454-4a46-b2cc-3c4344fa4a3b"
+                    },
                     "type": "Compose",
                     "inputs": "@{parameters('envpar_config__TenantName')}"
                 },
@@ -479,6 +314,9 @@
                         "Initialize_variable_siteAddress": [
                             "Succeeded"
                         ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "030dbd5d-cba7-4a1d-9119-b6aec6319ce7"
                     },
                     "type": "InitializeVariable",
                     "inputs": {
@@ -496,15 +334,18 @@
                             "actions": {
                                 "Compose": {
                                     "runAfter": {},
+                                    "metadata": {
+                                        "operationMetadataId": "b5c8a589-4220-4b75-b261-8fbf4fc2d22f"
+                                    },
                                     "type": "Compose",
                                     "inputs": {
                                         "ID": "@{concat('=HYPERLINK(\"', concat(variables('siteAddress'), '/EventReview/Link.', last(split(body('Parse_JSON')?['{Link}'], '.'))) , '\", ' , body('Parse_JSON')?['ID'] , ')' )}",
                                         "Title": "@{body('Parse_JSON')?['{Name}']}",
-                                        "AssignedTo": "@{string(body('Select_AssignedTo'))}",
+                                        "AssignedTo": "@{join(body('Select_AssignedTo'), ' ')}",
                                         "StartDate": "@{if(equals(string(body('Parse_JSON')?['StartDate']),''), '', formatDateTime(body('Parse_JSON')?['StartDate'], 'g'))}",
                                         "Modified": "@{formatDateTime(body('Parse_JSON')?['Modified'], 'g')}",
-                                        "Author": "@{body('Parse_JSON')?['Author']?['Email']}",
-                                        "Predecessors": "@{body('Parse_JSON')?['Predecessors#Id']}",
+                                        "Path": "@{join(skip(split(body('Parse_JSON')?['{Path}'], '/'), 1), '/')}",
+                                        "Author": "@{toLower(body('Parse_JSON')?['Author']?['Email'])}",
                                         "PayAmount": "@{body('Parse_JSON')?['PayAmount']}",
                                         "Location": "@{coalesce(body('Parse_JSON')?['City'], body('Parse_JSON')?['State'], body('Parse_JSON')?['CountryOrRegion'])}",
                                         "Receipt": "@{ if( equals(string(outputs('Create_sharing_link_Receipt')?['body/link/webUrl']), '') , '' , concat( '=HYPERLINK(\"' , outputs('Create_sharing_link_Receipt')?['body/link/webUrl'] , '\")' )) }"
@@ -516,6 +357,10 @@
                                             "Succeeded"
                                         ]
                                     },
+                                    "metadata": {
+                                        "operationMetadataId": "432f5c70-de35-4cd6-b7ac-26d99d5efad3",
+                                        "tableId": "Table1"
+                                    },
                                     "type": "OpenApiConnection",
                                     "inputs": {
                                         "host": {
@@ -526,7 +371,7 @@
                                         "parameters": {
                                             "source": "sites/@{parameters('envpar_config__TenantName')}.sharepoint.com:/sites/@{variables('siteName')}:",
                                             "drive": "@variables('driveId')",
-                                            "file": "EventReview%252FReceipts%252FEventReview.xlsx",
+                                            "file": "EventReview%252FPublic_Listing_Receipts.xlsx",
                                             "table": "Table1",
                                             "idColumn": "@'ID'",
                                             "id": "@body('Parse_JSON')?['ID']"
@@ -540,6 +385,10 @@
                                             "Skipped"
                                         ]
                                     },
+                                    "metadata": {
+                                        "operationMetadataId": "3ab36358-d816-4872-b427-e08b8f63507e",
+                                        "tableId": "Table1"
+                                    },
                                     "type": "OpenApiConnection",
                                     "inputs": {
                                         "host": {
@@ -550,7 +399,7 @@
                                         "parameters": {
                                             "source": "sites/@{parameters('envpar_config__TenantName')}.sharepoint.com:/sites/@{variables('siteName')}:",
                                             "drive": "@variables('driveId')",
-                                            "file": "EventReview%252FReceipts%252FEventReview.xlsx",
+                                            "file": "EventReview%252FPublic_Listing_Receipts.xlsx",
                                             "table": "Table1",
                                             "idColumn": "@'ID'",
                                             "id": "@body('Parse_JSON')?['ID']",
@@ -565,6 +414,10 @@
                                             "Failed"
                                         ]
                                     },
+                                    "metadata": {
+                                        "operationMetadataId": "5f522709-492e-4dde-b0b4-8cdf6adc66f4",
+                                        "tableId": "Table1"
+                                    },
                                     "type": "OpenApiConnection",
                                     "inputs": {
                                         "host": {
@@ -575,7 +428,7 @@
                                         "parameters": {
                                             "source": "sites/@{parameters('envpar_config__TenantName')}.sharepoint.com:/sites/@{variables('siteName')}:",
                                             "drive": "@variables('driveId')",
-                                            "file": "EventReview%252FReceipts%252FEventReview.xlsx",
+                                            "file": "EventReview%252FPublic_Listing_Receipts.xlsx",
                                             "table": "Table1",
                                             "item": "@outputs('Compose')"
                                         },
@@ -588,6 +441,9 @@
                                             "Succeeded"
                                         ]
                                     },
+                                    "metadata": {
+                                        "operationMetadataId": "54cb6457-ac0d-47e3-9b11-02e73abbef23"
+                                    },
                                     "type": "OpenApiConnection",
                                     "inputs": {
                                         "host": {
@@ -597,7 +453,7 @@
                                         },
                                         "parameters": {
                                             "dataset": "@variables('siteAddress')",
-                                            "id": "EventReview%252fReceipts%252fEventReview.xlsx"
+                                            "id": "EventReview%252FPublic_Listing_Receipts.xlsx"
                                         },
                                         "authentication": "@parameters('$authentication')"
                                     }
@@ -607,6 +463,9 @@
                                         "Get_file_metadata_3": [
                                             "Succeeded"
                                         ]
+                                    },
+                                    "metadata": {
+                                        "operationMetadataId": "5ea93af4-f094-4a85-94c5-70a2ce104596"
                                     },
                                     "type": "OpenApiConnection",
                                     "inputs": {
@@ -631,6 +490,9 @@
                                         "Set_content_approval_status_4": [
                                             "Succeeded"
                                         ]
+                                    },
+                                    "metadata": {
+                                        "operationMetadataId": "43c00837-5dbe-45f2-936e-a087bce3627a"
                                     },
                                     "type": "OpenApiConnection",
                                     "inputs": {
@@ -657,6 +519,9 @@
                                             "Skipped"
                                         ]
                                     },
+                                    "metadata": {
+                                        "operationMetadataId": "38bf6f7b-7faa-4fdf-ae5a-a887b0f12cd9"
+                                    },
                                     "type": "Wait",
                                     "inputs": {
                                         "interval": {
@@ -667,6 +532,9 @@
                                 }
                             },
                             "runAfter": {},
+                            "metadata": {
+                                "operationMetadataId": "cd291a07-042e-4e70-bee7-8eec9a7e5a41"
+                            },
                             "type": "Scope"
                         },
                         "Scope_Author_Perms_AssignedTo_Perms": {
@@ -676,6 +544,9 @@
                                         "Send_an_HTTP_request_to_SharePoint_2": [
                                             "Succeeded"
                                         ]
+                                    },
+                                    "metadata": {
+                                        "operationMetadataId": "0b7fda74-44bc-494e-8ae3-e33e413bca06"
                                     },
                                     "type": "OpenApiConnection",
                                     "inputs": {
@@ -702,6 +573,9 @@
                                             "Succeeded",
                                             "Failed"
                                         ]
+                                    },
+                                    "metadata": {
+                                        "operationMetadataId": "b9571b19-4fb6-4a53-abb3-9f46050fec42"
                                     },
                                     "type": "OpenApiConnection",
                                     "inputs": {
@@ -732,6 +606,9 @@
                                         "actions": {
                                             "Grant_access_to_an_item_or_a_folder": {
                                                 "runAfter": {},
+                                                "metadata": {
+                                                    "operationMetadataId": "f4f9907e-ffb0-43cc-bc90-34690c25ed6d"
+                                                },
                                                 "type": "OpenApiConnection",
                                                 "inputs": {
                                                     "host": {
@@ -753,10 +630,23 @@
                                         }
                                     },
                                     "expression": {
-                                        "equals": [
-                                            "@length(body('Select_AssignedTo'))",
-                                            0
+                                        "or": [
+                                            {
+                                                "equals": [
+                                                    "@length(body('Select_AssignedTo'))",
+                                                    0
+                                                ]
+                                            },
+                                            {
+                                                "equals": [
+                                                    "@true",
+                                                    "@true"
+                                                ]
+                                            }
                                         ]
+                                    },
+                                    "metadata": {
+                                        "operationMetadataId": "694965a5-40e9-4730-9889-f0c54ba1d912"
                                     },
                                     "type": "If"
                                 },
@@ -765,6 +655,9 @@
                                         "Send_an_HTTP_request_to_SharePoint": [
                                             "Succeeded"
                                         ]
+                                    },
+                                    "metadata": {
+                                        "operationMetadataId": "c0678202-0480-446f-b6a0-800563039261"
                                     },
                                     "type": "OpenApiConnection",
                                     "inputs": {
@@ -787,6 +680,9 @@
                                 },
                                 "Send_an_HTTP_request_to_SharePoint": {
                                     "runAfter": {},
+                                    "metadata": {
+                                        "operationMetadataId": "8480960b-6e93-4a45-bb7a-a7793a5f8651"
+                                    },
                                     "type": "OpenApiConnection",
                                     "inputs": {
                                         "host": {
@@ -808,6 +704,9 @@
                                 }
                             },
                             "runAfter": {},
+                            "metadata": {
+                                "operationMetadataId": "d39cc692-5b6c-4cd3-8795-4b327276918a"
+                            },
                             "type": "Scope"
                         }
                     },
@@ -816,12 +715,18 @@
                             "Succeeded"
                         ]
                     },
+                    "metadata": {
+                        "operationMetadataId": "6001cff1-e72a-4539-87fa-26c467a8b774"
+                    },
                     "type": "Scope"
                 },
                 "Scope_ItemsViewAddUpdateNoDelete": {
                     "actions": {
                         "Compose_SiteGroupIdMembers": {
                             "runAfter": {},
+                            "metadata": {
+                                "operationMetadataId": "30d0fce6-65ae-44bc-a177-e10b24fc64c8"
+                            },
                             "type": "Compose",
                             "inputs": 5
                         },
@@ -831,6 +736,9 @@
                                     "Succeeded"
                                 ]
                             },
+                            "metadata": {
+                                "operationMetadataId": "221af9b9-5aa5-48e5-ba2a-b0ed4e6c6ccd"
+                            },
                             "type": "Compose",
                             "inputs": "ItemsViewAddUpdateNoDelete"
                         },
@@ -839,6 +747,9 @@
                                 "Compose_ItemsViewAddUpdateNoDelete": [
                                     "Succeeded"
                                 ]
+                            },
+                            "metadata": {
+                                "operationMetadataId": "c3039fe1-0649-4f25-9439-916ae5116dcb"
                             },
                             "type": "OpenApiConnection",
                             "inputs": {
@@ -864,6 +775,9 @@
                                 "Get_ItemsViewAddUpdateNoDelete_Id": [
                                     "Succeeded"
                                 ]
+                            },
+                            "metadata": {
+                                "operationMetadataId": "8d27b35a-d9e2-48c4-9925-edbd76772591"
                             },
                             "type": "ParseJson",
                             "inputs": {
@@ -937,6 +851,9 @@
                             "Succeeded"
                         ]
                     },
+                    "metadata": {
+                        "operationMetadataId": "f3ddca72-4a4a-4305-921a-58f1b6676fed"
+                    },
                     "type": "Scope"
                 },
                 "Initialize_variable_reviews": {
@@ -944,6 +861,9 @@
                         "Initialize_variable_payees": [
                             "Succeeded"
                         ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "93235e29-7d07-4546-8e75-3a5257002ccf"
                     },
                     "type": "InitializeVariable",
                     "inputs": {
@@ -959,6 +879,9 @@
                     "actions": {
                         "Get_items_GroupsList": {
                             "runAfter": {},
+                            "metadata": {
+                                "operationMetadataId": "46433e3a-e1ea-4c55-8a90-9f37585d3bfd"
+                            },
                             "type": "OpenApiConnection",
                             "inputs": {
                                 "host": {
@@ -981,6 +904,9 @@
                                     "Succeeded"
                                 ]
                             },
+                            "metadata": {
+                                "operationMetadataId": "e19ac606-1300-465e-b384-5e6ef6cc1c0f"
+                            },
                             "type": "OpenApiConnection",
                             "inputs": {
                                 "host": {
@@ -991,7 +917,7 @@
                                 "parameters": {
                                     "dataset": "https://@{outputs('Compose_TenantName')}.sharepoint.com/sites/@{variables('Cycle1GroupName')}",
                                     "table": "UsersList",
-                                    "$filter": "Title eq '@{body('Parse_JSON')?['Author']?['Email']}'",
+                                    "$filter": "Title eq '@{toLower(body('Parse_JSON')?['Author']?['Email'])}'",
                                     "$top": 1
                                 },
                                 "authentication": "@parameters('$authentication')"
@@ -1008,6 +934,9 @@
                                             "actions": {
                                                 "Get_items_UsersList_To": {
                                                     "runAfter": {},
+                                                    "metadata": {
+                                                        "operationMetadataId": "8600a778-e584-4a24-935b-1f330c629ef4"
+                                                    },
                                                     "type": "OpenApiConnection",
                                                     "inputs": {
                                                         "host": {
@@ -1031,6 +960,9 @@
                                                             "actions": {
                                                                 "HTTP_Get_customer": {
                                                                     "runAfter": {},
+                                                                    "metadata": {
+                                                                        "operationMetadataId": "7d6f86a8-f3dc-4f9c-add8-919091f72a82"
+                                                                    },
                                                                     "type": "Http",
                                                                     "inputs": {
                                                                         "method": "GET",
@@ -1046,6 +978,9 @@
                                                                         "HTTP_Get_customer": [
                                                                             "Succeeded"
                                                                         ]
+                                                                    },
+                                                                    "metadata": {
+                                                                        "operationMetadataId": "9f2b5ff3-b25f-4af0-881f-8461577fd6dc"
                                                                     },
                                                                     "type": "ParseJson",
                                                                     "inputs": {
@@ -1104,6 +1039,9 @@
                                                                                         "Succeeded"
                                                                                     ]
                                                                                 },
+                                                                                "metadata": {
+                                                                                    "operationMetadataId": "edf24924-c69d-4310-962e-11df6ed2a455"
+                                                                                },
                                                                                 "type": "SetVariable",
                                                                                 "inputs": {
                                                                                     "name": "StatusDescription",
@@ -1112,6 +1050,9 @@
                                                                             },
                                                                             "Compose_amount": {
                                                                                 "runAfter": {},
+                                                                                "metadata": {
+                                                                                    "operationMetadataId": "0aecc231-772d-4b9e-b216-8720ea1c9267"
+                                                                                },
                                                                                 "type": "Compose",
                                                                                 "inputs": "@if(contains(createArray('bif', 'clp', 'djf', 'gnf', 'jpy', 'kmf', 'krw', 'mga', 'pyg', 'rwf', 'vnd', 'vuv', 'xaf', 'xof', 'xpf'), items('Apply_to_each_GroupsList')?['CurrencyCode']), int(body('Parse_JSON')?['PayAmount']) , int(mul(float(body('Parse_JSON')?['PayAmount']), 100)) )"
                                                                             },
@@ -1120,6 +1061,9 @@
                                                                                     "HTTP_Add_Balance": [
                                                                                         "Succeeded"
                                                                                     ]
+                                                                                },
+                                                                                "metadata": {
+                                                                                    "operationMetadataId": "710b0a52-4542-4531-90a3-e3afe0ef8d13"
                                                                                 },
                                                                                 "type": "OpenApiConnection",
                                                                                 "inputs": {
@@ -1131,7 +1075,8 @@
                                                                                     "parameters": {
                                                                                         "dataset": "@variables('siteAddress')",
                                                                                         "table": "EventReview",
-                                                                                        "$filter": "Predecessors eq '@{body('Parse_JSON')?['ID']}'"
+                                                                                        "$filter": "(Predecessors eq '@{body('Parse_JSON')?['ID']}') and (RoleType eq 'Reviewer')",
+                                                                                        "$orderby": "Modified desc"
                                                                                     },
                                                                                     "authentication": "@parameters('$authentication')"
                                                                                 }
@@ -1142,17 +1087,23 @@
                                                                                         "Succeeded"
                                                                                     ]
                                                                                 },
+                                                                                "metadata": {
+                                                                                    "operationMetadataId": "7ace2b12-7e49-4dd6-8f78-c12b1203049d"
+                                                                                },
                                                                                 "type": "Query",
                                                                                 "inputs": {
                                                                                     "from": "@outputs('Get_files_Predecessors')?['body/value']",
-                                                                                    "where": "@equals(item()?['Author']?['Email'], items('Apply_to_each_UsersList_To')?['Title'])"
+                                                                                    "where": "@equals(toLower(item()?['Author']?['Email']), toLower(items('Apply_to_each_UsersList_To')?['Title']))"
                                                                                 }
                                                                             },
                                                                             "Apply_to_each_Predecessors": {
-                                                                                "foreach": "@body('Filter_array_Predecessors')",
+                                                                                "foreach": "@take(body('Filter_array_Predecessors'),1)",
                                                                                 "actions": {
                                                                                     "Run_a_Child_Flow_Predecessors": {
                                                                                         "runAfter": {},
+                                                                                        "metadata": {
+                                                                                            "operationMetadataId": "a8ffda12-e9d8-44c1-a385-cacd1ffe06c9"
+                                                                                        },
                                                                                         "type": "Workflow",
                                                                                         "inputs": {
                                                                                             "host": {
@@ -1166,14 +1117,44 @@
                                                                                     },
                                                                                     "Append_to_string_variable_reviews": {
                                                                                         "runAfter": {
-                                                                                            "Run_a_Child_Flow_Predecessors": [
+                                                                                            "Get_files_Transcripts": [
                                                                                                 "Succeeded"
                                                                                             ]
+                                                                                        },
+                                                                                        "metadata": {
+                                                                                            "operationMetadataId": "b39b7b1b-e01f-4164-8bb5-f2be0a945677"
                                                                                         },
                                                                                         "type": "AppendToStringVariable",
                                                                                         "inputs": {
                                                                                             "name": "reviews",
-                                                                                            "value": "\n<ws365><ereview>\n<reviewer> @{items('Apply_to_each_UsersList_To')?['Title']} </reviewer>\n<url> @{items('Apply_to_each_Predecessors')?['{Link}']} </url>\n<pay> @{body('Parse_JSON')?['PayAmount']} @{items('Apply_to_each_GroupsList')?['CurrencyCode']} </pay>\n</ereview></ws365>\n\n@{body('Run_a_Child_Flow_Predecessors')?['title']}\n@{body('Run_a_Child_Flow_Predecessors')?['short']}"
+                                                                                            "value": "_______________________________________________________________________\nLearner Reviewer: @{items('Apply_to_each_UsersList_To')?['Title']} ; Review Link: @{items('Apply_to_each_Predecessors')?['{Link}']}\nPayment to Reviewer: @{body('Parse_JSON')?['PayAmount']} @{items('Apply_to_each_GroupsList')?['CurrencyCode']}\nQualified via Quiz?: @{if(equals(length(outputs('Get_files_Transcripts')?['body/value']), 0), 'None', concat(mul(float(outputs('Get_files_Transcripts')?['body/value']?[0]?['QuizGrade']), 100), '% ; Late?: ' , outputs('Get_files_Transcripts')?['body/value']?[0]?['QuizDeadlineInvalid'] ,\r\n' ; Repeated?: ' , outputs('Get_files_Transcripts')?['body/value']?[0]?['QuizRepeatInvalid'] ,\r\n' ; Transcript Sharing Link: ' , outputs('Get_files_Transcripts')?['body/value']?[0]?['SharingLink']))}\n\nTitle: @{body('Run_a_Child_Flow_Predecessors')?['title']}\nShort: @{body('Run_a_Child_Flow_Predecessors')?['short']}"
+                                                                                        }
+                                                                                    },
+                                                                                    "Get_files_Transcripts": {
+                                                                                        "runAfter": {
+                                                                                            "Run_a_Child_Flow_Predecessors": [
+                                                                                                "Succeeded"
+                                                                                            ]
+                                                                                        },
+                                                                                        "metadata": {
+                                                                                            "operationMetadataId": "0b2ea719-90d0-4298-8dcf-b393ad57a76f"
+                                                                                        },
+                                                                                        "type": "OpenApiConnection",
+                                                                                        "inputs": {
+                                                                                            "host": {
+                                                                                                "connectionName": "shared_sharepointonline_1",
+                                                                                                "operationId": "GetFileItems",
+                                                                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                                                            },
+                                                                                            "parameters": {
+                                                                                                "dataset": "@variables('siteAddress')",
+                                                                                                "table": "EventReview",
+                                                                                                "folderPath": "Transcripts",
+                                                                                                "$filter": "(AssignmentRef eq '@{string(items('Apply_to_each_Predecessors')?['ID'])}') and (Predecessors eq '@{body('Parse_JSON')?['ID']}')",
+                                                                                                "$orderby": "Modified desc",
+                                                                                                "$top": 1
+                                                                                            },
+                                                                                            "authentication": "@parameters('$authentication')"
                                                                                         }
                                                                                     }
                                                                                 },
@@ -1182,6 +1163,9 @@
                                                                                         "Succeeded"
                                                                                     ]
                                                                                 },
+                                                                                "metadata": {
+                                                                                    "operationMetadataId": "b5e79b28-e4cf-4827-be8d-1603e4213bbe"
+                                                                                },
                                                                                 "type": "Foreach"
                                                                             },
                                                                             "Append_to_array_variable_payees": {
@@ -1189,6 +1173,9 @@
                                                                                     "Apply_to_each_Predecessors": [
                                                                                         "Succeeded"
                                                                                     ]
+                                                                                },
+                                                                                "metadata": {
+                                                                                    "operationMetadataId": "175fb0f8-bdec-492e-a08d-5bac519a90a6"
                                                                                 },
                                                                                 "type": "AppendToArrayVariable",
                                                                                 "inputs": {
@@ -1201,6 +1188,9 @@
                                                                                     "Compose_amount": [
                                                                                         "Succeeded"
                                                                                     ]
+                                                                                },
+                                                                                "metadata": {
+                                                                                    "operationMetadataId": "e9d0f3c5-c038-413b-be86-3739c8c71da9"
                                                                                 },
                                                                                 "type": "Http",
                                                                                 "inputs": {
@@ -1221,6 +1211,9 @@
                                                                                     "HTTP_Delete_Balance": [
                                                                                         "Succeeded"
                                                                                     ]
+                                                                                },
+                                                                                "metadata": {
+                                                                                    "operationMetadataId": "be9da208-5bf5-4100-94fd-827ef19562b5"
                                                                                 },
                                                                                 "type": "Http",
                                                                                 "inputs": {
@@ -1254,6 +1247,9 @@
                                                                             }
                                                                         ]
                                                                     },
+                                                                    "metadata": {
+                                                                        "operationMetadataId": "a3778467-38eb-4a42-91ce-aaaaf8a8efb0"
+                                                                    },
                                                                     "type": "If"
                                                                 }
                                                             },
@@ -1262,6 +1258,9 @@
                                                                 "actions": {
                                                                     "Set_variable_StatusDescription_3": {
                                                                         "runAfter": {},
+                                                                        "metadata": {
+                                                                            "operationMetadataId": "b5101485-d52f-451f-9804-8542643253c4"
+                                                                        },
                                                                         "type": "SetVariable",
                                                                         "inputs": {
                                                                             "name": "StatusDescription",
@@ -1298,6 +1297,9 @@
                                                                     }
                                                                 ]
                                                             },
+                                                            "metadata": {
+                                                                "operationMetadataId": "dfff3333-03b6-4c40-a981-2b1d7456df60"
+                                                            },
                                                             "type": "If"
                                                         }
                                                     },
@@ -1306,14 +1308,23 @@
                                                             "Succeeded"
                                                         ]
                                                     },
+                                                    "metadata": {
+                                                        "operationMetadataId": "142f4558-cb99-462c-881f-46648179f9bd"
+                                                    },
                                                     "type": "Foreach"
                                                 }
                                             },
                                             "runAfter": {},
+                                            "metadata": {
+                                                "operationMetadataId": "481b819b-8f23-4851-9be7-7578652a5e6e"
+                                            },
                                             "type": "Foreach"
                                         }
                                     },
                                     "runAfter": {},
+                                    "metadata": {
+                                        "operationMetadataId": "963c5b8e-93d7-433c-88d8-69a1746ed573"
+                                    },
                                     "type": "Foreach"
                                 }
                             },
@@ -1322,12 +1333,18 @@
                                     "Succeeded"
                                 ]
                             },
+                            "metadata": {
+                                "operationMetadataId": "1003c7f0-a3b1-40d5-a9b4-fbf79458b1f8"
+                            },
                             "type": "Foreach"
                         },
                         "Scope": {
                             "actions": {
                                 "Create_file_Receipt": {
                                     "runAfter": {},
+                                    "metadata": {
+                                        "operationMetadataId": "ad4ccb8f-ecb4-4cd6-8c60-a5f29c33e401"
+                                    },
                                     "type": "OpenApiConnection",
                                     "inputs": {
                                         "host": {
@@ -1338,7 +1355,7 @@
                                         "parameters": {
                                             "dataset": "@variables('siteAddress')",
                                             "folderPath": "EventReview/Receipts",
-                                            "name": "@{body('Parse_JSON')?['Author']?['Email']} @{body('Parse_JSON')?['{Name}']} @{body('Parse_JSON')?['Modified']} @{variables('fileItemId')}.docx",
+                                            "name": "@{toLower(body('Parse_JSON')?['Author']?['Email'])} - Receipts - Prompt @{variables('fileItemId')} - @{body('Parse_JSON')?['Modified']} - @{body('Parse_JSON')?['{Name}']}.docx",
                                             "body": "{\"$content-type\":\"application/vnd.openxmlformats-officedocument.wordprocessingml.document\",\n\"$content\":\"\"}"
                                         },
                                         "authentication": "@parameters('$authentication')"
@@ -1354,6 +1371,9 @@
                                         "Create_file_Receipt": [
                                             "Succeeded"
                                         ]
+                                    },
+                                    "metadata": {
+                                        "operationMetadataId": "d7052c24-a1a9-46ec-9647-4c35acf792b7"
                                     },
                                     "type": "OpenApiConnection",
                                     "inputs": {
@@ -1380,6 +1400,9 @@
                                             "Succeeded"
                                         ]
                                     },
+                                    "metadata": {
+                                        "operationMetadataId": "6fdae1c1-6b9a-4423-b053-3b539bcec9c2"
+                                    },
                                     "type": "OpenApiConnection",
                                     "inputs": {
                                         "host": {
@@ -1405,6 +1428,9 @@
                                             "Succeeded"
                                         ]
                                     },
+                                    "metadata": {
+                                        "operationMetadataId": "21a3764d-be97-4fea-986d-38d877ee4463"
+                                    },
                                     "type": "OpenApiConnection",
                                     "inputs": {
                                         "host": {
@@ -1417,7 +1443,8 @@
                                             "table": "EventReview",
                                             "id": "@outputs('Create_file_Receipt')?['body/ItemId']",
                                             "item": {
-                                                "Title": "@{body('Run_a_Child_Flow_Author')?['title']}",
+                                                "Title": "Receipts - @{body('Run_a_Child_Flow_Author')?['title']}",
+                                                "RoleType": null,
                                                 "AssignedTo": "@body('Select_AssignedTo_Claims')",
                                                 "PayAmount": "@body('Parse_JSON')?['PayAmount']",
                                                 "PayNowAction": "@body('Parse_JSON')?['PayNowAction']",
@@ -1426,9 +1453,6 @@
                                                     "@@odata.type": "#Microsoft.Azure.Connectors.SharePoint.SPListExpandedReference",
                                                     "Id": "@variables('fileItemId')",
                                                     "Value": "@{variables('fileItemId')}"
-                                                },
-                                                "{ContentType}": {
-                                                    "Id": "@{body('Parse_JSON')?['{ContentType}']?['Id']}"
                                                 },
                                                 "Short": "@{body('Run_a_Child_Flow_Author')?['short']}"
                                             }
@@ -1441,6 +1465,9 @@
                                         "Update_file_properties_Receipt": [
                                             "Succeeded"
                                         ]
+                                    },
+                                    "metadata": {
+                                        "operationMetadataId": "d0cd403f-b6b2-4718-81a3-2e562b5332e5"
                                     },
                                     "type": "OpenApiConnection",
                                     "inputs": {
@@ -1461,6 +1488,9 @@
                                         "Get_file_metadata_using_path_Receipt": [
                                             "Succeeded"
                                         ]
+                                    },
+                                    "metadata": {
+                                        "operationMetadataId": "deedbe08-2eac-484c-a8a9-a73870fa17f3"
                                     },
                                     "type": "OpenApiConnection",
                                     "inputs": {
@@ -1486,6 +1516,9 @@
                                             "Succeeded"
                                         ]
                                     },
+                                    "metadata": {
+                                        "operationMetadataId": "5a57c63b-3946-45c2-948a-8e1d165b67a6"
+                                    },
                                     "type": "OpenApiConnection",
                                     "inputs": {
                                         "host": {
@@ -1510,6 +1543,9 @@
                                             "Succeeded"
                                         ]
                                     },
+                                    "metadata": {
+                                        "operationMetadataId": "58dfa616-44f6-4e71-8dc8-fded8274ddbd"
+                                    },
                                     "type": "Query",
                                     "inputs": {
                                         "from": "@body('Parse_JSON')?['AssignedTo']",
@@ -1521,6 +1557,9 @@
                                         "Filter_array_AssignedTo_Claims": [
                                             "Succeeded"
                                         ]
+                                    },
+                                    "metadata": {
+                                        "operationMetadataId": "3b4e0e5a-54bb-41c7-a9a9-0f712cb4f05f"
                                     },
                                     "type": "Select",
                                     "inputs": {
@@ -1535,6 +1574,9 @@
                                         "Populate_a_Microsoft_Word_template": [
                                             "Succeeded"
                                         ]
+                                    },
+                                    "metadata": {
+                                        "operationMetadataId": "4d38bf57-4a2e-4d91-a631-10c96616b116"
                                     },
                                     "type": "OpenApiConnection",
                                     "inputs": {
@@ -1557,6 +1599,9 @@
                                             "Succeeded"
                                         ]
                                     },
+                                    "metadata": {
+                                        "operationMetadataId": "67b5a393-fd21-45f2-a315-1cf6bee6ef59"
+                                    },
                                     "type": "OpenApiConnection",
                                     "inputs": {
                                         "host": {
@@ -1574,28 +1619,14 @@
                                         "authentication": "@parameters('$authentication')"
                                     }
                                 },
-                                "Run_a_Child_Flow_Author": {
+                                "Populate_a_Microsoft_Word_template": {
                                     "runAfter": {
                                         "Select_AssignedTo_Claims": [
                                             "Succeeded"
                                         ]
                                     },
-                                    "type": "Workflow",
-                                    "inputs": {
-                                        "host": {
-                                            "workflowReferenceName": "d04f0d38-b776-eb11-a812-0022486d6717"
-                                        },
-                                        "body": {
-                                            "siteName": "@variables('siteName')",
-                                            "fileIdentifier": "@body('Parse_JSON')?['{FullPath}']"
-                                        }
-                                    }
-                                },
-                                "Populate_a_Microsoft_Word_template": {
-                                    "runAfter": {
-                                        "Run_a_Child_Flow_Author": [
-                                            "Succeeded"
-                                        ]
+                                    "metadata": {
+                                        "operationMetadataId": "02e80a75-e58a-48b9-92c8-b1b59f19a27b"
                                     },
                                     "type": "OpenApiConnection",
                                     "inputs": {
@@ -1609,7 +1640,7 @@
                                             "drive": "@variables('driveId')",
                                             "file": "@join(skip(split(body('Parse_JSON')?['{FullPath}'], '/'), 1), '/')",
                                             "dynamicFileSchema": {
-                                                "@{body('Run_a_Child_Flow_Author')?['ccid']}": "Author: @{body('Parse_JSON')?['Author']?['Email']} ; Sharing Link: @{outputs('Create_sharing_link_Receipt')?['body/link/webUrl']}\n@{variables('reviews')}"
+                                                "@{body('Run_a_Child_Flow_Author')?['ccid']}": "Prompter Author: @{toLower(body('Parse_JSON')?['Author']?['Email'])} ; Receipt Sharing Link: @{outputs('Create_sharing_link_Receipt')?['body/link/webUrl']}\n@{variables('reviews')}"
                                             }
                                         },
                                         "authentication": "@parameters('$authentication')"
@@ -1620,6 +1651,9 @@
                                 "Apply_to_each_GroupsList": [
                                     "Succeeded"
                                 ]
+                            },
+                            "metadata": {
+                                "operationMetadataId": "2e7b6829-c810-4ba4-8ea3-900b750f5955"
                             },
                             "type": "Scope"
                         }
@@ -1639,8 +1673,8 @@
                             },
                             {
                                 "equals": [
-                                    "@body('Parse_JSON')?['Author']?['Email']",
-                                    "@body('Parse_JSON')?['Editor']?['Email']"
+                                    "@toLower(body('Parse_JSON')?['Author']?['Email'])",
+                                    "@toLower(body('Parse_JSON')?['Editor']?['Email'])"
                                 ]
                             },
                             {
@@ -1657,6 +1691,9 @@
                             }
                         ]
                     },
+                    "metadata": {
+                        "operationMetadataId": "667cca0a-4020-4c56-9406-186ec52ef93b"
+                    },
                     "type": "If"
                 },
                 "Initialize_variable_payees": {
@@ -1664,6 +1701,9 @@
                         "Initialize_variable_StatusDescription": [
                             "Succeeded"
                         ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "9631db69-b79d-41c9-8600-18e7e0397cec"
                     },
                     "type": "InitializeVariable",
                     "inputs": {
@@ -1674,6 +1714,565 @@
                             }
                         ]
                     }
+                },
+                "Condition_Trigger_Conditions": {
+                    "actions": {
+                        "Response_Trigger_Conditions": {
+                            "runAfter": {},
+                            "metadata": {
+                                "operationMetadataId": "d0bb3657-1665-4d0f-9cce-5edfbb37f439"
+                            },
+                            "type": "Response",
+                            "kind": "Http",
+                            "inputs": {
+                                "statusCode": 200
+                            }
+                        },
+                        "Terminate_Trigger_Conditions": {
+                            "runAfter": {
+                                "Response_Trigger_Conditions": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "metadata": {
+                                "operationMetadataId": "990c70cb-05f3-4ab0-8929-fea26fb4d8ad"
+                            },
+                            "type": "Terminate",
+                            "inputs": {
+                                "runStatus": "Cancelled"
+                            }
+                        }
+                    },
+                    "runAfter": {
+                        "Get_file_properties": [
+                            "Succeeded"
+                        ]
+                    },
+                    "else": {
+                        "actions": {
+                            "Parse_JSON": {
+                                "runAfter": {},
+                                "metadata": {
+                                    "operationMetadataId": "3798de47-5ac8-4838-b97d-70627f8cdae3"
+                                },
+                                "type": "ParseJson",
+                                "inputs": {
+                                    "content": "@body('Get_file_properties')",
+                                    "schema": {
+                                        "type": "object",
+                                        "properties": {
+                                            "@@odata.etag": {
+                                                "type": "string"
+                                            },
+                                            "ItemInternalId": {
+                                                "type": "string"
+                                            },
+                                            "ID": {
+                                                "type": "integer"
+                                            },
+                                            "Title": {
+                                                "type": "string"
+                                            },
+                                            "Author": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "@@odata.type": {
+                                                        "type": "string"
+                                                    },
+                                                    "Claims": {
+                                                        "type": "string"
+                                                    },
+                                                    "DisplayName": {
+                                                        "type": "string"
+                                                    },
+                                                    "Email": {
+                                                        "type": "string"
+                                                    },
+                                                    "Picture": {
+                                                        "type": "string"
+                                                    },
+                                                    "Department": {},
+                                                    "JobTitle": {}
+                                                }
+                                            },
+                                            "Author#Claims": {
+                                                "type": "string"
+                                            },
+                                            "StartDate": {
+                                                "type": "string"
+                                            },
+                                            "TaskLink": {
+                                                "type": "string"
+                                            },
+                                            "AssignedTo": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "@@odata.type": {
+                                                            "type": "string"
+                                                        },
+                                                        "Claims": {
+                                                            "type": "string"
+                                                        },
+                                                        "DisplayName": {
+                                                            "type": "string"
+                                                        },
+                                                        "Email": {
+                                                            "type": "string"
+                                                        },
+                                                        "Picture": {
+                                                            "type": "string"
+                                                        },
+                                                        "Department": {},
+                                                        "JobTitle": {}
+                                                    }
+                                                }
+                                            },
+                                            "AssignedTo@odata.type": {
+                                                "type": "string"
+                                            },
+                                            "AssignedTo#Claims": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "AssignedTo#Claims@odata.type": {
+                                                "type": "string"
+                                            },
+                                            "PayAmount": {
+                                                "type": "number"
+                                            },
+                                            "PayNowAction": {
+                                                "type": "boolean"
+                                            },
+                                            "DueDate": {
+                                                "type": "string"
+                                            },
+                                            "Predecessors": {},
+                                            "Predecessors#Id": {},
+                                            "PercentComplete": {
+                                                "type": "number"
+                                            },
+                                            "Editor": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "@@odata.type": {
+                                                        "type": "string"
+                                                    },
+                                                    "Claims": {
+                                                        "type": "string"
+                                                    },
+                                                    "DisplayName": {
+                                                        "type": "string"
+                                                    },
+                                                    "Email": {
+                                                        "type": "string"
+                                                    },
+                                                    "Picture": {
+                                                        "type": "string"
+                                                    },
+                                                    "Department": {
+                                                        "type": "string"
+                                                    },
+                                                    "JobTitle": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            },
+                                            "Editor#Claims": {
+                                                "type": "string"
+                                            },
+                                            "Modified": {
+                                                "type": "string"
+                                            },
+                                            "CountryOrRegion": {
+                                                "type": "string"
+                                            },
+                                            "State": {
+                                                "type": "string"
+                                            },
+                                            "City": {
+                                                "type": "string"
+                                            },
+                                            "Street": {
+                                                "type": "string"
+                                            },
+                                            "DispName": {
+                                                "type": "string"
+                                            },
+                                            "Created": {
+                                                "type": "string"
+                                            },
+                                            "OData__DisplayName": {
+                                                "type": "string"
+                                            },
+                                            "{Identifier}": {
+                                                "type": "string"
+                                            },
+                                            "{IsFolder}": {
+                                                "type": "boolean"
+                                            },
+                                            "{Link}": {
+                                                "type": "string"
+                                            },
+                                            "{Name}": {
+                                                "type": "string"
+                                            },
+                                            "{FilenameWithExtension}": {
+                                                "type": "string"
+                                            },
+                                            "{Path}": {
+                                                "type": "string"
+                                            },
+                                            "{FullPath}": {
+                                                "type": "string"
+                                            },
+                                            "{ModerationStatus}": {
+                                                "type": "string"
+                                            },
+                                            "{IsCheckedOut}": {
+                                                "type": "boolean"
+                                            },
+                                            "{VersionNumber}": {
+                                                "type": "string"
+                                            },
+                                            "RoleType": {},
+                                            "RoleType#Id": {}
+                                        }
+                                    }
+                                }
+                            },
+                            "Condition_RoleType": {
+                                "actions": {},
+                                "runAfter": {
+                                    "Parse_JSON": [
+                                        "Succeeded"
+                                    ]
+                                },
+                                "else": {
+                                    "actions": {
+                                        "Get_file_metadata_RoleType": {
+                                            "runAfter": {},
+                                            "metadata": {
+                                                "operationMetadataId": "e1f64a2d-0a9f-4637-b7de-b442c22944a0"
+                                            },
+                                            "type": "OpenApiConnection",
+                                            "inputs": {
+                                                "host": {
+                                                    "connectionName": "shared_sharepointonline_1",
+                                                    "operationId": "GetFileMetadata",
+                                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                },
+                                                "parameters": {
+                                                    "dataset": "@variables('siteAddress')",
+                                                    "id": "@body('Get_file_properties')?['{Identifier}']"
+                                                },
+                                                "authentication": "@parameters('$authentication')"
+                                            }
+                                        },
+                                        "Set_content_approval_status_RoleType": {
+                                            "runAfter": {
+                                                "Get_file_metadata_RoleType": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "metadata": {
+                                                "operationMetadataId": "17c59ad6-37a5-4f38-904c-8573c31a2df7"
+                                            },
+                                            "type": "OpenApiConnection",
+                                            "inputs": {
+                                                "host": {
+                                                    "connectionName": "shared_sharepointonline_1",
+                                                    "operationId": "SetApprovalStatus",
+                                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                },
+                                                "parameters": {
+                                                    "dataset": "@variables('siteAddress')",
+                                                    "table": "EventReview",
+                                                    "id": "@body('Get_file_properties')?['ID']",
+                                                    "approvalAction": "Reject",
+                                                    "comments": "",
+                                                    "entityTag": "@outputs('Get_file_metadata_RoleType')?['body/ETag']"
+                                                },
+                                                "authentication": "@parameters('$authentication')",
+                                                "retryPolicy": {
+                                                    "type": "none"
+                                                }
+                                            }
+                                        },
+                                        "Terminate": {
+                                            "runAfter": {
+                                                "Response_RoleType": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "metadata": {
+                                                "operationMetadataId": "71040fa9-6092-4cd4-ab22-4780be898583"
+                                            },
+                                            "type": "Terminate",
+                                            "inputs": {
+                                                "runStatus": "Cancelled"
+                                            }
+                                        },
+                                        "Response_RoleType": {
+                                            "runAfter": {
+                                                "Set_content_approval_status_RoleType": [
+                                                    "Succeeded",
+                                                    "Failed",
+                                                    "TimedOut"
+                                                ]
+                                            },
+                                            "metadata": {
+                                                "operationMetadataId": "179d0ad5-152d-45e6-95be-ceb21e84c85a"
+                                            },
+                                            "type": "Response",
+                                            "kind": "Http",
+                                            "inputs": {
+                                                "statusCode": 200
+                                            }
+                                        }
+                                    }
+                                },
+                                "expression": {
+                                    "and": [
+                                        {
+                                            "equals": [
+                                                "@toLower(string(body('Get_file_properties')?['RoleType']?['Value']))",
+                                                "@toLower('Prompter')"
+                                            ]
+                                        },
+                                        {
+                                            "endsWith": [
+                                                "@body('Get_file_properties')?['{FullPath}']",
+                                                ".docx"
+                                            ]
+                                        }
+                                    ]
+                                },
+                                "metadata": {
+                                    "operationMetadataId": "85c1d5c7-0cb8-4bae-a26b-da110459f9fc"
+                                },
+                                "type": "If"
+                            }
+                        }
+                    },
+                    "expression": {
+                        "or": [
+                            {
+                                "startsWith": [
+                                    "@body('Get_file_properties')?['{Path}']",
+                                    "@'EventReview/Receipts/'"
+                                ]
+                            },
+                            {
+                                "startsWith": [
+                                    "@body('Get_file_properties')?['{Path}']",
+                                    "@'EventReview/Transcripts/'"
+                                ]
+                            },
+                            {
+                                "startsWith": [
+                                    "@body('Get_file_properties')?['{Path}']",
+                                    "@'EventReview/TranscriptsCopy/'"
+                                ]
+                            },
+                            {
+                                "equals": [
+                                    "@body('Get_file_properties')?['{FullPath}']",
+                                    "@'EventReview/Public_Listing_Receipts.xlsx'"
+                                ]
+                            },
+                            {
+                                "equals": [
+                                    "@body('Get_file_properties')?['{FullPath}']",
+                                    "@'EventReview/Template_Prompter_Reviewer_Copy_Me.docx'"
+                                ]
+                            },
+                            {
+                                "equals": [
+                                    "@body('Get_file_properties')?['{FullPath}']",
+                                    "@'EventReview/Template_Prompter_Reviewer_Copy_Me.docx'"
+                                ]
+                            },
+                            {
+                                "equals": [
+                                    "@body('Get_file_properties')?['{IsFolder}']",
+                                    "@true"
+                                ]
+                            },
+                            {
+                                "equals": [
+                                    "@toLower(string(body('Get_file_properties')?['RoleType']?['Value']))",
+                                    "@toLower('Reviewer')"
+                                ]
+                            },
+                            {
+                                "equals": [
+                                    "@toLower(string(body('Get_file_properties')?['RoleType']?['Value']))",
+                                    "@toLower('PrompterSolution')"
+                                ]
+                            }
+                        ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "bdd420fe-8192-45c1-8404-e81d2fb5ea3b"
+                    },
+                    "type": "If"
+                },
+                "Run_a_Child_Flow_Author": {
+                    "runAfter": {
+                        "Condition_Trigger_Conditions": [
+                            "Succeeded"
+                        ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "3597592a-a777-4cea-b282-ee9f508c38c8"
+                    },
+                    "type": "Workflow",
+                    "inputs": {
+                        "host": {
+                            "workflowReferenceName": "d04f0d38-b776-eb11-a812-0022486d6717"
+                        },
+                        "body": {
+                            "siteName": "@variables('siteName')",
+                            "fileIdentifier": "@body('Parse_JSON')?['{FullPath}']"
+                        }
+                    }
+                },
+                "Condition_Title": {
+                    "actions": {},
+                    "runAfter": {
+                        "Set_content_approval_status": [
+                            "Succeeded"
+                        ]
+                    },
+                    "else": {
+                        "actions": {
+                            "Scope_Title": {
+                                "actions": {
+                                    "Update_file_properties_Title": {
+                                        "runAfter": {},
+                                        "metadata": {
+                                            "operationMetadataId": "83a62f95-28b2-409d-8aee-95def0c90f30"
+                                        },
+                                        "type": "OpenApiConnection",
+                                        "inputs": {
+                                            "host": {
+                                                "connectionName": "shared_sharepointonline_1",
+                                                "operationId": "PatchFileItem",
+                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                            },
+                                            "parameters": {
+                                                "dataset": "@variables('siteAddress')",
+                                                "table": "EventReview",
+                                                "id": "@body('Parse_JSON')?['ID']",
+                                                "item": {
+                                                    "Title": "Prompter - @{body('Run_a_Child_Flow_Author')?['title']}",
+                                                    "Short": "@{body('Run_a_Child_Flow_Author')?['short']}",
+                                                    "StateDescription": "@{concat('\"' , add(1 , int(split(replace(body('Set_content_approval_status')?['ETag'], '\"' , ''), ',')?[1]) ) , '\"')}"
+                                                }
+                                            },
+                                            "authentication": "@parameters('$authentication')"
+                                        }
+                                    },
+                                    "Get_file_metadata_Title": {
+                                        "runAfter": {
+                                            "Update_file_properties_Title": [
+                                                "Succeeded"
+                                            ]
+                                        },
+                                        "metadata": {
+                                            "operationMetadataId": "124eeea9-36aa-4bc8-b076-ab30c0e98152"
+                                        },
+                                        "type": "OpenApiConnection",
+                                        "inputs": {
+                                            "host": {
+                                                "connectionName": "shared_sharepointonline_1",
+                                                "operationId": "GetFileMetadata",
+                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                            },
+                                            "parameters": {
+                                                "dataset": "@variables('siteAddress')",
+                                                "id": "@body('Parse_JSON')?['{Identifier}']"
+                                            },
+                                            "authentication": "@parameters('$authentication')"
+                                        }
+                                    },
+                                    "Set_content_approval_status_Title": {
+                                        "runAfter": {
+                                            "Get_file_metadata_Title": [
+                                                "Succeeded"
+                                            ]
+                                        },
+                                        "metadata": {
+                                            "operationMetadataId": "3b0e6e58-d513-4add-8320-53b273b8bc85"
+                                        },
+                                        "type": "OpenApiConnection",
+                                        "inputs": {
+                                            "host": {
+                                                "connectionName": "shared_sharepointonline_1",
+                                                "operationId": "SetApprovalStatus",
+                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                            },
+                                            "parameters": {
+                                                "dataset": "@variables('siteAddress')",
+                                                "table": "EventReview",
+                                                "id": "@body('Parse_JSON')?['ID']",
+                                                "approvalAction": "Submit",
+                                                "comments": "",
+                                                "entityTag": "@outputs('Get_file_metadata_Title')?['body/ETag']"
+                                            },
+                                            "authentication": "@parameters('$authentication')"
+                                        }
+                                    },
+                                    "Set_content_approval_status_Title_2": {
+                                        "runAfter": {
+                                            "Set_content_approval_status_Title": [
+                                                "Succeeded"
+                                            ]
+                                        },
+                                        "metadata": {
+                                            "operationMetadataId": "42ae8814-375b-4e2f-ac8a-aefa40379ab1"
+                                        },
+                                        "type": "OpenApiConnection",
+                                        "inputs": {
+                                            "host": {
+                                                "connectionName": "shared_sharepointonline_1",
+                                                "operationId": "SetApprovalStatus",
+                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                            },
+                                            "parameters": {
+                                                "dataset": "@variables('siteAddress')",
+                                                "table": "EventReview",
+                                                "id": "@body('Parse_JSON')?['ID']",
+                                                "approvalAction": "Approve",
+                                                "comments": "",
+                                                "entityTag": "@outputs('Set_content_approval_status_Title')?['body/ETag']"
+                                            },
+                                            "authentication": "@parameters('$authentication')"
+                                        }
+                                    }
+                                },
+                                "runAfter": {},
+                                "metadata": {
+                                    "operationMetadataId": "6cf4a65a-a7d0-48cf-b229-028c8f6a15c6"
+                                },
+                                "type": "Scope"
+                            }
+                        }
+                    },
+                    "expression": {
+                        "equals": [
+                            "@true",
+                            "@true"
+                        ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "726c9e87-cf13-424d-acd0-bc9174592131"
+                    },
+                    "type": "If"
                 }
             },
             "outputs": {}

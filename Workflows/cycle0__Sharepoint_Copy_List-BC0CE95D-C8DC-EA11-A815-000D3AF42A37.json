@@ -34,6 +34,9 @@
             },
             "triggers": {
                 "manual": {
+                    "metadata": {
+                        "operationMetadataId": "f6dea64b-f957-42a0-84f6-2ec2001c2034"
+                    },
                     "type": "Request",
                     "kind": "Http",
                     "inputs": {
@@ -59,6 +62,9 @@
                     "actions": {
                         "Send_an_HTTP_request_to_SharePoint_17": {
                             "runAfter": {},
+                            "metadata": {
+                                "operationMetadataId": "3e166042-4539-434b-839c-10e7b58bc2bb"
+                            },
                             "type": "OpenApiConnection",
                             "inputs": {
                                 "host": {
@@ -83,6 +89,9 @@
                                 "Send_an_HTTP_request_to_SharePoint_17": [
                                     "Succeeded"
                                 ]
+                            },
+                            "metadata": {
+                                "operationMetadataId": "32881b46-ce7c-4f6a-9f9c-14742a6e1d14"
                             },
                             "type": "ParseJson",
                             "inputs": {
@@ -193,6 +202,9 @@
                                     "Succeeded"
                                 ]
                             },
+                            "metadata": {
+                                "operationMetadataId": "be61f452-4bd6-47b4-a88b-02ae7fea5b9a"
+                            },
                             "type": "Select",
                             "inputs": {
                                 "from": "@createArray(body('Parse_JSON_5'))",
@@ -248,6 +260,9 @@
                                     "TimedOut"
                                 ]
                             },
+                            "metadata": {
+                                "operationMetadataId": "e69ff6bf-e4da-45ab-ae80-26e98e1b99f5"
+                            },
                             "type": "OpenApiConnection",
                             "inputs": {
                                 "host": {
@@ -273,6 +288,9 @@
                                     "Succeeded"
                                 ]
                             },
+                            "metadata": {
+                                "operationMetadataId": "e0304420-dfae-4623-b252-af1dc6e782ba"
+                            },
                             "type": "ParseJson",
                             "inputs": {
                                 "content": "@outputs('Send_an_HTTP_request_to_SharePoint_14')?['body']?['d']?['results']",
@@ -285,6 +303,9 @@
                                     "Succeeded"
                                 ]
                             },
+                            "metadata": {
+                                "operationMetadataId": "bbed70c8-3cf7-4e83-aab5-a2d50552ea71"
+                            },
                             "type": "Query",
                             "inputs": {
                                 "from": "@body('Parse_JSON_4')",
@@ -296,6 +317,9 @@
                                 "Filter_array": [
                                     "Succeeded"
                                 ]
+                            },
+                            "metadata": {
+                                "operationMetadataId": "100e61b1-beb8-4e93-a570-509127e23964"
                             },
                             "type": "Select",
                             "inputs": {
@@ -343,6 +367,9 @@
                             "actions": {
                                 "Send_an_HTTP_request_to_SharePoint_18": {
                                     "runAfter": {},
+                                    "metadata": {
+                                        "operationMetadataId": "a29df98d-950d-4cbd-9a08-da76a9a4053c"
+                                    },
                                     "type": "OpenApiConnection",
                                     "inputs": {
                                         "host": {
@@ -371,6 +398,9 @@
                                         "Set_variable_3": [
                                             "Succeeded"
                                         ]
+                                    },
+                                    "metadata": {
+                                        "operationMetadataId": "f6e26c3f-8d23-43fb-a122-13420aa75e74"
                                     },
                                     "type": "OpenApiConnection",
                                     "inputs": {
@@ -403,6 +433,9 @@
                                             "Succeeded"
                                         ]
                                     },
+                                    "metadata": {
+                                        "operationMetadataId": "bd445b37-dea7-4f94-bd08-a0e9fef0e9dc"
+                                    },
                                     "type": "SetVariable",
                                     "inputs": {
                                         "name": "varListId",
@@ -416,6 +449,9 @@
                                     "TimedOut"
                                 ]
                             },
+                            "metadata": {
+                                "operationMetadataId": "9e97baa9-b341-482a-a21a-6f2c8ffc6652"
+                            },
                             "type": "Scope"
                         },
                         "Send_an_HTTP_request_to_SharePoint_7": {
@@ -423,6 +459,9 @@
                                 "Select_2": [
                                     "Succeeded"
                                 ]
+                            },
+                            "metadata": {
+                                "operationMetadataId": "b46c2a7a-c40d-41b8-9804-e89623598360"
                             },
                             "type": "OpenApiConnection",
                             "inputs": {
@@ -448,6 +487,9 @@
                                 "Send_an_HTTP_request_to_SharePoint_7": [
                                     "Succeeded"
                                 ]
+                            },
+                            "metadata": {
+                                "operationMetadataId": "1a7b019b-85e4-4f09-94de-690538cd38de"
                             },
                             "type": "ParseJson",
                             "inputs": {
@@ -478,6 +520,9 @@
                                 "Scope_7": [
                                     "Succeeded"
                                 ]
+                            },
+                            "metadata": {
+                                "operationMetadataId": "a668f773-6ab0-42aa-ac43-c3cbe6872a62"
                             },
                             "type": "OpenApiConnection",
                             "inputs": {
@@ -530,7 +575,7 @@
                                                                 "accept": "application/json;odata=verbose",
                                                                 "content-type": "application/json;odata=verbose"
                                                             },
-                                                            "parameters/body": "\n{ \"parameters\" : {\n    \"__metadata\": {\n      \"type\": \"SP.FieldCreationInformation\"\n    },\n    \"Title\": \"@{items('Apply_to_each_Fields')?['Title']}\",\n    \"FieldTypeKind\": \"@{items('Apply_to_each_Fields')?['FieldTypeKind']}\",\n    \"LookupFieldName\": \"@{items('Apply_to_each_Fields')?['LookupField']}\",\n    \"LookupListId\": \"@{variables('varListId')}\"\n  }\n}\n"
+                                                            "parameters/body": "\n{ \"parameters\" : {\n    \"__metadata\": {\n      \"type\": \"SP.FieldCreationInformation\"\n    },\n    \"Title\": \"@{items('Apply_to_each_Fields')?['StaticName']}\",\n    \"FieldTypeKind\": \"@{items('Apply_to_each_Fields')?['FieldTypeKind']}\",\n    \"LookupFieldName\": \"@{items('Apply_to_each_Fields')?['LookupField']}\",\n    \"LookupListId\": \"@{variables('varListId')}\"\n  }\n}\n"
                                                         },
                                                         "authentication": "@parameters('$authentication')",
                                                         "retryPolicy": {
@@ -560,7 +605,7 @@
                                                     "type": "SetVariable",
                                                     "inputs": {
                                                         "name": "varField",
-                                                        "value": "{\n    \"__metadata\": {\n      \"type\": \"@{items('Apply_to_each_Fields')?['__metadata']?['type']}\"\n    },\n    \"AutoIndexed\": \"@{items('Apply_to_each_Fields')?['AutoIndexed']}\",\n    \"CanBeDeleted\": \"@{items('Apply_to_each_Fields')?['CanBeDeleted']}\",\n    \"ClientValidationFormula\": '@{items('Apply_to_each_Fields')?['ClientValidationFormula']}',\n    \"ClientValidationMessage\": '@{items('Apply_to_each_Fields')?['ClientValidationMessage']}',\n    \"CustomFormatter\": '@{items('Apply_to_each_Fields')?['CustomFormatter']}',\n    \"DefaultFormula\": '@{items('Apply_to_each_Fields')?['DefaultFormula']}',\n    \"DefaultValue\": \"@{items('Apply_to_each_Fields')?['DefaultValue']}\",\n    \"Description\": \"@{items('Apply_to_each_Fields')?['Description']}\",\n    \"Direction\": \"@{items('Apply_to_each_Fields')?['Direction']}\",\n    \"EnforceUniqueValues\": \"@{items('Apply_to_each_Fields')?['EnforceUniqueValues']}\",\n    \"EntityPropertyName\": \"@{items('Apply_to_each_Fields')?['EntityPropertyName']}\",\n    \"Filterable\": \"@{items('Apply_to_each_Fields')?['Filterable']}\",\n    \"FromBaseType\": \"@{items('Apply_to_each_Fields')?['FromBaseType']}\",\n    \"Group\": \"@{items('Apply_to_each_Fields')?['Group']}\",\n    \"Hidden\": \"@{items('Apply_to_each_Fields')?['Hidden']}\",\n    \"Indexed\": \"@{items('Apply_to_each_Fields')?['Indexed']}\",\n    \"IndexStatus\": \"@{items('Apply_to_each_Fields')?['IndexStatus']}\",\n    \"InternalName\": \"@{items('Apply_to_each_Fields')?['InternalName']}\",\n    \"PinnedToFiltersPane\": \"@{items('Apply_to_each_Fields')?['PinnedToFiltersPane']}\",\n    \"ReadOnlyField\": \"@{items('Apply_to_each_Fields')?['ReadOnlyField']}\",\n    \"Required\": \"@{items('Apply_to_each_Fields')?['Required']}\",\n    \"ShowInFiltersPane\": \"@{items('Apply_to_each_Fields')?['ShowInFiltersPane']}\",\n    \"Sortable\": \"@{items('Apply_to_each_Fields')?['Sortable']}\",\n    \"StaticName\": \"@{items('Apply_to_each_Fields')?['StaticName']}\",\n    \"Title\": \"@{items('Apply_to_each_Fields')?['Title']}\",\n    \"FieldTypeKind\": \"@{items('Apply_to_each_Fields')?['FieldTypeKind']}\",\n    \"AllowMultipleValues\": \"@{items('Apply_to_each_Fields')?['AllowMultipleValues']}\",\n    \"AllowDisplay\": \"@{items('Apply_to_each_Fields')?['AllowDisplay']}\",\n    \"Presence\": \"@{items('Apply_to_each_Fields')?['Presence']}\",\n    \"SelectionGroup\": \"@{items('Apply_to_each_Fields')?['SelectionGroup']}\",\n    \"SelectionMode\": \"@{items('Apply_to_each_Fields')?['SelectionMode']}\",\n    \"UserDisplayOptions\": \"@{items('Apply_to_each_Fields')?['UserDisplayOptions']}\"\n  }"
+                                                        "value": "{\n    \"__metadata\": {\n      \"type\": \"@{items('Apply_to_each_Fields')?['__metadata']?['type']}\"\n    },\n    \"AutoIndexed\": \"@{items('Apply_to_each_Fields')?['AutoIndexed']}\",\n    \"CanBeDeleted\": \"@{items('Apply_to_each_Fields')?['CanBeDeleted']}\",\n    \"ClientValidationFormula\": '@{items('Apply_to_each_Fields')?['ClientValidationFormula']}',\n    \"ClientValidationMessage\": '@{items('Apply_to_each_Fields')?['ClientValidationMessage']}',\n    \"CustomFormatter\": '@{items('Apply_to_each_Fields')?['CustomFormatter']}',\n    \"DefaultFormula\": '@{items('Apply_to_each_Fields')?['DefaultFormula']}',\n    \"DefaultValue\": \"@{items('Apply_to_each_Fields')?['DefaultValue']}\",\n    \"Description\": \"@{items('Apply_to_each_Fields')?['Description']}\",\n    \"Direction\": \"@{items('Apply_to_each_Fields')?['Direction']}\",\n    \"EnforceUniqueValues\": \"@{items('Apply_to_each_Fields')?['EnforceUniqueValues']}\",\n    \"EntityPropertyName\": \"@{items('Apply_to_each_Fields')?['EntityPropertyName']}\",\n    \"Filterable\": \"@{items('Apply_to_each_Fields')?['Filterable']}\",\n    \"FromBaseType\": \"@{items('Apply_to_each_Fields')?['FromBaseType']}\",\n    \"Group\": \"@{items('Apply_to_each_Fields')?['Group']}\",\n    \"Hidden\": \"@{items('Apply_to_each_Fields')?['Hidden']}\",\n    \"Indexed\": \"@{items('Apply_to_each_Fields')?['Indexed']}\",\n    \"IndexStatus\": \"@{items('Apply_to_each_Fields')?['IndexStatus']}\",\n    \"InternalName\": \"@{items('Apply_to_each_Fields')?['InternalName']}\",\n    \"PinnedToFiltersPane\": \"@{items('Apply_to_each_Fields')?['PinnedToFiltersPane']}\",\n    \"ReadOnlyField\": \"@{items('Apply_to_each_Fields')?['ReadOnlyField']}\",\n    \"Required\": \"@{items('Apply_to_each_Fields')?['Required']}\",\n    \"ShowInFiltersPane\": \"@{items('Apply_to_each_Fields')?['ShowInFiltersPane']}\",\n    \"Sortable\": \"@{items('Apply_to_each_Fields')?['Sortable']}\",\n    \"StaticName\": \"@{items('Apply_to_each_Fields')?['StaticName']}\",\n    \"Title\": \"@{items('Apply_to_each_Fields')?['StaticName']}\",\n    \"FieldTypeKind\": \"@{items('Apply_to_each_Fields')?['FieldTypeKind']}\",\n    \"AllowMultipleValues\": \"@{items('Apply_to_each_Fields')?['AllowMultipleValues']}\",\n    \"AllowDisplay\": \"@{items('Apply_to_each_Fields')?['AllowDisplay']}\",\n    \"Presence\": \"@{items('Apply_to_each_Fields')?['Presence']}\",\n    \"SelectionGroup\": \"@{items('Apply_to_each_Fields')?['SelectionGroup']}\",\n    \"SelectionMode\": \"@{items('Apply_to_each_Fields')?['SelectionMode']}\",\n    \"UserDisplayOptions\": \"@{items('Apply_to_each_Fields')?['UserDisplayOptions']}\"\n  }"
                                                     }
                                                 }
                                             }
@@ -573,7 +618,7 @@
                                                     "type": "SetVariable",
                                                     "inputs": {
                                                         "name": "varField",
-                                                        "value": "{\n    \"__metadata\": {\n      \"type\": \"@{items('Apply_to_each_Fields')?['__metadata']?['type']}\"\n    },\n    \"AutoIndexed\": \"@{items('Apply_to_each_Fields')?['AutoIndexed']}\",\n    \"CanBeDeleted\": \"@{items('Apply_to_each_Fields')?['CanBeDeleted']}\",\n    \"ClientValidationFormula\": '@{items('Apply_to_each_Fields')?['ClientValidationFormula']}',\n    \"ClientValidationMessage\": '@{items('Apply_to_each_Fields')?['ClientValidationMessage']}',\n    \"CustomFormatter\": '@{items('Apply_to_each_Fields')?['CustomFormatter']}',\n    \"DefaultFormula\": '@{items('Apply_to_each_Fields')?['DefaultFormula']}',\n    \"DefaultValue\": \"@{items('Apply_to_each_Fields')?['DefaultValue']}\",\n    \"Description\": \"@{items('Apply_to_each_Fields')?['Description']}\",\n    \"Direction\": \"@{items('Apply_to_each_Fields')?['Direction']}\",\n    \"EnforceUniqueValues\": \"@{items('Apply_to_each_Fields')?['EnforceUniqueValues']}\",\n    \"EntityPropertyName\": \"@{items('Apply_to_each_Fields')?['EntityPropertyName']}\",\n    \"Filterable\": \"@{items('Apply_to_each_Fields')?['Filterable']}\",\n    \"FromBaseType\": \"@{items('Apply_to_each_Fields')?['FromBaseType']}\",\n    \"Group\": \"@{items('Apply_to_each_Fields')?['Group']}\",\n    \"Hidden\": \"@{items('Apply_to_each_Fields')?['Hidden']}\",\n    \"Indexed\": \"@{items('Apply_to_each_Fields')?['Indexed']}\",\n    \"IndexStatus\": \"@{items('Apply_to_each_Fields')?['IndexStatus']}\",\n    \"InternalName\": \"@{items('Apply_to_each_Fields')?['InternalName']}\",\n    \"PinnedToFiltersPane\": \"@{items('Apply_to_each_Fields')?['PinnedToFiltersPane']}\",\n    \"ReadOnlyField\": \"@{items('Apply_to_each_Fields')?['ReadOnlyField']}\",\n    \"Required\": \"@{items('Apply_to_each_Fields')?['Required']}\",\n    \"ShowInFiltersPane\": \"@{items('Apply_to_each_Fields')?['ShowInFiltersPane']}\",\n    \"Sortable\": \"@{items('Apply_to_each_Fields')?['Sortable']}\",\n    \"StaticName\": \"@{items('Apply_to_each_Fields')?['StaticName']}\",\n    \"Title\": \"@{items('Apply_to_each_Fields')?['Title']}\",\n    \"FieldTypeKind\": \"@{items('Apply_to_each_Fields')?['FieldTypeKind']}\",\n    \"DateTimeCalendarType\": \"@{items('Apply_to_each_Fields')?['DateTimeCalendarType']}\",\n    \"DateFormat\": \"@{items('Apply_to_each_Fields')?['DateFormat']}\",\n    \"DisplayFormat\": \"@{items('Apply_to_each_Fields')?['DisplayFormat']}\",\n    \"FriendlyDisplayFormat\": \"@{items('Apply_to_each_Fields')?['FriendlyDisplayFormat']}\",\n    \"TimeFormat\": \"@{items('Apply_to_each_Fields')?['TimeFormat']}\"\n  }"
+                                                        "value": "{\n    \"__metadata\": {\n      \"type\": \"@{items('Apply_to_each_Fields')?['__metadata']?['type']}\"\n    },\n    \"AutoIndexed\": \"@{items('Apply_to_each_Fields')?['AutoIndexed']}\",\n    \"CanBeDeleted\": \"@{items('Apply_to_each_Fields')?['CanBeDeleted']}\",\n    \"ClientValidationFormula\": '@{items('Apply_to_each_Fields')?['ClientValidationFormula']}',\n    \"ClientValidationMessage\": '@{items('Apply_to_each_Fields')?['ClientValidationMessage']}',\n    \"CustomFormatter\": '@{items('Apply_to_each_Fields')?['CustomFormatter']}',\n    \"DefaultFormula\": '@{items('Apply_to_each_Fields')?['DefaultFormula']}',\n    \"DefaultValue\": \"@{items('Apply_to_each_Fields')?['DefaultValue']}\",\n    \"Description\": \"@{items('Apply_to_each_Fields')?['Description']}\",\n    \"Direction\": \"@{items('Apply_to_each_Fields')?['Direction']}\",\n    \"EnforceUniqueValues\": \"@{items('Apply_to_each_Fields')?['EnforceUniqueValues']}\",\n    \"EntityPropertyName\": \"@{items('Apply_to_each_Fields')?['EntityPropertyName']}\",\n    \"Filterable\": \"@{items('Apply_to_each_Fields')?['Filterable']}\",\n    \"FromBaseType\": \"@{items('Apply_to_each_Fields')?['FromBaseType']}\",\n    \"Group\": \"@{items('Apply_to_each_Fields')?['Group']}\",\n    \"Hidden\": \"@{items('Apply_to_each_Fields')?['Hidden']}\",\n    \"Indexed\": \"@{items('Apply_to_each_Fields')?['Indexed']}\",\n    \"IndexStatus\": \"@{items('Apply_to_each_Fields')?['IndexStatus']}\",\n    \"InternalName\": \"@{items('Apply_to_each_Fields')?['InternalName']}\",\n    \"PinnedToFiltersPane\": \"@{items('Apply_to_each_Fields')?['PinnedToFiltersPane']}\",\n    \"ReadOnlyField\": \"@{items('Apply_to_each_Fields')?['ReadOnlyField']}\",\n    \"Required\": \"@{items('Apply_to_each_Fields')?['Required']}\",\n    \"ShowInFiltersPane\": \"@{items('Apply_to_each_Fields')?['ShowInFiltersPane']}\",\n    \"Sortable\": \"@{items('Apply_to_each_Fields')?['Sortable']}\",\n    \"StaticName\": \"@{items('Apply_to_each_Fields')?['StaticName']}\",\n    \"Title\": \"@{items('Apply_to_each_Fields')?['StaticName']}\",\n    \"FieldTypeKind\": \"@{items('Apply_to_each_Fields')?['FieldTypeKind']}\",\n    \"DateTimeCalendarType\": \"@{items('Apply_to_each_Fields')?['DateTimeCalendarType']}\",\n    \"DateFormat\": \"@{items('Apply_to_each_Fields')?['DateFormat']}\",\n    \"DisplayFormat\": \"@{items('Apply_to_each_Fields')?['DisplayFormat']}\",\n    \"FriendlyDisplayFormat\": \"@{items('Apply_to_each_Fields')?['FriendlyDisplayFormat']}\",\n    \"TimeFormat\": \"@{items('Apply_to_each_Fields')?['TimeFormat']}\"\n  }"
                                                     }
                                                 }
                                             }
@@ -586,7 +631,7 @@
                                                     "type": "SetVariable",
                                                     "inputs": {
                                                         "name": "varField",
-                                                        "value": "{\n    \"__metadata\": {\n      \"type\": \"@{items('Apply_to_each_Fields')?['__metadata']?['type']}\"\n    },\n    \"AutoIndexed\": \"@{items('Apply_to_each_Fields')?['AutoIndexed']}\",\n    \"CanBeDeleted\": \"@{items('Apply_to_each_Fields')?['CanBeDeleted']}\",\n    \"ClientValidationFormula\": '@{items('Apply_to_each_Fields')?['ClientValidationFormula']}',\n    \"ClientValidationMessage\": '@{items('Apply_to_each_Fields')?['ClientValidationMessage']}',\n    \"CustomFormatter\": '@{items('Apply_to_each_Fields')?['CustomFormatter']}',\n    \"DefaultFormula\": '@{items('Apply_to_each_Fields')?['DefaultFormula']}',\n    \"DefaultValue\": \"@{items('Apply_to_each_Fields')?['DefaultValue']}\",\n    \"Description\": \"@{items('Apply_to_each_Fields')?['Description']}\",\n    \"Direction\": \"@{items('Apply_to_each_Fields')?['Direction']}\",\n    \"EnforceUniqueValues\": \"@{items('Apply_to_each_Fields')?['EnforceUniqueValues']}\",\n    \"EntityPropertyName\": \"@{items('Apply_to_each_Fields')?['EntityPropertyName']}\",\n    \"Filterable\": \"@{items('Apply_to_each_Fields')?['Filterable']}\",\n    \"FromBaseType\": \"@{items('Apply_to_each_Fields')?['FromBaseType']}\",\n    \"Group\": \"@{items('Apply_to_each_Fields')?['Group']}\",\n    \"Hidden\": \"@{items('Apply_to_each_Fields')?['Hidden']}\",\n    \"Indexed\": \"@{items('Apply_to_each_Fields')?['Indexed']}\",\n    \"IndexStatus\": \"@{items('Apply_to_each_Fields')?['IndexStatus']}\",\n    \"InternalName\": \"@{items('Apply_to_each_Fields')?['InternalName']}\",\n    \"PinnedToFiltersPane\": \"@{items('Apply_to_each_Fields')?['PinnedToFiltersPane']}\",\n    \"ReadOnlyField\": \"@{items('Apply_to_each_Fields')?['ReadOnlyField']}\",\n    \"Required\": \"@{items('Apply_to_each_Fields')?['Required']}\",\n    \"ShowInFiltersPane\": \"@{items('Apply_to_each_Fields')?['ShowInFiltersPane']}\",\n    \"Sortable\": \"@{items('Apply_to_each_Fields')?['Sortable']}\",\n    \"StaticName\": \"@{items('Apply_to_each_Fields')?['StaticName']}\",\n    \"Title\": \"@{items('Apply_to_each_Fields')?['Title']}\",\n    \"FieldTypeKind\": \"@{items('Apply_to_each_Fields')?['FieldTypeKind']}\",\n    \"CurrencyLocaleId\": \"@{items('Apply_to_each_Fields')?['CurrencyLocaleId']}\",\n    \"DateFormat\": \"@{items('Apply_to_each_Fields')?['DateFormat']}\",\n    \"DisplayFormat\": \"@{items('Apply_to_each_Fields')?['DisplayFormat']}\",\n    \"Formula\": '@{items('Apply_to_each_Fields')?['Formula']}',\n    \"OutputType\": \"@{items('Apply_to_each_Fields')?['OutputType']}\"\n  }"
+                                                        "value": "{\n    \"__metadata\": {\n      \"type\": \"@{items('Apply_to_each_Fields')?['__metadata']?['type']}\"\n    },\n    \"AutoIndexed\": \"@{items('Apply_to_each_Fields')?['AutoIndexed']}\",\n    \"CanBeDeleted\": \"@{items('Apply_to_each_Fields')?['CanBeDeleted']}\",\n    \"ClientValidationFormula\": '@{items('Apply_to_each_Fields')?['ClientValidationFormula']}',\n    \"ClientValidationMessage\": '@{items('Apply_to_each_Fields')?['ClientValidationMessage']}',\n    \"CustomFormatter\": '@{items('Apply_to_each_Fields')?['CustomFormatter']}',\n    \"DefaultFormula\": '@{items('Apply_to_each_Fields')?['DefaultFormula']}',\n    \"DefaultValue\": \"@{items('Apply_to_each_Fields')?['DefaultValue']}\",\n    \"Description\": \"@{items('Apply_to_each_Fields')?['Description']}\",\n    \"Direction\": \"@{items('Apply_to_each_Fields')?['Direction']}\",\n    \"EnforceUniqueValues\": \"@{items('Apply_to_each_Fields')?['EnforceUniqueValues']}\",\n    \"EntityPropertyName\": \"@{items('Apply_to_each_Fields')?['EntityPropertyName']}\",\n    \"Filterable\": \"@{items('Apply_to_each_Fields')?['Filterable']}\",\n    \"FromBaseType\": \"@{items('Apply_to_each_Fields')?['FromBaseType']}\",\n    \"Group\": \"@{items('Apply_to_each_Fields')?['Group']}\",\n    \"Hidden\": \"@{items('Apply_to_each_Fields')?['Hidden']}\",\n    \"Indexed\": \"@{items('Apply_to_each_Fields')?['Indexed']}\",\n    \"IndexStatus\": \"@{items('Apply_to_each_Fields')?['IndexStatus']}\",\n    \"InternalName\": \"@{items('Apply_to_each_Fields')?['InternalName']}\",\n    \"PinnedToFiltersPane\": \"@{items('Apply_to_each_Fields')?['PinnedToFiltersPane']}\",\n    \"ReadOnlyField\": \"@{items('Apply_to_each_Fields')?['ReadOnlyField']}\",\n    \"Required\": \"@{items('Apply_to_each_Fields')?['Required']}\",\n    \"ShowInFiltersPane\": \"@{items('Apply_to_each_Fields')?['ShowInFiltersPane']}\",\n    \"Sortable\": \"@{items('Apply_to_each_Fields')?['Sortable']}\",\n    \"StaticName\": \"@{items('Apply_to_each_Fields')?['StaticName']}\",\n    \"Title\": \"@{items('Apply_to_each_Fields')?['StaticName']}\",\n    \"FieldTypeKind\": \"@{items('Apply_to_each_Fields')?['FieldTypeKind']}\",\n    \"CurrencyLocaleId\": \"@{items('Apply_to_each_Fields')?['CurrencyLocaleId']}\",\n    \"DateFormat\": \"@{items('Apply_to_each_Fields')?['DateFormat']}\",\n    \"DisplayFormat\": \"@{items('Apply_to_each_Fields')?['DisplayFormat']}\",\n    \"Formula\": '@{items('Apply_to_each_Fields')?['Formula']}',\n    \"OutputType\": \"@{items('Apply_to_each_Fields')?['OutputType']}\"\n  }"
                                                     }
                                                 }
                                             }
@@ -599,7 +644,7 @@
                                                     "type": "SetVariable",
                                                     "inputs": {
                                                         "name": "varField",
-                                                        "value": "{\n    \"__metadata\": {\n      \"type\": \"@{items('Apply_to_each_Fields')?['__metadata']?['type']}\"\n    },\n    \"AutoIndexed\": \"@{items('Apply_to_each_Fields')?['AutoIndexed']}\",\n    \"CanBeDeleted\": \"@{items('Apply_to_each_Fields')?['CanBeDeleted']}\",\n    \"ClientValidationFormula\": '@{items('Apply_to_each_Fields')?['ClientValidationFormula']}',\n    \"ClientValidationMessage\": '@{items('Apply_to_each_Fields')?['ClientValidationMessage']}',\n    \"CustomFormatter\": '@{items('Apply_to_each_Fields')?['CustomFormatter']}',\n    \"DefaultFormula\": '@{items('Apply_to_each_Fields')?['DefaultFormula']}',\n    \"DefaultValue\": \"@{items('Apply_to_each_Fields')?['DefaultValue']}\",\n    \"Description\": \"@{items('Apply_to_each_Fields')?['Description']}\",\n    \"Direction\": \"@{items('Apply_to_each_Fields')?['Direction']}\",\n    \"EnforceUniqueValues\": \"@{items('Apply_to_each_Fields')?['EnforceUniqueValues']}\",\n    \"EntityPropertyName\": \"@{items('Apply_to_each_Fields')?['EntityPropertyName']}\",\n    \"Filterable\": \"@{items('Apply_to_each_Fields')?['Filterable']}\",\n    \"FromBaseType\": \"@{items('Apply_to_each_Fields')?['FromBaseType']}\",\n    \"Group\": \"@{items('Apply_to_each_Fields')?['Group']}\",\n    \"Hidden\": \"@{items('Apply_to_each_Fields')?['Hidden']}\",\n    \"Indexed\": \"@{items('Apply_to_each_Fields')?['Indexed']}\",\n    \"IndexStatus\": \"@{items('Apply_to_each_Fields')?['IndexStatus']}\",\n    \"InternalName\": \"@{items('Apply_to_each_Fields')?['InternalName']}\",\n    \"PinnedToFiltersPane\": \"@{items('Apply_to_each_Fields')?['PinnedToFiltersPane']}\",\n    \"ReadOnlyField\": \"@{items('Apply_to_each_Fields')?['ReadOnlyField']}\",\n    \"Required\": \"@{items('Apply_to_each_Fields')?['Required']}\",\n    \"ShowInFiltersPane\": \"@{items('Apply_to_each_Fields')?['ShowInFiltersPane']}\",\n    \"Sortable\": \"@{items('Apply_to_each_Fields')?['Sortable']}\",\n    \"StaticName\": \"@{items('Apply_to_each_Fields')?['StaticName']}\",\n    \"Title\": \"@{items('Apply_to_each_Fields')?['Title']}\",\n    \"FieldTypeKind\": \"@{items('Apply_to_each_Fields')?['FieldTypeKind']}\",\n    \"FillInChoice\": \"@{items('Apply_to_each_Fields')?['FillInChoice']}\",\n    \"Mappings\": \"@{items('Apply_to_each_Fields')?['Mappings']}\",\n    \"Choices\": {\n      \"__metadata\": {\n        \"type\": \"Collection(Edm.String)\"\n      },\n      \"results\": @{items('Apply_to_each_Fields')?['Choices']?['results']}\n    }\n  }"
+                                                        "value": "{\n    \"__metadata\": {\n      \"type\": \"@{items('Apply_to_each_Fields')?['__metadata']?['type']}\"\n    },\n    \"AutoIndexed\": \"@{items('Apply_to_each_Fields')?['AutoIndexed']}\",\n    \"CanBeDeleted\": \"@{items('Apply_to_each_Fields')?['CanBeDeleted']}\",\n    \"ClientValidationFormula\": '@{items('Apply_to_each_Fields')?['ClientValidationFormula']}',\n    \"ClientValidationMessage\": '@{items('Apply_to_each_Fields')?['ClientValidationMessage']}',\n    \"CustomFormatter\": '@{replace(string(items('Apply_to_each_Fields')?['CustomFormatter']), '\"', '\\\"')}',\n    \"DefaultFormula\": '@{items('Apply_to_each_Fields')?['DefaultFormula']}',\n    \"DefaultValue\": \"@{items('Apply_to_each_Fields')?['DefaultValue']}\",\n    \"Description\": \"@{items('Apply_to_each_Fields')?['Description']}\",\n    \"Direction\": \"@{items('Apply_to_each_Fields')?['Direction']}\",\n    \"EnforceUniqueValues\": \"@{items('Apply_to_each_Fields')?['EnforceUniqueValues']}\",\n    \"EntityPropertyName\": \"@{items('Apply_to_each_Fields')?['EntityPropertyName']}\",\n    \"Filterable\": \"@{items('Apply_to_each_Fields')?['Filterable']}\",\n    \"FromBaseType\": \"@{items('Apply_to_each_Fields')?['FromBaseType']}\",\n    \"Group\": \"@{items('Apply_to_each_Fields')?['Group']}\",\n    \"Hidden\": \"@{items('Apply_to_each_Fields')?['Hidden']}\",\n    \"Indexed\": \"@{items('Apply_to_each_Fields')?['Indexed']}\",\n    \"IndexStatus\": \"@{items('Apply_to_each_Fields')?['IndexStatus']}\",\n    \"InternalName\": \"@{items('Apply_to_each_Fields')?['InternalName']}\",\n    \"PinnedToFiltersPane\": \"@{items('Apply_to_each_Fields')?['PinnedToFiltersPane']}\",\n    \"ReadOnlyField\": \"@{items('Apply_to_each_Fields')?['ReadOnlyField']}\",\n    \"Required\": \"@{items('Apply_to_each_Fields')?['Required']}\",\n    \"ShowInFiltersPane\": \"@{items('Apply_to_each_Fields')?['ShowInFiltersPane']}\",\n    \"Sortable\": \"@{items('Apply_to_each_Fields')?['Sortable']}\",\n    \"StaticName\": \"@{items('Apply_to_each_Fields')?['StaticName']}\",\n    \"Title\": \"@{items('Apply_to_each_Fields')?['StaticName']}\",\n    \"FieldTypeKind\": \"@{items('Apply_to_each_Fields')?['FieldTypeKind']}\",\n    \"FillInChoice\": \"@{items('Apply_to_each_Fields')?['FillInChoice']}\",\n    \"Mappings\": \"@{items('Apply_to_each_Fields')?['Mappings']}\",\n    \"Choices\": {\n      \"__metadata\": {\n        \"type\": \"Collection(Edm.String)\"\n      },\n      \"results\": @{items('Apply_to_each_Fields')?['Choices']?['results']}\n    }\n  }"
                                                     }
                                                 }
                                             }
@@ -612,7 +657,7 @@
                                                     "type": "SetVariable",
                                                     "inputs": {
                                                         "name": "varField",
-                                                        "value": "{\n    \"__metadata\": {\n      \"type\": \"@{items('Apply_to_each_Fields')?['__metadata']?['type']}\"\n    },\n    \"AutoIndexed\": \"@{items('Apply_to_each_Fields')?['AutoIndexed']}\",\n    \"CanBeDeleted\": \"@{items('Apply_to_each_Fields')?['CanBeDeleted']}\",\n    \"ClientValidationFormula\": '@{items('Apply_to_each_Fields')?['ClientValidationFormula']}',\n    \"ClientValidationMessage\": '@{items('Apply_to_each_Fields')?['ClientValidationMessage']}',\n    \"CustomFormatter\": '@{items('Apply_to_each_Fields')?['CustomFormatter']}',\n    \"DefaultFormula\": '@{items('Apply_to_each_Fields')?['DefaultFormula']}',\n    \"DefaultValue\": \"@{items('Apply_to_each_Fields')?['DefaultValue']}\",\n    \"Description\": \"@{items('Apply_to_each_Fields')?['Description']}\",\n    \"Direction\": \"@{items('Apply_to_each_Fields')?['Direction']}\",\n    \"EnforceUniqueValues\": \"@{items('Apply_to_each_Fields')?['EnforceUniqueValues']}\",\n    \"EntityPropertyName\": \"@{items('Apply_to_each_Fields')?['EntityPropertyName']}\",\n    \"Filterable\": \"@{items('Apply_to_each_Fields')?['Filterable']}\",\n    \"FromBaseType\": \"@{items('Apply_to_each_Fields')?['FromBaseType']}\",\n    \"Group\": \"@{items('Apply_to_each_Fields')?['Group']}\",\n    \"Hidden\": \"@{items('Apply_to_each_Fields')?['Hidden']}\",\n    \"Indexed\": \"@{items('Apply_to_each_Fields')?['Indexed']}\",\n    \"IndexStatus\": \"@{items('Apply_to_each_Fields')?['IndexStatus']}\",\n    \"InternalName\": \"@{items('Apply_to_each_Fields')?['InternalName']}\",\n    \"PinnedToFiltersPane\": \"@{items('Apply_to_each_Fields')?['PinnedToFiltersPane']}\",\n    \"ReadOnlyField\": \"@{items('Apply_to_each_Fields')?['ReadOnlyField']}\",\n    \"Required\": \"@{items('Apply_to_each_Fields')?['Required']}\",\n    \"ShowInFiltersPane\": \"@{items('Apply_to_each_Fields')?['ShowInFiltersPane']}\",\n    \"Sortable\": \"@{items('Apply_to_each_Fields')?['Sortable']}\",\n    \"StaticName\": \"@{items('Apply_to_each_Fields')?['StaticName']}\",\n    \"Title\": \"@{items('Apply_to_each_Fields')?['Title']}\",\n    \"FieldTypeKind\": \"@{items('Apply_to_each_Fields')?['FieldTypeKind']}\",\n    \"AllowHyperlink\": \"@{items('Apply_to_each_Fields')?['AllowHyperlink']}\",\n    \"AppendOnly\": \"@{items('Apply_to_each_Fields')?['AppendOnly']}\",\n    \"NumberOfLines\": \"@{items('Apply_to_each_Fields')?['NumberOfLines']}\",\n    \"RestrictedMode\": \"@{items('Apply_to_each_Fields')?['RestrictedMode']}\",\n    \"RichText\": \"@{items('Apply_to_each_Fields')?['RichText']}\",\n    \"UnlimitedLengthInDocumentLibrary\": \"@{items('Apply_to_each_Fields')?['UnlimitedLengthInDocumentLibrary']}\",\n    \"WikiLinking\": \"@{items('Apply_to_each_Fields')?['WikiLinking']}\"\n  }"
+                                                        "value": "{\n    \"__metadata\": {\n      \"type\": \"@{items('Apply_to_each_Fields')?['__metadata']?['type']}\"\n    },\n    \"AutoIndexed\": \"@{items('Apply_to_each_Fields')?['AutoIndexed']}\",\n    \"CanBeDeleted\": \"@{items('Apply_to_each_Fields')?['CanBeDeleted']}\",\n    \"ClientValidationFormula\": '@{items('Apply_to_each_Fields')?['ClientValidationFormula']}',\n    \"ClientValidationMessage\": '@{items('Apply_to_each_Fields')?['ClientValidationMessage']}',\n    \"CustomFormatter\": '@{items('Apply_to_each_Fields')?['CustomFormatter']}',\n    \"DefaultFormula\": '@{items('Apply_to_each_Fields')?['DefaultFormula']}',\n    \"DefaultValue\": \"@{items('Apply_to_each_Fields')?['DefaultValue']}\",\n    \"Description\": \"@{items('Apply_to_each_Fields')?['Description']}\",\n    \"Direction\": \"@{items('Apply_to_each_Fields')?['Direction']}\",\n    \"EnforceUniqueValues\": \"@{items('Apply_to_each_Fields')?['EnforceUniqueValues']}\",\n    \"EntityPropertyName\": \"@{items('Apply_to_each_Fields')?['EntityPropertyName']}\",\n    \"Filterable\": \"@{items('Apply_to_each_Fields')?['Filterable']}\",\n    \"FromBaseType\": \"@{items('Apply_to_each_Fields')?['FromBaseType']}\",\n    \"Group\": \"@{items('Apply_to_each_Fields')?['Group']}\",\n    \"Hidden\": \"@{items('Apply_to_each_Fields')?['Hidden']}\",\n    \"Indexed\": \"@{items('Apply_to_each_Fields')?['Indexed']}\",\n    \"IndexStatus\": \"@{items('Apply_to_each_Fields')?['IndexStatus']}\",\n    \"InternalName\": \"@{items('Apply_to_each_Fields')?['InternalName']}\",\n    \"PinnedToFiltersPane\": \"@{items('Apply_to_each_Fields')?['PinnedToFiltersPane']}\",\n    \"ReadOnlyField\": \"@{items('Apply_to_each_Fields')?['ReadOnlyField']}\",\n    \"Required\": \"@{items('Apply_to_each_Fields')?['Required']}\",\n    \"ShowInFiltersPane\": \"@{items('Apply_to_each_Fields')?['ShowInFiltersPane']}\",\n    \"Sortable\": \"@{items('Apply_to_each_Fields')?['Sortable']}\",\n    \"StaticName\": \"@{items('Apply_to_each_Fields')?['StaticName']}\",\n    \"Title\": \"@{items('Apply_to_each_Fields')?['StaticName']}\",\n    \"FieldTypeKind\": \"@{items('Apply_to_each_Fields')?['FieldTypeKind']}\",\n    \"AllowHyperlink\": \"@{items('Apply_to_each_Fields')?['AllowHyperlink']}\",\n    \"AppendOnly\": \"@{items('Apply_to_each_Fields')?['AppendOnly']}\",\n    \"NumberOfLines\": \"@{items('Apply_to_each_Fields')?['NumberOfLines']}\",\n    \"RestrictedMode\": \"@{items('Apply_to_each_Fields')?['RestrictedMode']}\",\n    \"RichText\": \"@{items('Apply_to_each_Fields')?['RichText']}\",\n    \"UnlimitedLengthInDocumentLibrary\": \"@{items('Apply_to_each_Fields')?['UnlimitedLengthInDocumentLibrary']}\",\n    \"WikiLinking\": \"@{items('Apply_to_each_Fields')?['WikiLinking']}\"\n  }"
                                                     }
                                                 }
                                             }
@@ -625,7 +670,7 @@
                                                     "type": "SetVariable",
                                                     "inputs": {
                                                         "name": "varField",
-                                                        "value": "{\n    \"__metadata\": {\n      \"type\": \"@{items('Apply_to_each_Fields')?['__metadata']?['type']}\"\n    },\n    \"AutoIndexed\": \"@{items('Apply_to_each_Fields')?['AutoIndexed']}\",\n    \"CanBeDeleted\": \"@{items('Apply_to_each_Fields')?['CanBeDeleted']}\",\n    \"ClientValidationFormula\": '@{items('Apply_to_each_Fields')?['ClientValidationFormula']}',\n    \"ClientValidationMessage\": '@{items('Apply_to_each_Fields')?['ClientValidationMessage']}',\n    \"CustomFormatter\": '@{items('Apply_to_each_Fields')?['CustomFormatter']}',\n    \"DefaultFormula\": '@{items('Apply_to_each_Fields')?['DefaultFormula']}',\n    \"DefaultValue\": \"@{items('Apply_to_each_Fields')?['DefaultValue']}\",\n    \"Description\": \"@{items('Apply_to_each_Fields')?['Description']}\",\n    \"Direction\": \"@{items('Apply_to_each_Fields')?['Direction']}\",\n    \"EnforceUniqueValues\": \"@{items('Apply_to_each_Fields')?['EnforceUniqueValues']}\",\n    \"EntityPropertyName\": \"@{items('Apply_to_each_Fields')?['EntityPropertyName']}\",\n    \"Filterable\": \"@{items('Apply_to_each_Fields')?['Filterable']}\",\n    \"FromBaseType\": \"@{items('Apply_to_each_Fields')?['FromBaseType']}\",\n    \"Group\": \"@{items('Apply_to_each_Fields')?['Group']}\",\n    \"Hidden\": \"@{items('Apply_to_each_Fields')?['Hidden']}\",\n    \"Indexed\": \"@{items('Apply_to_each_Fields')?['Indexed']}\",\n    \"IndexStatus\": \"@{items('Apply_to_each_Fields')?['IndexStatus']}\",\n    \"InternalName\": \"@{items('Apply_to_each_Fields')?['InternalName']}\",\n    \"PinnedToFiltersPane\": \"@{items('Apply_to_each_Fields')?['PinnedToFiltersPane']}\",\n    \"ReadOnlyField\": \"@{items('Apply_to_each_Fields')?['ReadOnlyField']}\",\n    \"Required\": \"@{items('Apply_to_each_Fields')?['Required']}\",\n    \"ShowInFiltersPane\": \"@{items('Apply_to_each_Fields')?['ShowInFiltersPane']}\",\n    \"Sortable\": \"@{items('Apply_to_each_Fields')?['Sortable']}\",\n    \"StaticName\": \"@{items('Apply_to_each_Fields')?['StaticName']}\",\n    \"Title\": \"@{items('Apply_to_each_Fields')?['Title']}\",\n    \"FieldTypeKind\": \"@{items('Apply_to_each_Fields')?['FieldTypeKind']}\",\n    \"ValidationFormula\": '@{items('Apply_to_each_Fields')?['ValidationFormula']}',\n      \"ValidationMessage\": '@{items('Apply_to_each_Fields')?['ValidationMessage']}',\n    \"CommaSeparator\": \"@{items('Apply_to_each_Fields')?['CommaSeparator']}\",\n    \"CustomUnitName\": \"@{items('Apply_to_each_Fields')?['CustomUnitName']}\",\n    \"CustomUnitOnRight\": \"@{items('Apply_to_each_Fields')?['CustomUnitOnRight']}\",\n    \"DisplayFormat\": \"@{items('Apply_to_each_Fields')?['DisplayFormat']}\",\n    \"ShowAsPercentage\": \"@{items('Apply_to_each_Fields')?['ShowAsPercentage']}\",\n    \"Unit\": \"@{items('Apply_to_each_Fields')?['Unit']}\"\n  }"
+                                                        "value": "{\n    \"__metadata\": {\n      \"type\": \"@{items('Apply_to_each_Fields')?['__metadata']?['type']}\"\n    },\n    \"AutoIndexed\": \"@{items('Apply_to_each_Fields')?['AutoIndexed']}\",\n    \"CanBeDeleted\": \"@{items('Apply_to_each_Fields')?['CanBeDeleted']}\",\n    \"ClientValidationFormula\": '@{items('Apply_to_each_Fields')?['ClientValidationFormula']}',\n    \"ClientValidationMessage\": '@{items('Apply_to_each_Fields')?['ClientValidationMessage']}',\n    \"CustomFormatter\": '@{items('Apply_to_each_Fields')?['CustomFormatter']}',\n    \"DefaultFormula\": '@{items('Apply_to_each_Fields')?['DefaultFormula']}',\n    \"DefaultValue\": \"@{items('Apply_to_each_Fields')?['DefaultValue']}\",\n    \"Description\": \"@{items('Apply_to_each_Fields')?['Description']}\",\n    \"Direction\": \"@{items('Apply_to_each_Fields')?['Direction']}\",\n    \"EnforceUniqueValues\": \"@{items('Apply_to_each_Fields')?['EnforceUniqueValues']}\",\n    \"EntityPropertyName\": \"@{items('Apply_to_each_Fields')?['EntityPropertyName']}\",\n    \"Filterable\": \"@{items('Apply_to_each_Fields')?['Filterable']}\",\n    \"FromBaseType\": \"@{items('Apply_to_each_Fields')?['FromBaseType']}\",\n    \"Group\": \"@{items('Apply_to_each_Fields')?['Group']}\",\n    \"Hidden\": \"@{items('Apply_to_each_Fields')?['Hidden']}\",\n    \"Indexed\": \"@{items('Apply_to_each_Fields')?['Indexed']}\",\n    \"IndexStatus\": \"@{items('Apply_to_each_Fields')?['IndexStatus']}\",\n    \"InternalName\": \"@{items('Apply_to_each_Fields')?['InternalName']}\",\n    \"PinnedToFiltersPane\": \"@{items('Apply_to_each_Fields')?['PinnedToFiltersPane']}\",\n    \"ReadOnlyField\": \"@{items('Apply_to_each_Fields')?['ReadOnlyField']}\",\n    \"Required\": \"@{items('Apply_to_each_Fields')?['Required']}\",\n    \"ShowInFiltersPane\": \"@{items('Apply_to_each_Fields')?['ShowInFiltersPane']}\",\n    \"Sortable\": \"@{items('Apply_to_each_Fields')?['Sortable']}\",\n    \"StaticName\": \"@{items('Apply_to_each_Fields')?['StaticName']}\",\n    \"Title\": \"@{items('Apply_to_each_Fields')?['StaticName']}\",\n    \"FieldTypeKind\": \"@{items('Apply_to_each_Fields')?['FieldTypeKind']}\",\n    \"ValidationFormula\": '@{items('Apply_to_each_Fields')?['ValidationFormula']}',\n      \"ValidationMessage\": '@{items('Apply_to_each_Fields')?['ValidationMessage']}',\n    \"CommaSeparator\": \"@{items('Apply_to_each_Fields')?['CommaSeparator']}\",\n    \"CustomUnitName\": \"@{items('Apply_to_each_Fields')?['CustomUnitName']}\",\n    \"CustomUnitOnRight\": \"@{items('Apply_to_each_Fields')?['CustomUnitOnRight']}\",\n    \"DisplayFormat\": \"@{items('Apply_to_each_Fields')?['DisplayFormat']}\",\n    \"ShowAsPercentage\": \"@{items('Apply_to_each_Fields')?['ShowAsPercentage']}\",\n    \"Unit\": \"@{items('Apply_to_each_Fields')?['Unit']}\"\n  }"
                                                     }
                                                 }
                                             }
@@ -638,7 +683,7 @@
                                                     "type": "SetVariable",
                                                     "inputs": {
                                                         "name": "varField",
-                                                        "value": "{\n    \"__metadata\": {\n      \"type\": \"@{items('Apply_to_each_Fields')?['__metadata']?['type']}\"\n    },\n    \"AutoIndexed\": \"@{items('Apply_to_each_Fields')?['AutoIndexed']}\",\n    \"CanBeDeleted\": \"@{items('Apply_to_each_Fields')?['CanBeDeleted']}\",\n    \"ClientValidationFormula\": '@{items('Apply_to_each_Fields')?['ClientValidationFormula']}',\n    \"ClientValidationMessage\": '@{items('Apply_to_each_Fields')?['ClientValidationMessage']}',\n    \"CustomFormatter\": '@{items('Apply_to_each_Fields')?['CustomFormatter']}',\n    \"DefaultFormula\": '@{items('Apply_to_each_Fields')?['DefaultFormula']}',\n    \"DefaultValue\": \"@{items('Apply_to_each_Fields')?['DefaultValue']}\",\n    \"Description\": \"@{items('Apply_to_each_Fields')?['Description']}\",\n    \"Direction\": \"@{items('Apply_to_each_Fields')?['Direction']}\",\n    \"EnforceUniqueValues\": \"@{items('Apply_to_each_Fields')?['EnforceUniqueValues']}\",\n    \"EntityPropertyName\": \"@{items('Apply_to_each_Fields')?['EntityPropertyName']}\",\n    \"Filterable\": \"@{items('Apply_to_each_Fields')?['Filterable']}\",\n    \"FromBaseType\": \"@{items('Apply_to_each_Fields')?['FromBaseType']}\",\n    \"Group\": \"@{items('Apply_to_each_Fields')?['Group']}\",\n    \"Hidden\": \"@{items('Apply_to_each_Fields')?['Hidden']}\",\n    \"Indexed\": \"@{items('Apply_to_each_Fields')?['Indexed']}\",\n    \"IndexStatus\": \"@{items('Apply_to_each_Fields')?['IndexStatus']}\",\n    \"InternalName\": \"@{items('Apply_to_each_Fields')?['InternalName']}\",\n    \"PinnedToFiltersPane\": \"@{items('Apply_to_each_Fields')?['PinnedToFiltersPane']}\",\n    \"ReadOnlyField\": \"@{items('Apply_to_each_Fields')?['ReadOnlyField']}\",\n    \"Required\": \"@{items('Apply_to_each_Fields')?['Required']}\",\n    \"ShowInFiltersPane\": \"@{items('Apply_to_each_Fields')?['ShowInFiltersPane']}\",\n    \"Sortable\": \"@{items('Apply_to_each_Fields')?['Sortable']}\",\n    \"StaticName\": \"@{items('Apply_to_each_Fields')?['StaticName']}\",\n    \"Title\": \"@{items('Apply_to_each_Fields')?['Title']}\",\n    \"FieldTypeKind\": \"@{items('Apply_to_each_Fields')?['FieldTypeKind']}\",\n    \"ValidationFormula\": '@{items('Apply_to_each_Fields')?['ValidationFormula']}',\n      \"ValidationMessage\": '@{items('Apply_to_each_Fields')?['ValidationMessage']}',\n    \"CommaSeparator\": \"@{items('Apply_to_each_Fields')?['CommaSeparator']}\",\n    \"CustomUnitName\": \"@{items('Apply_to_each_Fields')?['CustomUnitName']}\",\n    \"CustomUnitOnRight\": \"@{items('Apply_to_each_Fields')?['CustomUnitOnRight']}\",\n    \"DisplayFormat\": \"@{items('Apply_to_each_Fields')?['DisplayFormat']}\",\n    \"Unit\": \"@{items('Apply_to_each_Fields')?['Unit']}\",\n    \"CurrencyLocaleId\": \"@{items('Apply_to_each_Fields')?['CurrencyLocaleId']}\"\n  }\n"
+                                                        "value": "{\n    \"__metadata\": {\n      \"type\": \"@{items('Apply_to_each_Fields')?['__metadata']?['type']}\"\n    },\n    \"AutoIndexed\": \"@{items('Apply_to_each_Fields')?['AutoIndexed']}\",\n    \"CanBeDeleted\": \"@{items('Apply_to_each_Fields')?['CanBeDeleted']}\",\n    \"ClientValidationFormula\": '@{items('Apply_to_each_Fields')?['ClientValidationFormula']}',\n    \"ClientValidationMessage\": '@{items('Apply_to_each_Fields')?['ClientValidationMessage']}',\n    \"CustomFormatter\": '@{items('Apply_to_each_Fields')?['CustomFormatter']}',\n    \"DefaultFormula\": '@{items('Apply_to_each_Fields')?['DefaultFormula']}',\n    \"DefaultValue\": \"@{items('Apply_to_each_Fields')?['DefaultValue']}\",\n    \"Description\": \"@{items('Apply_to_each_Fields')?['Description']}\",\n    \"Direction\": \"@{items('Apply_to_each_Fields')?['Direction']}\",\n    \"EnforceUniqueValues\": \"@{items('Apply_to_each_Fields')?['EnforceUniqueValues']}\",\n    \"EntityPropertyName\": \"@{items('Apply_to_each_Fields')?['EntityPropertyName']}\",\n    \"Filterable\": \"@{items('Apply_to_each_Fields')?['Filterable']}\",\n    \"FromBaseType\": \"@{items('Apply_to_each_Fields')?['FromBaseType']}\",\n    \"Group\": \"@{items('Apply_to_each_Fields')?['Group']}\",\n    \"Hidden\": \"@{items('Apply_to_each_Fields')?['Hidden']}\",\n    \"Indexed\": \"@{items('Apply_to_each_Fields')?['Indexed']}\",\n    \"IndexStatus\": \"@{items('Apply_to_each_Fields')?['IndexStatus']}\",\n    \"InternalName\": \"@{items('Apply_to_each_Fields')?['InternalName']}\",\n    \"PinnedToFiltersPane\": \"@{items('Apply_to_each_Fields')?['PinnedToFiltersPane']}\",\n    \"ReadOnlyField\": \"@{items('Apply_to_each_Fields')?['ReadOnlyField']}\",\n    \"Required\": \"@{items('Apply_to_each_Fields')?['Required']}\",\n    \"ShowInFiltersPane\": \"@{items('Apply_to_each_Fields')?['ShowInFiltersPane']}\",\n    \"Sortable\": \"@{items('Apply_to_each_Fields')?['Sortable']}\",\n    \"StaticName\": \"@{items('Apply_to_each_Fields')?['StaticName']}\",\n    \"Title\": \"@{items('Apply_to_each_Fields')?['StaticName']}\",\n    \"FieldTypeKind\": \"@{items('Apply_to_each_Fields')?['FieldTypeKind']}\",\n    \"ValidationFormula\": '@{items('Apply_to_each_Fields')?['ValidationFormula']}',\n      \"ValidationMessage\": '@{items('Apply_to_each_Fields')?['ValidationMessage']}',\n    \"CommaSeparator\": \"@{items('Apply_to_each_Fields')?['CommaSeparator']}\",\n    \"CustomUnitName\": \"@{items('Apply_to_each_Fields')?['CustomUnitName']}\",\n    \"CustomUnitOnRight\": \"@{items('Apply_to_each_Fields')?['CustomUnitOnRight']}\",\n    \"DisplayFormat\": \"@{items('Apply_to_each_Fields')?['DisplayFormat']}\",\n    \"Unit\": \"@{items('Apply_to_each_Fields')?['Unit']}\",\n    \"CurrencyLocaleId\": \"@{items('Apply_to_each_Fields')?['CurrencyLocaleId']}\"\n  }\n"
                                                     }
                                                 }
                                             }
@@ -651,7 +696,7 @@
                                                     "type": "SetVariable",
                                                     "inputs": {
                                                         "name": "varField",
-                                                        "value": "{\n    \"__metadata\": {\n      \"type\": \"@{items('Apply_to_each_Fields')?['__metadata']?['type']}\"\n    },\n    \"AutoIndexed\": \"@{items('Apply_to_each_Fields')?['AutoIndexed']}\",\n    \"CanBeDeleted\": \"@{items('Apply_to_each_Fields')?['CanBeDeleted']}\",\n    \"ClientValidationFormula\": '@{items('Apply_to_each_Fields')?['ClientValidationFormula']}',\n    \"ClientValidationMessage\": '@{items('Apply_to_each_Fields')?['ClientValidationMessage']}',\n    \"CustomFormatter\": '@{items('Apply_to_each_Fields')?['CustomFormatter']}',\n    \"DefaultFormula\": '@{items('Apply_to_each_Fields')?['DefaultFormula']}',\n    \"DefaultValue\": \"@{items('Apply_to_each_Fields')?['DefaultValue']}\",\n    \"Description\": \"@{items('Apply_to_each_Fields')?['Description']}\",\n    \"Direction\": \"@{items('Apply_to_each_Fields')?['Direction']}\",\n    \"EnforceUniqueValues\": \"@{items('Apply_to_each_Fields')?['EnforceUniqueValues']}\",\n    \"EntityPropertyName\": \"@{items('Apply_to_each_Fields')?['EntityPropertyName']}\",\n    \"Filterable\": \"@{items('Apply_to_each_Fields')?['Filterable']}\",\n    \"FromBaseType\": \"@{items('Apply_to_each_Fields')?['FromBaseType']}\",\n    \"Group\": \"@{items('Apply_to_each_Fields')?['Group']}\",\n    \"Hidden\": \"@{items('Apply_to_each_Fields')?['Hidden']}\",\n    \"Indexed\": \"@{items('Apply_to_each_Fields')?['Indexed']}\",\n    \"IndexStatus\": \"@{items('Apply_to_each_Fields')?['IndexStatus']}\",\n    \"InternalName\": \"@{items('Apply_to_each_Fields')?['InternalName']}\",\n    \"PinnedToFiltersPane\": \"@{items('Apply_to_each_Fields')?['PinnedToFiltersPane']}\",\n    \"ReadOnlyField\": \"@{items('Apply_to_each_Fields')?['ReadOnlyField']}\",\n    \"Required\": \"@{items('Apply_to_each_Fields')?['Required']}\",\n    \"ShowInFiltersPane\": \"@{items('Apply_to_each_Fields')?['ShowInFiltersPane']}\",\n    \"Sortable\": \"@{items('Apply_to_each_Fields')?['Sortable']}\",\n    \"StaticName\": \"@{items('Apply_to_each_Fields')?['StaticName']}\",\n    \"Title\": \"@{items('Apply_to_each_Fields')?['Title']}\",\n    \"FieldTypeKind\": \"@{items('Apply_to_each_Fields')?['FieldTypeKind']}\",\n    \"DisplayFormat\": \"@{items('Apply_to_each_Fields')?['DisplayFormat']}\"\n  }\n"
+                                                        "value": "{\n    \"__metadata\": {\n      \"type\": \"@{items('Apply_to_each_Fields')?['__metadata']?['type']}\"\n    },\n    \"AutoIndexed\": \"@{items('Apply_to_each_Fields')?['AutoIndexed']}\",\n    \"CanBeDeleted\": \"@{items('Apply_to_each_Fields')?['CanBeDeleted']}\",\n    \"ClientValidationFormula\": '@{items('Apply_to_each_Fields')?['ClientValidationFormula']}',\n    \"ClientValidationMessage\": '@{items('Apply_to_each_Fields')?['ClientValidationMessage']}',\n    \"CustomFormatter\": '@{items('Apply_to_each_Fields')?['CustomFormatter']}',\n    \"DefaultFormula\": '@{items('Apply_to_each_Fields')?['DefaultFormula']}',\n    \"DefaultValue\": \"@{items('Apply_to_each_Fields')?['DefaultValue']}\",\n    \"Description\": \"@{items('Apply_to_each_Fields')?['Description']}\",\n    \"Direction\": \"@{items('Apply_to_each_Fields')?['Direction']}\",\n    \"EnforceUniqueValues\": \"@{items('Apply_to_each_Fields')?['EnforceUniqueValues']}\",\n    \"EntityPropertyName\": \"@{items('Apply_to_each_Fields')?['EntityPropertyName']}\",\n    \"Filterable\": \"@{items('Apply_to_each_Fields')?['Filterable']}\",\n    \"FromBaseType\": \"@{items('Apply_to_each_Fields')?['FromBaseType']}\",\n    \"Group\": \"@{items('Apply_to_each_Fields')?['Group']}\",\n    \"Hidden\": \"@{items('Apply_to_each_Fields')?['Hidden']}\",\n    \"Indexed\": \"@{items('Apply_to_each_Fields')?['Indexed']}\",\n    \"IndexStatus\": \"@{items('Apply_to_each_Fields')?['IndexStatus']}\",\n    \"InternalName\": \"@{items('Apply_to_each_Fields')?['InternalName']}\",\n    \"PinnedToFiltersPane\": \"@{items('Apply_to_each_Fields')?['PinnedToFiltersPane']}\",\n    \"ReadOnlyField\": \"@{items('Apply_to_each_Fields')?['ReadOnlyField']}\",\n    \"Required\": \"@{items('Apply_to_each_Fields')?['Required']}\",\n    \"ShowInFiltersPane\": \"@{items('Apply_to_each_Fields')?['ShowInFiltersPane']}\",\n    \"Sortable\": \"@{items('Apply_to_each_Fields')?['Sortable']}\",\n    \"StaticName\": \"@{items('Apply_to_each_Fields')?['StaticName']}\",\n    \"Title\": \"@{items('Apply_to_each_Fields')?['StaticName']}\",\n    \"FieldTypeKind\": \"@{items('Apply_to_each_Fields')?['FieldTypeKind']}\",\n    \"DisplayFormat\": \"@{items('Apply_to_each_Fields')?['DisplayFormat']}\"\n  }\n"
                                                     }
                                                 }
                                             }
@@ -664,7 +709,20 @@
                                                     "type": "SetVariable",
                                                     "inputs": {
                                                         "name": "varField",
-                                                        "value": "\n{\n    \"__metadata\": {\n      \"type\": \"@{items('Apply_to_each_Fields')?['__metadata']?['type']}\"\n    },\n    \"AutoIndexed\": \"@{items('Apply_to_each_Fields')?['AutoIndexed']}\",\n    \"CanBeDeleted\": \"@{items('Apply_to_each_Fields')?['CanBeDeleted']}\",\n    \"ClientValidationFormula\": \"@{items('Apply_to_each_Fields')?['ClientValidationFormula']}\",\n    \"ClientValidationMessage\": \"@{items('Apply_to_each_Fields')?['ClientValidationMessage']}\",\n    \"CustomFormatter\": \"@{items('Apply_to_each_Fields')?['CustomFormatter']}\",\n    \"DefaultFormula\": \"@{items('Apply_to_each_Fields')?['DefaultFormula']}\",\n    \"DefaultValue\": \"@{items('Apply_to_each_Fields')?['DefaultValue']}\",\n    \"Description\": \"@{items('Apply_to_each_Fields')?['Description']}\",\n    \"Direction\": \"@{items('Apply_to_each_Fields')?['Direction']}\",\n    \"EnforceUniqueValues\": \"@{items('Apply_to_each_Fields')?['EnforceUniqueValues']}\",\n    \"EntityPropertyName\": \"@{items('Apply_to_each_Fields')?['EntityPropertyName']}\",\n    \"Filterable\": \"@{items('Apply_to_each_Fields')?['Filterable']}\",\n    \"FromBaseType\": \"@{items('Apply_to_each_Fields')?['FromBaseType']}\",\n    \"Group\": \"@{items('Apply_to_each_Fields')?['Group']}\",\n    \"Hidden\": \"@{items('Apply_to_each_Fields')?['Hidden']}\",\n    \"Indexed\": \"@{items('Apply_to_each_Fields')?['Indexed']}\",\n    \"IndexStatus\": \"@{items('Apply_to_each_Fields')?['IndexStatus']}\",\n    \"InternalName\": \"@{items('Apply_to_each_Fields')?['InternalName']}\",\n    \"PinnedToFiltersPane\": \"@{items('Apply_to_each_Fields')?['PinnedToFiltersPane']}\",\n    \"ReadOnlyField\": \"@{items('Apply_to_each_Fields')?['ReadOnlyField']}\",\n    \"Required\": \"@{items('Apply_to_each_Fields')?['Required']}\",\n    \"ShowInFiltersPane\": \"@{items('Apply_to_each_Fields')?['ShowInFiltersPane']}\",\n    \"Sortable\": \"@{items('Apply_to_each_Fields')?['Sortable']}\",\n    \"StaticName\": \"@{items('Apply_to_each_Fields')?['StaticName']}\",\n    \"Title\": \"@{items('Apply_to_each_Fields')?['Title']}\",\n    \"FieldTypeKind\": \"@{items('Apply_to_each_Fields')?['FieldTypeKind']}\",\n    \"MaxLength\": \"@{items('Apply_to_each_Fields')?['MaxLength']}\"\n  }\n"
+                                                        "value": "\n{\n    \"__metadata\": {\n      \"type\": \"@{items('Apply_to_each_Fields')?['__metadata']?['type']}\"\n    },\n    \"AutoIndexed\": \"@{items('Apply_to_each_Fields')?['AutoIndexed']}\",\n    \"CanBeDeleted\": \"@{items('Apply_to_each_Fields')?['CanBeDeleted']}\",\n    \"ClientValidationFormula\": \"@{items('Apply_to_each_Fields')?['ClientValidationFormula']}\",\n    \"ClientValidationMessage\": \"@{items('Apply_to_each_Fields')?['ClientValidationMessage']}\",\n    \"CustomFormatter\": \"@{items('Apply_to_each_Fields')?['CustomFormatter']}\",\n    \"DefaultFormula\": \"@{items('Apply_to_each_Fields')?['DefaultFormula']}\",\n    \"DefaultValue\": \"@{items('Apply_to_each_Fields')?['DefaultValue']}\",\n    \"Description\": \"@{items('Apply_to_each_Fields')?['Description']}\",\n    \"Direction\": \"@{items('Apply_to_each_Fields')?['Direction']}\",\n    \"EnforceUniqueValues\": \"@{items('Apply_to_each_Fields')?['EnforceUniqueValues']}\",\n    \"EntityPropertyName\": \"@{items('Apply_to_each_Fields')?['EntityPropertyName']}\",\n    \"Filterable\": \"@{items('Apply_to_each_Fields')?['Filterable']}\",\n    \"FromBaseType\": \"@{items('Apply_to_each_Fields')?['FromBaseType']}\",\n    \"Group\": \"@{items('Apply_to_each_Fields')?['Group']}\",\n    \"Hidden\": \"@{items('Apply_to_each_Fields')?['Hidden']}\",\n    \"Indexed\": \"@{items('Apply_to_each_Fields')?['Indexed']}\",\n    \"IndexStatus\": \"@{items('Apply_to_each_Fields')?['IndexStatus']}\",\n    \"InternalName\": \"@{items('Apply_to_each_Fields')?['InternalName']}\",\n    \"PinnedToFiltersPane\": \"@{items('Apply_to_each_Fields')?['PinnedToFiltersPane']}\",\n    \"ReadOnlyField\": \"@{items('Apply_to_each_Fields')?['ReadOnlyField']}\",\n    \"Required\": \"@{items('Apply_to_each_Fields')?['Required']}\",\n    \"ShowInFiltersPane\": \"@{items('Apply_to_each_Fields')?['ShowInFiltersPane']}\",\n    \"Sortable\": \"@{items('Apply_to_each_Fields')?['Sortable']}\",\n    \"StaticName\": \"@{items('Apply_to_each_Fields')?['StaticName']}\",\n    \"Title\": \"@{items('Apply_to_each_Fields')?['StaticName']}\",\n    \"FieldTypeKind\": \"@{items('Apply_to_each_Fields')?['FieldTypeKind']}\",\n    \"MaxLength\": \"@{items('Apply_to_each_Fields')?['MaxLength']}\"\n  }\n"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "Case_Single_Choice": {
+                                            "case": 6,
+                                            "actions": {
+                                                "Set_variable_14": {
+                                                    "runAfter": {},
+                                                    "type": "SetVariable",
+                                                    "inputs": {
+                                                        "name": "varField",
+                                                        "value": "{\n    \"__metadata\": {\n      \"type\": \"@{items('Apply_to_each_Fields')?['__metadata']?['type']}\"\n    },\n    \"AutoIndexed\": \"@{items('Apply_to_each_Fields')?['AutoIndexed']}\",\n    \"CanBeDeleted\": \"@{items('Apply_to_each_Fields')?['CanBeDeleted']}\",\n    \"ClientValidationFormula\": '@{items('Apply_to_each_Fields')?['ClientValidationFormula']}',\n    \"ClientValidationMessage\": '@{items('Apply_to_each_Fields')?['ClientValidationMessage']}',\n    \"CustomFormatter\": '@{replace(string(items('Apply_to_each_Fields')?['CustomFormatter']), '\"', '\\\"')}',\n    \"DefaultFormula\": '@{items('Apply_to_each_Fields')?['DefaultFormula']}',\n    \"DefaultValue\": \"@{items('Apply_to_each_Fields')?['DefaultValue']}\",\n    \"Description\": \"@{items('Apply_to_each_Fields')?['Description']}\",\n    \"Direction\": \"@{items('Apply_to_each_Fields')?['Direction']}\",\n    \"EnforceUniqueValues\": \"@{items('Apply_to_each_Fields')?['EnforceUniqueValues']}\",\n    \"EntityPropertyName\": \"@{items('Apply_to_each_Fields')?['EntityPropertyName']}\",\n    \"Filterable\": \"@{items('Apply_to_each_Fields')?['Filterable']}\",\n    \"FromBaseType\": \"@{items('Apply_to_each_Fields')?['FromBaseType']}\",\n    \"Group\": \"@{items('Apply_to_each_Fields')?['Group']}\",\n    \"Hidden\": \"@{items('Apply_to_each_Fields')?['Hidden']}\",\n    \"Indexed\": \"@{items('Apply_to_each_Fields')?['Indexed']}\",\n    \"IndexStatus\": \"@{items('Apply_to_each_Fields')?['IndexStatus']}\",\n    \"InternalName\": \"@{items('Apply_to_each_Fields')?['InternalName']}\",\n    \"PinnedToFiltersPane\": \"@{items('Apply_to_each_Fields')?['PinnedToFiltersPane']}\",\n    \"ReadOnlyField\": \"@{items('Apply_to_each_Fields')?['ReadOnlyField']}\",\n    \"Required\": \"@{items('Apply_to_each_Fields')?['Required']}\",\n    \"ShowInFiltersPane\": \"@{items('Apply_to_each_Fields')?['ShowInFiltersPane']}\",\n    \"Sortable\": \"@{items('Apply_to_each_Fields')?['Sortable']}\",\n    \"StaticName\": \"@{items('Apply_to_each_Fields')?['StaticName']}\",\n    \"Title\": \"@{items('Apply_to_each_Fields')?['StaticName']}\",\n    \"FieldTypeKind\": \"@{items('Apply_to_each_Fields')?['FieldTypeKind']}\",\n    \"FillInChoice\": \"@{items('Apply_to_each_Fields')?['FillInChoice']}\",\n    \"Mappings\": \"@{items('Apply_to_each_Fields')?['Mappings']}\",\n    \"Choices\": {\n      \"__metadata\": {\n        \"type\": \"Collection(Edm.String)\"\n      },\n      \"results\": @{items('Apply_to_each_Fields')?['Choices']?['results']}\n    }\n  }"
                                                     }
                                                 }
                                             }
@@ -677,12 +735,15 @@
                                                 "type": "SetVariable",
                                                 "inputs": {
                                                     "name": "varField",
-                                                    "value": "{\n    \"__metadata\": {\n      \"type\": \"@{items('Apply_to_each_Fields')?['__metadata']?['type']}\"\n    },\n    \"AutoIndexed\": \"@{items('Apply_to_each_Fields')?['AutoIndexed']}\",\n    \"CanBeDeleted\": \"@{items('Apply_to_each_Fields')?['CanBeDeleted']}\",\n    \"ClientValidationFormula\": \"@{items('Apply_to_each_Fields')?['ClientValidationFormula']}\",\n    \"ClientValidationMessage\": \"@{items('Apply_to_each_Fields')?['ClientValidationMessage']}\",\n    \"CustomFormatter\": \"@{items('Apply_to_each_Fields')?['CustomFormatter']}\",\n    \"DefaultFormula\": \"@{items('Apply_to_each_Fields')?['DefaultFormula']}\",\n    \"DefaultValue\": \"@{items('Apply_to_each_Fields')?['DefaultValue']}\",\n    \"Description\": \"@{items('Apply_to_each_Fields')?['Description']}\",\n    \"Direction\": \"@{items('Apply_to_each_Fields')?['Direction']}\",\n    \"EnforceUniqueValues\": \"@{items('Apply_to_each_Fields')?['EnforceUniqueValues']}\",\n    \"EntityPropertyName\": \"@{items('Apply_to_each_Fields')?['EntityPropertyName']}\",\n    \"Filterable\": \"@{items('Apply_to_each_Fields')?['Filterable']}\",\n    \"FromBaseType\": \"@{items('Apply_to_each_Fields')?['FromBaseType']}\",\n    \"Group\": \"@{items('Apply_to_each_Fields')?['Group']}\",\n    \"Hidden\": \"@{items('Apply_to_each_Fields')?['Hidden']}\",\n    \"Indexed\": \"@{items('Apply_to_each_Fields')?['Indexed']}\",\n    \"IndexStatus\": \"@{items('Apply_to_each_Fields')?['IndexStatus']}\",\n    \"InternalName\": \"@{items('Apply_to_each_Fields')?['InternalName']}\",\n    \"PinnedToFiltersPane\": \"@{items('Apply_to_each_Fields')?['PinnedToFiltersPane']}\",\n    \"ReadOnlyField\": \"@{items('Apply_to_each_Fields')?['ReadOnlyField']}\",\n    \"Required\": \"@{items('Apply_to_each_Fields')?['Required']}\",\n    \"ShowInFiltersPane\": \"@{items('Apply_to_each_Fields')?['ShowInFiltersPane']}\",\n    \"Sortable\": \"@{items('Apply_to_each_Fields')?['Sortable']}\",\n    \"StaticName\": \"@{items('Apply_to_each_Fields')?['StaticName']}\",\n    \"Title\": \"@{items('Apply_to_each_Fields')?['Title']}\",\n    \"FieldTypeKind\": \"@{items('Apply_to_each_Fields')?['FieldTypeKind']}\"\n  }"
+                                                    "value": "{\n    \"__metadata\": {\n      \"type\": \"@{items('Apply_to_each_Fields')?['__metadata']?['type']}\"\n    },\n    \"AutoIndexed\": \"@{items('Apply_to_each_Fields')?['AutoIndexed']}\",\n    \"CanBeDeleted\": \"@{items('Apply_to_each_Fields')?['CanBeDeleted']}\",\n    \"ClientValidationFormula\": \"@{items('Apply_to_each_Fields')?['ClientValidationFormula']}\",\n    \"ClientValidationMessage\": \"@{items('Apply_to_each_Fields')?['ClientValidationMessage']}\",\n    \"CustomFormatter\": '@{replace(string(items('Apply_to_each_Fields')?['CustomFormatter']), '\"', '\\\"')}',\n    \"DefaultFormula\": \"@{items('Apply_to_each_Fields')?['DefaultFormula']}\",\n    \"DefaultValue\": \"@{items('Apply_to_each_Fields')?['DefaultValue']}\",\n    \"Description\": \"@{items('Apply_to_each_Fields')?['Description']}\",\n    \"Direction\": \"@{items('Apply_to_each_Fields')?['Direction']}\",\n    \"EnforceUniqueValues\": \"@{items('Apply_to_each_Fields')?['EnforceUniqueValues']}\",\n    \"EntityPropertyName\": \"@{items('Apply_to_each_Fields')?['EntityPropertyName']}\",\n    \"Filterable\": \"@{items('Apply_to_each_Fields')?['Filterable']}\",\n    \"FromBaseType\": \"@{items('Apply_to_each_Fields')?['FromBaseType']}\",\n    \"Group\": \"@{items('Apply_to_each_Fields')?['Group']}\",\n    \"Hidden\": \"@{items('Apply_to_each_Fields')?['Hidden']}\",\n    \"Indexed\": \"@{items('Apply_to_each_Fields')?['Indexed']}\",\n    \"IndexStatus\": \"@{items('Apply_to_each_Fields')?['IndexStatus']}\",\n    \"InternalName\": \"@{items('Apply_to_each_Fields')?['InternalName']}\",\n    \"PinnedToFiltersPane\": \"@{items('Apply_to_each_Fields')?['PinnedToFiltersPane']}\",\n    \"ReadOnlyField\": \"@{items('Apply_to_each_Fields')?['ReadOnlyField']}\",\n    \"Required\": \"@{items('Apply_to_each_Fields')?['Required']}\",\n    \"ShowInFiltersPane\": \"@{items('Apply_to_each_Fields')?['ShowInFiltersPane']}\",\n    \"Sortable\": \"@{items('Apply_to_each_Fields')?['Sortable']}\",\n    \"StaticName\": \"@{items('Apply_to_each_Fields')?['StaticName']}\",\n    \"Title\": \"@{items('Apply_to_each_Fields')?['StaticName']}\",\n    \"FieldTypeKind\": \"@{items('Apply_to_each_Fields')?['FieldTypeKind']}\"\n  }"
                                                 }
                                             }
                                         }
                                     },
                                     "expression": "@items('Apply_to_each_Fields')?['FieldTypeKind']",
+                                    "metadata": {
+                                        "operationMetadataId": "f7a0d4f5-ec2d-4694-8a32-342a5f304104"
+                                    },
                                     "type": "Switch"
                                 },
                                 "Send_an_HTTP_request_to_SharePoint_2": {
@@ -690,6 +751,9 @@
                                         "Switch": [
                                             "Succeeded"
                                         ]
+                                    },
+                                    "metadata": {
+                                        "operationMetadataId": "151b1501-5e2b-4460-bf3f-64ea98e898be"
                                     },
                                     "type": "OpenApiConnection",
                                     "inputs": {
@@ -701,7 +765,7 @@
                                         "parameters": {
                                             "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['toSite']}",
                                             "parameters/method": "GET",
-                                            "parameters/uri": "_api/web/lists/getbytitle('@{triggerBody()?['ListTitle']}')/fields/getbytitle('@{items('Apply_to_each_Fields')['Title']}')",
+                                            "parameters/uri": "_api/web/lists/getbytitle('@{triggerBody()?['ListTitle']}')/fields/GetByInternalNameOrTitle('@{items('Apply_to_each_Fields')['InternalName']}')",
                                             "parameters/headers": {
                                                 "accept": "application/json;odata=verbose",
                                                 "content-type": "application/json;odata=verbose"
@@ -719,6 +783,9 @@
                                             "Succeeded"
                                         ]
                                     },
+                                    "metadata": {
+                                        "operationMetadataId": "0c1deba4-a7bf-474c-a1cc-3196ca1e36dc"
+                                    },
                                     "type": "OpenApiConnection",
                                     "inputs": {
                                         "host": {
@@ -729,7 +796,7 @@
                                         "parameters": {
                                             "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['toSite']}",
                                             "parameters/method": "PATCH",
-                                            "parameters/uri": "_api/web/lists/getbytitle('@{triggerBody()?['ListTitle']}')/fields/getbytitle('@{items('Apply_to_each_Fields')['Title']}')",
+                                            "parameters/uri": "_api/web/lists/getbytitle('@{triggerBody()?['ListTitle']}')/fields/GetByInternalNameOrTitle('@{items('Apply_to_each_Fields')['InternalName']}')",
                                             "parameters/headers": {
                                                 "accept": "application/json;odata=verbose",
                                                 "content-type": "application/json;odata=verbose",
@@ -753,15 +820,34 @@
                                             "TimedOut"
                                         ]
                                     },
+                                    "metadata": {
+                                        "operationMetadataId": "d45830e1-3e04-4d47-a9cc-a84b8ec059a7"
+                                    },
                                     "type": "Scope"
                                 },
-                                "Send_an_HTTP_request_to_SharePoint_15": {
+                                "Scope_6": {
+                                    "actions": {},
                                     "runAfter": {
-                                        "Send_an_HTTP_request_to_SharePoint_2": [
-                                            "Skipped",
-                                            "TimedOut",
-                                            "Failed"
+                                        "Send_an_HTTP_request_to_SharePoint_11": [
+                                            "Failed",
+                                            "TimedOut"
                                         ]
+                                    },
+                                    "metadata": {
+                                        "operationMetadataId": "a5763c6f-6972-46f6-b136-29ff953417d9"
+                                    },
+                                    "type": "Scope"
+                                },
+                                "Send_an_HTTP_request_to_SharePoint_11": {
+                                    "runAfter": {
+                                        "Scope_9": [
+                                            "Succeeded",
+                                            "Failed",
+                                            "TimedOut"
+                                        ]
+                                    },
+                                    "metadata": {
+                                        "operationMetadataId": "a357e65b-5a0c-419c-b795-d9ad5b11a631"
                                     },
                                     "type": "OpenApiConnection",
                                     "inputs": {
@@ -772,13 +858,15 @@
                                         },
                                         "parameters": {
                                             "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['toSite']}",
-                                            "parameters/method": "POST",
-                                            "parameters/uri": "_api/web/lists/getbytitle('@{triggerBody()?['ListTitle']}')/fields",
+                                            "parameters/method": "PATCH",
+                                            "parameters/uri": "_api/web/lists/getbytitle('@{triggerBody()?['ListTitle']}')/fields/GetByInternalNameOrTitle('@{items('Apply_to_each_Fields')['InternalName']}')",
                                             "parameters/headers": {
                                                 "accept": "application/json;odata=verbose",
-                                                "content-type": "application/json;odata=verbose"
+                                                "content-type": "application/json;odata=verbose",
+                                                "IF-MATCH": "*",
+                                                "X-HTTP-METHOD": "MERGE"
                                             },
-                                            "parameters/body": "@variables('varField')"
+                                            "parameters/body": "{\n    \"__metadata\": {\n      \"type\": \"@{items('Apply_to_each_Fields')?['__metadata']?['type']}\"\n    },\n\n    \"Title\": \"@{items('Apply_to_each_Fields')?['Title']}\"\n\n}"
                                         },
                                         "authentication": "@parameters('$authentication')",
                                         "retryPolicy": {
@@ -786,14 +874,46 @@
                                         }
                                     }
                                 },
-                                "Scope_6": {
-                                    "actions": {},
+                                "Scope_9": {
+                                    "actions": {
+                                        "Send_an_HTTP_request_to_SharePoint_15": {
+                                            "runAfter": {},
+                                            "metadata": {
+                                                "operationMetadataId": "d3e77315-6841-4f5e-9e2f-ba85ddab0424"
+                                            },
+                                            "type": "OpenApiConnection",
+                                            "inputs": {
+                                                "host": {
+                                                    "connectionName": "shared_sharepointonline",
+                                                    "operationId": "HttpRequest",
+                                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                                },
+                                                "parameters": {
+                                                    "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['toSite']}",
+                                                    "parameters/method": "POST",
+                                                    "parameters/uri": "_api/web/lists/getbytitle('@{triggerBody()?['ListTitle']}')/fields/",
+                                                    "parameters/headers": {
+                                                        "accept": "application/json;odata=verbose",
+                                                        "content-type": "application/json;odata=verbose"
+                                                    },
+                                                    "parameters/body": "@variables('varField')"
+                                                },
+                                                "authentication": "@parameters('$authentication')",
+                                                "retryPolicy": {
+                                                    "type": "none"
+                                                }
+                                            }
+                                        }
+                                    },
                                     "runAfter": {
-                                        "Send_an_HTTP_request_to_SharePoint_15": [
-                                            "TimedOut",
+                                        "Send_an_HTTP_request_to_SharePoint_2": [
+                                            "Failed",
                                             "Skipped",
-                                            "Failed"
+                                            "TimedOut"
                                         ]
+                                    },
+                                    "metadata": {
+                                        "operationMetadataId": "3b67497e-9141-4397-8b61-720169927140"
                                     },
                                     "type": "Scope"
                                 }
@@ -803,12 +923,18 @@
                                     "Succeeded"
                                 ]
                             },
+                            "metadata": {
+                                "operationMetadataId": "2355a483-6542-4305-80b0-a27255e57069"
+                            },
                             "type": "Foreach"
                         },
                         "Scope_8": {
                             "actions": {
                                 "Send_an_HTTP_request_to_SharePoint": {
                                     "runAfter": {},
+                                    "metadata": {
+                                        "operationMetadataId": "e17c5e91-c854-4d9f-a961-ae3445bbae64"
+                                    },
                                     "type": "OpenApiConnection",
                                     "inputs": {
                                         "host": {
@@ -840,6 +966,9 @@
                                             "Succeeded"
                                         ]
                                     },
+                                    "metadata": {
+                                        "operationMetadataId": "06a31263-1db3-4a6c-9b33-bd8349639d68"
+                                    },
                                     "type": "SetVariable",
                                     "inputs": {
                                         "name": "varListId",
@@ -852,6 +981,9 @@
                                     "Succeeded"
                                 ]
                             },
+                            "metadata": {
+                                "operationMetadataId": "e2c5d8e5-b97f-4aec-9328-be166905650c"
+                            },
                             "type": "Scope"
                         }
                     },
@@ -860,12 +992,18 @@
                             "Succeeded"
                         ]
                     },
+                    "metadata": {
+                        "operationMetadataId": "5e9c5620-8d39-484d-b2c5-a10b8a4a0db3"
+                    },
                     "type": "Scope"
                 },
                 "Scope_4": {
                     "actions": {
                         "Send_an_HTTP_request_to_SharePoint_19": {
                             "runAfter": {},
+                            "metadata": {
+                                "operationMetadataId": "41443813-b32b-4af3-b0b2-403808c26541"
+                            },
                             "type": "OpenApiConnection",
                             "inputs": {
                                 "host": {
@@ -890,6 +1028,9 @@
                                 "Send_an_HTTP_request_to_SharePoint_19": [
                                     "Succeeded"
                                 ]
+                            },
+                            "metadata": {
+                                "operationMetadataId": "92bce94c-2661-4d2d-ab49-45dc4b6a9e52"
                             },
                             "type": "ParseJson",
                             "inputs": {
@@ -1113,6 +1254,9 @@
                                     "Succeeded"
                                 ]
                             },
+                            "metadata": {
+                                "operationMetadataId": "1ba096e3-8582-4bd3-8829-fa87508bdcbd"
+                            },
                             "type": "Select",
                             "inputs": {
                                 "from": "@body('Parse_JSON_6')",
@@ -1175,6 +1319,9 @@
                                     "Succeeded"
                                 ]
                             },
+                            "metadata": {
+                                "operationMetadataId": "a3d3223a-37c5-44c7-accd-1a0002f868b6"
+                            },
                             "type": "Query",
                             "inputs": {
                                 "from": "@body('Select_6')",
@@ -1189,6 +1336,9 @@
                                         "Send_an_HTTP_request_to_SharePoint_25": [
                                             "Succeeded"
                                         ]
+                                    },
+                                    "metadata": {
+                                        "operationMetadataId": "1f0a93d1-233c-4b1b-a34a-cb103e05d06e"
                                     },
                                     "type": "ParseJson",
                                     "inputs": {
@@ -1241,6 +1391,9 @@
                                     "actions": {
                                         "Send_an_HTTP_request_to_SharePoint_28": {
                                             "runAfter": {},
+                                            "metadata": {
+                                                "operationMetadataId": "1f0547ad-af84-452b-afa5-017f943f0a28"
+                                            },
                                             "type": "OpenApiConnection",
                                             "inputs": {
                                                 "host": {
@@ -1273,6 +1426,9 @@
                                                     "TimedOut"
                                                 ]
                                             },
+                                            "metadata": {
+                                                "operationMetadataId": "27de3c97-c276-4a29-9391-8a8c08c78f81"
+                                            },
                                             "type": "Scope"
                                         }
                                     },
@@ -1281,10 +1437,16 @@
                                             "Succeeded"
                                         ]
                                     },
+                                    "metadata": {
+                                        "operationMetadataId": "4345d88f-a8d6-4859-9108-cde04ae65742"
+                                    },
                                     "type": "Foreach"
                                 },
                                 "Send_an_HTTP_request_to_SharePoint_26": {
                                     "runAfter": {},
+                                    "metadata": {
+                                        "operationMetadataId": "fe4716ff-a716-42c9-93ff-009341fdad04"
+                                    },
                                     "type": "OpenApiConnection",
                                     "inputs": {
                                         "host": {
@@ -1319,6 +1481,9 @@
                                             "Skipped"
                                         ]
                                     },
+                                    "metadata": {
+                                        "operationMetadataId": "1c57b43a-7793-4735-a7bb-2a95b5fb7bec"
+                                    },
                                     "type": "OpenApiConnection",
                                     "inputs": {
                                         "host": {
@@ -1343,6 +1508,9 @@
                                         "Parse_JSON_8": [
                                             "Succeeded"
                                         ]
+                                    },
+                                    "metadata": {
+                                        "operationMetadataId": "86817ee3-0f4c-4fdf-8ca9-425a2ae8407d"
                                     },
                                     "type": "OpenApiConnection",
                                     "inputs": {
@@ -1369,6 +1537,9 @@
                                     "Succeeded"
                                 ]
                             },
+                            "metadata": {
+                                "operationMetadataId": "5c940fd6-ae8a-4f3b-be15-29d4539c21b3"
+                            },
                             "type": "Foreach"
                         },
                         "Filter_array_3": {
@@ -1376,6 +1547,9 @@
                                 "Apply_to_each_4": [
                                     "Succeeded"
                                 ]
+                            },
+                            "metadata": {
+                                "operationMetadataId": "f29724a4-b591-4036-826a-ebedd5e8091f"
                             },
                             "type": "Query",
                             "inputs": {
@@ -1392,6 +1566,9 @@
                                             "Succeeded",
                                             "Skipped"
                                         ]
+                                    },
+                                    "metadata": {
+                                        "operationMetadataId": "a558aef6-134a-4e0d-8364-d6d131b6d2ab"
                                     },
                                     "type": "OpenApiConnection",
                                     "inputs": {
@@ -1417,6 +1594,9 @@
                                         "Send_an_HTTP_request_to_SharePoint_21": [
                                             "Succeeded"
                                         ]
+                                    },
+                                    "metadata": {
+                                        "operationMetadataId": "acb0882d-cfbf-437a-95b4-09077f3d6855"
                                     },
                                     "type": "ParseJson",
                                     "inputs": {
@@ -1466,6 +1646,9 @@
                                 },
                                 "Send_an_HTTP_request_to_SharePoint_22": {
                                     "runAfter": {},
+                                    "metadata": {
+                                        "operationMetadataId": "bb438395-9f36-44fb-9694-0f4992fc3cf9"
+                                    },
                                     "type": "OpenApiConnection",
                                     "inputs": {
                                         "host": {
@@ -1493,6 +1676,9 @@
                                     "actions": {
                                         "Send_an_HTTP_request_to_SharePoint_23": {
                                             "runAfter": {},
+                                            "metadata": {
+                                                "operationMetadataId": "20438026-f0ef-4636-8a52-a3ef83d75d9a"
+                                            },
                                             "type": "OpenApiConnection",
                                             "inputs": {
                                                 "host": {
@@ -1525,6 +1711,9 @@
                                                     "TimedOut"
                                                 ]
                                             },
+                                            "metadata": {
+                                                "operationMetadataId": "9338d466-aba9-4a2b-aac8-89a6c71da6f3"
+                                            },
                                             "type": "Scope"
                                         }
                                     },
@@ -1533,6 +1722,9 @@
                                             "Succeeded"
                                         ]
                                     },
+                                    "metadata": {
+                                        "operationMetadataId": "2eb14cf5-47a5-40bc-bde3-f8cd0de6821f"
+                                    },
                                     "type": "Foreach"
                                 },
                                 "Send_an_HTTP_request_to_SharePoint_4": {
@@ -1540,6 +1732,9 @@
                                         "Parse_JSON_7": [
                                             "Succeeded"
                                         ]
+                                    },
+                                    "metadata": {
+                                        "operationMetadataId": "4941d244-fb13-4a0a-8584-90b79f9aa569"
                                     },
                                     "type": "OpenApiConnection",
                                     "inputs": {
@@ -1566,6 +1761,9 @@
                                             "Failed",
                                             "TimedOut"
                                         ]
+                                    },
+                                    "metadata": {
+                                        "operationMetadataId": "632b24fa-69bd-42cc-9f9c-c821c35737fe"
                                     },
                                     "type": "OpenApiConnection",
                                     "inputs": {
@@ -1596,6 +1794,9 @@
                                     "Succeeded"
                                 ]
                             },
+                            "metadata": {
+                                "operationMetadataId": "e3a55b49-038c-41ae-8b41-8f56bb049dac"
+                            },
                             "type": "Foreach"
                         }
                     },
@@ -1603,6 +1804,9 @@
                         "Scope_3": [
                             "Succeeded"
                         ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "7b9b2d8d-55b4-4a40-92b5-286e1c67a0a1"
                     },
                     "type": "Scope"
                 },
@@ -1612,6 +1816,9 @@
                             "Succeeded"
                         ]
                     },
+                    "metadata": {
+                        "operationMetadataId": "47b421a1-b5e5-4b81-884a-159eb60f8e68"
+                    },
                     "type": "Response",
                     "kind": "Http",
                     "inputs": {
@@ -1620,6 +1827,9 @@
                 },
                 "Initialize_variable": {
                     "runAfter": {},
+                    "metadata": {
+                        "operationMetadataId": "f52ed13d-a5f7-4d9c-aca5-d42fb81e53f7"
+                    },
                     "type": "InitializeVariable",
                     "inputs": {
                         "variables": [
@@ -1637,6 +1847,9 @@
                             "Succeeded"
                         ]
                     },
+                    "metadata": {
+                        "operationMetadataId": "8aa5de9c-d200-44fa-a36c-35cd218b76dc"
+                    },
                     "type": "InitializeVariable",
                     "inputs": {
                         "variables": [
@@ -1652,6 +1865,9 @@
                         "Initialize_variable": [
                             "Succeeded"
                         ]
+                    },
+                    "metadata": {
+                        "operationMetadataId": "939fd0a6-72c6-4627-bf50-021393435e4f"
                     },
                     "type": "InitializeVariable",
                     "inputs": {

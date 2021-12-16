@@ -58,7 +58,8 @@
                     "metadata": {
                         "flowSystemMetadata": {
                             "swaggerOperationId": "GetOnUpdatedFileItems"
-                        }
+                        },
+                        "operationMetadataId": "d992cca6-716f-4da3-94f6-84e8adf03670"
                     },
                     "type": "ApiConnection",
                     "inputs": {
@@ -76,7 +77,7 @@
                             "expression": "@equals( triggerBody()?['{ModerationStatus}'], 'Pending' )"
                         },
                         {
-                            "expression": "@not(startsWith( toLower(triggerBody()?['{Path}']), toLower('EventReview/Receipts/') ))"
+                            "expression": "@not(equals( triggerBody()?['@odata.etag'], triggerBody()?['StateDescription']))"
                         }
                     ]
                 }
@@ -84,6 +85,9 @@
             "actions": {
                 "HTTP": {
                     "runAfter": {},
+                    "metadata": {
+                        "operationMetadataId": "e6095ef3-69ac-4fc5-910e-a7614ca6f894"
+                    },
                     "type": "Http",
                     "inputs": {
                         "method": "POST",

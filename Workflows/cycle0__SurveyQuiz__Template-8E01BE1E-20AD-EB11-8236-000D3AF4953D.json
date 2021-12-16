@@ -58,7 +58,8 @@
                     "metadata": {
                         "flowSystemMetadata": {
                             "swaggerOperationId": "GetOnUpdatedFileItems"
-                        }
+                        },
+                        "operationMetadataId": "80329346-3692-47ab-9059-fb210e02dd6f"
                     },
                     "type": "ApiConnection",
                     "inputs": {
@@ -68,7 +69,7 @@
                             }
                         },
                         "method": "get",
-                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent('https://' , parameters('envpar_config__TenantName') , '.sharepoint.com/sites/', parameters('envpar_config__CycleZeroName')))}/tables/@{encodeURIComponent(encodeURIComponent('SurveyQuiz'))}/onupdatedfileitems",
+                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent('https://' , parameters('envpar_config__TenantName') , '.sharepoint.com/sites/', parameters('envpar_config__CycleZeroName')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/onupdatedfileitems",
                         "authentication": "@parameters('$authentication')"
                     },
                     "conditions": [
@@ -76,19 +77,7 @@
                             "expression": "@equals( triggerBody()?['{ModerationStatus}'], 'Pending' )"
                         },
                         {
-                            "expression": "@contains( triggerBody()?['{ContentType}']?['Name'] , '__' )"
-                        },
-                        {
-                            "expression": "@not(startsWith( toLower(triggerBody()?['{FilenameWithExtension}']) , toLower(concat(triggerBody()?['{ContentType}']?['Name'], '.docx')) ))"
-                        },
-                        {
-                            "expression": "@endsWith( toLower(triggerBody()?['{Path}']) , toLower(concat(first(split(triggerBody()?['{ContentType}']?['Name'],'__')), '/')) )"
-                        },
-                        {
-                            "expression": "@not(endsWith( toLower(triggerBody()?['{FilenameWithExtension}']) , toLower('__SOLUTION.docx') ))"
-                        },
-                        {
-                            "expression": "@less( float(triggerBody()?['{VersionNumber}']), 1.0 )"
+                            "expression": "@not(equals( triggerBody()?['@odata.etag'], triggerBody()?['StateDescription']))"
                         }
                     ]
                 }
@@ -96,6 +85,9 @@
             "actions": {
                 "HTTP": {
                     "runAfter": {},
+                    "metadata": {
+                        "operationMetadataId": "a78f96df-9919-4024-b841-4f4482126fcc"
+                    },
                     "type": "Http",
                     "inputs": {
                         "method": "POST",
