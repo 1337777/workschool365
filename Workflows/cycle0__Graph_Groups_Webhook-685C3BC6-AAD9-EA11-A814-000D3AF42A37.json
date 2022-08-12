@@ -1,1165 +1,1165 @@
 {
-    "properties": {
-        "connectionReferences": {
-            "shared_sharepointonline": {
-                "runtimeSource": "embedded",
-                "connection": {
-                    "connectionReferenceLogicalName": "new_sharedsharepointonline_9ad14"
-                },
-                "api": {
-                    "name": "shared_sharepointonline"
-                }
-            },
-            "shared_sharepointonline_1": {
-                "runtimeSource": "embedded",
-                "connection": {
-                    "connectionReferenceLogicalName": "new_sharedsharepointonline_9ad14"
-                },
-                "api": {
-                    "name": "shared_sharepointonline"
-                }
-            }
+  "properties": {
+    "connectionReferences": {
+      "shared_sharepointonline": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedsharepointonline_9ad14"
         },
-        "definition": {
-            "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
-            "contentVersion": "1.0.0.0",
-            "parameters": {
-                "$connections": {
-                    "defaultValue": {},
-                    "type": "Object"
-                },
-                "$authentication": {
-                    "defaultValue": {},
-                    "type": "SecureObject"
-                },
-                "envpar_http__Graph_Notifications_Interface": {
-                    "defaultValue": "",
-                    "type": "String",
-                    "metadata": {
-                        "schemaName": "new_envpar_http__Graph_Notifications_Interface",
-                        "description": "This flow HTTP trigger URL. Enter space character ( ) for none. Filled automatically."
-                    }
-                },
-                "envpar_config__TenantName": {
-                    "defaultValue": "",
-                    "type": "String",
-                    "metadata": {
-                        "schemaName": "new_envpar_config__TenantName",
-                        "description": "Required. Org Name orgname (this is the prefix of the auto assigned domain orgname.onmicrosoft.com)"
-                    }
-                },
-                "envpar_config__CycleZeroName": {
-                    "defaultValue": "",
-                    "type": "String",
-                    "metadata": {
-                        "schemaName": "new_envpar_config__CycleZeroName",
-                        "description": "Required. Could have many environments N each with its envN_cycle0 template"
-                    }
-                },
-                "envpar_config__CyclesRename": {
-                    "defaultValue": "",
-                    "type": "String",
-                    "metadata": {
-                        "schemaName": "new_envpar_config__CyclesRename",
-                        "description": "Required. Rename cycle to class, for example. So now class1, ... classN"
-                    }
-                },
-                "envpar_config__TenantDomain": {
-                    "defaultValue": "",
-                    "type": "String",
-                    "metadata": {
-                        "schemaName": "new_envpar_config__TenantDomain",
-                        "description": "Required. Org Domain name such as orgname.onmicrosoft.com or orgname.com"
-                    }
-                },
-                "envpar_config__GraphAppId": {
-                    "defaultValue": "",
-                    "type": "String",
-                    "metadata": {
-                        "schemaName": "new_envpar_config__GraphAppId",
-                        "description": "Service Principal Id for Graph Api. Enter space character ( ) for none. Filled automatically."
-                    }
-                },
-                "envpar_config__GraphAppSecret": {
-                    "defaultValue": "",
-                    "type": "String",
-                    "metadata": {
-                        "schemaName": "new_envpar_config__GraphAppSecret",
-                        "description": "Service Principal Secret for Graph Api. Enter space character ( ) for none. Filled automatically."
-                    }
+        "api": {
+          "name": "shared_sharepointonline"
+        }
+      },
+      "shared_sharepointonline_1": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedsharepointonline_9ad14"
+        },
+        "api": {
+          "name": "shared_sharepointonline"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "envpar_http__Graph_Notifications_Interface (new_envpar_http__Graph_Notifications_Interface)": {
+          "defaultValue": "",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_envpar_http__Graph_Notifications_Interface",
+            "description": "This flow HTTP trigger URL. Enter space character ( ) for none. Filled automatically."
+          }
+        },
+        "envpar_config__TenantName (new_envpar_config__TenantName)": {
+          "defaultValue": "",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_envpar_config__TenantName",
+            "description": "Required. Org Name orgname (this is the prefix of the auto assigned domain orgname.onmicrosoft.com)"
+          }
+        },
+        "envpar_config__CycleZeroName (new_envpar_config__CycleZeroName)": {
+          "defaultValue": "",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_envpar_config__CycleZeroName",
+            "description": "Required. Could have many environments N each with its envN_cycle0 template"
+          }
+        },
+        "envpar_config__CyclesRename (new_envpar_config__CyclesRename)": {
+          "defaultValue": "",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_envpar_config__CyclesRename",
+            "description": "Required. Rename cycle to class, for example. So now class1, ... classN"
+          }
+        },
+        "envpar_config__TenantDomain (new_envpar_config__TenantDomain)": {
+          "defaultValue": "",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_envpar_config__TenantDomain",
+            "description": "Required. Org Domain name such as orgname.onmicrosoft.com or orgname.com"
+          }
+        },
+        "envpar_config__GraphAppId (new_envpar_config__GraphAppId)": {
+          "defaultValue": "",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_envpar_config__GraphAppId",
+            "description": "Service Principal Id for Graph Api. Enter space character ( ) for none. Filled automatically."
+          }
+        },
+        "envpar_config__GraphAppSecret (new_envpar_config__GraphAppSecret)": {
+          "defaultValue": "",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_envpar_config__GraphAppSecret",
+            "description": "Service Principal Secret for Graph Api. Enter space character ( ) for none. Filled automatically."
+          }
+        }
+      },
+      "triggers": {
+        "HTTP_Webhook": {
+          "metadata": {
+            "operationMetadataId": "efdf5bfe-45bd-4191-9d01-8ec174fd7d69"
+          },
+          "type": "HttpWebhook",
+          "inputs": {
+            "subscribe": {
+              "method": "POST",
+              "uri": "@parameters('envpar_http__Graph_Notifications_Interface (new_envpar_http__Graph_Notifications_Interface)')",
+              "headers": {
+                "Content-Type": "application/json; charset=utf-8"
+              },
+              "body": {
+                "method": "POST",
+                "delayMinutes": 1440,
+                "body": {
+                  "changeType": "updated",
+                  "clientState": "@{parameters('envpar_config__GraphAppId (new_envpar_config__GraphAppId)')}",
+                  "notificationUrl": "@{listCallbackUrl()}",
+                  "resource": "/groups"
                 }
+              }
             },
-            "triggers": {
-                "HTTP_Webhook": {
-                    "metadata": {
-                        "operationMetadataId": "efdf5bfe-45bd-4191-9d01-8ec174fd7d69"
-                    },
-                    "type": "HttpWebhook",
-                    "inputs": {
-                        "subscribe": {
-                            "method": "POST",
-                            "uri": "@parameters('envpar_http__Graph_Notifications_Interface')",
-                            "headers": {
-                                "Content-Type": "application/json; charset=utf-8"
-                            },
-                            "body": {
-                                "method": "POST",
-                                "delayMinutes": 1440,
-                                "body": {
-                                    "changeType": "updated",
-                                    "clientState": "@{parameters('envpar_config__GraphAppId')}",
-                                    "notificationUrl": "@{listCallbackUrl()}",
-                                    "resource": "/groups"
-                                }
-                            }
-                        },
-                        "unsubscribe": {
-                            "method": "POST",
-                            "uri": "@parameters('envpar_http__Graph_Notifications_Interface')",
-                            "body": {
-                                "method": "DELETE",
-                                "delayMinutes": 0,
-                                "body": {
-                                    "changeType": "updated",
-                                    "clientState": "@{parameters('envpar_config__GraphAppId')}",
-                                    "notificationUrl": "@{listCallbackUrl()}",
-                                    "resource": "/groups"
-                                }
-                            }
-                        }
-                    }
+            "unsubscribe": {
+              "method": "POST",
+              "uri": "@parameters('envpar_http__Graph_Notifications_Interface (new_envpar_http__Graph_Notifications_Interface)')",
+              "body": {
+                "method": "DELETE",
+                "delayMinutes": 0,
+                "body": {
+                  "changeType": "updated",
+                  "clientState": "@{parameters('envpar_config__GraphAppId (new_envpar_config__GraphAppId)')}",
+                  "notificationUrl": "@{listCallbackUrl()}",
+                  "resource": "/groups"
                 }
-            },
+              }
+            }
+          }
+        }
+      },
+      "actions": {
+        "Condition": {
+          "actions": {
+            "Response_2": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "0426f567-81c7-4964-b234-4c42fd6557c3"
+              },
+              "type": "Response",
+              "kind": "Http",
+              "inputs": {
+                "statusCode": 202
+              }
+            }
+          },
+          "runAfter": {},
+          "else": {
             "actions": {
-                "Condition": {
-                    "actions": {
-                        "Response_2": {
-                            "runAfter": {},
-                            "metadata": {
-                                "operationMetadataId": "0426f567-81c7-4964-b234-4c42fd6557c3"
-                            },
-                            "type": "Response",
-                            "kind": "Http",
-                            "inputs": {
-                                "statusCode": 202
-                            }
-                        }
-                    },
-                    "runAfter": {},
-                    "else": {
-                        "actions": {
-                            "Response": {
-                                "runAfter": {},
-                                "metadata": {
-                                    "operationMetadataId": "e1554103-e29c-4e6d-8471-5a4e4d978334"
-                                },
-                                "type": "Response",
-                                "kind": "Http",
-                                "inputs": {
-                                    "statusCode": 200,
-                                    "headers": {
-                                        "content-type": "text/plain"
-                                    },
-                                    "body": "@triggerOutputs()?['queries']?['validationtoken']"
-                                }
-                            },
-                            "Terminate": {
-                                "runAfter": {
-                                    "Response": [
-                                        "Succeeded"
-                                    ]
-                                },
-                                "metadata": {
-                                    "operationMetadataId": "89c8814e-720c-46c6-846c-b1a87a4fd5d5"
-                                },
-                                "type": "Terminate",
-                                "inputs": {
-                                    "runStatus": "Succeeded"
-                                }
-                            }
-                        }
-                    },
-                    "expression": {
-                        "equals": [
-                            "@string(triggerOutputs()?['queries']?['validationtoken'])",
-                            ""
-                        ]
-                    },
-                    "metadata": {
-                        "operationMetadataId": "01ee0d1c-9744-48e9-ab3d-8d2a5ab1670b"
-                    },
-                    "type": "If"
+              "Response": {
+                "runAfter": {},
+                "metadata": {
+                  "operationMetadataId": "e1554103-e29c-4e6d-8471-5a4e4d978334"
                 },
-                "Parse_JSON": {
-                    "runAfter": {
-                        "Initialize_variable_customerId": [
-                            "Succeeded"
-                        ]
-                    },
+                "type": "Response",
+                "kind": "Http",
+                "inputs": {
+                  "statusCode": 200,
+                  "headers": {
+                    "content-type": "text/plain"
+                  },
+                  "body": "@triggerOutputs()?['queries']?['validationtoken']"
+                }
+              },
+              "Terminate": {
+                "runAfter": {
+                  "Response": [
+                    "Succeeded"
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "89c8814e-720c-46c6-846c-b1a87a4fd5d5"
+                },
+                "type": "Terminate",
+                "inputs": {
+                  "runStatus": "Succeeded"
+                }
+              }
+            }
+          },
+          "expression": {
+            "equals": [
+              "@string(triggerOutputs()?['queries']?['validationtoken'])",
+              ""
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "01ee0d1c-9744-48e9-ab3d-8d2a5ab1670b"
+          },
+          "type": "If"
+        },
+        "Parse_JSON": {
+          "runAfter": {
+            "Initialize_variable_customerId": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "4b0b3c10-8044-45ba-b6c8-797cfb820beb"
+          },
+          "type": "ParseJson",
+          "inputs": {
+            "content": "@triggerBody()?['value']",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "changeType": {
+                    "type": "string"
+                  },
+                  "clientState": {
+                    "type": "string"
+                  },
+                  "resource": {
+                    "type": "string"
+                  },
+                  "resourceData": {
+                    "type": "object",
+                    "properties": {
+                      "@@odata.type": {
+                        "type": "string"
+                      },
+                      "@@odata.id": {
+                        "type": "string"
+                      },
+                      "id": {
+                        "type": "string"
+                      },
+                      "organizationId": {
+                        "type": "string"
+                      },
+                      "sequenceNumber": {
+                        "type": "integer"
+                      },
+                      "members@delta": {}
+                    }
+                  }
+                },
+                "required": [
+                  "changeType",
+                  "clientState",
+                  "resource",
+                  "resourceData"
+                ]
+              }
+            }
+          }
+        },
+        "Apply_to_each": {
+          "foreach": "@body('Parse_JSON')",
+          "actions": {
+            "Condition_Cycles_membersdelta": {
+              "actions": {},
+              "runAfter": {},
+              "else": {
+                "actions": {
+                  "Parse_JSON_Cycles_membersdelta": {
+                    "runAfter": {},
                     "metadata": {
-                        "operationMetadataId": "4b0b3c10-8044-45ba-b6c8-797cfb820beb"
+                      "operationMetadataId": "cc623623-16d8-4dba-b17a-ee0e4c787ba2"
                     },
                     "type": "ParseJson",
                     "inputs": {
-                        "content": "@triggerBody()?['value']",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "object",
-                                "properties": {
-                                    "changeType": {
-                                        "type": "string"
+                      "content": "@items('Apply_to_each')?['resourceData']?['members@delta']",
+                      "schema": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "id"
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "Apply_to_each_Cycles_membersdelta": {
+                    "foreach": "@body('Parse_JSON_Cycles_membersdelta')",
+                    "actions": {
+                      "Condition_Cycles_membersdelta_removed": {
+                        "actions": {
+                          "Get_items_GroupsList": {
+                            "runAfter": {},
+                            "metadata": {
+                              "operationMetadataId": "8f1f3de5-173b-4cb5-bf98-3aac1a431980"
+                            },
+                            "type": "OpenApiConnection",
+                            "inputs": {
+                              "host": {
+                                "connectionName": "shared_sharepointonline",
+                                "operationId": "GetItems",
+                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                              },
+                              "parameters": {
+                                "dataset": "https://@{parameters('envpar_config__TenantName (new_envpar_config__TenantName)')}.sharepoint.com/sites/@{parameters('envpar_config__CycleZeroName (new_envpar_config__CycleZeroName)')}",
+                                "table": "GroupsList",
+                                "$filter": "Cycle1GroupId eq '@{items('Apply_to_each')?['resourceData']?['id']}'",
+                                "$top": 1
+                              },
+                              "authentication": "@parameters('$authentication')"
+                            }
+                          },
+                          "Apply_to_each_GroupsList": {
+                            "foreach": "@outputs('Get_items_GroupsList')?['body/value']",
+                            "actions": {
+                              "Condition_length_UsersList_0": {
+                                "actions": {
+                                  "Create_item_UsersList_0": {
+                                    "runAfter": {},
+                                    "metadata": {
+                                      "operationMetadataId": "bf470a44-6e5b-465c-908b-1bb3c256b822"
                                     },
-                                    "clientState": {
-                                        "type": "string"
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                      "host": {
+                                        "connectionName": "shared_sharepointonline",
+                                        "operationId": "PostItem",
+                                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                      },
+                                      "parameters": {
+                                        "dataset": "https://@{parameters('envpar_config__TenantName (new_envpar_config__TenantName)')}.sharepoint.com/sites/@{items('Apply_to_each_GroupsList')?['Cycle1GroupName']}",
+                                        "table": "UsersList",
+                                        "item": {
+                                          "Title": "@body('Parse_JSON_2')?['mail']",
+                                          "UID": "@{items('Apply_to_each_Cycles_membersdelta')['id']}",
+                                          "UPN": "@replace(body('Parse_JSON_2')?['userPrincipalName'], '#EXT#@', '@')",
+                                          "Cycle1GroupName": "@{items('Apply_to_each_GroupsList')?['Cycle1GroupName']}",
+                                          "Cycle1GroupId": "@{items('Apply_to_each_GroupsList')?['Cycle1GroupId']}"
+                                        }
+                                      },
+                                      "authentication": "@parameters('$authentication')"
+                                    }
+                                  },
+                                  "Create_item_LogsList_0": {
+                                    "runAfter": {
+                                      "Create_item_UsersList_0": [
+                                        "Succeeded"
+                                      ]
                                     },
-                                    "resource": {
-                                        "type": "string"
+                                    "metadata": {
+                                      "operationMetadataId": "f0ed7997-5f9c-4882-bdaa-b6c86d8d83b1"
                                     },
-                                    "resourceData": {
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                      "host": {
+                                        "connectionName": "shared_sharepointonline",
+                                        "operationId": "PostItem",
+                                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                      },
+                                      "parameters": {
+                                        "dataset": "https://@{parameters('envpar_config__TenantName (new_envpar_config__TenantName)')}.sharepoint.com/sites/@{items('Apply_to_each_GroupsList')?['Cycle1GroupName']}",
+                                        "table": "LogsList",
+                                        "item": {
+                                          "Title": "Added @{body('Parse_JSON_2')?['mail']} to @{items('Apply_to_each_GroupsList')?['Cycle1GroupName']}",
+                                          "Resource": "UsersList",
+                                          "ResourceId": "@{body('Parse_JSON_2')?['mail']}",
+                                          "ChangeType": "CREATE",
+                                          "Source": "cycle0__Graph_Groups_Webhook",
+                                          "LogDescription": ""
+                                        }
+                                      },
+                                      "authentication": "@parameters('$authentication')"
+                                    }
+                                  }
+                                },
+                                "runAfter": {
+                                  "Get_items_UsersList": [
+                                    "Succeeded"
+                                  ]
+                                },
+                                "expression": {
+                                  "equals": [
+                                    "@length(outputs('Get_items_UsersList')?['body/value'])",
+                                    0
+                                  ]
+                                },
+                                "metadata": {
+                                  "operationMetadataId": "b8b554e9-6532-4593-9e5f-8691a6e30163"
+                                },
+                                "type": "If"
+                              },
+                              "HTTP_2": {
+                                "runAfter": {},
+                                "metadata": {
+                                  "operationMetadataId": "b1b34b85-03f5-47c5-a1b0-073578cb55cc"
+                                },
+                                "type": "Http",
+                                "inputs": {
+                                  "method": "GET",
+                                  "uri": "https://graph.microsoft.com/v1.0/users/@{items('Apply_to_each_Cycles_membersdelta')['id']}",
+                                  "headers": {
+                                    "Content-type": "application/json"
+                                  },
+                                  "authentication": {
+                                    "type": "ActiveDirectoryOAuth",
+                                    "tenant": "@parameters('envpar_config__TenantDomain (new_envpar_config__TenantDomain)')",
+                                    "audience": "https://graph.microsoft.com",
+                                    "clientId": "@parameters('envpar_config__GraphAppId (new_envpar_config__GraphAppId)')",
+                                    "secret": "@parameters('envpar_config__GraphAppSecret (new_envpar_config__GraphAppSecret)')"
+                                  }
+                                }
+                              },
+                              "Parse_JSON_2": {
+                                "runAfter": {
+                                  "HTTP_2": [
+                                    "Succeeded"
+                                  ]
+                                },
+                                "metadata": {
+                                  "operationMetadataId": "07930947-e73d-4929-ab4e-223a7b32e346"
+                                },
+                                "type": "ParseJson",
+                                "inputs": {
+                                  "content": "@body('HTTP_2')",
+                                  "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                      "mail": {
+                                        "type": "string"
+                                      },
+                                      "userPrincipalName": {
+                                        "type": "string"
+                                      }
+                                    }
+                                  }
+                                }
+                              },
+                              "Get_items_UsersList": {
+                                "runAfter": {
+                                  "Parse_JSON_2": [
+                                    "Succeeded"
+                                  ]
+                                },
+                                "metadata": {
+                                  "operationMetadataId": "08c7a265-a572-4336-a153-e200af6f7c1f"
+                                },
+                                "type": "OpenApiConnection",
+                                "inputs": {
+                                  "host": {
+                                    "connectionName": "shared_sharepointonline",
+                                    "operationId": "GetItems",
+                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                  },
+                                  "parameters": {
+                                    "dataset": "https://@{parameters('envpar_config__TenantName (new_envpar_config__TenantName)')}.sharepoint.com/sites/@{items('Apply_to_each_GroupsList')?['Cycle1GroupName']}",
+                                    "table": "UsersList",
+                                    "$filter": "UID eq '@{items('Apply_to_each_Cycles_membersdelta')['id']}' and Cycle1GroupId eq '@{items('Apply_to_each')?['resourceData']?['id']}'",
+                                    "$top": 1
+                                  },
+                                  "authentication": "@parameters('$authentication')"
+                                }
+                              },
+                              "Get_items_UsersList1": {
+                                "runAfter": {
+                                  "Condition_trick_nested": [
+                                    "Failed"
+                                  ]
+                                },
+                                "metadata": {
+                                  "operationMetadataId": "09877e97-3e9c-407a-87f0-e0b40153ef6c"
+                                },
+                                "type": "OpenApiConnection",
+                                "inputs": {
+                                  "host": {
+                                    "connectionName": "shared_sharepointonline",
+                                    "operationId": "GetItems",
+                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                  },
+                                  "parameters": {
+                                    "dataset": "https://@{parameters('envpar_config__TenantName (new_envpar_config__TenantName)')}.sharepoint.com/sites/@{items('Apply_to_each_GroupsList')?['Cycle1GroupName']}",
+                                    "table": "UsersList",
+                                    "$filter": "UID eq '@{items('Apply_to_each_Cycles_membersdelta')['id']}' and Cycle1GroupId eq '@{items('Apply_to_each')?['resourceData']?['id']}' and StripeSubscriptionId eq null",
+                                    "$top": 1
+                                  },
+                                  "authentication": "@parameters('$authentication')"
+                                }
+                              },
+                              "Apply_to_each_UsersList": {
+                                "foreach": "@outputs('Get_items_UsersList1')?['body/value']",
+                                "actions": {
+                                  "Create_item_LogsList": {
+                                    "runAfter": {
+                                      "Update_item_UsersList": [
+                                        "Succeeded"
+                                      ]
+                                    },
+                                    "metadata": {
+                                      "operationMetadataId": "66e13a66-9cc9-4723-ba7a-788008ceb046"
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                      "host": {
+                                        "connectionName": "shared_sharepointonline",
+                                        "operationId": "PostItem",
+                                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                      },
+                                      "parameters": {
+                                        "dataset": "https://@{parameters('envpar_config__TenantName (new_envpar_config__TenantName)')}.sharepoint.com/sites/@{items('Apply_to_each_GroupsList')?['Cycle1GroupName']}",
+                                        "table": "LogsList",
+                                        "item": {
+                                          "Title": "Updated @{body('Parse_JSON_2')?['mail']} to Stripe customer @{variables('customerId')}  ",
+                                          "Resource": "UsersList",
+                                          "ResourceId": "@{body('Parse_JSON_2')?['mail']}",
+                                          "ChangeType": "UPDATE",
+                                          "Source": "cycle0__Graph_Groups_Webhook",
+                                          "LogDescription": ""
+                                        }
+                                      },
+                                      "authentication": "@parameters('$authentication')"
+                                    }
+                                  },
+                                  "Update_item_UsersList": {
+                                    "runAfter": {
+                                      "Parse_JSON_4": [
+                                        "Succeeded"
+                                      ]
+                                    },
+                                    "metadata": {
+                                      "operationMetadataId": "584b45d0-864e-494a-b5a4-a199bd5ad9fd"
+                                    },
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                      "host": {
+                                        "connectionName": "shared_sharepointonline",
+                                        "operationId": "PatchItem",
+                                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                      },
+                                      "parameters": {
+                                        "dataset": "https://@{parameters('envpar_config__TenantName (new_envpar_config__TenantName)')}.sharepoint.com/sites/@{items('Apply_to_each_GroupsList')?['Cycle1GroupName']}",
+                                        "table": "UsersList",
+                                        "id": "@items('Apply_to_each_UsersList')?['ID']",
+                                        "item": {
+                                          "Title": "@body('Parse_JSON_2')?['mail']",
+                                          "UID": "@{items('Apply_to_each_Cycles_membersdelta')['id']}",
+                                          "UPN": "@replace(body('Parse_JSON_2')?['userPrincipalName'], '#EXT#@', '@')",
+                                          "Cycle1GroupName": "@{items('Apply_to_each_GroupsList')?['Cycle1GroupName']}",
+                                          "Cycle1GroupId": "@{items('Apply_to_each_GroupsList')?['Cycle1GroupId']}",
+                                          "StripeCustomerId": "@{variables('customerId')}",
+                                          "StripeSubscriptionId": "@body('Parse_JSON_4')?['id']",
+                                          "StripePriceId": "@body('Parse_JSON_4')?['plan']?['id']",
+                                          "StripePriceStatus": "@body('Parse_JSON_4')?['status']",
+                                          "StripeLastMetered": "@utcNow()"
+                                        }
+                                      },
+                                      "authentication": "@parameters('$authentication')"
+                                    }
+                                  },
+                                  "Parse_JSON_4": {
+                                    "runAfter": {
+                                      "Condition_no_subscription": [
+                                        "Succeeded"
+                                      ]
+                                    },
+                                    "metadata": {
+                                      "operationMetadataId": "8cc350fe-ff90-4d34-a495-9487078d68fc"
+                                    },
+                                    "type": "ParseJson",
+                                    "inputs": {
+                                      "content": "@coalesce(body('HTTP'), body('HTTP_4')?['data']?[0]?['subscriptions']?['data']?[0])",
+                                      "schema": {
                                         "type": "object",
                                         "properties": {
-                                            "@@odata.type": {
+                                          "id": {
+                                            "type": "string"
+                                          },
+                                          "current_period_start": {
+                                            "type": "integer"
+                                          },
+                                          "current_period_end": {
+                                            "type": "integer"
+                                          },
+                                          "plan": {
+                                            "type": "object",
+                                            "properties": {
+                                              "id": {
                                                 "type": "string"
-                                            },
-                                            "@@odata.id": {
-                                                "type": "string"
-                                            },
-                                            "id": {
-                                                "type": "string"
-                                            },
-                                            "organizationId": {
-                                                "type": "string"
-                                            },
-                                            "sequenceNumber": {
-                                                "type": "integer"
-                                            },
-                                            "members@delta": {}
+                                              }
+                                            }
+                                          },
+                                          "status": {
+                                            "type": "string"
+                                          }
                                         }
+                                      }
                                     }
-                                },
-                                "required": [
-                                    "changeType",
-                                    "clientState",
-                                    "resource",
-                                    "resourceData"
-                                ]
-                            }
-                        }
-                    }
-                },
-                "Apply_to_each": {
-                    "foreach": "@body('Parse_JSON')",
-                    "actions": {
-                        "Condition_Cycles_membersdelta": {
-                            "actions": {},
-                            "runAfter": {},
-                            "else": {
-                                "actions": {
-                                    "Parse_JSON_Cycles_membersdelta": {
+                                  },
+                                  "Condition_no_customer": {
+                                    "actions": {
+                                      "HTTP_3": {
                                         "runAfter": {},
                                         "metadata": {
-                                            "operationMetadataId": "cc623623-16d8-4dba-b17a-ee0e4c787ba2"
+                                          "operationMetadataId": "7eeec44e-9fb1-4bc0-934b-75be29e578ff"
+                                        },
+                                        "type": "Http",
+                                        "inputs": {
+                                          "method": "POST",
+                                          "uri": "https://api.stripe.com/v1/customers",
+                                          "headers": {
+                                            "Content-type": "application/x-www-form-urlencoded"
+                                          },
+                                          "body": "email=@{uriComponent(body('Parse_JSON_2')?['mail'])}&balance=-2000&metadata%5Buid%5D=@{uriComponent(items('Apply_to_each_Cycles_membersdelta')['id'])}&metadata%5Bgid%5D=@{uriComponent(items('Apply_to_each')?['resourceData']?['id'])}",
+                                          "authentication": {
+                                            "type": "Raw",
+                                            "value": "Bearer @{items('Apply_to_each_GroupsList')?['StripeKey']}"
+                                          }
+                                        }
+                                      },
+                                      "Set_variable_customerId": {
+                                        "runAfter": {
+                                          "HTTP_3": [
+                                            "Succeeded"
+                                          ]
+                                        },
+                                        "metadata": {
+                                          "operationMetadataId": "43816cea-fb51-414c-b7c1-ce3f1ab92d52"
+                                        },
+                                        "type": "SetVariable",
+                                        "inputs": {
+                                          "name": "customerId",
+                                          "value": "@{body('HTTP_3')?['id']}"
+                                        }
+                                      }
+                                    },
+                                    "runAfter": {
+                                      "HTTP_4": [
+                                        "Succeeded"
+                                      ]
+                                    },
+                                    "else": {
+                                      "actions": {
+                                        "Set_variable_customerId_2": {
+                                          "runAfter": {},
+                                          "metadata": {
+                                            "operationMetadataId": "b7d4be7f-abb3-410e-bd5b-9704957c6687"
+                                          },
+                                          "type": "SetVariable",
+                                          "inputs": {
+                                            "name": "customerId",
+                                            "value": "@{body('HTTP_4')?['data']?[0]?['id']}"
+                                          }
+                                        }
+                                      }
+                                    },
+                                    "expression": {
+                                      "equals": [
+                                        "@length(body('HTTP_4')?['data'])",
+                                        0
+                                      ]
+                                    },
+                                    "metadata": {
+                                      "operationMetadataId": "21c563c6-1245-4f21-958b-c21b18fab90b"
+                                    },
+                                    "type": "If"
+                                  },
+                                  "HTTP_4": {
+                                    "runAfter": {},
+                                    "metadata": {
+                                      "operationMetadataId": "6b413522-600c-4ce9-bec8-8e06976492db"
+                                    },
+                                    "type": "Http",
+                                    "inputs": {
+                                      "method": "GET",
+                                      "uri": "https://api.stripe.com/v1/customers?email=@{uriComponent(body('Parse_JSON_2')?['mail'])}&expand%5B%5D=data.subscriptions",
+                                      "authentication": {
+                                        "type": "Raw",
+                                        "value": "Bearer @{items('Apply_to_each_GroupsList')?['StripeKey']}"
+                                      }
+                                    }
+                                  },
+                                  "Condition_no_subscription": {
+                                    "actions": {
+                                      "HTTP": {
+                                        "runAfter": {},
+                                        "metadata": {
+                                          "operationMetadataId": "f968e3df-667b-4a0b-9487-a130bcf5231d"
+                                        },
+                                        "type": "Http",
+                                        "inputs": {
+                                          "method": "POST",
+                                          "uri": "https://api.stripe.com/v1/subscriptions",
+                                          "headers": {
+                                            "Content-type": "application/x-www-form-urlencoded"
+                                          },
+                                          "body": "customer=@{variables('customerId')}&@{uriComponent('items[0][price]')}=@{items('Apply_to_each_GroupsList')?['StripePrice0']}",
+                                          "authentication": {
+                                            "type": "Raw",
+                                            "value": "Bearer @{items('Apply_to_each_GroupsList')?['StripeKey']}"
+                                          }
+                                        }
+                                      }
+                                    },
+                                    "runAfter": {
+                                      "Condition_no_customer": [
+                                        "Succeeded"
+                                      ]
+                                    },
+                                    "expression": {
+                                      "equals": [
+                                        "@body('HTTP_4')?['data']?[0]?['subscriptions']?['data']?[0]",
+                                        "@null"
+                                      ]
+                                    },
+                                    "metadata": {
+                                      "operationMetadataId": "fc181dd3-efb5-4138-a91d-d3a24b8ad41d"
+                                    },
+                                    "type": "If"
+                                  }
+                                },
+                                "runAfter": {
+                                  "Get_items_UsersList1": [
+                                    "Succeeded"
+                                  ]
+                                },
+                                "metadata": {
+                                  "operationMetadataId": "a621ceb9-2b20-4ff1-b2d1-2a3374ed8f6d"
+                                },
+                                "type": "Foreach"
+                              },
+                              "Condition_trick_nested": {
+                                "actions": {},
+                                "runAfter": {
+                                  "Condition_length_UsersList_0": [
+                                    "Succeeded"
+                                  ]
+                                },
+                                "else": {
+                                  "actions": {
+                                    "Compose": {
+                                      "runAfter": {},
+                                      "metadata": {
+                                        "operationMetadataId": "8ca279f8-894d-4a54-9e6a-5fd4537c19fd"
+                                      },
+                                      "type": "Compose",
+                                      "inputs": "@json('-.{}2-01.')"
+                                    }
+                                  }
+                                },
+                                "expression": {
+                                  "equals": [
+                                    "@string(items('Apply_to_each_GroupsList')?['StripeKey'])",
+                                    "@''"
+                                  ]
+                                },
+                                "metadata": {
+                                  "operationMetadataId": "7306fc2e-718a-4271-8be1-380c92d1cffb"
+                                },
+                                "type": "If"
+                              }
+                            },
+                            "runAfter": {
+                              "Get_items_GroupsList": [
+                                "Succeeded"
+                              ]
+                            },
+                            "metadata": {
+                              "operationMetadataId": "ee6c7eb3-a69d-4c5c-94b0-1329f2b6d973"
+                            },
+                            "type": "Foreach"
+                          },
+                          "Get_items_GroupsList_Cycle1": {
+                            "runAfter": {
+                              "Apply_to_each_GroupsList": [
+                                "Succeeded"
+                              ]
+                            },
+                            "metadata": {
+                              "operationMetadataId": "aaafb98b-617c-45e9-ad61-190fc6de0608"
+                            },
+                            "type": "OpenApiConnection",
+                            "inputs": {
+                              "host": {
+                                "connectionName": "shared_sharepointonline_1",
+                                "operationId": "GetItems",
+                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                              },
+                              "parameters": {
+                                "dataset": "https://@{parameters('envpar_config__TenantName (new_envpar_config__TenantName)')}.sharepoint.com/sites/@{parameters('envpar_config__CycleZeroName (new_envpar_config__CycleZeroName)')}",
+                                "table": "@'GroupsList'",
+                                "$filter": "Cycle1GroupName eq '@{parameters('envpar_config__CyclesRename (new_envpar_config__CyclesRename)')}1'",
+                                "$top": 1
+                              },
+                              "authentication": "@parameters('$authentication')"
+                            }
+                          },
+                          "Apply_to_each_GroupsList_Cycle1": {
+                            "foreach": "@outputs('Get_items_GroupsList_Cycle1')?['body/value']",
+                            "actions": {
+                              "Parse_JSON_Cycles": {
+                                "runAfter": {
+                                  "Set_variable_varCounter1_is_0": [
+                                    "Succeeded"
+                                  ]
+                                },
+                                "metadata": {
+                                  "operationMetadataId": "189c66ac-29ce-4611-bc03-00b17b5fd11e"
+                                },
+                                "type": "ParseJson",
+                                "inputs": {
+                                  "content": "@json(coalesce(items('Apply_to_each_GroupsList_Cycle1')?['CyclesGroups'], '[]'))",
+                                  "schema": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "CyclesGroupName": {
+                                          "type": "string"
+                                        },
+                                        "CyclesGroupId": {
+                                          "type": "string"
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              },
+                              "Do_until_Cycles": {
+                                "actions": {
+                                  "Condition_Cycles": {
+                                    "actions": {
+                                      "Do_until_GroupsList": {
+                                        "actions": {
+                                          "Run_a_Child_Flow_4": {
+                                            "runAfter": {},
+                                            "metadata": {
+                                              "operationMetadataId": "061053b9-6326-4717-9f99-96287def4584"
+                                            },
+                                            "type": "Workflow",
+                                            "inputs": {
+                                              "host": {
+                                                "workflowReferenceName": "ead81545-25db-ea11-a815-000d3af42a37"
+                                              },
+                                              "body": {
+                                                "TenantDomain": "@parameters('envpar_config__TenantDomain (new_envpar_config__TenantDomain)')",
+                                                "CycleGroupName": "@{parameters('envpar_config__CyclesRename (new_envpar_config__CyclesRename)')}@{add(variables('varCounter2'),1)}_@{first(split(body('Parse_JSON_7')?['userPrincipalName'], '@'))}",
+                                                "CycleGroupOwnerId": "@body('Parse_JSON_7')?['id']",
+                                                "Cycle1GroupName": "@{concat(parameters('envpar_config__CyclesRename (new_envpar_config__CyclesRename)'), '1')}_@{first(split(body('Parse_JSON_7')?['userPrincipalName'], '@'))}",
+                                                "IsCycle1": "@if(equals(variables('varCounter2'),0),true,false)"
+                                              },
+                                              "retryPolicy": {
+                                                "type": "none"
+                                              }
+                                            }
+                                          },
+                                          "Increment_variable_varCounter2": {
+                                            "runAfter": {
+                                              "Run_a_Child_Flow_4": [
+                                                "Succeeded"
+                                              ]
+                                            },
+                                            "metadata": {
+                                              "operationMetadataId": "98cf337c-733d-4d1c-88a8-8567d9b7be51"
+                                            },
+                                            "type": "IncrementVariable",
+                                            "inputs": {
+                                              "name": "varCounter2",
+                                              "value": "@1"
+                                            }
+                                          }
+                                        },
+                                        "runAfter": {
+                                          "Set_variable_varCounter2_is_0": [
+                                            "Succeeded"
+                                          ]
+                                        },
+                                        "expression": "@equals(variables('varCounter2'), add(variables('varCounter1'), 1))",
+                                        "limit": {
+                                          "count": 60,
+                                          "timeout": "PT1H"
+                                        },
+                                        "metadata": {
+                                          "operationMetadataId": "f04f5e51-ce20-40c0-bdb3-eeee786e3c9c"
+                                        },
+                                        "type": "Until"
+                                      },
+                                      "Parse_JSON_7": {
+                                        "runAfter": {
+                                          "HTTP_5": [
+                                            "Succeeded"
+                                          ]
+                                        },
+                                        "metadata": {
+                                          "operationMetadataId": "58f7e372-a064-46e6-ba0e-574eb924343c"
                                         },
                                         "type": "ParseJson",
                                         "inputs": {
-                                            "content": "@items('Apply_to_each')?['resourceData']?['members@delta']",
-                                            "schema": {
-                                                "type": "array",
-                                                "items": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "id": {
-                                                            "type": "string"
-                                                        }
-                                                    },
-                                                    "required": [
-                                                        "id"
-                                                    ]
-                                                }
+                                          "content": "@body('HTTP_5')",
+                                          "schema": {
+                                            "type": "object",
+                                            "properties": {
+                                              "id": {
+                                                "type": "string"
+                                              },
+                                              "mail": {
+                                                "type": "string"
+                                              },
+                                              "userPrincipalName": {
+                                                "type": "string"
+                                              }
                                             }
+                                          }
                                         }
-                                    },
-                                    "Apply_to_each_Cycles_membersdelta": {
-                                        "foreach": "@body('Parse_JSON_Cycles_membersdelta')",
-                                        "actions": {
-                                            "Condition_Cycles_membersdelta_removed": {
-                                                "actions": {
-                                                    "Get_items_GroupsList": {
-                                                        "runAfter": {},
-                                                        "metadata": {
-                                                            "operationMetadataId": "8f1f3de5-173b-4cb5-bf98-3aac1a431980"
-                                                        },
-                                                        "type": "OpenApiConnection",
-                                                        "inputs": {
-                                                            "host": {
-                                                                "connectionName": "shared_sharepointonline",
-                                                                "operationId": "GetItems",
-                                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
-                                                            },
-                                                            "parameters": {
-                                                                "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{parameters('envpar_config__CycleZeroName')}",
-                                                                "table": "GroupsList",
-                                                                "$filter": "Cycle1GroupId eq '@{items('Apply_to_each')?['resourceData']?['id']}'",
-                                                                "$top": 1
-                                                            },
-                                                            "authentication": "@parameters('$authentication')"
-                                                        }
-                                                    },
-                                                    "Apply_to_each_GroupsList": {
-                                                        "foreach": "@outputs('Get_items_GroupsList')?['body/value']",
-                                                        "actions": {
-                                                            "Condition_length_UsersList_0": {
-                                                                "actions": {
-                                                                    "Create_item_UsersList_0": {
-                                                                        "runAfter": {},
-                                                                        "metadata": {
-                                                                            "operationMetadataId": "bf470a44-6e5b-465c-908b-1bb3c256b822"
-                                                                        },
-                                                                        "type": "OpenApiConnection",
-                                                                        "inputs": {
-                                                                            "host": {
-                                                                                "connectionName": "shared_sharepointonline",
-                                                                                "operationId": "PostItem",
-                                                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
-                                                                            },
-                                                                            "parameters": {
-                                                                                "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{items('Apply_to_each_GroupsList')?['Cycle1GroupName']}",
-                                                                                "table": "UsersList",
-                                                                                "item": {
-                                                                                    "Title": "@body('Parse_JSON_2')?['mail']",
-                                                                                    "UID": "@{items('Apply_to_each_Cycles_membersdelta')['id']}",
-                                                                                    "UPN": "@replace(body('Parse_JSON_2')?['userPrincipalName'], '#EXT#@', '@')",
-                                                                                    "Cycle1GroupName": "@{items('Apply_to_each_GroupsList')?['Cycle1GroupName']}",
-                                                                                    "Cycle1GroupId": "@{items('Apply_to_each_GroupsList')?['Cycle1GroupId']}"
-                                                                                }
-                                                                            },
-                                                                            "authentication": "@parameters('$authentication')"
-                                                                        }
-                                                                    },
-                                                                    "Create_item_LogsList_0": {
-                                                                        "runAfter": {
-                                                                            "Create_item_UsersList_0": [
-                                                                                "Succeeded"
-                                                                            ]
-                                                                        },
-                                                                        "metadata": {
-                                                                            "operationMetadataId": "f0ed7997-5f9c-4882-bdaa-b6c86d8d83b1"
-                                                                        },
-                                                                        "type": "OpenApiConnection",
-                                                                        "inputs": {
-                                                                            "host": {
-                                                                                "connectionName": "shared_sharepointonline",
-                                                                                "operationId": "PostItem",
-                                                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
-                                                                            },
-                                                                            "parameters": {
-                                                                                "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{items('Apply_to_each_GroupsList')?['Cycle1GroupName']}",
-                                                                                "table": "LogsList",
-                                                                                "item": {
-                                                                                    "Title": "Added @{body('Parse_JSON_2')?['mail']} to @{items('Apply_to_each_GroupsList')?['Cycle1GroupName']}",
-                                                                                    "Resource": "UsersList",
-                                                                                    "ResourceId": "@{body('Parse_JSON_2')?['mail']}",
-                                                                                    "ChangeType": "CREATE",
-                                                                                    "Source": "cycle0__Graph_Groups_Webhook",
-                                                                                    "LogDescription": ""
-                                                                                }
-                                                                            },
-                                                                            "authentication": "@parameters('$authentication')"
-                                                                        }
-                                                                    }
-                                                                },
-                                                                "runAfter": {
-                                                                    "Get_items_UsersList": [
-                                                                        "Succeeded"
-                                                                    ]
-                                                                },
-                                                                "expression": {
-                                                                    "equals": [
-                                                                        "@length(outputs('Get_items_UsersList')?['body/value'])",
-                                                                        0
-                                                                    ]
-                                                                },
-                                                                "metadata": {
-                                                                    "operationMetadataId": "b8b554e9-6532-4593-9e5f-8691a6e30163"
-                                                                },
-                                                                "type": "If"
-                                                            },
-                                                            "HTTP_2": {
-                                                                "runAfter": {},
-                                                                "metadata": {
-                                                                    "operationMetadataId": "b1b34b85-03f5-47c5-a1b0-073578cb55cc"
-                                                                },
-                                                                "type": "Http",
-                                                                "inputs": {
-                                                                    "method": "GET",
-                                                                    "uri": "https://graph.microsoft.com/v1.0/users/@{items('Apply_to_each_Cycles_membersdelta')['id']}",
-                                                                    "headers": {
-                                                                        "Content-type": "application/json"
-                                                                    },
-                                                                    "authentication": {
-                                                                        "type": "ActiveDirectoryOAuth",
-                                                                        "tenant": "@parameters('envpar_config__TenantDomain')",
-                                                                        "audience": "https://graph.microsoft.com",
-                                                                        "clientId": "@parameters('envpar_config__GraphAppId')",
-                                                                        "secret": "@parameters('envpar_config__GraphAppSecret')"
-                                                                    }
-                                                                }
-                                                            },
-                                                            "Parse_JSON_2": {
-                                                                "runAfter": {
-                                                                    "HTTP_2": [
-                                                                        "Succeeded"
-                                                                    ]
-                                                                },
-                                                                "metadata": {
-                                                                    "operationMetadataId": "07930947-e73d-4929-ab4e-223a7b32e346"
-                                                                },
-                                                                "type": "ParseJson",
-                                                                "inputs": {
-                                                                    "content": "@body('HTTP_2')",
-                                                                    "schema": {
-                                                                        "type": "object",
-                                                                        "properties": {
-                                                                            "mail": {
-                                                                                "type": "string"
-                                                                            },
-                                                                            "userPrincipalName": {
-                                                                                "type": "string"
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
-                                                            },
-                                                            "Get_items_UsersList": {
-                                                                "runAfter": {
-                                                                    "Parse_JSON_2": [
-                                                                        "Succeeded"
-                                                                    ]
-                                                                },
-                                                                "metadata": {
-                                                                    "operationMetadataId": "08c7a265-a572-4336-a153-e200af6f7c1f"
-                                                                },
-                                                                "type": "OpenApiConnection",
-                                                                "inputs": {
-                                                                    "host": {
-                                                                        "connectionName": "shared_sharepointonline",
-                                                                        "operationId": "GetItems",
-                                                                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
-                                                                    },
-                                                                    "parameters": {
-                                                                        "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{items('Apply_to_each_GroupsList')?['Cycle1GroupName']}",
-                                                                        "table": "UsersList",
-                                                                        "$filter": "UID eq '@{items('Apply_to_each_Cycles_membersdelta')['id']}' and Cycle1GroupId eq '@{items('Apply_to_each')?['resourceData']?['id']}'",
-                                                                        "$top": 1
-                                                                    },
-                                                                    "authentication": "@parameters('$authentication')"
-                                                                }
-                                                            },
-                                                            "Get_items_UsersList1": {
-                                                                "runAfter": {
-                                                                    "Condition_trick_nested": [
-                                                                        "Failed"
-                                                                    ]
-                                                                },
-                                                                "metadata": {
-                                                                    "operationMetadataId": "09877e97-3e9c-407a-87f0-e0b40153ef6c"
-                                                                },
-                                                                "type": "OpenApiConnection",
-                                                                "inputs": {
-                                                                    "host": {
-                                                                        "connectionName": "shared_sharepointonline",
-                                                                        "operationId": "GetItems",
-                                                                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
-                                                                    },
-                                                                    "parameters": {
-                                                                        "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{items('Apply_to_each_GroupsList')?['Cycle1GroupName']}",
-                                                                        "table": "UsersList",
-                                                                        "$filter": "UID eq '@{items('Apply_to_each_Cycles_membersdelta')['id']}' and Cycle1GroupId eq '@{items('Apply_to_each')?['resourceData']?['id']}' and StripeSubscriptionId eq null",
-                                                                        "$top": 1
-                                                                    },
-                                                                    "authentication": "@parameters('$authentication')"
-                                                                }
-                                                            },
-                                                            "Apply_to_each_UsersList": {
-                                                                "foreach": "@outputs('Get_items_UsersList1')?['body/value']",
-                                                                "actions": {
-                                                                    "Create_item_LogsList": {
-                                                                        "runAfter": {
-                                                                            "Update_item_UsersList": [
-                                                                                "Succeeded"
-                                                                            ]
-                                                                        },
-                                                                        "metadata": {
-                                                                            "operationMetadataId": "66e13a66-9cc9-4723-ba7a-788008ceb046"
-                                                                        },
-                                                                        "type": "OpenApiConnection",
-                                                                        "inputs": {
-                                                                            "host": {
-                                                                                "connectionName": "shared_sharepointonline",
-                                                                                "operationId": "PostItem",
-                                                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
-                                                                            },
-                                                                            "parameters": {
-                                                                                "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{items('Apply_to_each_GroupsList')?['Cycle1GroupName']}",
-                                                                                "table": "LogsList",
-                                                                                "item": {
-                                                                                    "Title": "Updated @{body('Parse_JSON_2')?['mail']} to Stripe customer @{variables('customerId')}  ",
-                                                                                    "Resource": "UsersList",
-                                                                                    "ResourceId": "@{body('Parse_JSON_2')?['mail']}",
-                                                                                    "ChangeType": "UPDATE",
-                                                                                    "Source": "cycle0__Graph_Groups_Webhook",
-                                                                                    "LogDescription": ""
-                                                                                }
-                                                                            },
-                                                                            "authentication": "@parameters('$authentication')"
-                                                                        }
-                                                                    },
-                                                                    "Update_item_UsersList": {
-                                                                        "runAfter": {
-                                                                            "Parse_JSON_4": [
-                                                                                "Succeeded"
-                                                                            ]
-                                                                        },
-                                                                        "metadata": {
-                                                                            "operationMetadataId": "584b45d0-864e-494a-b5a4-a199bd5ad9fd"
-                                                                        },
-                                                                        "type": "OpenApiConnection",
-                                                                        "inputs": {
-                                                                            "host": {
-                                                                                "connectionName": "shared_sharepointonline",
-                                                                                "operationId": "PatchItem",
-                                                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
-                                                                            },
-                                                                            "parameters": {
-                                                                                "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{items('Apply_to_each_GroupsList')?['Cycle1GroupName']}",
-                                                                                "table": "UsersList",
-                                                                                "id": "@items('Apply_to_each_UsersList')?['ID']",
-                                                                                "item": {
-                                                                                    "Title": "@body('Parse_JSON_2')?['mail']",
-                                                                                    "UID": "@{items('Apply_to_each_Cycles_membersdelta')['id']}",
-                                                                                    "UPN": "@replace(body('Parse_JSON_2')?['userPrincipalName'], '#EXT#@', '@')",
-                                                                                    "Cycle1GroupName": "@{items('Apply_to_each_GroupsList')?['Cycle1GroupName']}",
-                                                                                    "Cycle1GroupId": "@{items('Apply_to_each_GroupsList')?['Cycle1GroupId']}",
-                                                                                    "StripeCustomerId": "@{variables('customerId')}",
-                                                                                    "StripeSubscriptionId": "@body('Parse_JSON_4')?['id']",
-                                                                                    "StripePriceId": "@body('Parse_JSON_4')?['plan']?['id']",
-                                                                                    "StripePriceStatus": "@body('Parse_JSON_4')?['status']",
-                                                                                    "StripeLastMetered": "@utcNow()"
-                                                                                }
-                                                                            },
-                                                                            "authentication": "@parameters('$authentication')"
-                                                                        }
-                                                                    },
-                                                                    "Parse_JSON_4": {
-                                                                        "runAfter": {
-                                                                            "Condition_no_subscription": [
-                                                                                "Succeeded"
-                                                                            ]
-                                                                        },
-                                                                        "metadata": {
-                                                                            "operationMetadataId": "8cc350fe-ff90-4d34-a495-9487078d68fc"
-                                                                        },
-                                                                        "type": "ParseJson",
-                                                                        "inputs": {
-                                                                            "content": "@coalesce(body('HTTP'), body('HTTP_4')?['data']?[0]?['subscriptions']?['data']?[0])",
-                                                                            "schema": {
-                                                                                "type": "object",
-                                                                                "properties": {
-                                                                                    "id": {
-                                                                                        "type": "string"
-                                                                                    },
-                                                                                    "current_period_start": {
-                                                                                        "type": "integer"
-                                                                                    },
-                                                                                    "current_period_end": {
-                                                                                        "type": "integer"
-                                                                                    },
-                                                                                    "plan": {
-                                                                                        "type": "object",
-                                                                                        "properties": {
-                                                                                            "id": {
-                                                                                                "type": "string"
-                                                                                            }
-                                                                                        }
-                                                                                    },
-                                                                                    "status": {
-                                                                                        "type": "string"
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    },
-                                                                    "Condition_no_customer": {
-                                                                        "actions": {
-                                                                            "HTTP_3": {
-                                                                                "runAfter": {},
-                                                                                "metadata": {
-                                                                                    "operationMetadataId": "7eeec44e-9fb1-4bc0-934b-75be29e578ff"
-                                                                                },
-                                                                                "type": "Http",
-                                                                                "inputs": {
-                                                                                    "method": "POST",
-                                                                                    "uri": "https://api.stripe.com/v1/customers",
-                                                                                    "headers": {
-                                                                                        "Content-type": "application/x-www-form-urlencoded"
-                                                                                    },
-                                                                                    "body": "email=@{uriComponent(body('Parse_JSON_2')?['mail'])}&balance=-2000&metadata%5Buid%5D=@{uriComponent(items('Apply_to_each_Cycles_membersdelta')['id'])}&metadata%5Bgid%5D=@{uriComponent(items('Apply_to_each')?['resourceData']?['id'])}",
-                                                                                    "authentication": {
-                                                                                        "type": "Raw",
-                                                                                        "value": "Bearer @{items('Apply_to_each_GroupsList')?['StripeKey']}"
-                                                                                    }
-                                                                                }
-                                                                            },
-                                                                            "Set_variable_customerId": {
-                                                                                "runAfter": {
-                                                                                    "HTTP_3": [
-                                                                                        "Succeeded"
-                                                                                    ]
-                                                                                },
-                                                                                "metadata": {
-                                                                                    "operationMetadataId": "43816cea-fb51-414c-b7c1-ce3f1ab92d52"
-                                                                                },
-                                                                                "type": "SetVariable",
-                                                                                "inputs": {
-                                                                                    "name": "customerId",
-                                                                                    "value": "@{body('HTTP_3')?['id']}"
-                                                                                }
-                                                                            }
-                                                                        },
-                                                                        "runAfter": {
-                                                                            "HTTP_4": [
-                                                                                "Succeeded"
-                                                                            ]
-                                                                        },
-                                                                        "else": {
-                                                                            "actions": {
-                                                                                "Set_variable_customerId_2": {
-                                                                                    "runAfter": {},
-                                                                                    "metadata": {
-                                                                                        "operationMetadataId": "b7d4be7f-abb3-410e-bd5b-9704957c6687"
-                                                                                    },
-                                                                                    "type": "SetVariable",
-                                                                                    "inputs": {
-                                                                                        "name": "customerId",
-                                                                                        "value": "@{body('HTTP_4')?['data']?[0]?['id']}"
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                        },
-                                                                        "expression": {
-                                                                            "equals": [
-                                                                                "@length(body('HTTP_4')?['data'])",
-                                                                                0
-                                                                            ]
-                                                                        },
-                                                                        "metadata": {
-                                                                            "operationMetadataId": "21c563c6-1245-4f21-958b-c21b18fab90b"
-                                                                        },
-                                                                        "type": "If"
-                                                                    },
-                                                                    "HTTP_4": {
-                                                                        "runAfter": {},
-                                                                        "metadata": {
-                                                                            "operationMetadataId": "6b413522-600c-4ce9-bec8-8e06976492db"
-                                                                        },
-                                                                        "type": "Http",
-                                                                        "inputs": {
-                                                                            "method": "GET",
-                                                                            "uri": "https://api.stripe.com/v1/customers?email=@{uriComponent(body('Parse_JSON_2')?['mail'])}&expand%5B%5D=data.subscriptions",
-                                                                            "authentication": {
-                                                                                "type": "Raw",
-                                                                                "value": "Bearer @{items('Apply_to_each_GroupsList')?['StripeKey']}"
-                                                                            }
-                                                                        }
-                                                                    },
-                                                                    "Condition_no_subscription": {
-                                                                        "actions": {
-                                                                            "HTTP": {
-                                                                                "runAfter": {},
-                                                                                "metadata": {
-                                                                                    "operationMetadataId": "f968e3df-667b-4a0b-9487-a130bcf5231d"
-                                                                                },
-                                                                                "type": "Http",
-                                                                                "inputs": {
-                                                                                    "method": "POST",
-                                                                                    "uri": "https://api.stripe.com/v1/subscriptions",
-                                                                                    "headers": {
-                                                                                        "Content-type": "application/x-www-form-urlencoded"
-                                                                                    },
-                                                                                    "body": "customer=@{variables('customerId')}&@{uriComponent('items[0][price]')}=@{items('Apply_to_each_GroupsList')?['StripePrice0']}",
-                                                                                    "authentication": {
-                                                                                        "type": "Raw",
-                                                                                        "value": "Bearer @{items('Apply_to_each_GroupsList')?['StripeKey']}"
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                        },
-                                                                        "runAfter": {
-                                                                            "Condition_no_customer": [
-                                                                                "Succeeded"
-                                                                            ]
-                                                                        },
-                                                                        "expression": {
-                                                                            "equals": [
-                                                                                "@body('HTTP_4')?['data']?[0]?['subscriptions']?['data']?[0]",
-                                                                                "@null"
-                                                                            ]
-                                                                        },
-                                                                        "metadata": {
-                                                                            "operationMetadataId": "fc181dd3-efb5-4138-a91d-d3a24b8ad41d"
-                                                                        },
-                                                                        "type": "If"
-                                                                    }
-                                                                },
-                                                                "runAfter": {
-                                                                    "Get_items_UsersList1": [
-                                                                        "Succeeded"
-                                                                    ]
-                                                                },
-                                                                "metadata": {
-                                                                    "operationMetadataId": "a621ceb9-2b20-4ff1-b2d1-2a3374ed8f6d"
-                                                                },
-                                                                "type": "Foreach"
-                                                            },
-                                                            "Condition_trick_nested": {
-                                                                "actions": {},
-                                                                "runAfter": {
-                                                                    "Condition_length_UsersList_0": [
-                                                                        "Succeeded"
-                                                                    ]
-                                                                },
-                                                                "else": {
-                                                                    "actions": {
-                                                                        "Compose": {
-                                                                            "runAfter": {},
-                                                                            "metadata": {
-                                                                                "operationMetadataId": "8ca279f8-894d-4a54-9e6a-5fd4537c19fd"
-                                                                            },
-                                                                            "type": "Compose",
-                                                                            "inputs": "@json('-.{}2-01.')"
-                                                                        }
-                                                                    }
-                                                                },
-                                                                "expression": {
-                                                                    "equals": [
-                                                                        "@string(items('Apply_to_each_GroupsList')?['StripeKey'])",
-                                                                        "@''"
-                                                                    ]
-                                                                },
-                                                                "metadata": {
-                                                                    "operationMetadataId": "7306fc2e-718a-4271-8be1-380c92d1cffb"
-                                                                },
-                                                                "type": "If"
-                                                            }
-                                                        },
-                                                        "runAfter": {
-                                                            "Get_items_GroupsList": [
-                                                                "Succeeded"
-                                                            ]
-                                                        },
-                                                        "metadata": {
-                                                            "operationMetadataId": "ee6c7eb3-a69d-4c5c-94b0-1329f2b6d973"
-                                                        },
-                                                        "type": "Foreach"
-                                                    },
-                                                    "Get_items_GroupsList_Cycle1": {
-                                                        "runAfter": {
-                                                            "Apply_to_each_GroupsList": [
-                                                                "Succeeded"
-                                                            ]
-                                                        },
-                                                        "metadata": {
-                                                            "operationMetadataId": "aaafb98b-617c-45e9-ad61-190fc6de0608"
-                                                        },
-                                                        "type": "OpenApiConnection",
-                                                        "inputs": {
-                                                            "host": {
-                                                                "connectionName": "shared_sharepointonline_1",
-                                                                "operationId": "GetItems",
-                                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
-                                                            },
-                                                            "parameters": {
-                                                                "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{parameters('envpar_config__CycleZeroName')}",
-                                                                "table": "@'GroupsList'",
-                                                                "$filter": "Cycle1GroupName eq '@{parameters('envpar_config__CyclesRename')}1'",
-                                                                "$top": 1
-                                                            },
-                                                            "authentication": "@parameters('$authentication')"
-                                                        }
-                                                    },
-                                                    "Apply_to_each_GroupsList_Cycle1": {
-                                                        "foreach": "@outputs('Get_items_GroupsList_Cycle1')?['body/value']",
-                                                        "actions": {
-                                                            "Parse_JSON_Cycles": {
-                                                                "runAfter": {
-                                                                    "Set_variable_varCounter1_is_0": [
-                                                                        "Succeeded"
-                                                                    ]
-                                                                },
-                                                                "metadata": {
-                                                                    "operationMetadataId": "189c66ac-29ce-4611-bc03-00b17b5fd11e"
-                                                                },
-                                                                "type": "ParseJson",
-                                                                "inputs": {
-                                                                    "content": "@json(coalesce(items('Apply_to_each_GroupsList_Cycle1')?['CyclesGroups'], '[]'))",
-                                                                    "schema": {
-                                                                        "type": "array",
-                                                                        "items": {
-                                                                            "type": "object",
-                                                                            "properties": {
-                                                                                "CyclesGroupName": {
-                                                                                    "type": "string"
-                                                                                },
-                                                                                "CyclesGroupId": {
-                                                                                    "type": "string"
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
-                                                            },
-                                                            "Do_until_Cycles": {
-                                                                "actions": {
-                                                                    "Condition_Cycles": {
-                                                                        "actions": {
-                                                                            "Do_until_GroupsList": {
-                                                                                "actions": {
-                                                                                    "Run_a_Child_Flow_4": {
-                                                                                        "runAfter": {},
-                                                                                        "metadata": {
-                                                                                            "operationMetadataId": "061053b9-6326-4717-9f99-96287def4584"
-                                                                                        },
-                                                                                        "type": "Workflow",
-                                                                                        "inputs": {
-                                                                                            "host": {
-                                                                                                "workflowReferenceName": "ead81545-25db-ea11-a815-000d3af42a37"
-                                                                                            },
-                                                                                            "body": {
-                                                                                                "TenantDomain": "@parameters('envpar_config__TenantDomain')",
-                                                                                                "CycleGroupName": "@{parameters('envpar_config__CyclesRename')}@{add(variables('varCounter2'),1)}_@{first(split(body('Parse_JSON_7')?['userPrincipalName'], '@'))}",
-                                                                                                "CycleGroupOwnerId": "@body('Parse_JSON_7')?['id']",
-                                                                                                "Cycle1GroupName": "@{concat(parameters('envpar_config__CyclesRename'), '1')}_@{first(split(body('Parse_JSON_7')?['userPrincipalName'], '@'))}",
-                                                                                                "IsCycle1": "@if(equals(variables('varCounter2'),0),true,false)"
-                                                                                            },
-                                                                                            "retryPolicy": {
-                                                                                                "type": "none"
-                                                                                            }
-                                                                                        }
-                                                                                    },
-                                                                                    "Increment_variable_varCounter2": {
-                                                                                        "runAfter": {
-                                                                                            "Run_a_Child_Flow_4": [
-                                                                                                "Succeeded"
-                                                                                            ]
-                                                                                        },
-                                                                                        "metadata": {
-                                                                                            "operationMetadataId": "98cf337c-733d-4d1c-88a8-8567d9b7be51"
-                                                                                        },
-                                                                                        "type": "IncrementVariable",
-                                                                                        "inputs": {
-                                                                                            "name": "varCounter2",
-                                                                                            "value": "@1"
-                                                                                        }
-                                                                                    }
-                                                                                },
-                                                                                "runAfter": {
-                                                                                    "Set_variable_varCounter2_is_0": [
-                                                                                        "Succeeded"
-                                                                                    ]
-                                                                                },
-                                                                                "expression": "@equals(variables('varCounter2'), add(variables('varCounter1'), 1))",
-                                                                                "limit": {
-                                                                                    "count": 60,
-                                                                                    "timeout": "PT1H"
-                                                                                },
-                                                                                "metadata": {
-                                                                                    "operationMetadataId": "f04f5e51-ce20-40c0-bdb3-eeee786e3c9c"
-                                                                                },
-                                                                                "type": "Until"
-                                                                            },
-                                                                            "Parse_JSON_7": {
-                                                                                "runAfter": {
-                                                                                    "HTTP_5": [
-                                                                                        "Succeeded"
-                                                                                    ]
-                                                                                },
-                                                                                "metadata": {
-                                                                                    "operationMetadataId": "58f7e372-a064-46e6-ba0e-574eb924343c"
-                                                                                },
-                                                                                "type": "ParseJson",
-                                                                                "inputs": {
-                                                                                    "content": "@body('HTTP_5')",
-                                                                                    "schema": {
-                                                                                        "type": "object",
-                                                                                        "properties": {
-                                                                                            "id": {
-                                                                                                "type": "string"
-                                                                                            },
-                                                                                            "mail": {
-                                                                                                "type": "string"
-                                                                                            },
-                                                                                            "userPrincipalName": {
-                                                                                                "type": "string"
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                }
-                                                                            },
-                                                                            "HTTP_5": {
-                                                                                "runAfter": {},
-                                                                                "metadata": {
-                                                                                    "operationMetadataId": "a8bd1c14-e204-43b5-94d9-ff259604b4d3"
-                                                                                },
-                                                                                "type": "Http",
-                                                                                "inputs": {
-                                                                                    "method": "GET",
-                                                                                    "uri": "https://graph.microsoft.com/v1.0/users/@{items('Apply_to_each_Cycles_membersdelta')['id']}",
-                                                                                    "headers": {
-                                                                                        "Content-type": "application/json"
-                                                                                    },
-                                                                                    "authentication": {
-                                                                                        "type": "ActiveDirectoryOAuth",
-                                                                                        "tenant": "@parameters('envpar_config__TenantDomain')",
-                                                                                        "audience": "https://graph.microsoft.com",
-                                                                                        "clientId": "@parameters('envpar_config__GraphAppId')",
-                                                                                        "secret": "@parameters('envpar_config__GraphAppSecret')"
-                                                                                    }
-                                                                                }
-                                                                            },
-                                                                            "Set_variable_varCounter2_is_0": {
-                                                                                "runAfter": {
-                                                                                    "Parse_JSON_7": [
-                                                                                        "Succeeded"
-                                                                                    ]
-                                                                                },
-                                                                                "metadata": {
-                                                                                    "operationMetadataId": "348bfdec-a708-41cc-9a9a-88668a47185c"
-                                                                                },
-                                                                                "type": "SetVariable",
-                                                                                "inputs": {
-                                                                                    "name": "varCounter2",
-                                                                                    "value": "@0"
-                                                                                }
-                                                                            },
-                                                                            "Create_item_LogsList_cycle0_0": {
-                                                                                "runAfter": {
-                                                                                    "Do_until_GroupsList": [
-                                                                                        "Succeeded"
-                                                                                    ]
-                                                                                },
-                                                                                "metadata": {
-                                                                                    "operationMetadataId": "7e3e0fec-fd3c-4758-aa72-b0c2028dd9eb"
-                                                                                },
-                                                                                "type": "OpenApiConnection",
-                                                                                "inputs": {
-                                                                                    "host": {
-                                                                                        "connectionName": "shared_sharepointonline_1",
-                                                                                        "operationId": "PostItem",
-                                                                                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
-                                                                                    },
-                                                                                    "parameters": {
-                                                                                        "dataset": "@concat('https://', parameters('envpar_config__TenantName'), '.sharepoint.com/sites/', parameters('envpar_config__CycleZeroName'))",
-                                                                                        "table": "LogsList",
-                                                                                        "item": {
-                                                                                            "Title": "Created @{concat(parameters('envpar_config__CyclesRename'), '1')}_@{first(split(body('Parse_JSON_7')?['userPrincipalName'], '@'))} .. @{parameters('envpar_config__CyclesRename')}@{variables('varCounter2')}_@{first(split(body('Parse_JSON_7')?['userPrincipalName'], '@'))} via membering in @{body('Parse_JSON_Cycles')?[variables('varCounter1')]?['CyclesGroupName']}",
-                                                                                            "Resource": "GroupsList",
-                                                                                            "ResourceId": "@{concat(parameters('envpar_config__CyclesRename'), '1')}_@{first(split(body('Parse_JSON_7')?['userPrincipalName'], '@'))}",
-                                                                                            "ChangeType": "CREATE",
-                                                                                            "Source": "cycle0__Graph_Groups_Webhook"
-                                                                                        }
-                                                                                    },
-                                                                                    "authentication": "@parameters('$authentication')"
-                                                                                }
-                                                                            }
-                                                                        },
-                                                                        "runAfter": {},
-                                                                        "expression": {
-                                                                            "equals": [
-                                                                                "@body('Parse_JSON_Cycles')?[sub(length(body('Parse_JSON_Cycles')),add(variables('varCounter1'),1))]?['CyclesGroupId']",
-                                                                                "@items('Apply_to_each')?['resourceData']?['id']"
-                                                                            ]
-                                                                        },
-                                                                        "metadata": {
-                                                                            "operationMetadataId": "13edc721-7d6c-4947-9920-4dde132446aa"
-                                                                        },
-                                                                        "type": "If"
-                                                                    },
-                                                                    "Increment_variable_varCounter1": {
-                                                                        "runAfter": {
-                                                                            "Condition_Cycles": [
-                                                                                "Succeeded"
-                                                                            ]
-                                                                        },
-                                                                        "metadata": {
-                                                                            "operationMetadataId": "038432e7-b8a1-47d2-a0f0-a21261d3761a"
-                                                                        },
-                                                                        "type": "IncrementVariable",
-                                                                        "inputs": {
-                                                                            "name": "varCounter1",
-                                                                            "value": "@1"
-                                                                        }
-                                                                    }
-                                                                },
-                                                                "runAfter": {
-                                                                    "Parse_JSON_Cycles": [
-                                                                        "Succeeded"
-                                                                    ]
-                                                                },
-                                                                "expression": "@equals(variables('varCounter1'), length(body('Parse_JSON_Cycles')))",
-                                                                "limit": {
-                                                                    "count": 60,
-                                                                    "timeout": "PT1H"
-                                                                },
-                                                                "metadata": {
-                                                                    "operationMetadataId": "21d9bf29-c3b3-4a55-8acb-00aa55f1267e"
-                                                                },
-                                                                "type": "Until"
-                                                            },
-                                                            "Set_variable_varCounter1_is_0": {
-                                                                "runAfter": {},
-                                                                "metadata": {
-                                                                    "operationMetadataId": "ad0748f1-3b36-4d63-b487-feb07ae31c4f"
-                                                                },
-                                                                "type": "SetVariable",
-                                                                "inputs": {
-                                                                    "name": "varCounter1",
-                                                                    "value": "@0"
-                                                                }
-                                                            }
-                                                        },
-                                                        "runAfter": {
-                                                            "Get_items_GroupsList_Cycle1": [
-                                                                "Succeeded"
-                                                            ]
-                                                        },
-                                                        "metadata": {
-                                                            "operationMetadataId": "fa30e887-6cc2-4614-a635-cba22cecd3df"
-                                                        },
-                                                        "type": "Foreach"
-                                                    }
-                                                },
-                                                "runAfter": {},
-                                                "expression": {
-                                                    "equals": [
-                                                        "@items('Apply_to_each_Cycles_membersdelta')?['@removed']",
-                                                        "@null"
-                                                    ]
-                                                },
-                                                "metadata": {
-                                                    "operationMetadataId": "4072d8da-59f9-4971-adc6-86c972f852d3"
-                                                },
-                                                "type": "If"
-                                            }
+                                      },
+                                      "HTTP_5": {
+                                        "runAfter": {},
+                                        "metadata": {
+                                          "operationMetadataId": "a8bd1c14-e204-43b5-94d9-ff259604b4d3"
                                         },
+                                        "type": "Http",
+                                        "inputs": {
+                                          "method": "GET",
+                                          "uri": "https://graph.microsoft.com/v1.0/users/@{items('Apply_to_each_Cycles_membersdelta')['id']}",
+                                          "headers": {
+                                            "Content-type": "application/json"
+                                          },
+                                          "authentication": {
+                                            "type": "ActiveDirectoryOAuth",
+                                            "tenant": "@parameters('envpar_config__TenantDomain (new_envpar_config__TenantDomain)')",
+                                            "audience": "https://graph.microsoft.com",
+                                            "clientId": "@parameters('envpar_config__GraphAppId (new_envpar_config__GraphAppId)')",
+                                            "secret": "@parameters('envpar_config__GraphAppSecret (new_envpar_config__GraphAppSecret)')"
+                                          }
+                                        }
+                                      },
+                                      "Set_variable_varCounter2_is_0": {
                                         "runAfter": {
-                                            "Parse_JSON_Cycles_membersdelta": [
-                                                "Succeeded"
-                                            ]
+                                          "Parse_JSON_7": [
+                                            "Succeeded"
+                                          ]
                                         },
                                         "metadata": {
-                                            "operationMetadataId": "03b8aab2-f27c-4473-aae7-79f91102907a"
+                                          "operationMetadataId": "348bfdec-a708-41cc-9a9a-88668a47185c"
                                         },
-                                        "type": "Foreach"
-                                    }
-                                }
-                            },
-                            "expression": {
-                                "or": [
-                                    {
-                                        "equals": [
-                                            "@items('Apply_to_each')?['resourceData']?['members@delta']",
-                                            "@null"
-                                        ]
-                                    },
-                                    {
-                                        "not": {
-                                            "equals": [
-                                                "@items('Apply_to_each')['clientState']",
-                                                "@parameters('envpar_config__GraphAppId')"
-                                            ]
+                                        "type": "SetVariable",
+                                        "inputs": {
+                                          "name": "varCounter2",
+                                          "value": "@0"
                                         }
+                                      },
+                                      "Create_item_LogsList_cycle0_0": {
+                                        "runAfter": {
+                                          "Do_until_GroupsList": [
+                                            "Succeeded"
+                                          ]
+                                        },
+                                        "metadata": {
+                                          "operationMetadataId": "7e3e0fec-fd3c-4758-aa72-b0c2028dd9eb"
+                                        },
+                                        "type": "OpenApiConnection",
+                                        "inputs": {
+                                          "host": {
+                                            "connectionName": "shared_sharepointonline_1",
+                                            "operationId": "PostItem",
+                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                          },
+                                          "parameters": {
+                                            "dataset": "@concat('https://', parameters('envpar_config__TenantName (new_envpar_config__TenantName)'), '.sharepoint.com/sites/', parameters('envpar_config__CycleZeroName (new_envpar_config__CycleZeroName)'))",
+                                            "table": "LogsList",
+                                            "item": {
+                                              "Title": "Created @{concat(parameters('envpar_config__CyclesRename (new_envpar_config__CyclesRename)'), '1')}_@{first(split(body('Parse_JSON_7')?['userPrincipalName'], '@'))} .. @{parameters('envpar_config__CyclesRename (new_envpar_config__CyclesRename)')}@{variables('varCounter2')}_@{first(split(body('Parse_JSON_7')?['userPrincipalName'], '@'))} via membering in @{body('Parse_JSON_Cycles')?[variables('varCounter1')]?['CyclesGroupName']}",
+                                              "Resource": "GroupsList",
+                                              "ResourceId": "@{concat(parameters('envpar_config__CyclesRename (new_envpar_config__CyclesRename)'), '1')}_@{first(split(body('Parse_JSON_7')?['userPrincipalName'], '@'))}",
+                                              "ChangeType": "CREATE",
+                                              "Source": "cycle0__Graph_Groups_Webhook"
+                                            }
+                                          },
+                                          "authentication": "@parameters('$authentication')"
+                                        }
+                                      }
+                                    },
+                                    "runAfter": {},
+                                    "expression": {
+                                      "equals": [
+                                        "@body('Parse_JSON_Cycles')?[sub(length(body('Parse_JSON_Cycles')),add(variables('varCounter1'),1))]?['CyclesGroupId']",
+                                        "@items('Apply_to_each')?['resourceData']?['id']"
+                                      ]
+                                    },
+                                    "metadata": {
+                                      "operationMetadataId": "13edc721-7d6c-4947-9920-4dde132446aa"
+                                    },
+                                    "type": "If"
+                                  },
+                                  "Increment_variable_varCounter1": {
+                                    "runAfter": {
+                                      "Condition_Cycles": [
+                                        "Succeeded"
+                                      ]
+                                    },
+                                    "metadata": {
+                                      "operationMetadataId": "038432e7-b8a1-47d2-a0f0-a21261d3761a"
+                                    },
+                                    "type": "IncrementVariable",
+                                    "inputs": {
+                                      "name": "varCounter1",
+                                      "value": "@1"
                                     }
-                                ]
+                                  }
+                                },
+                                "runAfter": {
+                                  "Parse_JSON_Cycles": [
+                                    "Succeeded"
+                                  ]
+                                },
+                                "expression": "@equals(variables('varCounter1'), length(body('Parse_JSON_Cycles')))",
+                                "limit": {
+                                  "count": 60,
+                                  "timeout": "PT1H"
+                                },
+                                "metadata": {
+                                  "operationMetadataId": "21d9bf29-c3b3-4a55-8acb-00aa55f1267e"
+                                },
+                                "type": "Until"
+                              },
+                              "Set_variable_varCounter1_is_0": {
+                                "runAfter": {},
+                                "metadata": {
+                                  "operationMetadataId": "ad0748f1-3b36-4d63-b487-feb07ae31c4f"
+                                },
+                                "type": "SetVariable",
+                                "inputs": {
+                                  "name": "varCounter1",
+                                  "value": "@0"
+                                }
+                              }
+                            },
+                            "runAfter": {
+                              "Get_items_GroupsList_Cycle1": [
+                                "Succeeded"
+                              ]
                             },
                             "metadata": {
-                                "operationMetadataId": "19e70127-b35d-4f21-8026-1e2b35ab182f"
+                              "operationMetadataId": "fa30e887-6cc2-4614-a635-cba22cecd3df"
                             },
-                            "type": "If"
-                        }
+                            "type": "Foreach"
+                          }
+                        },
+                        "runAfter": {},
+                        "expression": {
+                          "equals": [
+                            "@items('Apply_to_each_Cycles_membersdelta')?['@removed']",
+                            "@null"
+                          ]
+                        },
+                        "metadata": {
+                          "operationMetadataId": "4072d8da-59f9-4971-adc6-86c972f852d3"
+                        },
+                        "type": "If"
+                      }
                     },
                     "runAfter": {
-                        "Parse_JSON": [
-                            "Succeeded"
-                        ]
+                      "Parse_JSON_Cycles_membersdelta": [
+                        "Succeeded"
+                      ]
                     },
                     "metadata": {
-                        "operationMetadataId": "e41fd715-a635-4e16-88cd-ff2f75ab8040"
+                      "operationMetadataId": "03b8aab2-f27c-4473-aae7-79f91102907a"
                     },
                     "type": "Foreach"
-                },
-                "Initialize_variable_varCounter2": {
-                    "runAfter": {
-                        "Initialize_variable_varCounter1": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "operationMetadataId": "24a50ef1-fa04-4200-9ce0-81ad89a78b69"
-                    },
-                    "type": "InitializeVariable",
-                    "inputs": {
-                        "variables": [
-                            {
-                                "name": "varCounter2",
-                                "type": "integer",
-                                "value": "@0"
-                            }
-                        ]
-                    }
-                },
-                "Initialize_variable_varCounter1": {
-                    "runAfter": {
-                        "Condition": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "operationMetadataId": "22ea6b9a-5379-46ab-ab53-a6638c93f670"
-                    },
-                    "type": "InitializeVariable",
-                    "inputs": {
-                        "variables": [
-                            {
-                                "name": "varCounter1",
-                                "type": "integer",
-                                "value": "@0"
-                            }
-                        ]
-                    }
-                },
-                "Initialize_variable_customerId": {
-                    "runAfter": {
-                        "Initialize_variable_varCounter2": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "operationMetadataId": "ddee5b4f-9801-4ca3-a931-6a5fac3fff28"
-                    },
-                    "type": "InitializeVariable",
-                    "inputs": {
-                        "variables": [
-                            {
-                                "name": "customerId",
-                                "type": "string"
-                            }
-                        ]
-                    }
+                  }
                 }
-            },
-            "outputs": {}
+              },
+              "expression": {
+                "or": [
+                  {
+                    "equals": [
+                      "@items('Apply_to_each')?['resourceData']?['members@delta']",
+                      "@null"
+                    ]
+                  },
+                  {
+                    "not": {
+                      "equals": [
+                        "@items('Apply_to_each')['clientState']",
+                        "@parameters('envpar_config__GraphAppId (new_envpar_config__GraphAppId)')"
+                      ]
+                    }
+                  }
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "19e70127-b35d-4f21-8026-1e2b35ab182f"
+              },
+              "type": "If"
+            }
+          },
+          "runAfter": {
+            "Parse_JSON": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "e41fd715-a635-4e16-88cd-ff2f75ab8040"
+          },
+          "type": "Foreach"
+        },
+        "Initialize_variable_varCounter2": {
+          "runAfter": {
+            "Initialize_variable_varCounter1": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "24a50ef1-fa04-4200-9ce0-81ad89a78b69"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "varCounter2",
+                "type": "integer",
+                "value": "@0"
+              }
+            ]
+          }
+        },
+        "Initialize_variable_varCounter1": {
+          "runAfter": {
+            "Condition": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "22ea6b9a-5379-46ab-ab53-a6638c93f670"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "varCounter1",
+                "type": "integer",
+                "value": "@0"
+              }
+            ]
+          }
+        },
+        "Initialize_variable_customerId": {
+          "runAfter": {
+            "Initialize_variable_varCounter2": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "ddee5b4f-9801-4ca3-a931-6a5fac3fff28"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "customerId",
+                "type": "string"
+              }
+            ]
+          }
         }
-    },
-    "schemaVersion": "1.0.0.0"
+      },
+      "outputs": {}
+    }
+  },
+  "schemaVersion": "1.0.0.0"
 }

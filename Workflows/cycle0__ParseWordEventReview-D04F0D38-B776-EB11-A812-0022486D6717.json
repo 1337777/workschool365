@@ -1,350 +1,350 @@
 {
-    "properties": {
-        "connectionReferences": {
-            "shared_sharepointonline": {
-                "runtimeSource": "embedded",
-                "connection": {
-                    "connectionReferenceLogicalName": "new_sharedsharepointonline_9ad14"
-                },
-                "api": {
-                    "name": "shared_sharepointonline"
-                }
-            }
+  "properties": {
+    "connectionReferences": {
+      "shared_sharepointonline": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedsharepointonline_9ad14"
         },
-        "definition": {
-            "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
-            "contentVersion": "1.0.0.0",
-            "parameters": {
-                "$connections": {
-                    "defaultValue": {},
-                    "type": "Object"
-                },
-                "$authentication": {
-                    "defaultValue": {},
-                    "type": "SecureObject"
-                },
-                "envpar_config__TenantName": {
-                    "defaultValue": "",
-                    "type": "String",
-                    "metadata": {
-                        "schemaName": "new_envpar_config__TenantName"
-                    }
-                }
-            },
-            "triggers": {
-                "manual": {
-                    "type": "Request",
-                    "kind": "Http",
-                    "inputs": {
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "siteName": {
-                                    "type": "string"
-                                },
-                                "fileIdentifier": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "actions": {
-                "Get_file_content_using_path": {
-                    "runAfter": {
-                        "Compose_RelationShip": [
-                            "Succeeded"
-                        ]
-                    },
-                    "type": "OpenApiConnection",
-                    "inputs": {
-                        "host": {
-                            "connectionName": "shared_sharepointonline",
-                            "operationId": "GetFileContentByPath",
-                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
-                        },
-                        "parameters": {
-                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['siteName']}",
-                            "path": "@concat(outputs('tmpFolder'), '/' , outputs('Compose_RelationShip')?['Relationship']?['@Target'] )",
-                            "inferContentType": true
-                        },
-                        "authentication": "@parameters('$authentication')"
-                    }
-                },
-                "Extract_folder": {
-                    "runAfter": {
-                        "tmpFolder": [
-                            "Succeeded"
-                        ]
-                    },
-                    "type": "OpenApiConnection",
-                    "inputs": {
-                        "host": {
-                            "connectionName": "shared_sharepointonline",
-                            "operationId": "ExtractFolderV2",
-                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
-                        },
-                        "parameters": {
-                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['siteName']}",
-                            "source": "@triggerBody()?['fileIdentifier']",
-                            "destination": "@outputs('tmpFolder')",
-                            "overwrite": false
-                        },
-                        "authentication": "@parameters('$authentication')"
-                    }
-                },
-                "tmpFolder": {
-                    "runAfter": {
-                        "Initialize_variable_var2": [
-                            "Succeeded"
-                        ]
-                    },
-                    "type": "Compose",
-                    "inputs": "@concat('/FormServerTemplates/tmp_', string(ticks(utcNow())), '_', guid())"
-                },
-                "Delete_item": {
-                    "runAfter": {
-                        "Get_folder_metadata_using_path": [
-                            "Succeeded"
-                        ]
-                    },
-                    "type": "OpenApiConnection",
-                    "inputs": {
-                        "host": {
-                            "connectionName": "shared_sharepointonline",
-                            "operationId": "DeleteItem",
-                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
-                        },
-                        "parameters": {
-                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['siteName']}",
-                            "table": "Form Templates",
-                            "id": "@outputs('Get_folder_metadata_using_path')?['body/ItemId']"
-                        },
-                        "authentication": "@parameters('$authentication')"
-                    }
-                },
-                "Get_file_content_using_path_rels": {
-                    "runAfter": {
-                        "Extract_folder": [
-                            "Succeeded"
-                        ]
-                    },
-                    "type": "OpenApiConnection",
-                    "inputs": {
-                        "host": {
-                            "connectionName": "shared_sharepointonline",
-                            "operationId": "GetFileContentByPath",
-                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
-                        },
-                        "parameters": {
-                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['siteName']}",
-                            "path": "@concat(outputs('tmpFolder'), '/_rels/.rels')",
-                            "inferContentType": true
-                        },
-                        "authentication": "@parameters('$authentication')"
-                    }
-                },
-                "Compose_RelationShip": {
-                    "runAfter": {
-                        "Get_file_content_using_path_rels": [
-                            "Succeeded"
-                        ]
-                    },
-                    "type": "Compose",
-                    "inputs": "@json(xpath(xml(outputs('Get_file_content_using_path_rels')?['body']), '//*[name()=\"Relationship\" and @Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument\"]/self::*[1]')?[0])"
-                },
-                "Get_folder_metadata_using_path": {
-                    "runAfter": {
-                        "Response": [
-                            "Succeeded"
-                        ]
-                    },
-                    "type": "OpenApiConnection",
-                    "inputs": {
-                        "host": {
-                            "connectionName": "shared_sharepointonline",
-                            "operationId": "GetFolderMetadataByPath",
-                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
-                        },
-                        "parameters": {
-                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{triggerBody()?['siteName']}",
-                            "path": "@outputs('tmpFolder')"
-                        },
-                        "authentication": "@parameters('$authentication')"
-                    }
-                },
-                "Response": {
-                    "runAfter": {
-                        "Compose_reviewers_id": [
-                            "Succeeded"
-                        ]
-                    },
-                    "type": "Response",
-                    "kind": "Http",
-                    "inputs": {
-                        "statusCode": 200,
-                        "body": {
-                            "title": "@{variables('var2')}",
-                            "short": "@{variables('var1')}",
-                            "content": "@body('Select')",
-                            "ccid": "@{outputs('Compose_reviewers_id')}"
-                        },
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "title": {
-                                    "type": "string"
-                                },
-                                "short": {
-                                    "type": "string"
-                                },
-                                "content": {}
-                            }
-                        }
-                    }
-                },
-                "Apply_to_each_short": {
-                    "foreach": "@xpath(outputs('Compose_xml'), '//*[local-name()=\"sdtPr\"]/*[local-name()=\"tag\"][@*[local-name()=\"val\" and starts-with( . , \"ws365_ereview_short\")]]/parent::*[local-name()=\"sdtPr\"]/parent::*[local-name()=\"sdt\"]/*[local-name()=\"sdtContent\"]/*[local-name()=\"p\"]')",
-                    "actions": {
-                        "Append_to_string_variable_var1": {
-                            "runAfter": {},
-                            "type": "AppendToStringVariable",
-                            "inputs": {
-                                "name": "var1",
-                                "value": "@join(xpath(items('Apply_to_each_short'), '//*[local-name()=\"t\"]/descendant::text()'), '')"
-                            }
-                        }
-                    },
-                    "runAfter": {
-                        "Select": [
-                            "Succeeded"
-                        ]
-                    },
-                    "type": "Foreach"
-                },
-                "Initialize_variable_var1": {
-                    "runAfter": {},
-                    "type": "InitializeVariable",
-                    "inputs": {
-                        "variables": [
-                            {
-                                "name": "var1",
-                                "type": "string"
-                            }
-                        ]
-                    }
-                },
-                "Compose_xml": {
-                    "runAfter": {
-                        "Get_file_content_using_path": [
-                            "Succeeded"
-                        ]
-                    },
-                    "type": "Compose",
-                    "inputs": "@xml(outputs('Get_file_content_using_path')?['body'])"
-                },
-                "Initialize_variable_var2": {
-                    "runAfter": {
-                        "Initialize_variable_var1": [
-                            "Succeeded"
-                        ]
-                    },
-                    "type": "InitializeVariable",
-                    "inputs": {
-                        "variables": [
-                            {
-                                "name": "var2",
-                                "type": "string"
-                            }
-                        ]
-                    }
-                },
-                "Apply_to_each_title": {
-                    "foreach": "@xpath(outputs('Compose_xml'), '//*[local-name()=\"sdtPr\"]/*[local-name()=\"tag\"][@*[local-name()=\"val\" and starts-with( . , \"ws365_ereview_title\")]]/parent::*[local-name()=\"sdtPr\"]/parent::*[local-name()=\"sdt\"]/*[local-name()=\"sdtContent\"]/*[local-name()=\"p\"]')",
-                    "actions": {
-                        "Append_to_string_variable_var1_2": {
-                            "runAfter": {},
-                            "type": "AppendToStringVariable",
-                            "inputs": {
-                                "name": "var2",
-                                "value": "@join(xpath(items('Apply_to_each_title'), '//*[local-name()=\"t\"]/descendant::text()'), '')"
-                            }
-                        }
-                    },
-                    "runAfter": {
-                        "Apply_to_each_short": [
-                            "Succeeded"
-                        ]
-                    },
-                    "type": "Foreach"
-                },
-                "Select": {
-                    "runAfter": {
-                        "Compose_xml": [
-                            "Succeeded"
-                        ]
-                    },
-                    "type": "Select",
-                    "inputs": {
-                        "from": "@xpath(outputs('Compose_xml'), '//*[local-name()=\"sdtPr\"]/*[local-name()=\"tag\"][@*[local-name()=\"val\" and starts-with( . , \"ws365_\")]]/parent::*[local-name()=\"sdtPr\"]/parent::*[local-name()=\"sdt\"]')",
-                        "select": {
-                            "title": "@json(item())?['w:sdt']?['w:sdtPr']?['w:alias']?['@w:val']",
-                            "content": "@xpath(item(), '//*[local-name()=\"sdtContent\"]')",
-                            "tag": "@json(item())?['w:sdt']?['w:sdtPr']?['w:tag']?['@w:val']",
-                            "id": "@json(item())?['w:sdt']?['w:sdtPr']?['w:id']?['@w:val']"
-                        }
-                    }
-                },
-                "Compose_reviewers_id": {
-                    "runAfter": {
-                        "Filter_array": [
-                            "Succeeded"
-                        ]
-                    },
-                    "type": "Compose",
-                    "inputs": "@body('Filter_array')?[0]?['id']",
-                    "description": "@{xpath(outputs('Compose_xml'), '//*[local-name()=\"sdtPr\"]/*[local-name()=\"tag\"][@*[local-name()=\"val\" and starts-with( . , \"ws365_ereview_reviewers\")]][1]/parent::*[local-name()=\"sdtPr\"]/child::*[local-name()=\"id\"]/attribute::*[local-name()=\"val\"]')"
-                },
-                "Filter_array": {
-                    "runAfter": {
-                        "Set_variable_var2_title": [
-                            "Succeeded"
-                        ]
-                    },
-                    "type": "Query",
-                    "inputs": {
-                        "from": "@body('Select')",
-                        "where": "@equals(item()?['tag'], 'ws365_ereview_reviewers')"
-                    }
-                },
-                "Set_variable_var1_short": {
-                    "runAfter": {
-                        "Apply_to_each_title": [
-                            "Succeeded"
-                        ]
-                    },
-                    "type": "SetVariable",
-                    "inputs": {
-                        "name": "var1",
-                        "value": "@{xpath(outputs('Compose_xml'), 'string(//*[local-name()=\"sdtPr\"]/*[local-name()=\"tag\"][@*[local-name()=\"val\" and starts-with( . , \"ws365_ereview_short\")]]/parent::*[local-name()=\"sdtPr\"]/parent::*[local-name()=\"sdt\"]/*[local-name()=\"sdtContent\"]/*)')}"
-                    },
-                    "description": "TODO: delete Apply to each short"
-                },
-                "Set_variable_var2_title": {
-                    "runAfter": {
-                        "Set_variable_var1_short": [
-                            "Succeeded"
-                        ]
-                    },
-                    "type": "SetVariable",
-                    "inputs": {
-                        "name": "var2",
-                        "value": "@{xpath(outputs('Compose_xml'), 'string(//*[local-name()=\"sdtPr\"]/*[local-name()=\"tag\"][@*[local-name()=\"val\" and starts-with( . , \"ws365_ereview_title\")]]/parent::*[local-name()=\"sdtPr\"]/parent::*[local-name()=\"sdt\"]/*[local-name()=\"sdtContent\"]/*)')}"
-                    }
-                }
-            }
+        "api": {
+          "name": "shared_sharepointonline"
         }
+      }
     },
-    "schemaVersion": "1.0.0.0"
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "envpar_config__TenantName (new_envpar_config__TenantName)": {
+          "defaultValue": "",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_envpar_config__TenantName"
+          }
+        }
+      },
+      "triggers": {
+        "manual": {
+          "type": "Request",
+          "kind": "Http",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "siteName": {
+                  "type": "string"
+                },
+                "fileIdentifier": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "actions": {
+        "Get_file_content_using_path": {
+          "runAfter": {
+            "Compose_RelationShip": [
+              "Succeeded"
+            ]
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_sharepointonline",
+              "operationId": "GetFileContentByPath",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+            },
+            "parameters": {
+              "dataset": "https://@{parameters('envpar_config__TenantName (new_envpar_config__TenantName)')}.sharepoint.com/sites/@{triggerBody()?['siteName']}",
+              "path": "@concat(outputs('tmpFolder'), '/' , outputs('Compose_RelationShip')?['Relationship']?['@Target'] )",
+              "inferContentType": true
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Extract_folder": {
+          "runAfter": {
+            "tmpFolder": [
+              "Succeeded"
+            ]
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_sharepointonline",
+              "operationId": "ExtractFolderV2",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+            },
+            "parameters": {
+              "dataset": "https://@{parameters('envpar_config__TenantName (new_envpar_config__TenantName)')}.sharepoint.com/sites/@{triggerBody()?['siteName']}",
+              "source": "@triggerBody()?['fileIdentifier']",
+              "destination": "@outputs('tmpFolder')",
+              "overwrite": false
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "tmpFolder": {
+          "runAfter": {
+            "Initialize_variable_var2": [
+              "Succeeded"
+            ]
+          },
+          "type": "Compose",
+          "inputs": "@concat('/FormServerTemplates/tmp_', string(ticks(utcNow())), '_', guid())"
+        },
+        "Delete_item": {
+          "runAfter": {
+            "Get_folder_metadata_using_path": [
+              "Succeeded"
+            ]
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_sharepointonline",
+              "operationId": "DeleteItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+            },
+            "parameters": {
+              "dataset": "https://@{parameters('envpar_config__TenantName (new_envpar_config__TenantName)')}.sharepoint.com/sites/@{triggerBody()?['siteName']}",
+              "table": "Form Templates",
+              "id": "@outputs('Get_folder_metadata_using_path')?['body/ItemId']"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Get_file_content_using_path_rels": {
+          "runAfter": {
+            "Extract_folder": [
+              "Succeeded"
+            ]
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_sharepointonline",
+              "operationId": "GetFileContentByPath",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+            },
+            "parameters": {
+              "dataset": "https://@{parameters('envpar_config__TenantName (new_envpar_config__TenantName)')}.sharepoint.com/sites/@{triggerBody()?['siteName']}",
+              "path": "@concat(outputs('tmpFolder'), '/_rels/.rels')",
+              "inferContentType": true
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Compose_RelationShip": {
+          "runAfter": {
+            "Get_file_content_using_path_rels": [
+              "Succeeded"
+            ]
+          },
+          "type": "Compose",
+          "inputs": "@json(xpath(xml(outputs('Get_file_content_using_path_rels')?['body']), '//*[name()=\"Relationship\" and @Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument\"]/self::*[1]')?[0])"
+        },
+        "Get_folder_metadata_using_path": {
+          "runAfter": {
+            "Response": [
+              "Succeeded"
+            ]
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_sharepointonline",
+              "operationId": "GetFolderMetadataByPath",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+            },
+            "parameters": {
+              "dataset": "https://@{parameters('envpar_config__TenantName (new_envpar_config__TenantName)')}.sharepoint.com/sites/@{triggerBody()?['siteName']}",
+              "path": "@outputs('tmpFolder')"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Response": {
+          "runAfter": {
+            "Compose_reviewers_id": [
+              "Succeeded"
+            ]
+          },
+          "type": "Response",
+          "kind": "Http",
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "title": "@{variables('var2')}",
+              "short": "@{variables('var1')}",
+              "content": "@body('Select')",
+              "ccid": "@{outputs('Compose_reviewers_id')}"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string"
+                },
+                "short": {
+                  "type": "string"
+                },
+                "content": {}
+              }
+            }
+          }
+        },
+        "Apply_to_each_short": {
+          "foreach": "@xpath(outputs('Compose_xml'), '//*[local-name()=\"sdtPr\"]/*[local-name()=\"tag\"][@*[local-name()=\"val\" and starts-with( . , \"ws365_ereview_short\")]]/parent::*[local-name()=\"sdtPr\"]/parent::*[local-name()=\"sdt\"]/*[local-name()=\"sdtContent\"]/*[local-name()=\"p\"]')",
+          "actions": {
+            "Append_to_string_variable_var1": {
+              "runAfter": {},
+              "type": "AppendToStringVariable",
+              "inputs": {
+                "name": "var1",
+                "value": "@join(xpath(items('Apply_to_each_short'), '//*[local-name()=\"t\"]/descendant::text()'), '')"
+              }
+            }
+          },
+          "runAfter": {
+            "Select": [
+              "Succeeded"
+            ]
+          },
+          "type": "Foreach"
+        },
+        "Initialize_variable_var1": {
+          "runAfter": {},
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "var1",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Compose_xml": {
+          "runAfter": {
+            "Get_file_content_using_path": [
+              "Succeeded"
+            ]
+          },
+          "type": "Compose",
+          "inputs": "@xml(outputs('Get_file_content_using_path')?['body'])"
+        },
+        "Initialize_variable_var2": {
+          "runAfter": {
+            "Initialize_variable_var1": [
+              "Succeeded"
+            ]
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "var2",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Apply_to_each_title": {
+          "foreach": "@xpath(outputs('Compose_xml'), '//*[local-name()=\"sdtPr\"]/*[local-name()=\"tag\"][@*[local-name()=\"val\" and starts-with( . , \"ws365_ereview_title\")]]/parent::*[local-name()=\"sdtPr\"]/parent::*[local-name()=\"sdt\"]/*[local-name()=\"sdtContent\"]/*[local-name()=\"p\"]')",
+          "actions": {
+            "Append_to_string_variable_var1_2": {
+              "runAfter": {},
+              "type": "AppendToStringVariable",
+              "inputs": {
+                "name": "var2",
+                "value": "@join(xpath(items('Apply_to_each_title'), '//*[local-name()=\"t\"]/descendant::text()'), '')"
+              }
+            }
+          },
+          "runAfter": {
+            "Apply_to_each_short": [
+              "Succeeded"
+            ]
+          },
+          "type": "Foreach"
+        },
+        "Select": {
+          "runAfter": {
+            "Compose_xml": [
+              "Succeeded"
+            ]
+          },
+          "type": "Select",
+          "inputs": {
+            "from": "@xpath(outputs('Compose_xml'), '//*[local-name()=\"sdtPr\"]/*[local-name()=\"tag\"][@*[local-name()=\"val\" and starts-with( . , \"ws365_\")]]/parent::*[local-name()=\"sdtPr\"]/parent::*[local-name()=\"sdt\"]')",
+            "select": {
+              "title": "@json(item())?['w:sdt']?['w:sdtPr']?['w:alias']?['@w:val']",
+              "content": "@xpath(item(), '//*[local-name()=\"sdtContent\"]')",
+              "tag": "@json(item())?['w:sdt']?['w:sdtPr']?['w:tag']?['@w:val']",
+              "id": "@json(item())?['w:sdt']?['w:sdtPr']?['w:id']?['@w:val']"
+            }
+          }
+        },
+        "Compose_reviewers_id": {
+          "runAfter": {
+            "Filter_array": [
+              "Succeeded"
+            ]
+          },
+          "type": "Compose",
+          "inputs": "@body('Filter_array')?[0]?['id']",
+          "description": "@{xpath(outputs('Compose_xml'), '//*[local-name()=\"sdtPr\"]/*[local-name()=\"tag\"][@*[local-name()=\"val\" and starts-with( . , \"ws365_ereview_reviewers\")]][1]/parent::*[local-name()=\"sdtPr\"]/child::*[local-name()=\"id\"]/attribute::*[local-name()=\"val\"]')"
+        },
+        "Filter_array": {
+          "runAfter": {
+            "Set_variable_var2_title": [
+              "Succeeded"
+            ]
+          },
+          "type": "Query",
+          "inputs": {
+            "from": "@body('Select')",
+            "where": "@equals(item()?['tag'], 'ws365_ereview_reviewers')"
+          }
+        },
+        "Set_variable_var1_short": {
+          "runAfter": {
+            "Apply_to_each_title": [
+              "Succeeded"
+            ]
+          },
+          "type": "SetVariable",
+          "inputs": {
+            "name": "var1",
+            "value": "@{xpath(outputs('Compose_xml'), 'string(//*[local-name()=\"sdtPr\"]/*[local-name()=\"tag\"][@*[local-name()=\"val\" and starts-with( . , \"ws365_ereview_short\")]]/parent::*[local-name()=\"sdtPr\"]/parent::*[local-name()=\"sdt\"]/*[local-name()=\"sdtContent\"]/*)')}"
+          },
+          "description": "TODO: delete Apply to each short"
+        },
+        "Set_variable_var2_title": {
+          "runAfter": {
+            "Set_variable_var1_short": [
+              "Succeeded"
+            ]
+          },
+          "type": "SetVariable",
+          "inputs": {
+            "name": "var2",
+            "value": "@{xpath(outputs('Compose_xml'), 'string(//*[local-name()=\"sdtPr\"]/*[local-name()=\"tag\"][@*[local-name()=\"val\" and starts-with( . , \"ws365_ereview_title\")]]/parent::*[local-name()=\"sdtPr\"]/parent::*[local-name()=\"sdt\"]/*[local-name()=\"sdtContent\"]/*)')}"
+          }
+        }
+      }
+    }
+  },
+  "schemaVersion": "1.0.0.0"
 }

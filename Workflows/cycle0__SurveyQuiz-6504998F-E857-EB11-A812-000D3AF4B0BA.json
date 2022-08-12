@@ -1,1977 +1,1995 @@
 {
-    "properties": {
-        "connectionReferences": {
-            "shared_sharepointonline": {
-                "runtimeSource": "embedded",
-                "connection": {
-                    "connectionReferenceLogicalName": "new_sharedsharepointonline_9ad14"
-                },
-                "api": {
-                    "name": "shared_sharepointonline"
-                }
-            },
-            "shared_wordonlinebusiness": {
-                "runtimeSource": "embedded",
-                "connection": {
-                    "connectionReferenceLogicalName": "new_WordOnlineBusiness"
-                },
-                "api": {
-                    "name": "shared_wordonlinebusiness"
-                }
-            },
-            "shared_sharepointonline_1": {
-                "runtimeSource": "embedded",
-                "connection": {
-                    "connectionReferenceLogicalName": "new_sharedsharepointonline_9ad14"
-                },
-                "api": {
-                    "name": "shared_sharepointonline"
-                }
-            }
+  "properties": {
+    "connectionReferences": {
+      "shared_sharepointonline": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedsharepointonline_9ad14"
         },
-        "definition": {
-            "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
-            "contentVersion": "1.0.0.0",
-            "parameters": {
-                "$connections": {
-                    "defaultValue": {},
-                    "type": "Object"
+        "api": {
+          "name": "shared_sharepointonline"
+        }
+      },
+      "shared_wordonlinebusiness": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_WordOnlineBusiness"
+        },
+        "api": {
+          "name": "shared_wordonlinebusiness"
+        }
+      },
+      "shared_sharepointonline_1": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedsharepointonline_9ad14"
+        },
+        "api": {
+          "name": "shared_sharepointonline"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "envpar_config__TenantName (new_envpar_config__TenantName)": {
+          "defaultValue": "",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_envpar_config__TenantName",
+            "description": "Required. Org Name orgname (this is the prefix of the auto assigned domain orgname.onmicrosoft.com)"
+          }
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "37726d3a-2478-4d75-8af7-c8b3f5e29d90"
+          },
+          "type": "Request",
+          "kind": "Http",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "siteName": {
+                  "type": "string"
                 },
-                "$authentication": {
-                    "defaultValue": {},
-                    "type": "SecureObject"
+                "fileItemId": {
+                  "type": "integer"
                 },
-                "envpar_config__TenantName": {
-                    "defaultValue": "",
-                    "type": "String",
-                    "metadata": {
-                        "schemaName": "new_envpar_config__TenantName",
-                        "description": "Required. Org Name orgname (this is the prefix of the auto assigned domain orgname.onmicrosoft.com)"
-                    }
+                "groupId": {
+                  "type": "string"
+                },
+                "driveId": {
+                  "type": "string"
                 }
+              }
+            }
+          }
+        }
+      },
+      "actions": {
+        "SolutionTables": {
+          "runAfter": {
+            "Get_file_properties_SolutionFile": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "a8bc2121-a4fe-48e8-94cc-9a4fc7f3160b"
+          },
+          "type": "Workflow",
+          "inputs": {
+            "host": {
+              "workflowReferenceName": "d6535eaf-cd58-eb11-a812-000d3af4b0ba"
             },
-            "triggers": {
-                "manual": {
-                    "metadata": {
-                        "operationMetadataId": "37726d3a-2478-4d75-8af7-c8b3f5e29d90"
-                    },
-                    "type": "Request",
-                    "kind": "Http",
-                    "inputs": {
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "siteName": {
-                                    "type": "string"
-                                },
-                                "fileItemId": {
-                                    "type": "integer"
-                                },
-                                "groupId": {
-                                    "type": "string"
-                                },
-                                "driveId": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
+            "body": {
+              "siteName": "@variables('siteName')",
+              "fileIdentifier": "@body('Get_file_properties_SolutionFile')?['{FullPath}']"
+            }
+          }
+        },
+        "Initialize_variable_autograde": {
+          "runAfter": {
+            "Initialize_variable_siteAddress": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "9de55714-63f2-4170-a33b-56b60302241b"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "autograde",
+                "type": "integer",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "Initialize_variable_AutoWeight": {
+          "runAfter": {
+            "Initialize_variable_autograde": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "b13ad1ef-f949-404e-a5cb-db4b51ad60bb"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "AutoWeight",
+                "type": "integer",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "Initialize_variable_commentAndGrade": {
+          "runAfter": {
+            "Initialize_variable_AutoWeight": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "3f199a47-ba3a-4ca5-989b-7e2499de3178"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "commentAndGrade",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Initialize_variable_reviewerGrade": {
+          "runAfter": {
+            "Initialize_variable_commentAndGrade": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "372e4e15-e07c-49bb-9a4a-88ecfca207df"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "reviewerGrade",
+                "type": "integer",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "Grant_access_to_an_item_or_a_folder_ResponseFIle": {
+          "runAfter": {
+            "Set_content_approval_Approve_ResponseFIle": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "flowSystemMetadata": {
+              "swaggerOperationId": "GrantAccess"
+            },
+            "operationMetadataId": "08c0223c-f0a9-452f-b1a1-04971ff8289f"
+          },
+          "type": "ApiConnection",
+          "inputs": {
+            "host": {
+              "connection": {
+                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+              }
+            },
+            "method": "post",
+            "body": {
+              "recipients": "@{body('Get_file_properties_ResponseFile')?['Author']?['Email']}",
+              "roleValue": "role:1073741827",
+              "sendEmail": false
+            },
+            "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(encodeURIComponent(body('Get_file_properties_ResponseFile')?['ID']))}/grantaccess",
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Get_a_row_SolutionTables_Total": {
+          "runAfter": {
+            "SolutionTables": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "6400e714-0480-4df1-9219-093f6dabe911"
+          },
+          "type": "Compose",
+          "inputs": {
+            "ReviewerWeight": 0,
+            "ReviewerComments": "",
+            "Deadline": "@{body('Get_file_properties_SolutionFile')?['DueDate']}"
+          }
+        },
+        "Parse_JSON_SolutionTables_Total": {
+          "runAfter": {
+            "Get_a_row_SolutionTables_Total": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "1068a72c-afa1-447f-9b52-4719eab3daa0"
+          },
+          "type": "ParseJson",
+          "inputs": {
+            "content": "@outputs('Get_a_row_SolutionTables_Total')",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "ReviewerWeight": {},
+                "ReviewerComments": {
+                  "type": "string"
+                },
+                "Deadline": {
+                  "type": "string"
                 }
+              }
+            }
+          }
+        },
+        "Get_file_properties_SolutionFile": {
+          "runAfter": {
+            "Condition_Has_No_SolutionFIle": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "flowSystemMetadata": {
+              "swaggerOperationId": "GetFileItem"
             },
-            "actions": {
-                "SolutionTables": {
-                    "runAfter": {
-                        "Get_file_properties_SolutionFile": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "operationMetadataId": "a8bc2121-a4fe-48e8-94cc-9a4fc7f3160b"
-                    },
-                    "type": "Workflow",
-                    "inputs": {
-                        "host": {
-                            "workflowReferenceName": "d6535eaf-cd58-eb11-a812-000d3af4b0ba"
-                        },
-                        "body": {
-                            "siteName": "@variables('siteName')",
-                            "fileIdentifier": "@body('Get_file_properties_SolutionFile')?['{FullPath}']"
-                        }
-                    }
+            "operationMetadataId": "8e563134-42ca-4209-bf73-5ba9b46e9dd3"
+          },
+          "type": "ApiConnection",
+          "inputs": {
+            "host": {
+              "connection": {
+                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+              }
+            },
+            "method": "get",
+            "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(body('Get_file_properties_PromptFile')?['Predecessors']?['Id'])}/getfileitem",
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Initialize_variable_reviewerWeight": {
+          "runAfter": {
+            "Initialize_variable_reviewerGrade": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "49548167-e1f5-4793-a620-302b7e8b3ef9"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "reviewerWeight",
+                "type": "integer",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "Initialize_variable_siteAddress": {
+          "runAfter": {
+            "Initialize_variable_driveId": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "bcd7ec13-6edb-4f6b-89b0-79e8468cb553"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "siteAddress",
+                "type": "string",
+                "value": "https://@{parameters('envpar_config__TenantName (new_envpar_config__TenantName)')}.sharepoint.com/sites/@{variables('siteName')}"
+              }
+            ]
+          }
+        },
+        "Initialize_variable_deadline": {
+          "runAfter": {
+            "Initialize_variable_reviewerWeight": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "34a9b4d7-548d-4358-9905-f1a51e6e011d"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "deadline",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Delay_until": {
+          "runAfter": {
+            "Set_variable_deadline": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "642db1d3-6fde-4d43-8ca9-4a19e98bb351"
+          },
+          "type": "Wait",
+          "inputs": {
+            "until": {
+              "timestamp": "@{addMinutes(variables('deadline'), 5)}"
+            }
+          }
+        },
+        "Set_variable_deadline": {
+          "runAfter": {
+            "Parse_JSON_SolutionTables_Total": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "fb13f06a-71d5-4ea4-acf0-62122f8f4f70"
+          },
+          "type": "SetVariable",
+          "inputs": {
+            "name": "deadline",
+            "value": "@{body('Parse_JSON_SolutionTables_Total')?['DueDate']}"
+          }
+        },
+        "Set_variable_deadline_2": {
+          "runAfter": {
+            "Delay_until": [
+              "Failed"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "c53359c1-1f68-48b8-9c2e-1c44165de41f"
+          },
+          "type": "SetVariable",
+          "inputs": {
+            "name": "deadline",
+            "value": "@{getFutureTime(1, 'Day')}"
+          }
+        },
+        "Compose_InvalidDeadline": {
+          "runAfter": {
+            "Filter_array_Get_files_Transcripts": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "456d4b69-9f94-4fd4-b54a-55ac0ef1361a"
+          },
+          "type": "Compose",
+          "inputs": "@greater( ticks(body('Get_file_properties_ResponseFile')?['Modified']) , ticks(addMinutes(variables('deadline'), 5)) )"
+        },
+        "Compose_InvalidRepeat": {
+          "runAfter": {
+            "Compose_InvalidDeadline": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "aca17352-3409-4e1c-a979-964be8fab1a0"
+          },
+          "type": "Compose",
+          "inputs": "@greater(length( body('Filter_array_Get_files_Transcripts') ), 0)"
+        },
+        "Initialize_variable_fileItemId": {
+          "runAfter": {
+            "Initialize_variable_siteName": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "89b7b75f-5c55-4388-9f8e-87d6f4093706"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "fileItemId",
+                "type": "integer",
+                "value": "@triggerBody()?['fileItemId']"
+              }
+            ]
+          }
+        },
+        "Initialize_variable_siteName": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "e6d62f28-4d1b-4a52-92ce-85e5e3369961"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "siteName",
+                "type": "string",
+                "value": "@triggerBody()?['siteName']"
+              }
+            ]
+          }
+        },
+        "Initialize_variable_groupId": {
+          "runAfter": {
+            "Initialize_variable_fileItemId": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "7389ecf9-cc45-4054-8c7a-eadd4f2c9744"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "groupId",
+                "type": "string",
+                "value": "@triggerBody()?['groupId']"
+              }
+            ]
+          }
+        },
+        "Initialize_variable_driveId": {
+          "runAfter": {
+            "Initialize_variable_groupId": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "8eef3618-0eef-439c-a6fb-e029f5d26943"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "driveId",
+                "type": "string",
+                "value": "@triggerBody()?['driveId']"
+              }
+            ]
+          }
+        },
+        "Response": {
+          "runAfter": {
+            "Scope_2": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "1c05c74c-037a-41c9-a4cc-c88e1bec015d"
+          },
+          "type": "Response",
+          "kind": "Http",
+          "inputs": {
+            "statusCode": 200
+          }
+        },
+        "Get_file_metadata_ResponseFile": {
+          "runAfter": {
+            "Condition_Version_Stop_sharing": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "flowSystemMetadata": {
+              "swaggerOperationId": "GetFileMetadata"
+            },
+            "operationMetadataId": "7c5b74b7-f72c-4901-8632-c36932ca22a0"
+          },
+          "type": "ApiConnection",
+          "inputs": {
+            "host": {
+              "connection": {
+                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+              }
+            },
+            "method": "get",
+            "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/files/@{encodeURIComponent(body('Get_file_properties_ResponseFile')?['{Identifier}'])}",
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Set_content_approval_Approve_ResponseFIle": {
+          "runAfter": {
+            "Get_file_metadata_ResponseFile": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "flowSystemMetadata": {
+              "swaggerOperationId": "SetApprovalStatus"
+            },
+            "operationMetadataId": "198adc99-d447-49a8-8dda-fa28aa3217f9"
+          },
+          "type": "ApiConnection",
+          "inputs": {
+            "host": {
+              "connection": {
+                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+              }
+            },
+            "method": "post",
+            "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(encodeURIComponent(body('Get_file_properties_ResponseFile')?['ID']))}/setapprovalstatus",
+            "queries": {
+              "approvalAction": "Approve",
+              "comments": "",
+              "entityTag": "@body('Get_file_metadata_ResponseFile')?['ETag']"
+            },
+            "authentication": "@parameters('$authentication')",
+            "retryPolicy": {
+              "type": "fixed",
+              "count": 10,
+              "interval": "PT10S"
+            }
+          }
+        },
+        "Update_file_properties_Transcripts_3": {
+          "runAfter": {
+            "Update_file_Transcript": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "flowSystemMetadata": {
+              "swaggerOperationId": "PatchFileItem"
+            },
+            "operationMetadataId": "8a1d8be0-c40d-4773-924d-2a24ca65a6f7"
+          },
+          "type": "ApiConnection",
+          "inputs": {
+            "host": {
+              "connection": {
+                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+              }
+            },
+            "method": "patch",
+            "body": {
+              "Title": "@{toLower(body('Get_file_properties_ResponseFile')?['Author']?['Email'])}",
+              "QuizGrade": "@if(equals( float(variables('AutoWeight')), 0), 0 , div( float(variables('autograde')),  variables('AutoWeight')) )",
+              "QuizDeadlineInvalid": "@outputs('Compose_InvalidDeadline')",
+              "QuizRepeatInvalid": "@outputs('Compose_InvalidRepeat')",
+              "Predecessors": {
+                "@@odata.type": "#Microsoft.Azure.Connectors.SharePoint.SPListExpandedReference",
+                "Id": "@body('Get_file_properties_PromptFile')?['ID']",
+                "Value": "@{body('Get_file_properties_PromptFile')?['ID']}"
+              },
+              "AssignmentRef": {
+                "@@odata.type": "#Microsoft.Azure.Connectors.SharePoint.SPListExpandedReference",
+                "Id": "@body('Get_file_properties_ResponseFile')?['ID']",
+                "Value": "@{body('Get_file_properties_ResponseFile')?['ID']}"
+              },
+              "SharingLink": "@{body('Create_sharing_link_for_a_file_Transcript')?['link']?['webUrl']}",
+              "DueDate": "@{body('Get_file_properties_SolutionFile')?['DueDate']}"
+            },
+            "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(body('Create_file_Transcripts_0')?['ItemId'])}/patchfileitem",
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Get_files_Transcripts": {
+          "runAfter": {
+            "Set_variable_deadline_2": [
+              "Succeeded",
+              "Failed",
+              "Skipped",
+              "TimedOut"
+            ]
+          },
+          "metadata": {
+            "flowSystemMetadata": {
+              "swaggerOperationId": "GetFileItems"
+            },
+            "operationMetadataId": "18d8f313-d250-4111-85ce-19f8cee63d70"
+          },
+          "type": "ApiConnection",
+          "inputs": {
+            "host": {
+              "connection": {
+                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+              }
+            },
+            "method": "get",
+            "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/getfileitems",
+            "queries": {
+              "folderPath": "TranscriptsCopy",
+              "$filter": "(Predecessors eq '@{body('Get_file_properties_PromptFile')?['ID']}') and ((AssignmentRef eq '@{body('Get_file_properties_ResponseFile')?['ID']}') or (Title eq '@{toLower(body('Get_file_properties_ResponseFile')?['Author']?['Email'])}'))",
+              "$top": 1
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Create_file_Transcripts_0": {
+          "runAfter": {
+            "Compose_InvalidRepeat": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "flowSystemMetadata": {
+              "swaggerOperationId": "CreateFile"
+            },
+            "operationMetadataId": "7f9e0321-a010-4b0e-a1e9-132185327f44"
+          },
+          "type": "ApiConnection",
+          "inputs": {
+            "host": {
+              "connection": {
+                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+              }
+            },
+            "method": "post",
+            "body": "{\"$content-type\":\"application/vnd.openxmlformats-officedocument.wordprocessingml.document\",\"$content\":\"\"}",
+            "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/files",
+            "queries": {
+              "folderPath": "EventReview/Transcripts",
+              "name": "@{toLower(body('Get_file_properties_ResponseFile')?['Author']?['Email'])} - Transcripts - Prompt @{body('Get_file_properties_PromptFile')?['ID']} - Review @{body('Get_file_properties_ResponseFile')?['ID']} - @{body('Get_file_properties_ResponseFile')?['Modified']} - @{body('Get_file_properties_PromptFile')?['{Name}']}.docx",
+              "queryParametersSingleEncoded": true
+            },
+            "authentication": "@parameters('$authentication')"
+          },
+          "runtimeConfiguration": {
+            "contentTransfer": {
+              "transferMode": "Chunked"
+            }
+          }
+        },
+        "Copy_file_Transcripts": {
+          "runAfter": {
+            "Update_file_properties_Transcripts_3": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "flowSystemMetadata": {
+              "swaggerOperationId": "CopyFileAsync"
+            },
+            "operationMetadataId": "97faeda0-8c3a-4833-8f74-87fbfb45a579"
+          },
+          "type": "ApiConnection",
+          "inputs": {
+            "host": {
+              "connection": {
+                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+              }
+            },
+            "method": "post",
+            "body": {
+              "sourceFileId": "@body('Create_file_Transcripts_0')?['Id']",
+              "destinationDataset": "@variables('siteAddress')",
+              "destinationFolderPath": "EventReview/TranscriptsCopy",
+              "nameConflictBehavior": 2
+            },
+            "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/copyFileAsync",
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Scope_2": {
+          "actions": {
+            "Get_file_metadata_using_path": {
+              "runAfter": {
+                "Grant_view_to_Transcript_to_Author": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "flowSystemMetadata": {
+                  "swaggerOperationId": "GetFileMetadataByPath"
                 },
-                "Initialize_variable_autograde": {
-                    "runAfter": {
-                        "Initialize_variable_siteAddress": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "operationMetadataId": "9de55714-63f2-4170-a33b-56b60302241b"
-                    },
-                    "type": "InitializeVariable",
-                    "inputs": {
-                        "variables": [
-                            {
-                                "name": "autograde",
-                                "type": "integer",
-                                "value": 0
-                            }
-                        ]
-                    }
+                "operationMetadataId": "6be2b02b-7728-41ff-8cef-4da4718293ec"
+              },
+              "type": "ApiConnection",
+              "inputs": {
+                "host": {
+                  "connection": {
+                    "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                  }
                 },
-                "Initialize_variable_AutoWeight": {
-                    "runAfter": {
-                        "Initialize_variable_autograde": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "operationMetadataId": "b13ad1ef-f949-404e-a5cb-db4b51ad60bb"
-                    },
-                    "type": "InitializeVariable",
-                    "inputs": {
-                        "variables": [
-                            {
-                                "name": "AutoWeight",
-                                "type": "integer",
-                                "value": 0
-                            }
-                        ]
-                    }
+                "method": "get",
+                "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/GetFileByPath",
+                "queries": {
+                  "path": "@body('Create_file_Transcripts_0')?['Path']",
+                  "queryParametersSingleEncoded": true
                 },
-                "Initialize_variable_commentAndGrade": {
-                    "runAfter": {
-                        "Initialize_variable_AutoWeight": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "operationMetadataId": "3f199a47-ba3a-4ca5-989b-7e2499de3178"
-                    },
-                    "type": "InitializeVariable",
-                    "inputs": {
-                        "variables": [
-                            {
-                                "name": "commentAndGrade",
-                                "type": "string"
-                            }
-                        ]
-                    }
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Set_content_approval_status": {
+              "runAfter": {
+                "Get_file_metadata_using_path": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "flowSystemMetadata": {
+                  "swaggerOperationId": "SetApprovalStatus"
                 },
-                "Initialize_variable_reviewerGrade": {
-                    "runAfter": {
-                        "Initialize_variable_commentAndGrade": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "operationMetadataId": "372e4e15-e07c-49bb-9a4a-88ecfca207df"
-                    },
-                    "type": "InitializeVariable",
-                    "inputs": {
-                        "variables": [
-                            {
-                                "name": "reviewerGrade",
-                                "type": "integer",
-                                "value": 0
-                            }
-                        ]
-                    }
+                "operationMetadataId": "cf7b6080-abc7-4627-a023-ee2bb2e6e660"
+              },
+              "type": "ApiConnection",
+              "inputs": {
+                "host": {
+                  "connection": {
+                    "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                  }
                 },
-                "Stop_sharing_an_item_or_a_file_ResponseFIle": {
-                    "runAfter": {
-                        "Run_a_Child_Flow_Response": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "flowSystemMetadata": {
-                            "swaggerOperationId": "UnshareItem"
-                        },
-                        "operationMetadataId": "05342977-9e9d-4127-8266-b5e9db1f8ae9"
-                    },
-                    "type": "ApiConnection",
-                    "inputs": {
-                        "host": {
-                            "connection": {
-                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
-                            }
-                        },
-                        "method": "post",
-                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(encodeURIComponent(body('Get_file_properties_ResponseFile')?['ID']))}/unshare",
-                        "authentication": "@parameters('$authentication')"
-                    }
+                "method": "post",
+                "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(encodeURIComponent(body('Create_file_Transcripts_0')?['ItemId']))}/setapprovalstatus",
+                "queries": {
+                  "approvalAction": "Submit",
+                  "comments": "",
+                  "entityTag": "@body('Get_file_metadata_using_path')?['ETag']"
                 },
-                "Grant_access_to_an_item_or_a_folder_ResponseFIle": {
-                    "runAfter": {
-                        "Set_content_approval_Approve_ResponseFIle": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "flowSystemMetadata": {
-                            "swaggerOperationId": "GrantAccess"
-                        },
-                        "operationMetadataId": "08c0223c-f0a9-452f-b1a1-04971ff8289f"
-                    },
-                    "type": "ApiConnection",
-                    "inputs": {
-                        "host": {
-                            "connection": {
-                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
-                            }
-                        },
-                        "method": "post",
-                        "body": {
-                            "recipients": "@{body('Get_file_properties_ResponseFile')?['Author']?['Email']}",
-                            "roleValue": "role:1073741827",
-                            "sendEmail": false
-                        },
-                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(encodeURIComponent(body('Get_file_properties_ResponseFile')?['ID']))}/grantaccess",
-                        "authentication": "@parameters('$authentication')"
-                    }
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Set_content_approval_status_2": {
+              "runAfter": {
+                "Set_content_approval_status": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "flowSystemMetadata": {
+                  "swaggerOperationId": "SetApprovalStatus"
                 },
-                "Get_a_row_SolutionTables_Total": {
-                    "runAfter": {
-                        "SolutionTables": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "operationMetadataId": "6400e714-0480-4df1-9219-093f6dabe911"
-                    },
-                    "type": "Compose",
-                    "inputs": {
-                        "ReviewerWeight": 0,
-                        "ReviewerComments": "",
-                        "Deadline": "@{body('Get_file_properties_SolutionFile')?['DueDate']}"
-                    }
+                "operationMetadataId": "5f0a5f11-c4f2-4a86-969f-f92233760e17"
+              },
+              "type": "ApiConnection",
+              "inputs": {
+                "host": {
+                  "connection": {
+                    "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                  }
                 },
-                "Parse_JSON_SolutionTables_Total": {
-                    "runAfter": {
-                        "Get_a_row_SolutionTables_Total": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "operationMetadataId": "1068a72c-afa1-447f-9b52-4719eab3daa0"
-                    },
-                    "type": "ParseJson",
-                    "inputs": {
-                        "content": "@outputs('Get_a_row_SolutionTables_Total')",
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "ReviewerWeight": {},
-                                "ReviewerComments": {
-                                    "type": "string"
-                                },
-                                "Deadline": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
+                "method": "post",
+                "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(encodeURIComponent(body('Create_file_Transcripts_0')?['ItemId']))}/setapprovalstatus",
+                "queries": {
+                  "approvalAction": "Approve",
+                  "comments": "",
+                  "entityTag": "@body('Set_content_approval_status')?['ETag']"
                 },
-                "Get_file_properties_SolutionFile": {
-                    "runAfter": {
-                        "Condition_Has_No_SolutionFIle": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "flowSystemMetadata": {
-                            "swaggerOperationId": "GetFileItem"
-                        },
-                        "operationMetadataId": "8e563134-42ca-4209-bf73-5ba9b46e9dd3"
-                    },
-                    "type": "ApiConnection",
-                    "inputs": {
-                        "host": {
-                            "connection": {
-                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
-                            }
-                        },
-                        "method": "get",
-                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(body('Get_file_properties_PromptFile')?['Predecessors']?['Id'])}/getfileitem",
-                        "authentication": "@parameters('$authentication')"
-                    }
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Compose_SiteGroupIdMembers": {
+              "runAfter": {
+                "Send_an_HTTP_request_to_SharePoint_4": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "9637e3d7-6880-4bd1-a1f5-52f06141b76e"
+              },
+              "type": "Compose",
+              "inputs": 5
+            },
+            "Compose_ItemsViewAddUpdateNoDelete": {
+              "runAfter": {
+                "Compose_SiteGroupIdMembers": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "e818122d-3875-4834-9b28-5ffb5698574f"
+              },
+              "type": "Compose",
+              "inputs": "ItemsViewAddUpdateNoDelete"
+            },
+            "Get_ItemsViewAddUpdateNoDelete": {
+              "runAfter": {
+                "Compose_ItemsViewAddUpdateNoDelete": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "flowSystemMetadata": {
+                  "swaggerOperationId": "HttpRequest"
                 },
-                "Initialize_variable_reviewerWeight": {
-                    "runAfter": {
-                        "Initialize_variable_reviewerGrade": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "operationMetadataId": "49548167-e1f5-4793-a620-302b7e8b3ef9"
-                    },
-                    "type": "InitializeVariable",
-                    "inputs": {
-                        "variables": [
-                            {
-                                "name": "reviewerWeight",
-                                "type": "integer",
-                                "value": 0
-                            }
-                        ]
-                    }
+                "operationMetadataId": "ec663183-7c2a-48b7-b3f3-ef823a527950"
+              },
+              "type": "ApiConnection",
+              "inputs": {
+                "host": {
+                  "connection": {
+                    "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                  }
                 },
-                "Initialize_variable_siteAddress": {
-                    "runAfter": {
-                        "Initialize_variable_driveId": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "operationMetadataId": "bcd7ec13-6edb-4f6b-89b0-79e8468cb553"
-                    },
-                    "type": "InitializeVariable",
-                    "inputs": {
-                        "variables": [
-                            {
-                                "name": "siteAddress",
-                                "type": "string",
-                                "value": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{variables('siteName')}"
-                            }
-                        ]
-                    }
+                "method": "post",
+                "body": {
+                  "method": "GET",
+                  "uri": "_api/web/roledefinitions/getbyname('@{outputs('Compose_ItemsViewAddUpdateNoDelete')}')"
                 },
-                "Initialize_variable_deadline": {
-                    "runAfter": {
-                        "Initialize_variable_reviewerWeight": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "operationMetadataId": "34a9b4d7-548d-4358-9905-f1a51e6e011d"
-                    },
-                    "type": "InitializeVariable",
-                    "inputs": {
-                        "variables": [
-                            {
-                                "name": "deadline",
-                                "type": "string"
-                            }
-                        ]
-                    }
+                "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/httprequest",
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Send_an_HTTP_request_to_SharePoint_3": {
+              "runAfter": {
+                "Get_ItemsViewAddUpdateNoDelete": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "flowSystemMetadata": {
+                  "swaggerOperationId": "HttpRequest"
                 },
-                "Delay_until": {
-                    "runAfter": {
-                        "Set_variable_deadline": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "operationMetadataId": "642db1d3-6fde-4d43-8ca9-4a19e98bb351"
-                    },
-                    "type": "Wait",
-                    "inputs": {
-                        "until": {
-                            "timestamp": "@{addMinutes(variables('deadline'), 5)}"
-                        }
-                    }
+                "operationMetadataId": "5d457277-5c13-405c-9834-fe3888245da5"
+              },
+              "type": "ApiConnection",
+              "inputs": {
+                "host": {
+                  "connection": {
+                    "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                  }
                 },
-                "Set_variable_deadline": {
-                    "runAfter": {
-                        "Parse_JSON_SolutionTables_Total": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "operationMetadataId": "fb13f06a-71d5-4ea4-acf0-62122f8f4f70"
-                    },
-                    "type": "SetVariable",
-                    "inputs": {
-                        "name": "deadline",
-                        "value": "@{body('Parse_JSON_SolutionTables_Total')?['DueDate']}"
-                    }
+                "method": "post",
+                "body": {
+                  "method": "POST",
+                  "uri": "_api/web/lists/getByTitle('EventReview')/items/getbyid(@{body('Create_file_Transcripts_0')?['ItemId']})/roleassignments/removeroleassignment(principalid=@{outputs('Compose_SiteGroupIdMembers')}, roledefid=@{body('Get_ItemsViewAddUpdateNoDelete')?['d']?['Id']})",
+                  "headers": {
+                    "accept": "application/json;odata=verbose",
+                    "content-type": "application/json;odata=verbose"
+                  }
                 },
-                "Set_variable_deadline_2": {
-                    "runAfter": {
-                        "Delay_until": [
-                            "Failed"
-                        ]
-                    },
-                    "metadata": {
-                        "operationMetadataId": "c53359c1-1f68-48b8-9c2e-1c44165de41f"
-                    },
-                    "type": "SetVariable",
-                    "inputs": {
-                        "name": "deadline",
-                        "value": "@{getFutureTime(1, 'Day')}"
-                    }
+                "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/httprequest",
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Scope_3": {
+              "actions": {},
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "f07c6429-b03e-45f8-9bd9-e8e1cb3f5975"
+              },
+              "type": "Scope"
+            },
+            "Send_an_HTTP_request_to_SharePoint_4": {
+              "runAfter": {
+                "Scope_3": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "flowSystemMetadata": {
+                  "swaggerOperationId": "HttpRequest"
                 },
-                "Compose_InvalidDeadline": {
-                    "runAfter": {
-                        "Filter_array_Get_files_Transcripts": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "operationMetadataId": "456d4b69-9f94-4fd4-b54a-55ac0ef1361a"
-                    },
-                    "type": "Compose",
-                    "inputs": "@greater( ticks(body('Get_file_properties_ResponseFile')?['Modified']) , ticks(addMinutes(variables('deadline'), 5)) )"
+                "operationMetadataId": "d324dfd8-5ac8-47a0-a502-f819f4b5d170"
+              },
+              "type": "ApiConnection",
+              "inputs": {
+                "host": {
+                  "connection": {
+                    "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                  }
                 },
-                "Compose_InvalidRepeat": {
-                    "runAfter": {
-                        "Compose_InvalidDeadline": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "operationMetadataId": "aca17352-3409-4e1c-a979-964be8fab1a0"
-                    },
-                    "type": "Compose",
-                    "inputs": "@greater(length( body('Filter_array_Get_files_Transcripts') ), 0)"
+                "method": "post",
+                "body": {
+                  "method": "POST",
+                  "uri": "_api/web/lists/getByTitle('EventReview')/items/getbyid(@{body('Create_file_Transcripts_0')?['ItemId']})/breakroleinheritance(copyRoleAssignments=true, clearSubscopes=true)",
+                  "headers": {
+                    "accept": "application/json;odata=verbose",
+                    "content-type": "application/json;odata=verbose"
+                  }
                 },
-                "Initialize_variable_fileItemId": {
-                    "runAfter": {
-                        "Initialize_variable_siteName": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "operationMetadataId": "89b7b75f-5c55-4388-9f8e-87d6f4093706"
-                    },
-                    "type": "InitializeVariable",
-                    "inputs": {
-                        "variables": [
-                            {
-                                "name": "fileItemId",
-                                "type": "integer",
-                                "value": "@triggerBody()?['fileItemId']"
-                            }
-                        ]
-                    }
+                "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/httprequest",
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Grant_view_to_SolutionFile": {
+              "runAfter": {
+                "Scope_3": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "flowSystemMetadata": {
+                  "swaggerOperationId": "GrantAccess"
                 },
-                "Initialize_variable_siteName": {
+                "operationMetadataId": "2522d1c1-e287-4ac5-8401-514793839348"
+              },
+              "type": "ApiConnection",
+              "inputs": {
+                "host": {
+                  "connection": {
+                    "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                  }
+                },
+                "method": "post",
+                "body": {
+                  "recipients": "@{body('Get_file_properties_ResponseFile')?['Author']?['Email']}",
+                  "roleValue": "role:1073741826",
+                  "sendEmail": false
+                },
+                "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(encodeURIComponent(body('Get_file_properties_SolutionFile')?['ID']))}/grantaccess",
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Grant_view_to_Transcript_to_Author": {
+              "runAfter": {
+                "Send_an_HTTP_request_to_SharePoint_3": [
+                  "Succeeded",
+                  "Failed"
+                ]
+              },
+              "metadata": {
+                "flowSystemMetadata": {
+                  "swaggerOperationId": "GrantAccess"
+                },
+                "operationMetadataId": "5234b423-4b8d-4691-9edb-cb09f497f203"
+              },
+              "type": "ApiConnection",
+              "inputs": {
+                "host": {
+                  "connection": {
+                    "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                  }
+                },
+                "method": "post",
+                "body": {
+                  "recipients": "@{body('Get_file_properties_ResponseFile')?['Author']?['Email']}",
+                  "roleValue": "role:1073741826",
+                  "sendEmail": false
+                },
+                "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(encodeURIComponent(body('Create_file_Transcripts_0')?['ItemId']))}/grantaccess",
+                "authentication": "@parameters('$authentication')"
+              }
+            }
+          },
+          "runAfter": {
+            "Copy_file_Transcripts": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "58137cc8-f348-4deb-b644-59c8117a067a"
+          },
+          "type": "Scope"
+        },
+        "Parse_JSON_SolutionRows": {
+          "runAfter": {
+            "Create_file_Transcripts_0": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "d67c6d69-4a30-48fe-92c5-c582a49ac634"
+          },
+          "type": "ParseJson",
+          "inputs": {
+            "content": "@body('SolutionTables')",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "Quest": {
+                    "type": "string"
+                  },
+                  "Survey": {
+                    "type": "string"
+                  },
+                  "Weight": {
+                    "type": "integer"
+                  },
+                  "Grader": {
+                    "type": "string"
+                  },
+                  "You": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Apply_to_each_SolutionRows": {
+          "foreach": "@body('Parse_JSON_SolutionRows')",
+          "actions": {
+            "Condition_Correct": {
+              "actions": {
+                "Increment_variable_autograde": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "9f78ba44-4fa3-4839-8305-6bc3f022d661"
+                  },
+                  "type": "IncrementVariable",
+                  "inputs": {
+                    "name": "autograde",
+                    "value": "@int(items('Apply_to_each_SolutionRows')['Weight'])"
+                  }
+                },
+                "Set_variable_correct_Yes": {
+                  "runAfter": {
+                    "Increment_variable_autograde": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "c438b603-9a34-4e82-95c7-47c42ae40dc9"
+                  },
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "correct",
+                    "value": "@{if(equals(items('Apply_to_each_SolutionRows')['Survey'], 'Yes'), body('Parse_JSON_ResponseRow')?['You'], 'OK')}"
+                  }
+                }
+              },
+              "runAfter": {
+                "Increment_variable_AutoWeight": [
+                  "Succeeded"
+                ]
+              },
+              "else": {
+                "actions": {
+                  "Set_variable_correct_No": {
                     "runAfter": {},
                     "metadata": {
-                        "operationMetadataId": "e6d62f28-4d1b-4a52-92ce-85e5e3369961"
+                      "operationMetadataId": "acadcad8-ae95-4706-aeb2-a4123f9dda49"
                     },
-                    "type": "InitializeVariable",
+                    "type": "SetVariable",
                     "inputs": {
-                        "variables": [
-                            {
-                                "name": "siteName",
-                                "type": "string",
-                                "value": "@triggerBody()?['siteName']"
-                            }
-                        ]
+                      "name": "correct",
+                      "value": "@{'KO'}"
                     }
-                },
-                "Initialize_variable_groupId": {
-                    "runAfter": {
-                        "Initialize_variable_fileItemId": [
-                            "Succeeded"
-                        ]
+                  }
+                }
+              },
+              "expression": {
+                "or": [
+                  {
+                    "equals": [
+                      "@toLower(trim(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(\r\n    replace(replace(replace(replace(replace(\r\n        replace(replace(replace(replace(replace(\r\n            replace(replace(replace(replace(replace(\r\n                replace(replace(replace(replace(replace(\r\n                    replace(replace(replace(replace(replace(\r\nreplace(items('Apply_to_each_SolutionRows')?['You']\r\n, '`', ' ')\r\n, '~', ' ')\r\n, '!', ' ')\r\n, '@', ' ')\r\n, '#', ' ')\r\n, '$', ' ')\r\n, '%', ' ')\r\n, '^', ' ')\r\n, '&', ' ')\r\n, '*', ' ')\r\n, '(', ' ')\r\n, ')', ' ')\r\n, '-', ' ')\r\n, '=', ' ')\r\n, '+', ' ')\r\n, '[', ' ')\r\n, '{', ' ')\r\n, ']', ' ')\r\n, '}', ' ')\r\n, '\\\\', ' ')\r\n, '|', ' ')\r\n, ';', ' ')\r\n, ':', ' ')\r\n, '\"', ' ')\r\n, ',', ' ')\r\n, '.', ' ')\r\n, '<', ' ')\r\n, '>', ' ')\r\n, '/', ' ')\r\n, '?', ' ')\r\n, '''', ' ')\r\n, '\\n', ' ')\r\n, '     ', ' ')\r\n, '    ', ' ')\r\n, '   ', ' ')\r\n, '  ', ' ')))",
+                      "@toLower(trim(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(\r\n    replace(replace(replace(replace(replace(\r\n        replace(replace(replace(replace(replace(\r\n            replace(replace(replace(replace(replace(\r\n                replace(replace(replace(replace(replace(\r\n                    replace(replace(replace(replace(replace(\r\nreplace(body('Parse_JSON_ResponseRow')?['You']\r\n, '`', ' ')\r\n, '~', ' ')\r\n, '!', ' ')\r\n, '@', ' ')\r\n, '#', ' ')\r\n, '$', ' ')\r\n, '%', ' ')\r\n, '^', ' ')\r\n, '&', ' ')\r\n, '*', ' ')\r\n, '(', ' ')\r\n, ')', ' ')\r\n, '-', ' ')\r\n, '=', ' ')\r\n, '+', ' ')\r\n, '[', ' ')\r\n, '{', ' ')\r\n, ']', ' ')\r\n, '}', ' ')\r\n, '\\\\', ' ')\r\n, '|', ' ')\r\n, ';', ' ')\r\n, ':', ' ')\r\n, '\"', ' ')\r\n, ',', ' ')\r\n, '.', ' ')\r\n, '<', ' ')\r\n, '>', ' ')\r\n, '/', ' ')\r\n, '?', ' ')\r\n, '''', ' ')\r\n, '\\n', ' ')\r\n, '     ', ' ')\r\n, '    ', ' ')\r\n, '   ', ' ')\r\n, '  ', ' ')))"
+                    ]
+                  },
+                  {
+                    "equals": [
+                      "@items('Apply_to_each_SolutionRows')['Survey']",
+                      "@'Yes'"
+                    ]
+                  }
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "bcc6b1df-870b-4244-be62-5ccd72ac9c20"
+              },
+              "type": "If"
+            },
+            "Parse_JSON_ResponseRow": {
+              "runAfter": {
+                "Get_a_row_ResponseRow_Question": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "23761835-2cd4-4878-aace-e0aaea0e9314"
+              },
+              "type": "ParseJson",
+              "inputs": {
+                "content": "@body('Get_a_row_ResponseRow_Question')?[0]",
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "Quest": {
+                      "type": "string"
                     },
-                    "metadata": {
-                        "operationMetadataId": "7389ecf9-cc45-4054-8c7a-eadd4f2c9744"
+                    "Survey": {
+                      "type": "string"
                     },
-                    "type": "InitializeVariable",
-                    "inputs": {
-                        "variables": [
-                            {
-                                "name": "groupId",
-                                "type": "string",
-                                "value": "@triggerBody()?['groupId']"
-                            }
-                        ]
+                    "Weight": {
+                      "type": "integer"
+                    },
+                    "Grader": {
+                      "type": "string"
+                    },
+                    "You": {
+                      "type": "string"
                     }
-                },
-                "Initialize_variable_driveId": {
-                    "runAfter": {
-                        "Initialize_variable_groupId": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "operationMetadataId": "8eef3618-0eef-439c-a6fb-e029f5d26943"
-                    },
-                    "type": "InitializeVariable",
-                    "inputs": {
-                        "variables": [
-                            {
-                                "name": "driveId",
-                                "type": "string",
-                                "value": "@triggerBody()?['driveId']"
-                            }
-                        ]
-                    }
-                },
-                "Response": {
-                    "runAfter": {
-                        "Scope_2": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "operationMetadataId": "1c05c74c-037a-41c9-a4cc-c88e1bec015d"
-                    },
-                    "type": "Response",
-                    "kind": "Http",
-                    "inputs": {
-                        "statusCode": 200
-                    }
-                },
-                "Get_file_metadata_ResponseFile": {
-                    "runAfter": {
-                        "Stop_sharing_an_item_or_a_file_ResponseFIle": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "flowSystemMetadata": {
-                            "swaggerOperationId": "GetFileMetadata"
-                        },
-                        "operationMetadataId": "7c5b74b7-f72c-4901-8632-c36932ca22a0"
-                    },
-                    "type": "ApiConnection",
-                    "inputs": {
+                  }
+                }
+              }
+            },
+            "Increment_variable_AutoWeight": {
+              "runAfter": {
+                "Parse_JSON_ResponseRow": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "47fe3c65-d934-473f-bd47-0bdc9b5865e7"
+              },
+              "type": "IncrementVariable",
+              "inputs": {
+                "name": "AutoWeight",
+                "value": "@int(items('Apply_to_each_SolutionRows')['Weight'])"
+              }
+            },
+            "Get_a_row_ResponseRow_Question": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "851d9467-3bef-4e14-8fa9-695188d00d1f"
+              },
+              "type": "Query",
+              "inputs": {
+                "from": "@body('ResponseTables')",
+                "where": "@equals(item()?['Quest'], items('Apply_to_each_SolutionRows')?['Quest'])"
+              }
+            },
+            "Append_to_string_variable_transcript": {
+              "runAfter": {
+                "Set_variable_transcriptalt": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "1e05fb8d-200f-4ced-a94f-767f91ada1f4"
+              },
+              "type": "AppendToStringVariable",
+              "inputs": {
+                "name": "transcript",
+                "value": "@{items('Apply_to_each_SolutionRows')['Quest']}: @{variables('correct')}; "
+              }
+            },
+            "Compose_transcriptalt": {
+              "runAfter": {
+                "Condition_Correct": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "9456aeaf-5dc6-4604-978d-67c9b6fb2074"
+              },
+              "type": "Compose",
+              "inputs": "@setProperty(variables('transcriptalt'), concat(items('Apply_to_each_SolutionRows')['Quest'], '_workschool365'), variables('correct'))"
+            },
+            "Set_variable_transcriptalt": {
+              "runAfter": {
+                "Compose_transcriptalt": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "73f85c5b-85de-4599-bdf8-08195acec238"
+              },
+              "type": "SetVariable",
+              "inputs": {
+                "name": "transcriptalt",
+                "value": "@outputs('Compose_transcriptalt')"
+              }
+            }
+          },
+          "runAfter": {
+            "Parse_JSON_SolutionRows": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "5fdca90d-aa73-4e8d-958e-0ef28725b80f"
+          },
+          "type": "Foreach"
+        },
+        "Populate_a_Microsoft_Word_template_Transcript": {
+          "runAfter": {
+            "Create_sharing_link_for_a_file_Transcript": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "flowSystemMetadata": {
+              "swaggerOperationId": "CreateFileItem"
+            },
+            "operationMetadataId": "bc81e88f-5d1b-4fe3-bf8b-52202635024c"
+          },
+          "type": "ApiConnection",
+          "inputs": {
+            "host": {
+              "connection": {
+                "name": "@parameters('$connections')['shared_wordonlinebusiness']['connectionId']"
+              }
+            },
+            "method": "post",
+            "body": {
+              "447753704": "@{body('Create_sharing_link_for_a_file_Transcript')?['link']?['webUrl']}",
+              "925700911": "    @{variables('autograde')} /@{variables('AutoWeight')}; Late?: @{outputs('Compose_InvalidDeadline')}; Repeated?: @{outputs('Compose_InvalidRepeat')};\n    @{variables('transcript')}",
+              "1292476084": "@{body('Get_file_properties_SolutionFile')?['Editor']?['Email']}",
+              "-321128028": "@{body('Get_file_properties_ResponseFile')?['Author']?['Email']}",
+              "-1222045053": "@{body('Get_file_properties_PromptFile')?['{FilenameWithExtension}']}"
+            },
+            "path": "/api/templates/getFile",
+            "queries": {
+              "source": "@variables('siteAddress')",
+              "drive": "@variables('driveId')",
+              "file": "/Template_Transcripts_GroupOwnerOnly.docx"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Create_sharing_link_for_a_file_Transcript": {
+          "runAfter": {
+            "Apply_to_each_SolutionRows": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "flowSystemMetadata": {
+              "swaggerOperationId": "CreateSharingLink"
+            },
+            "operationMetadataId": "e9448ac6-6371-4ec9-b9ba-1c73c293bdf2"
+          },
+          "type": "ApiConnection",
+          "inputs": {
+            "host": {
+              "connection": {
+                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+              }
+            },
+            "method": "post",
+            "body": {
+              "type": "view",
+              "scope": "anonymous"
+            },
+            "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/codeless/_api/v2.0/sites/root/lists/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(encodeURIComponent(body('Create_file_Transcripts_0')?['ItemId']))}/driveItem/createLink",
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Initialize_variable_transcript": {
+          "runAfter": {
+            "Initialize_variable_deadline": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "3cf7b0ee-f348-4d37-b9a6-be7a97f70a87"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "transcript",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Update_file_Transcript": {
+          "runAfter": {
+            "Populate_a_Microsoft_Word_template_Transcript": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "flowSystemMetadata": {
+              "swaggerOperationId": "UpdateFile"
+            },
+            "operationMetadataId": "98f720fd-e116-4ef9-bcdf-b29db5ff4afa"
+          },
+          "type": "ApiConnection",
+          "inputs": {
+            "host": {
+              "connection": {
+                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+              }
+            },
+            "method": "put",
+            "body": "@body('Populate_a_Microsoft_Word_template_Transcript')",
+            "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/files/@{encodeURIComponent(encodeURIComponent(body('Create_file_Transcripts_0')?['Id']))}",
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Initialize_variable_correct": {
+          "runAfter": {
+            "Initialize_variable_transcript": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "7c7aaaf8-7e19-4b36-a43f-3e3c0cd6beab"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "correct",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Initialize_variable_transcriptalt": {
+          "runAfter": {
+            "Initialize_variable_correct": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "d068a3a4-c68e-4502-b469-9ea19bd2abee"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "transcriptalt",
+                "type": "object",
+                "value": {}
+              }
+            ]
+          }
+        },
+        "Filter_array_Get_files_Transcripts": {
+          "runAfter": {
+            "Get_files_Transcripts": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "4f249b70-a6fe-451f-a0c4-d778b76b2194"
+          },
+          "type": "Query",
+          "inputs": {
+            "from": "@body('Get_files_Transcripts')?['value']",
+            "where": "@equals(item()?['Predecessors']?['Id'], body('Get_file_properties_ResponseFile')?['Predecessors']?['Id'])"
+          }
+        },
+        "Condition_Has_No_SolutionFIle": {
+          "actions": {
+            "Response_2": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "5ba737d7-9ea3-4734-ad29-1ee866fa8237"
+              },
+              "type": "Response",
+              "kind": "Http",
+              "inputs": {
+                "statusCode": 200
+              }
+            },
+            "Terminate": {
+              "runAfter": {
+                "Response_2": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "4e009ba4-2f16-4efb-8177-70a66b61ec76"
+              },
+              "type": "Terminate",
+              "inputs": {
+                "runStatus": "Succeeded"
+              }
+            }
+          },
+          "runAfter": {
+            "Grant_access_ResponseFile_to_Prompter": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "equals": [
+              "@string(body('Get_file_properties_PromptFile')?['Predecessors']?['Value'])",
+              "@''"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "5575a460-d009-4d4c-852c-8e2be0251207"
+          },
+          "type": "If"
+        },
+        "Get_file_properties_PromptFile": {
+          "runAfter": {
+            "ResponseTables": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "flowSystemMetadata": {
+              "swaggerOperationId": "GetFileItem"
+            },
+            "operationMetadataId": "8e563134-42ca-4209-bf73-5ba9b46e9dd3"
+          },
+          "type": "ApiConnection",
+          "inputs": {
+            "host": {
+              "connection": {
+                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+              }
+            },
+            "method": "get",
+            "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(body('Get_file_properties_ResponseFile')?['Predecessors']?['Id'])}/getfileitem",
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Get_file_properties_ResponseFile": {
+          "runAfter": {
+            "Condition_Trigger_Conditions": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "flowSystemMetadata": {
+              "swaggerOperationId": "GetFileItem"
+            },
+            "operationMetadataId": "ced8de2e-fb59-4964-9939-77536e2f60dc"
+          },
+          "type": "ApiConnection",
+          "inputs": {
+            "host": {
+              "connection": {
+                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+              }
+            },
+            "method": "get",
+            "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(variables('fileItemId'))}/getfileitem",
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Condition_Is_SolutionFile": {
+          "actions": {
+            "Response_3": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "5ba737d7-9ea3-4734-ad29-1ee866fa8237"
+              },
+              "type": "Response",
+              "kind": "Http",
+              "inputs": {
+                "statusCode": 200
+              }
+            },
+            "Terminate_2": {
+              "runAfter": {
+                "Response_3": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "4e009ba4-2f16-4efb-8177-70a66b61ec76"
+              },
+              "type": "Terminate",
+              "inputs": {
+                "runStatus": "Succeeded"
+              }
+            }
+          },
+          "runAfter": {
+            "Condition": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "or": [
+              {
+                "equals": [
+                  "@toLower(body('Get_file_properties_ResponseFile')?['RoleType']?['Value'])",
+                  "@toLower('PrompterSolution')"
+                ]
+              },
+              {
+                "equals": [
+                  "@body('Get_file_properties_ResponseFile')?['Predecessors']?['Value']",
+                  "@''"
+                ]
+              }
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "5575a460-d009-4d4c-852c-8e2be0251207"
+          },
+          "type": "If"
+        },
+        "Grant_access_ResponseFile_to_Prompter": {
+          "runAfter": {
+            "Get_file_properties_PromptFile": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "bf8720dc-f6c8-49e0-96f1-8e3c9275c97c",
+            "flowSystemMetadata": {
+              "swaggerOperationId": "GrantAccess"
+            }
+          },
+          "type": "ApiConnection",
+          "inputs": {
+            "host": {
+              "connection": {
+                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+              }
+            },
+            "method": "post",
+            "body": {
+              "recipients": "@{body('Get_file_properties_PromptFile')?['Author']?['Email']}",
+              "roleValue": "role:1073741826",
+              "sendEmail": false
+            },
+            "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(encodeURIComponent(body('Get_file_properties_ResponseFile')?['ID']))}/grantaccess",
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Get_file_properties": {
+          "runAfter": {
+            "Initialize_variable_transcriptalt": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "023202f6-5160-4c4d-ad15-adf9e5b17e56",
+            "flowSystemMetadata": {
+              "swaggerOperationId": "GetFileItem"
+            }
+          },
+          "type": "ApiConnection",
+          "inputs": {
+            "host": {
+              "connection": {
+                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+              }
+            },
+            "method": "get",
+            "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(variables('fileItemId'))}/getfileitem",
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Condition_Trigger_Conditions": {
+          "actions": {
+            "Response_Trigger_Conditions": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "d0bb3657-1665-4d0f-9cce-5edfbb37f439"
+              },
+              "type": "Response",
+              "kind": "Http",
+              "inputs": {
+                "statusCode": 200
+              }
+            },
+            "Terminate_Trigger_Conditions": {
+              "runAfter": {
+                "Response_Trigger_Conditions": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "990c70cb-05f3-4ab0-8929-fea26fb4d8ad"
+              },
+              "type": "Terminate",
+              "inputs": {
+                "runStatus": "Cancelled"
+              }
+            }
+          },
+          "runAfter": {
+            "Get_file_properties": [
+              "Succeeded"
+            ]
+          },
+          "else": {
+            "actions": {
+              "Condition_RoleType": {
+                "actions": {},
+                "runAfter": {},
+                "else": {
+                  "actions": {
+                    "Get_file_metadata_RoleType": {
+                      "runAfter": {},
+                      "metadata": {
+                        "operationMetadataId": "e1f64a2d-0a9f-4637-b7de-b442c22944a0"
+                      },
+                      "type": "OpenApiConnection",
+                      "inputs": {
                         "host": {
-                            "connection": {
-                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
-                            }
+                          "connectionName": "shared_sharepointonline_1",
+                          "operationId": "GetFileMetadata",
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
                         },
-                        "method": "get",
-                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/files/@{encodeURIComponent(body('Get_file_properties_ResponseFile')?['{Identifier}'])}",
+                        "parameters": {
+                          "dataset": "@variables('siteAddress')",
+                          "id": "@body('Get_file_properties')?['{Identifier}']"
+                        },
                         "authentication": "@parameters('$authentication')"
-                    }
-                },
-                "Set_content_approval_Approve_ResponseFIle": {
-                    "runAfter": {
-                        "Get_file_metadata_ResponseFile": [
-                            "Succeeded"
+                      }
+                    },
+                    "Set_content_approval_status_RoleType": {
+                      "runAfter": {
+                        "Get_file_metadata_RoleType": [
+                          "Succeeded"
                         ]
-                    },
-                    "metadata": {
-                        "flowSystemMetadata": {
-                            "swaggerOperationId": "SetApprovalStatus"
-                        },
-                        "operationMetadataId": "198adc99-d447-49a8-8dda-fa28aa3217f9"
-                    },
-                    "type": "ApiConnection",
-                    "inputs": {
+                      },
+                      "metadata": {
+                        "operationMetadataId": "17c59ad6-37a5-4f38-904c-8573c31a2df7"
+                      },
+                      "type": "OpenApiConnection",
+                      "inputs": {
                         "host": {
-                            "connection": {
-                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
-                            }
+                          "connectionName": "shared_sharepointonline_1",
+                          "operationId": "SetApprovalStatus",
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
                         },
-                        "method": "post",
-                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(encodeURIComponent(body('Get_file_properties_ResponseFile')?['ID']))}/setapprovalstatus",
-                        "queries": {
-                            "approvalAction": "Approve",
-                            "comments": "",
-                            "entityTag": "@body('Get_file_metadata_ResponseFile')?['ETag']"
+                        "parameters": {
+                          "dataset": "@variables('siteAddress')",
+                          "table": "EventReview",
+                          "id": "@body('Get_file_properties')?['ID']",
+                          "approvalAction": "Reject",
+                          "comments": "",
+                          "entityTag": "@outputs('Get_file_metadata_RoleType')?['body/ETag']"
                         },
                         "authentication": "@parameters('$authentication')",
                         "retryPolicy": {
-                            "type": "fixed",
-                            "count": 10,
-                            "interval": "PT10S"
+                          "type": "none"
                         }
-                    }
-                },
-                "Update_file_properties_Transcripts_3": {
-                    "runAfter": {
-                        "Update_file_Transcript": [
-                            "Succeeded"
+                      }
+                    },
+                    "Terminate_3": {
+                      "runAfter": {
+                        "Response_RoleType": [
+                          "Succeeded"
                         ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "71040fa9-6092-4cd4-ab22-4780be898583"
+                      },
+                      "type": "Terminate",
+                      "inputs": {
+                        "runStatus": "Cancelled"
+                      }
                     },
-                    "metadata": {
-                        "flowSystemMetadata": {
-                            "swaggerOperationId": "PatchFileItem"
-                        },
-                        "operationMetadataId": "8a1d8be0-c40d-4773-924d-2a24ca65a6f7"
-                    },
-                    "type": "ApiConnection",
-                    "inputs": {
-                        "host": {
-                            "connection": {
-                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
-                            }
-                        },
-                        "method": "patch",
-                        "body": {
-                            "Title": "@{toLower(body('Get_file_properties_ResponseFile')?['Author']?['Email'])}",
-                            "QuizGrade": "@if(equals( float(variables('AutoWeight')), 0), 0 , div( float(variables('autograde')),  variables('AutoWeight')) )",
-                            "QuizDeadlineInvalid": "@outputs('Compose_InvalidDeadline')",
-                            "QuizRepeatInvalid": "@outputs('Compose_InvalidRepeat')",
-                            "Predecessors": {
-                                "@@odata.type": "#Microsoft.Azure.Connectors.SharePoint.SPListExpandedReference",
-                                "Id": "@body('Get_file_properties_PromptFile')?['ID']",
-                                "Value": "@{body('Get_file_properties_PromptFile')?['ID']}"
-                            },
-                            "AssignmentRef": {
-                                "@@odata.type": "#Microsoft.Azure.Connectors.SharePoint.SPListExpandedReference",
-                                "Id": "@body('Get_file_properties_ResponseFile')?['ID']",
-                                "Value": "@{body('Get_file_properties_ResponseFile')?['ID']}"
-                            },
-                            "SharingLink": "@{body('Create_sharing_link_for_a_file_Transcript')?['link']?['webUrl']}",
-                            "DueDate": "@{body('Get_file_properties_SolutionFile')?['DueDate']}"
-                        },
-                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(body('Create_file_Transcripts_0')?['ItemId'])}/patchfileitem",
-                        "authentication": "@parameters('$authentication')"
-                    }
-                },
-                "Get_files_Transcripts": {
-                    "runAfter": {
-                        "Set_variable_deadline_2": [
-                            "Succeeded",
-                            "Failed",
-                            "Skipped",
-                            "TimedOut"
+                    "Response_RoleType": {
+                      "runAfter": {
+                        "Set_content_approval_status_RoleType": [
+                          "Succeeded",
+                          "Failed",
+                          "TimedOut"
                         ]
-                    },
-                    "metadata": {
-                        "flowSystemMetadata": {
-                            "swaggerOperationId": "GetFileItems"
-                        },
-                        "operationMetadataId": "18d8f313-d250-4111-85ce-19f8cee63d70"
-                    },
-                    "type": "ApiConnection",
-                    "inputs": {
-                        "host": {
-                            "connection": {
-                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
-                            }
-                        },
-                        "method": "get",
-                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/getfileitems",
-                        "queries": {
-                            "folderPath": "TranscriptsCopy",
-                            "$filter": "(Predecessors eq '@{body('Get_file_properties_PromptFile')?['ID']}') and ((AssignmentRef eq '@{body('Get_file_properties_ResponseFile')?['ID']}') or (Title eq '@{toLower(body('Get_file_properties_ResponseFile')?['Author']?['Email'])}'))",
-                            "$top": 1
-                        },
-                        "authentication": "@parameters('$authentication')"
+                      },
+                      "metadata": {
+                        "operationMetadataId": "179d0ad5-152d-45e6-95be-ceb21e84c85a"
+                      },
+                      "type": "Response",
+                      "kind": "Http",
+                      "inputs": {
+                        "statusCode": 200
+                      }
                     }
+                  }
                 },
-                "Create_file_Transcripts_0": {
-                    "runAfter": {
-                        "Compose_InvalidRepeat": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "flowSystemMetadata": {
-                            "swaggerOperationId": "CreateFile"
+                "expression": {
+                  "and": [
+                    {
+                      "or": [
+                        {
+                          "equals": [
+                            "@toLower(string(body('Get_file_properties')?['RoleType']?['Value']))",
+                            "@toLower('Reviewer')"
+                          ]
                         },
-                        "operationMetadataId": "7f9e0321-a010-4b0e-a1e9-132185327f44"
-                    },
-                    "type": "ApiConnection",
-                    "inputs": {
-                        "host": {
-                            "connection": {
-                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
-                            }
-                        },
-                        "method": "post",
-                        "body": "{\"$content-type\":\"application/vnd.openxmlformats-officedocument.wordprocessingml.document\",\"$content\":\"\"}",
-                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/files",
-                        "queries": {
-                            "folderPath": "EventReview/Transcripts",
-                            "name": "@{toLower(body('Get_file_properties_ResponseFile')?['Author']?['Email'])} - Transcripts - Prompt @{body('Get_file_properties_PromptFile')?['ID']} - Review @{body('Get_file_properties_ResponseFile')?['ID']} - @{body('Get_file_properties_ResponseFile')?['Modified']} - @{body('Get_file_properties_PromptFile')?['{Name}']}.docx",
-                            "queryParametersSingleEncoded": true
-                        },
-                        "authentication": "@parameters('$authentication')"
-                    },
-                    "runtimeConfiguration": {
-                        "contentTransfer": {
-                            "transferMode": "Chunked"
+                        {
+                          "equals": [
+                            "@toLower(string(body('Get_file_properties')?['RoleType']?['Value']))",
+                            "@toLower('PrompterSolution')"
+                          ]
                         }
+                      ]
+                    },
+                    {
+                      "endsWith": [
+                        "@body('Get_file_properties')?['{FullPath}']",
+                        ".docx"
+                      ]
                     }
+                  ]
                 },
-                "Copy_file_Transcripts": {
-                    "runAfter": {
-                        "Update_file_properties_Transcripts_3": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "flowSystemMetadata": {
-                            "swaggerOperationId": "CopyFileAsync"
-                        },
-                        "operationMetadataId": "97faeda0-8c3a-4833-8f74-87fbfb45a579"
-                    },
-                    "type": "ApiConnection",
-                    "inputs": {
-                        "host": {
-                            "connection": {
-                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
-                            }
-                        },
-                        "method": "post",
-                        "body": {
-                            "sourceFileId": "@body('Create_file_Transcripts_0')?['Id']",
-                            "destinationDataset": "@variables('siteAddress')",
-                            "destinationFolderPath": "EventReview/TranscriptsCopy",
-                            "nameConflictBehavior": 2
-                        },
-                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/copyFileAsync",
-                        "authentication": "@parameters('$authentication')"
-                    }
+                "metadata": {
+                  "operationMetadataId": "85c1d5c7-0cb8-4bae-a26b-da110459f9fc"
                 },
-                "Scope_2": {
-                    "actions": {
-                        "Get_file_metadata_using_path": {
-                            "runAfter": {
-                                "Grant_view_to_Transcript_to_Author": [
-                                    "Succeeded"
-                                ]
-                            },
-                            "metadata": {
-                                "flowSystemMetadata": {
-                                    "swaggerOperationId": "GetFileMetadataByPath"
-                                },
-                                "operationMetadataId": "6be2b02b-7728-41ff-8cef-4da4718293ec"
-                            },
-                            "type": "ApiConnection",
-                            "inputs": {
-                                "host": {
-                                    "connection": {
-                                        "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
-                                    }
-                                },
-                                "method": "get",
-                                "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/GetFileByPath",
-                                "queries": {
-                                    "path": "@body('Create_file_Transcripts_0')?['Path']",
-                                    "queryParametersSingleEncoded": true
-                                },
-                                "authentication": "@parameters('$authentication')"
-                            }
-                        },
-                        "Set_content_approval_status": {
-                            "runAfter": {
-                                "Get_file_metadata_using_path": [
-                                    "Succeeded"
-                                ]
-                            },
-                            "metadata": {
-                                "flowSystemMetadata": {
-                                    "swaggerOperationId": "SetApprovalStatus"
-                                },
-                                "operationMetadataId": "cf7b6080-abc7-4627-a023-ee2bb2e6e660"
-                            },
-                            "type": "ApiConnection",
-                            "inputs": {
-                                "host": {
-                                    "connection": {
-                                        "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
-                                    }
-                                },
-                                "method": "post",
-                                "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(encodeURIComponent(body('Create_file_Transcripts_0')?['ItemId']))}/setapprovalstatus",
-                                "queries": {
-                                    "approvalAction": "Submit",
-                                    "comments": "",
-                                    "entityTag": "@body('Get_file_metadata_using_path')?['ETag']"
-                                },
-                                "authentication": "@parameters('$authentication')"
-                            }
-                        },
-                        "Set_content_approval_status_2": {
-                            "runAfter": {
-                                "Set_content_approval_status": [
-                                    "Succeeded"
-                                ]
-                            },
-                            "metadata": {
-                                "flowSystemMetadata": {
-                                    "swaggerOperationId": "SetApprovalStatus"
-                                },
-                                "operationMetadataId": "5f0a5f11-c4f2-4a86-969f-f92233760e17"
-                            },
-                            "type": "ApiConnection",
-                            "inputs": {
-                                "host": {
-                                    "connection": {
-                                        "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
-                                    }
-                                },
-                                "method": "post",
-                                "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(encodeURIComponent(body('Create_file_Transcripts_0')?['ItemId']))}/setapprovalstatus",
-                                "queries": {
-                                    "approvalAction": "Approve",
-                                    "comments": "",
-                                    "entityTag": "@body('Set_content_approval_status')?['ETag']"
-                                },
-                                "authentication": "@parameters('$authentication')"
-                            }
-                        },
-                        "Compose_SiteGroupIdMembers": {
-                            "runAfter": {
-                                "Send_an_HTTP_request_to_SharePoint_4": [
-                                    "Succeeded"
-                                ]
-                            },
-                            "metadata": {
-                                "operationMetadataId": "9637e3d7-6880-4bd1-a1f5-52f06141b76e"
-                            },
-                            "type": "Compose",
-                            "inputs": 5
-                        },
-                        "Compose_ItemsViewAddUpdateNoDelete": {
-                            "runAfter": {
-                                "Compose_SiteGroupIdMembers": [
-                                    "Succeeded"
-                                ]
-                            },
-                            "metadata": {
-                                "operationMetadataId": "e818122d-3875-4834-9b28-5ffb5698574f"
-                            },
-                            "type": "Compose",
-                            "inputs": "ItemsViewAddUpdateNoDelete"
-                        },
-                        "Get_ItemsViewAddUpdateNoDelete": {
-                            "runAfter": {
-                                "Compose_ItemsViewAddUpdateNoDelete": [
-                                    "Succeeded"
-                                ]
-                            },
-                            "metadata": {
-                                "flowSystemMetadata": {
-                                    "swaggerOperationId": "HttpRequest"
-                                },
-                                "operationMetadataId": "ec663183-7c2a-48b7-b3f3-ef823a527950"
-                            },
-                            "type": "ApiConnection",
-                            "inputs": {
-                                "host": {
-                                    "connection": {
-                                        "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
-                                    }
-                                },
-                                "method": "post",
-                                "body": {
-                                    "method": "GET",
-                                    "uri": "_api/web/roledefinitions/getbyname('@{outputs('Compose_ItemsViewAddUpdateNoDelete')}')"
-                                },
-                                "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/httprequest",
-                                "authentication": "@parameters('$authentication')"
-                            }
-                        },
-                        "Send_an_HTTP_request_to_SharePoint_3": {
-                            "runAfter": {
-                                "Get_ItemsViewAddUpdateNoDelete": [
-                                    "Succeeded"
-                                ]
-                            },
-                            "metadata": {
-                                "flowSystemMetadata": {
-                                    "swaggerOperationId": "HttpRequest"
-                                },
-                                "operationMetadataId": "5d457277-5c13-405c-9834-fe3888245da5"
-                            },
-                            "type": "ApiConnection",
-                            "inputs": {
-                                "host": {
-                                    "connection": {
-                                        "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
-                                    }
-                                },
-                                "method": "post",
-                                "body": {
-                                    "method": "POST",
-                                    "uri": "_api/web/lists/getByTitle('EventReview')/items/getbyid(@{body('Create_file_Transcripts_0')?['ItemId']})/roleassignments/removeroleassignment(principalid=@{outputs('Compose_SiteGroupIdMembers')}, roledefid=@{body('Get_ItemsViewAddUpdateNoDelete')?['d']?['Id']})",
-                                    "headers": {
-                                        "accept": "application/json;odata=verbose",
-                                        "content-type": "application/json;odata=verbose"
-                                    }
-                                },
-                                "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/httprequest",
-                                "authentication": "@parameters('$authentication')"
-                            }
-                        },
-                        "Scope_3": {
-                            "actions": {},
-                            "runAfter": {},
-                            "metadata": {
-                                "operationMetadataId": "f07c6429-b03e-45f8-9bd9-e8e1cb3f5975"
-                            },
-                            "type": "Scope"
-                        },
-                        "Send_an_HTTP_request_to_SharePoint_4": {
-                            "runAfter": {
-                                "Scope_3": [
-                                    "Succeeded"
-                                ]
-                            },
-                            "metadata": {
-                                "flowSystemMetadata": {
-                                    "swaggerOperationId": "HttpRequest"
-                                },
-                                "operationMetadataId": "d324dfd8-5ac8-47a0-a502-f819f4b5d170"
-                            },
-                            "type": "ApiConnection",
-                            "inputs": {
-                                "host": {
-                                    "connection": {
-                                        "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
-                                    }
-                                },
-                                "method": "post",
-                                "body": {
-                                    "method": "POST",
-                                    "uri": "_api/web/lists/getByTitle('EventReview')/items/getbyid(@{body('Create_file_Transcripts_0')?['ItemId']})/breakroleinheritance(copyRoleAssignments=true, clearSubscopes=true)",
-                                    "headers": {
-                                        "accept": "application/json;odata=verbose",
-                                        "content-type": "application/json;odata=verbose"
-                                    }
-                                },
-                                "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/httprequest",
-                                "authentication": "@parameters('$authentication')"
-                            }
-                        },
-                        "Grant_view_to_SolutionFile": {
-                            "runAfter": {
-                                "Scope_3": [
-                                    "Succeeded"
-                                ]
-                            },
-                            "metadata": {
-                                "flowSystemMetadata": {
-                                    "swaggerOperationId": "GrantAccess"
-                                },
-                                "operationMetadataId": "2522d1c1-e287-4ac5-8401-514793839348"
-                            },
-                            "type": "ApiConnection",
-                            "inputs": {
-                                "host": {
-                                    "connection": {
-                                        "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
-                                    }
-                                },
-                                "method": "post",
-                                "body": {
-                                    "recipients": "@{body('Get_file_properties_ResponseFile')?['Author']?['Email']}",
-                                    "roleValue": "role:1073741826",
-                                    "sendEmail": false
-                                },
-                                "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(encodeURIComponent(body('Get_file_properties_SolutionFile')?['ID']))}/grantaccess",
-                                "authentication": "@parameters('$authentication')"
-                            }
-                        },
-                        "Grant_view_to_Transcript_to_Author": {
-                            "runAfter": {
-                                "Send_an_HTTP_request_to_SharePoint_3": [
-                                    "Succeeded",
-                                    "Failed"
-                                ]
-                            },
-                            "metadata": {
-                                "flowSystemMetadata": {
-                                    "swaggerOperationId": "GrantAccess"
-                                },
-                                "operationMetadataId": "5234b423-4b8d-4691-9edb-cb09f497f203"
-                            },
-                            "type": "ApiConnection",
-                            "inputs": {
-                                "host": {
-                                    "connection": {
-                                        "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
-                                    }
-                                },
-                                "method": "post",
-                                "body": {
-                                    "recipients": "@{body('Get_file_properties_ResponseFile')?['Author']?['Email']}",
-                                    "roleValue": "role:1073741826",
-                                    "sendEmail": false
-                                },
-                                "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(encodeURIComponent(body('Create_file_Transcripts_0')?['ItemId']))}/grantaccess",
-                                "authentication": "@parameters('$authentication')"
-                            }
-                        }
-                    },
-                    "runAfter": {
-                        "Copy_file_Transcripts": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "operationMetadataId": "58137cc8-f348-4deb-b644-59c8117a067a"
-                    },
-                    "type": "Scope"
-                },
-                "Parse_JSON_SolutionRows": {
-                    "runAfter": {
-                        "Create_file_Transcripts_0": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "operationMetadataId": "d67c6d69-4a30-48fe-92c5-c582a49ac634"
-                    },
-                    "type": "ParseJson",
-                    "inputs": {
-                        "content": "@body('SolutionTables')",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "object",
-                                "properties": {
-                                    "Quest": {
-                                        "type": "string"
-                                    },
-                                    "Survey": {
-                                        "type": "string"
-                                    },
-                                    "Weight": {
-                                        "type": "integer"
-                                    },
-                                    "Grader": {
-                                        "type": "string"
-                                    },
-                                    "You": {
-                                        "type": "string"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "Apply_to_each_SolutionRows": {
-                    "foreach": "@body('Parse_JSON_SolutionRows')",
-                    "actions": {
-                        "Condition_Correct": {
-                            "actions": {
-                                "Increment_variable_autograde": {
-                                    "runAfter": {},
-                                    "metadata": {
-                                        "operationMetadataId": "9f78ba44-4fa3-4839-8305-6bc3f022d661"
-                                    },
-                                    "type": "IncrementVariable",
-                                    "inputs": {
-                                        "name": "autograde",
-                                        "value": "@int(items('Apply_to_each_SolutionRows')['Weight'])"
-                                    }
-                                },
-                                "Set_variable_correct_Yes": {
-                                    "runAfter": {
-                                        "Increment_variable_autograde": [
-                                            "Succeeded"
-                                        ]
-                                    },
-                                    "metadata": {
-                                        "operationMetadataId": "c438b603-9a34-4e82-95c7-47c42ae40dc9"
-                                    },
-                                    "type": "SetVariable",
-                                    "inputs": {
-                                        "name": "correct",
-                                        "value": "@{if(equals(items('Apply_to_each_SolutionRows')['Survey'], 'Yes'), body('Parse_JSON_ResponseRow')?['You'], 'OK')}"
-                                    }
-                                }
-                            },
-                            "runAfter": {
-                                "Increment_variable_AutoWeight": [
-                                    "Succeeded"
-                                ]
-                            },
-                            "else": {
-                                "actions": {
-                                    "Set_variable_correct_No": {
-                                        "runAfter": {},
-                                        "metadata": {
-                                            "operationMetadataId": "acadcad8-ae95-4706-aeb2-a4123f9dda49"
-                                        },
-                                        "type": "SetVariable",
-                                        "inputs": {
-                                            "name": "correct",
-                                            "value": "@{'KO'}"
-                                        }
-                                    }
-                                }
-                            },
-                            "expression": {
-                                "or": [
-                                    {
-                                        "equals": [
-                                            "@toLower(trim(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(\r\n    replace(replace(replace(replace(replace(\r\n        replace(replace(replace(replace(replace(\r\n            replace(replace(replace(replace(replace(\r\n                replace(replace(replace(replace(replace(\r\n                    replace(replace(replace(replace(replace(\r\nreplace(items('Apply_to_each_SolutionRows')?['You']\r\n, '`', ' ')\r\n, '~', ' ')\r\n, '!', ' ')\r\n, '@', ' ')\r\n, '#', ' ')\r\n, '$', ' ')\r\n, '%', ' ')\r\n, '^', ' ')\r\n, '&', ' ')\r\n, '*', ' ')\r\n, '(', ' ')\r\n, ')', ' ')\r\n, '-', ' ')\r\n, '=', ' ')\r\n, '+', ' ')\r\n, '[', ' ')\r\n, '{', ' ')\r\n, ']', ' ')\r\n, '}', ' ')\r\n, '\\\\', ' ')\r\n, '|', ' ')\r\n, ';', ' ')\r\n, ':', ' ')\r\n, '\"', ' ')\r\n, ',', ' ')\r\n, '.', ' ')\r\n, '<', ' ')\r\n, '>', ' ')\r\n, '/', ' ')\r\n, '?', ' ')\r\n, '''', ' ')\r\n, '\\n', ' ')\r\n, '     ', ' ')\r\n, '    ', ' ')\r\n, '   ', ' ')\r\n, '  ', ' ')))",
-                                            "@toLower(trim(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(\r\n    replace(replace(replace(replace(replace(\r\n        replace(replace(replace(replace(replace(\r\n            replace(replace(replace(replace(replace(\r\n                replace(replace(replace(replace(replace(\r\n                    replace(replace(replace(replace(replace(\r\nreplace(body('Parse_JSON_ResponseRow')?['You']\r\n, '`', ' ')\r\n, '~', ' ')\r\n, '!', ' ')\r\n, '@', ' ')\r\n, '#', ' ')\r\n, '$', ' ')\r\n, '%', ' ')\r\n, '^', ' ')\r\n, '&', ' ')\r\n, '*', ' ')\r\n, '(', ' ')\r\n, ')', ' ')\r\n, '-', ' ')\r\n, '=', ' ')\r\n, '+', ' ')\r\n, '[', ' ')\r\n, '{', ' ')\r\n, ']', ' ')\r\n, '}', ' ')\r\n, '\\\\', ' ')\r\n, '|', ' ')\r\n, ';', ' ')\r\n, ':', ' ')\r\n, '\"', ' ')\r\n, ',', ' ')\r\n, '.', ' ')\r\n, '<', ' ')\r\n, '>', ' ')\r\n, '/', ' ')\r\n, '?', ' ')\r\n, '''', ' ')\r\n, '\\n', ' ')\r\n, '     ', ' ')\r\n, '    ', ' ')\r\n, '   ', ' ')\r\n, '  ', ' ')))"
-                                        ]
-                                    },
-                                    {
-                                        "equals": [
-                                            "@items('Apply_to_each_SolutionRows')['Survey']",
-                                            "@'Yes'"
-                                        ]
-                                    }
-                                ]
-                            },
-                            "metadata": {
-                                "operationMetadataId": "bcc6b1df-870b-4244-be62-5ccd72ac9c20"
-                            },
-                            "type": "If"
-                        },
-                        "Parse_JSON_ResponseRow": {
-                            "runAfter": {
-                                "Get_a_row_ResponseRow_Question": [
-                                    "Succeeded"
-                                ]
-                            },
-                            "metadata": {
-                                "operationMetadataId": "23761835-2cd4-4878-aace-e0aaea0e9314"
-                            },
-                            "type": "ParseJson",
-                            "inputs": {
-                                "content": "@body('Get_a_row_ResponseRow_Question')?[0]",
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "Quest": {
-                                            "type": "string"
-                                        },
-                                        "Survey": {
-                                            "type": "string"
-                                        },
-                                        "Weight": {
-                                            "type": "integer"
-                                        },
-                                        "Grader": {
-                                            "type": "string"
-                                        },
-                                        "You": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        "Increment_variable_AutoWeight": {
-                            "runAfter": {
-                                "Parse_JSON_ResponseRow": [
-                                    "Succeeded"
-                                ]
-                            },
-                            "metadata": {
-                                "operationMetadataId": "47fe3c65-d934-473f-bd47-0bdc9b5865e7"
-                            },
-                            "type": "IncrementVariable",
-                            "inputs": {
-                                "name": "AutoWeight",
-                                "value": "@int(items('Apply_to_each_SolutionRows')['Weight'])"
-                            }
-                        },
-                        "Get_a_row_ResponseRow_Question": {
-                            "runAfter": {},
-                            "metadata": {
-                                "operationMetadataId": "851d9467-3bef-4e14-8fa9-695188d00d1f"
-                            },
-                            "type": "Query",
-                            "inputs": {
-                                "from": "@body('ResponseTables')",
-                                "where": "@equals(item()?['Quest'], items('Apply_to_each_SolutionRows')?['Quest'])"
-                            }
-                        },
-                        "Append_to_string_variable_transcript": {
-                            "runAfter": {
-                                "Set_variable_transcriptalt": [
-                                    "Succeeded"
-                                ]
-                            },
-                            "metadata": {
-                                "operationMetadataId": "1e05fb8d-200f-4ced-a94f-767f91ada1f4"
-                            },
-                            "type": "AppendToStringVariable",
-                            "inputs": {
-                                "name": "transcript",
-                                "value": "@{items('Apply_to_each_SolutionRows')['Quest']}: @{variables('correct')}; "
-                            }
-                        },
-                        "Compose_transcriptalt": {
-                            "runAfter": {
-                                "Condition_Correct": [
-                                    "Succeeded"
-                                ]
-                            },
-                            "metadata": {
-                                "operationMetadataId": "9456aeaf-5dc6-4604-978d-67c9b6fb2074"
-                            },
-                            "type": "Compose",
-                            "inputs": "@setProperty(variables('transcriptalt'), concat(items('Apply_to_each_SolutionRows')['Quest'], '_workschool365'), variables('correct'))"
-                        },
-                        "Set_variable_transcriptalt": {
-                            "runAfter": {
-                                "Compose_transcriptalt": [
-                                    "Succeeded"
-                                ]
-                            },
-                            "metadata": {
-                                "operationMetadataId": "73f85c5b-85de-4599-bdf8-08195acec238"
-                            },
-                            "type": "SetVariable",
-                            "inputs": {
-                                "name": "transcriptalt",
-                                "value": "@outputs('Compose_transcriptalt')"
-                            }
-                        }
-                    },
-                    "runAfter": {
-                        "Parse_JSON_SolutionRows": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "operationMetadataId": "5fdca90d-aa73-4e8d-958e-0ef28725b80f"
-                    },
-                    "type": "Foreach"
-                },
-                "Populate_a_Microsoft_Word_template_Transcript": {
-                    "runAfter": {
-                        "Create_sharing_link_for_a_file_Transcript": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "flowSystemMetadata": {
-                            "swaggerOperationId": "CreateFileItem"
-                        },
-                        "operationMetadataId": "bc81e88f-5d1b-4fe3-bf8b-52202635024c"
-                    },
-                    "type": "ApiConnection",
-                    "inputs": {
-                        "host": {
-                            "connection": {
-                                "name": "@parameters('$connections')['shared_wordonlinebusiness']['connectionId']"
-                            }
-                        },
-                        "method": "post",
-                        "body": {
-                            "447753704": "@{body('Create_sharing_link_for_a_file_Transcript')?['link']?['webUrl']}",
-                            "925700911": "    @{variables('autograde')} /@{variables('AutoWeight')}; Late?: @{outputs('Compose_InvalidDeadline')}; Repeated?: @{outputs('Compose_InvalidRepeat')};\n    @{variables('transcript')}",
-                            "1292476084": "@{body('Get_file_properties_SolutionFile')?['Editor']?['Email']}",
-                            "-321128028": "@{body('Get_file_properties_ResponseFile')?['Author']?['Email']}",
-                            "-1222045053": "@{body('Get_file_properties_PromptFile')?['{FilenameWithExtension}']}"
-                        },
-                        "path": "/api/templates/getFile",
-                        "queries": {
-                            "source": "@variables('siteAddress')",
-                            "drive": "@variables('driveId')",
-                            "file": "/Template_Transcripts_GroupOwnerOnly.docx"
-                        },
-                        "authentication": "@parameters('$authentication')"
-                    }
-                },
-                "Create_sharing_link_for_a_file_Transcript": {
-                    "runAfter": {
-                        "Apply_to_each_SolutionRows": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "flowSystemMetadata": {
-                            "swaggerOperationId": "CreateSharingLink"
-                        },
-                        "operationMetadataId": "e9448ac6-6371-4ec9-b9ba-1c73c293bdf2"
-                    },
-                    "type": "ApiConnection",
-                    "inputs": {
-                        "host": {
-                            "connection": {
-                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
-                            }
-                        },
-                        "method": "post",
-                        "body": {
-                            "type": "view",
-                            "scope": "anonymous"
-                        },
-                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/codeless/_api/v2.0/sites/root/lists/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(encodeURIComponent(body('Create_file_Transcripts_0')?['ItemId']))}/driveItem/createLink",
-                        "authentication": "@parameters('$authentication')"
-                    }
-                },
-                "Initialize_variable_transcript": {
-                    "runAfter": {
-                        "Initialize_variable_deadline": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "operationMetadataId": "3cf7b0ee-f348-4d37-b9a6-be7a97f70a87"
-                    },
-                    "type": "InitializeVariable",
-                    "inputs": {
-                        "variables": [
-                            {
-                                "name": "transcript",
-                                "type": "string"
-                            }
-                        ]
-                    }
-                },
-                "Update_file_Transcript": {
-                    "runAfter": {
-                        "Populate_a_Microsoft_Word_template_Transcript": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "flowSystemMetadata": {
-                            "swaggerOperationId": "UpdateFile"
-                        },
-                        "operationMetadataId": "98f720fd-e116-4ef9-bcdf-b29db5ff4afa"
-                    },
-                    "type": "ApiConnection",
-                    "inputs": {
-                        "host": {
-                            "connection": {
-                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
-                            }
-                        },
-                        "method": "put",
-                        "body": "@body('Populate_a_Microsoft_Word_template_Transcript')",
-                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/files/@{encodeURIComponent(encodeURIComponent(body('Create_file_Transcripts_0')?['Id']))}",
-                        "authentication": "@parameters('$authentication')"
-                    }
-                },
-                "Initialize_variable_correct": {
-                    "runAfter": {
-                        "Initialize_variable_transcript": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "operationMetadataId": "7c7aaaf8-7e19-4b36-a43f-3e3c0cd6beab"
-                    },
-                    "type": "InitializeVariable",
-                    "inputs": {
-                        "variables": [
-                            {
-                                "name": "correct",
-                                "type": "string"
-                            }
-                        ]
-                    }
-                },
-                "Initialize_variable_transcriptalt": {
-                    "runAfter": {
-                        "Initialize_variable_correct": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "operationMetadataId": "d068a3a4-c68e-4502-b469-9ea19bd2abee"
-                    },
-                    "type": "InitializeVariable",
-                    "inputs": {
-                        "variables": [
-                            {
-                                "name": "transcriptalt",
-                                "type": "object",
-                                "value": {}
-                            }
-                        ]
-                    }
-                },
-                "Filter_array_Get_files_Transcripts": {
-                    "runAfter": {
-                        "Get_files_Transcripts": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "operationMetadataId": "4f249b70-a6fe-451f-a0c4-d778b76b2194"
-                    },
-                    "type": "Query",
-                    "inputs": {
-                        "from": "@body('Get_files_Transcripts')?['value']",
-                        "where": "@equals(item()?['Predecessors']?['Id'], body('Get_file_properties_ResponseFile')?['Predecessors']?['Id'])"
-                    }
-                },
-                "Condition_Has_No_SolutionFIle": {
-                    "actions": {
-                        "Response_2": {
-                            "runAfter": {},
-                            "metadata": {
-                                "operationMetadataId": "5ba737d7-9ea3-4734-ad29-1ee866fa8237"
-                            },
-                            "type": "Response",
-                            "kind": "Http",
-                            "inputs": {
-                                "statusCode": 200
-                            }
-                        },
-                        "Terminate": {
-                            "runAfter": {
-                                "Response_2": [
-                                    "Succeeded"
-                                ]
-                            },
-                            "metadata": {
-                                "operationMetadataId": "4e009ba4-2f16-4efb-8177-70a66b61ec76"
-                            },
-                            "type": "Terminate",
-                            "inputs": {
-                                "runStatus": "Succeeded"
-                            }
-                        }
-                    },
-                    "runAfter": {
-                        "Grant_access_ResponseFile_to_Prompter": [
-                            "Succeeded"
-                        ]
-                    },
-                    "expression": {
-                        "equals": [
-                            "@string(body('Get_file_properties_PromptFile')?['Predecessors']?['Value'])",
-                            "@''"
-                        ]
-                    },
-                    "metadata": {
-                        "operationMetadataId": "5575a460-d009-4d4c-852c-8e2be0251207"
-                    },
-                    "type": "If"
-                },
-                "Get_file_properties_PromptFile": {
-                    "runAfter": {
-                        "ResponseTables": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "flowSystemMetadata": {
-                            "swaggerOperationId": "GetFileItem"
-                        },
-                        "operationMetadataId": "8e563134-42ca-4209-bf73-5ba9b46e9dd3"
-                    },
-                    "type": "ApiConnection",
-                    "inputs": {
-                        "host": {
-                            "connection": {
-                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
-                            }
-                        },
-                        "method": "get",
-                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(body('Get_file_properties_ResponseFile')?['Predecessors']?['Id'])}/getfileitem",
-                        "authentication": "@parameters('$authentication')"
-                    }
-                },
-                "Get_file_properties_ResponseFile": {
-                    "runAfter": {
-                        "Condition_Trigger_Conditions": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "flowSystemMetadata": {
-                            "swaggerOperationId": "GetFileItem"
-                        },
-                        "operationMetadataId": "ced8de2e-fb59-4964-9939-77536e2f60dc"
-                    },
-                    "type": "ApiConnection",
-                    "inputs": {
-                        "host": {
-                            "connection": {
-                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
-                            }
-                        },
-                        "method": "get",
-                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(variables('fileItemId'))}/getfileitem",
-                        "authentication": "@parameters('$authentication')"
-                    }
-                },
-                "Condition_Is_SolutionFile": {
-                    "actions": {
-                        "Response_3": {
-                            "runAfter": {},
-                            "metadata": {
-                                "operationMetadataId": "5ba737d7-9ea3-4734-ad29-1ee866fa8237"
-                            },
-                            "type": "Response",
-                            "kind": "Http",
-                            "inputs": {
-                                "statusCode": 200
-                            }
-                        },
-                        "Terminate_2": {
-                            "runAfter": {
-                                "Response_3": [
-                                    "Succeeded"
-                                ]
-                            },
-                            "metadata": {
-                                "operationMetadataId": "4e009ba4-2f16-4efb-8177-70a66b61ec76"
-                            },
-                            "type": "Terminate",
-                            "inputs": {
-                                "runStatus": "Succeeded"
-                            }
-                        }
-                    },
-                    "runAfter": {
-                        "Condition": [
-                            "Succeeded"
-                        ]
-                    },
-                    "expression": {
-                        "or": [
-                            {
-                                "equals": [
-                                    "@toLower(body('Get_file_properties_ResponseFile')?['RoleType']?['Value'])",
-                                    "@toLower('PrompterSolution')"
-                                ]
-                            },
-                            {
-                                "equals": [
-                                    "@body('Get_file_properties_ResponseFile')?['Predecessors']?['Value']",
-                                    "@''"
-                                ]
-                            }
-                        ]
-                    },
-                    "metadata": {
-                        "operationMetadataId": "5575a460-d009-4d4c-852c-8e2be0251207"
-                    },
-                    "type": "If"
-                },
-                "Grant_access_ResponseFile_to_Prompter": {
-                    "runAfter": {
-                        "Get_file_properties_PromptFile": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "operationMetadataId": "bf8720dc-f6c8-49e0-96f1-8e3c9275c97c",
-                        "flowSystemMetadata": {
-                            "swaggerOperationId": "GrantAccess"
-                        }
-                    },
-                    "type": "ApiConnection",
-                    "inputs": {
-                        "host": {
-                            "connection": {
-                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
-                            }
-                        },
-                        "method": "post",
-                        "body": {
-                            "recipients": "@{body('Get_file_properties_PromptFile')?['Author']?['Email']}",
-                            "roleValue": "role:1073741826",
-                            "sendEmail": false
-                        },
-                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(encodeURIComponent(body('Get_file_properties_ResponseFile')?['ID']))}/grantaccess",
-                        "authentication": "@parameters('$authentication')"
-                    }
-                },
-                "Get_file_properties": {
-                    "runAfter": {
-                        "Initialize_variable_transcriptalt": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "operationMetadataId": "023202f6-5160-4c4d-ad15-adf9e5b17e56",
-                        "flowSystemMetadata": {
-                            "swaggerOperationId": "GetFileItem"
-                        }
-                    },
-                    "type": "ApiConnection",
-                    "inputs": {
-                        "host": {
-                            "connection": {
-                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
-                            }
-                        },
-                        "method": "get",
-                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(variables('fileItemId'))}/getfileitem",
-                        "authentication": "@parameters('$authentication')"
-                    }
-                },
-                "Condition_Trigger_Conditions": {
-                    "actions": {
-                        "Response_Trigger_Conditions": {
-                            "runAfter": {},
-                            "metadata": {
-                                "operationMetadataId": "d0bb3657-1665-4d0f-9cce-5edfbb37f439"
-                            },
-                            "type": "Response",
-                            "kind": "Http",
-                            "inputs": {
-                                "statusCode": 200
-                            }
-                        },
-                        "Terminate_Trigger_Conditions": {
-                            "runAfter": {
-                                "Response_Trigger_Conditions": [
-                                    "Succeeded"
-                                ]
-                            },
-                            "metadata": {
-                                "operationMetadataId": "990c70cb-05f3-4ab0-8929-fea26fb4d8ad"
-                            },
-                            "type": "Terminate",
-                            "inputs": {
-                                "runStatus": "Cancelled"
-                            }
-                        }
-                    },
-                    "runAfter": {
-                        "Get_file_properties": [
-                            "Succeeded"
-                        ]
-                    },
-                    "else": {
-                        "actions": {
-                            "Condition_RoleType": {
-                                "actions": {},
-                                "runAfter": {},
-                                "else": {
-                                    "actions": {
-                                        "Get_file_metadata_RoleType": {
-                                            "runAfter": {},
-                                            "metadata": {
-                                                "operationMetadataId": "e1f64a2d-0a9f-4637-b7de-b442c22944a0"
-                                            },
-                                            "type": "OpenApiConnection",
-                                            "inputs": {
-                                                "host": {
-                                                    "connectionName": "shared_sharepointonline_1",
-                                                    "operationId": "GetFileMetadata",
-                                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
-                                                },
-                                                "parameters": {
-                                                    "dataset": "@variables('siteAddress')",
-                                                    "id": "@body('Get_file_properties')?['{Identifier}']"
-                                                },
-                                                "authentication": "@parameters('$authentication')"
-                                            }
-                                        },
-                                        "Set_content_approval_status_RoleType": {
-                                            "runAfter": {
-                                                "Get_file_metadata_RoleType": [
-                                                    "Succeeded"
-                                                ]
-                                            },
-                                            "metadata": {
-                                                "operationMetadataId": "17c59ad6-37a5-4f38-904c-8573c31a2df7"
-                                            },
-                                            "type": "OpenApiConnection",
-                                            "inputs": {
-                                                "host": {
-                                                    "connectionName": "shared_sharepointonline_1",
-                                                    "operationId": "SetApprovalStatus",
-                                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
-                                                },
-                                                "parameters": {
-                                                    "dataset": "@variables('siteAddress')",
-                                                    "table": "EventReview",
-                                                    "id": "@body('Get_file_properties')?['ID']",
-                                                    "approvalAction": "Reject",
-                                                    "comments": "",
-                                                    "entityTag": "@outputs('Get_file_metadata_RoleType')?['body/ETag']"
-                                                },
-                                                "authentication": "@parameters('$authentication')",
-                                                "retryPolicy": {
-                                                    "type": "none"
-                                                }
-                                            }
-                                        },
-                                        "Terminate_3": {
-                                            "runAfter": {
-                                                "Response_RoleType": [
-                                                    "Succeeded"
-                                                ]
-                                            },
-                                            "metadata": {
-                                                "operationMetadataId": "71040fa9-6092-4cd4-ab22-4780be898583"
-                                            },
-                                            "type": "Terminate",
-                                            "inputs": {
-                                                "runStatus": "Cancelled"
-                                            }
-                                        },
-                                        "Response_RoleType": {
-                                            "runAfter": {
-                                                "Set_content_approval_status_RoleType": [
-                                                    "Succeeded",
-                                                    "Failed",
-                                                    "TimedOut"
-                                                ]
-                                            },
-                                            "metadata": {
-                                                "operationMetadataId": "179d0ad5-152d-45e6-95be-ceb21e84c85a"
-                                            },
-                                            "type": "Response",
-                                            "kind": "Http",
-                                            "inputs": {
-                                                "statusCode": 200
-                                            }
-                                        }
-                                    }
-                                },
-                                "expression": {
-                                    "and": [
-                                        {
-                                            "or": [
-                                                {
-                                                    "equals": [
-                                                        "@toLower(string(body('Get_file_properties')?['RoleType']?['Value']))",
-                                                        "@toLower('Reviewer')"
-                                                    ]
-                                                },
-                                                {
-                                                    "equals": [
-                                                        "@toLower(string(body('Get_file_properties')?['RoleType']?['Value']))",
-                                                        "@toLower('PrompterSolution')"
-                                                    ]
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            "endsWith": [
-                                                "@body('Get_file_properties')?['{FullPath}']",
-                                                ".docx"
-                                            ]
-                                        }
-                                    ]
-                                },
-                                "metadata": {
-                                    "operationMetadataId": "85c1d5c7-0cb8-4bae-a26b-da110459f9fc"
-                                },
-                                "type": "If"
-                            }
-                        }
-                    },
-                    "expression": {
-                        "or": [
-                            {
-                                "startsWith": [
-                                    "@body('Get_file_properties')?['{Path}']",
-                                    "EventReview/Receipts/"
-                                ]
-                            },
-                            {
-                                "startsWith": [
-                                    "@body('Get_file_properties')?['{Path}']",
-                                    "EventReview/Transcripts/"
-                                ]
-                            },
-                            {
-                                "startsWith": [
-                                    "@body('Get_file_properties')?['{Path}']",
-                                    "EventReview/TranscriptsCopy/"
-                                ]
-                            },
-                            {
-                                "equals": [
-                                    "@body('Get_file_properties')?['{FullPath}']",
-                                    "EventReview/Public_Listing_Receipts.xlsx"
-                                ]
-                            },
-                            {
-                                "equals": [
-                                    "@body('Get_file_properties')?['{FullPath}']",
-                                    "EventReview/Template_Prompter_Reviewer_Copy_Me.docx"
-                                ]
-                            },
-                            {
-                                "equals": [
-                                    "@body('Get_file_properties')?['{FullPath}']",
-                                    "EventReview/Template_Prompter_Reviewer_Copy_Me.docx"
-                                ]
-                            },
-                            {
-                                "equals": [
-                                    "@body('Get_file_properties')?['{IsFolder}']",
-                                    "@true"
-                                ]
-                            },
-                            {
-                                "equals": [
-                                    "@toLower(string(body('Get_file_properties')?['RoleType']?['Value']))",
-                                    "@toLower('Prompter')"
-                                ]
-                            }
-                        ]
-                    },
-                    "metadata": {
-                        "operationMetadataId": "bdd420fe-8192-45c1-8404-e81d2fb5ea3b"
-                    },
-                    "type": "If"
-                },
-                "Run_a_Child_Flow_Response": {
-                    "runAfter": {
-                        "Get_file_properties_ResponseFile": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "operationMetadataId": "ffabe1a5-10f1-4013-9b64-532f64e56771"
-                    },
-                    "type": "Workflow",
-                    "inputs": {
-                        "host": {
-                            "workflowReferenceName": "d04f0d38-b776-eb11-a812-0022486d6717"
-                        },
-                        "body": {
-                            "siteName": "@variables('siteName')",
-                            "fileIdentifier": "@body('Get_file_properties_ResponseFile')?['{FullPath}']"
-                        }
-                    }
-                },
-                "ResponseTables": {
-                    "runAfter": {
-                        "Condition_Is_SolutionFile": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "operationMetadataId": "3e58e84d-08dc-4822-ae55-9ef6fffb149a"
-                    },
-                    "type": "Workflow",
-                    "inputs": {
-                        "host": {
-                            "workflowReferenceName": "d6535eaf-cd58-eb11-a812-000d3af4b0ba"
-                        },
-                        "body": {
-                            "siteName": "@variables('siteName')",
-                            "fileIdentifier": "@body('Get_file_properties_ResponseFile')?['{FullPath}']"
-                        }
-                    }
-                },
-                "Condition": {
-                    "actions": {},
-                    "runAfter": {
-                        "Grant_access_to_an_item_or_a_folder_ResponseFIle": [
-                            "Succeeded"
-                        ]
-                    },
-                    "else": {
-                        "actions": {
-                            "Scope_Title": {
-                                "actions": {
-                                    "Update_file_properties_Title": {
-                                        "runAfter": {},
-                                        "metadata": {
-                                            "operationMetadataId": "3a7eb4ce-6e32-451b-a446-d161a97eb35d",
-                                            "flowSystemMetadata": {
-                                                "swaggerOperationId": "PatchFileItem"
-                                            }
-                                        },
-                                        "type": "ApiConnection",
-                                        "inputs": {
-                                            "host": {
-                                                "connection": {
-                                                    "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
-                                                }
-                                            },
-                                            "method": "patch",
-                                            "body": {
-                                                "Title": "@{body('Get_file_properties_ResponseFile')?['RoleType']?['Value']} - @{body('Run_a_Child_Flow_Response')?['title']}",
-                                                "Short": "@{body('Run_a_Child_Flow_Response')?['short']}",
-                                                "StateDescription": "@{concat('\"' , add(1 , int(split(replace(body('Set_content_approval_Approve_ResponseFIle')?['ETag'], '\"' , ''), ',')?[1]) ) , '\"')}"
-                                            },
-                                            "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(body('Get_file_properties_ResponseFile')?['ID'])}/patchfileitem",
-                                            "authentication": "@parameters('$authentication')"
-                                        }
-                                    },
-                                    "Get_file_metadata_Title": {
-                                        "runAfter": {
-                                            "Update_file_properties_Title": [
-                                                "Succeeded"
-                                            ]
-                                        },
-                                        "metadata": {
-                                            "operationMetadataId": "449ec57c-c75f-4659-a6c7-70ed9564ee4f",
-                                            "flowSystemMetadata": {
-                                                "swaggerOperationId": "GetFileMetadata"
-                                            }
-                                        },
-                                        "type": "ApiConnection",
-                                        "inputs": {
-                                            "host": {
-                                                "connection": {
-                                                    "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
-                                                }
-                                            },
-                                            "method": "get",
-                                            "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/files/@{encodeURIComponent(body('Get_file_properties_ResponseFile')?['{Identifier}'])}",
-                                            "authentication": "@parameters('$authentication')"
-                                        }
-                                    },
-                                    "Set_content_approval_status_Title": {
-                                        "runAfter": {
-                                            "Get_file_metadata_Title": [
-                                                "Succeeded"
-                                            ]
-                                        },
-                                        "metadata": {
-                                            "operationMetadataId": "a39ec1b3-d06c-41b2-a589-fefcd1b8e1f3",
-                                            "flowSystemMetadata": {
-                                                "swaggerOperationId": "SetApprovalStatus"
-                                            }
-                                        },
-                                        "type": "ApiConnection",
-                                        "inputs": {
-                                            "host": {
-                                                "connection": {
-                                                    "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
-                                                }
-                                            },
-                                            "method": "post",
-                                            "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(encodeURIComponent(body('Get_file_properties_ResponseFile')?['ID']))}/setapprovalstatus",
-                                            "queries": {
-                                                "approvalAction": "Submit",
-                                                "comments": "",
-                                                "entityTag": "@{outputs('Get_file_metadata_Title')?['body/ETag']}"
-                                            },
-                                            "authentication": "@parameters('$authentication')"
-                                        }
-                                    },
-                                    "Set_content_approval_status_Title_2": {
-                                        "runAfter": {
-                                            "Set_content_approval_status_Title": [
-                                                "Succeeded"
-                                            ]
-                                        },
-                                        "metadata": {
-                                            "operationMetadataId": "a6a3c5d5-2c0d-448d-ae89-897cdc5ee4fe",
-                                            "flowSystemMetadata": {
-                                                "swaggerOperationId": "SetApprovalStatus"
-                                            }
-                                        },
-                                        "type": "ApiConnection",
-                                        "inputs": {
-                                            "host": {
-                                                "connection": {
-                                                    "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
-                                                }
-                                            },
-                                            "method": "post",
-                                            "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(encodeURIComponent(body('Get_file_properties_ResponseFile')?['ID']))}/setapprovalstatus",
-                                            "queries": {
-                                                "approvalAction": "Approve",
-                                                "comments": "",
-                                                "entityTag": "@{outputs('Set_content_approval_status_Title')?['body/ETag']}"
-                                            },
-                                            "authentication": "@parameters('$authentication')"
-                                        }
-                                    }
-                                },
-                                "runAfter": {},
-                                "metadata": {
-                                    "operationMetadataId": "f5c06c4d-271a-47cf-8a3c-257e0c311f47"
-                                },
-                                "type": "Scope"
-                            }
-                        }
-                    },
-                    "expression": {
-                        "equals": [
-                            "@true",
-                            "@true"
-                        ]
-                    },
-                    "metadata": {
-                        "operationMetadataId": "d12ae841-31ac-44bd-a40f-c8e618e0fa1b"
-                    },
-                    "type": "If"
-                }
+                "type": "If"
+              }
             }
+          },
+          "expression": {
+            "or": [
+              {
+                "startsWith": [
+                  "@body('Get_file_properties')?['{Path}']",
+                  "EventReview/Receipts/"
+                ]
+              },
+              {
+                "startsWith": [
+                  "@body('Get_file_properties')?['{Path}']",
+                  "EventReview/Transcripts/"
+                ]
+              },
+              {
+                "startsWith": [
+                  "@body('Get_file_properties')?['{Path}']",
+                  "EventReview/TranscriptsCopy/"
+                ]
+              },
+              {
+                "equals": [
+                  "@body('Get_file_properties')?['{FullPath}']",
+                  "EventReview/Public_Listing_Receipts.xlsx"
+                ]
+              },
+              {
+                "equals": [
+                  "@body('Get_file_properties')?['{FullPath}']",
+                  "EventReview/Template_Prompter_Reviewer_Copy_Me.docx"
+                ]
+              },
+              {
+                "equals": [
+                  "@body('Get_file_properties')?['{FullPath}']",
+                  "EventReview/Template_Prompter_Reviewer_Copy_Me.docx"
+                ]
+              },
+              {
+                "equals": [
+                  "@body('Get_file_properties')?['{IsFolder}']",
+                  "@true"
+                ]
+              },
+              {
+                "equals": [
+                  "@toLower(string(body('Get_file_properties')?['RoleType']?['Value']))",
+                  "@toLower('Prompter')"
+                ]
+              }
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "bdd420fe-8192-45c1-8404-e81d2fb5ea3b"
+          },
+          "type": "If"
+        },
+        "Run_a_Child_Flow_Response": {
+          "runAfter": {
+            "Get_file_properties_ResponseFile": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "ffabe1a5-10f1-4013-9b64-532f64e56771"
+          },
+          "type": "Workflow",
+          "inputs": {
+            "host": {
+              "workflowReferenceName": "d04f0d38-b776-eb11-a812-0022486d6717"
+            },
+            "body": {
+              "siteName": "@variables('siteName')",
+              "fileIdentifier": "@body('Get_file_properties_ResponseFile')?['{FullPath}']"
+            }
+          }
+        },
+        "ResponseTables": {
+          "runAfter": {
+            "Condition_Is_SolutionFile": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "3e58e84d-08dc-4822-ae55-9ef6fffb149a"
+          },
+          "type": "Workflow",
+          "inputs": {
+            "host": {
+              "workflowReferenceName": "d6535eaf-cd58-eb11-a812-000d3af4b0ba"
+            },
+            "body": {
+              "siteName": "@variables('siteName')",
+              "fileIdentifier": "@body('Get_file_properties_ResponseFile')?['{FullPath}']"
+            }
+          }
+        },
+        "Condition": {
+          "actions": {},
+          "runAfter": {
+            "Grant_access_to_an_item_or_a_folder_ResponseFIle": [
+              "Succeeded"
+            ]
+          },
+          "else": {
+            "actions": {
+              "Scope_Title": {
+                "actions": {
+                  "Update_file_properties_Title": {
+                    "runAfter": {},
+                    "metadata": {
+                      "operationMetadataId": "3a7eb4ce-6e32-451b-a446-d161a97eb35d",
+                      "flowSystemMetadata": {
+                        "swaggerOperationId": "PatchFileItem"
+                      }
+                    },
+                    "type": "ApiConnection",
+                    "inputs": {
+                      "host": {
+                        "connection": {
+                          "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                        }
+                      },
+                      "method": "patch",
+                      "body": {
+                        "Title": "@{body('Get_file_properties_ResponseFile')?['RoleType']?['Value']} - @{body('Run_a_Child_Flow_Response')?['title']}",
+                        "Short": "@{body('Run_a_Child_Flow_Response')?['short']}",
+                        "StateDescription": "@{concat('\"' , add(1 , int(split(replace(body('Set_content_approval_Approve_ResponseFIle')?['ETag'], '\"' , ''), ',')?[1]) ) , '\"')}"
+                      },
+                      "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(body('Get_file_properties_ResponseFile')?['ID'])}/patchfileitem",
+                      "authentication": "@parameters('$authentication')"
+                    }
+                  },
+                  "Get_file_metadata_Title": {
+                    "runAfter": {
+                      "Update_file_properties_Title": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "449ec57c-c75f-4659-a6c7-70ed9564ee4f",
+                      "flowSystemMetadata": {
+                        "swaggerOperationId": "GetFileMetadata"
+                      }
+                    },
+                    "type": "ApiConnection",
+                    "inputs": {
+                      "host": {
+                        "connection": {
+                          "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                        }
+                      },
+                      "method": "get",
+                      "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/files/@{encodeURIComponent(body('Get_file_properties_ResponseFile')?['{Identifier}'])}",
+                      "authentication": "@parameters('$authentication')"
+                    }
+                  },
+                  "Set_content_approval_status_Title": {
+                    "runAfter": {
+                      "Get_file_metadata_Title": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "a39ec1b3-d06c-41b2-a589-fefcd1b8e1f3",
+                      "flowSystemMetadata": {
+                        "swaggerOperationId": "SetApprovalStatus"
+                      }
+                    },
+                    "type": "ApiConnection",
+                    "inputs": {
+                      "host": {
+                        "connection": {
+                          "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                        }
+                      },
+                      "method": "post",
+                      "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(encodeURIComponent(body('Get_file_properties_ResponseFile')?['ID']))}/setapprovalstatus",
+                      "queries": {
+                        "approvalAction": "Submit",
+                        "comments": "",
+                        "entityTag": "@{outputs('Get_file_metadata_Title')?['body/ETag']}"
+                      },
+                      "authentication": "@parameters('$authentication')"
+                    }
+                  },
+                  "Set_content_approval_status_Title_2": {
+                    "runAfter": {
+                      "Set_content_approval_status_Title": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "a6a3c5d5-2c0d-448d-ae89-897cdc5ee4fe",
+                      "flowSystemMetadata": {
+                        "swaggerOperationId": "SetApprovalStatus"
+                      }
+                    },
+                    "type": "ApiConnection",
+                    "inputs": {
+                      "host": {
+                        "connection": {
+                          "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                        }
+                      },
+                      "method": "post",
+                      "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(encodeURIComponent(body('Get_file_properties_ResponseFile')?['ID']))}/setapprovalstatus",
+                      "queries": {
+                        "approvalAction": "Approve",
+                        "comments": "",
+                        "entityTag": "@{outputs('Set_content_approval_status_Title')?['body/ETag']}"
+                      },
+                      "authentication": "@parameters('$authentication')"
+                    }
+                  }
+                },
+                "runAfter": {},
+                "metadata": {
+                  "operationMetadataId": "f5c06c4d-271a-47cf-8a3c-257e0c311f47"
+                },
+                "type": "Scope"
+              }
+            }
+          },
+          "expression": {
+            "equals": [
+              "@true",
+              "@true"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "d12ae841-31ac-44bd-a40f-c8e618e0fa1b"
+          },
+          "type": "If"
+        },
+        "Condition_Version_Stop_sharing": {
+          "actions": {},
+          "runAfter": {
+            "Run_a_Child_Flow_Response": [
+              "Succeeded"
+            ]
+          },
+          "else": {
+            "actions": {
+              "Stop_sharing_an_item_or_a_file_ResponseFIle": {
+                "runAfter": {},
+                "metadata": {
+                  "flowSystemMetadata": {
+                    "swaggerOperationId": "UnshareItem"
+                  },
+                  "operationMetadataId": "05342977-9e9d-4127-8266-b5e9db1f8ae9"
+                },
+                "type": "ApiConnection",
+                "inputs": {
+                  "host": {
+                    "connection": {
+                      "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                    }
+                  },
+                  "method": "post",
+                  "path": "/datasets/@{encodeURIComponent(encodeURIComponent(variables('siteAddress')))}/tables/@{encodeURIComponent(encodeURIComponent('EventReview'))}/items/@{encodeURIComponent(encodeURIComponent(body('Get_file_properties_ResponseFile')?['ID']))}/unshare",
+                  "authentication": "@parameters('$authentication')"
+                }
+              }
+            }
+          },
+          "expression": {
+            "greaterOrEquals": [
+              "@float(body('Get_file_properties_ResponseFile')?['{VersionNumber}'])",
+              "@float('1.0')"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "90867dac-9902-4be7-bfb1-20bd143cd999"
+          },
+          "type": "If"
         }
-    },
-    "schemaVersion": "1.0.0.0"
+      }
+    }
+  },
+  "schemaVersion": "1.0.0.0"
 }

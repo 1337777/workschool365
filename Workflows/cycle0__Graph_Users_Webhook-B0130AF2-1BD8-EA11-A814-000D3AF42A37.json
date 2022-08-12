@@ -1,387 +1,387 @@
 {
-    "properties": {
-        "connectionReferences": {},
-        "definition": {
-            "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
-            "contentVersion": "1.0.0.0",
-            "parameters": {
-                "$authentication": {
-                    "defaultValue": {},
-                    "type": "SecureObject"
-                },
-                "envpar_http__Graph_Notifications_Interface": {
-                    "defaultValue": "",
-                    "type": "String",
-                    "metadata": {
-                        "schemaName": "new_envpar_http__Graph_Notifications_Interface",
-                        "description": "This flow HTTP trigger URL. Enter space character ( ) for none. Filled automatically."
-                    }
-                },
-                "envpar_config__TenantDomain": {
-                    "defaultValue": "",
-                    "type": "String",
-                    "metadata": {
-                        "schemaName": "new_envpar_config__TenantDomain",
-                        "description": "Required. Org Domain name such as orgname.onmicrosoft.com or orgname.com"
-                    }
-                },
-                "envpar_config__GraphAppId": {
-                    "defaultValue": "",
-                    "type": "String",
-                    "metadata": {
-                        "schemaName": "new_envpar_config__GraphAppId",
-                        "description": "Service Principal Id for Graph Api. Enter space character ( ) for none. Filled automatically."
-                    }
-                },
-                "envpar_config__GraphAppSecret": {
-                    "defaultValue": "",
-                    "type": "String",
-                    "metadata": {
-                        "schemaName": "new_envpar_config__GraphAppSecret",
-                        "description": "Service Principal Secret for Graph Api. Enter space character ( ) for none. Filled automatically."
-                    }
-                },
-                "envpar_config__TeamsSKU": {
-                    "defaultValue": "",
-                    "type": "String",
-                    "metadata": {
-                        "schemaName": "new_envpar_config__TeamsSKU",
-                        "description": "Microsoft Teams free product SKU /!\\"
-                    }
-                },
-                "envpar_config__FlowSKU": {
-                    "defaultValue": "",
-                    "type": "String",
-                    "metadata": {
-                        "schemaName": "new_envpar_config__FlowSKU",
-                        "description": "Microsoft Power Automate free product SKU"
-                    }
-                },
-                "envpar_config__StreamSKU": {
-                    "defaultValue": "",
-                    "type": "String",
-                    "metadata": {
-                        "schemaName": "new_envpar_config__StreamSKU",
-                        "description": "Microsoft Stream free product SKU"
-                    }
+  "properties": {
+    "connectionReferences": {},
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "envpar_http__Graph_Notifications_Interface (new_envpar_http__Graph_Notifications_Interface)": {
+          "defaultValue": "",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_envpar_http__Graph_Notifications_Interface",
+            "description": "This flow HTTP trigger URL. Enter space character ( ) for none. Filled automatically."
+          }
+        },
+        "envpar_config__TenantDomain (new_envpar_config__TenantDomain)": {
+          "defaultValue": "",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_envpar_config__TenantDomain",
+            "description": "Required. Org Domain name such as orgname.onmicrosoft.com or orgname.com"
+          }
+        },
+        "envpar_config__GraphAppId (new_envpar_config__GraphAppId)": {
+          "defaultValue": "",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_envpar_config__GraphAppId",
+            "description": "Service Principal Id for Graph Api. Enter space character ( ) for none. Filled automatically."
+          }
+        },
+        "envpar_config__GraphAppSecret (new_envpar_config__GraphAppSecret)": {
+          "defaultValue": "",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_envpar_config__GraphAppSecret",
+            "description": "Service Principal Secret for Graph Api. Enter space character ( ) for none. Filled automatically."
+          }
+        },
+        "envpar_config__TeamsSKU (new_envpar_config__TeamsSKU)": {
+          "defaultValue": "",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_envpar_config__TeamsSKU",
+            "description": "Microsoft Teams free product SKU /!\\"
+          }
+        },
+        "envpar_config__FlowSKU (new_envpar_config__FlowSKU)": {
+          "defaultValue": "",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_envpar_config__FlowSKU",
+            "description": "Microsoft Power Automate free product SKU"
+          }
+        },
+        "envpar_config__StreamSKU (new_envpar_config__StreamSKU)": {
+          "defaultValue": "",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_envpar_config__StreamSKU",
+            "description": "Microsoft Stream free product SKU"
+          }
+        }
+      },
+      "triggers": {
+        "HTTP_Webhook": {
+          "type": "HttpWebhook",
+          "inputs": {
+            "subscribe": {
+              "method": "POST",
+              "uri": "@parameters('envpar_http__Graph_Notifications_Interface (new_envpar_http__Graph_Notifications_Interface)')",
+              "headers": {
+                "Content-Type": "application/json; charset=utf-8"
+              },
+              "body": {
+                "method": "POST",
+                "delayMinutes": 1440,
+                "body": {
+                  "changeType": "updated",
+                  "clientState": "@{parameters('envpar_config__GraphAppId (new_envpar_config__GraphAppId)')}",
+                  "notificationUrl": "@{listCallbackUrl()}",
+                  "resource": "/users"
                 }
+              }
             },
-            "triggers": {
-                "HTTP_Webhook": {
-                    "type": "HttpWebhook",
-                    "inputs": {
-                        "subscribe": {
-                            "method": "POST",
-                            "uri": "@parameters('envpar_http__Graph_Notifications_Interface')",
-                            "headers": {
-                                "Content-Type": "application/json; charset=utf-8"
-                            },
-                            "body": {
-                                "method": "POST",
-                                "delayMinutes": 1440,
-                                "body": {
-                                    "changeType": "updated",
-                                    "clientState": "@{parameters('envpar_config__GraphAppId')}",
-                                    "notificationUrl": "@{listCallbackUrl()}",
-                                    "resource": "/users"
-                                }
-                            }
-                        },
-                        "unsubscribe": {
-                            "method": "POST",
-                            "uri": "@parameters('envpar_http__Graph_Notifications_Interface')",
-                            "body": {
-                                "method": "DELETE",
-                                "delayMinutes": 0,
-                                "body": {
-                                    "changeType": "updated",
-                                    "clientState": "@{parameters('envpar_config__GraphAppId')}",
-                                    "notificationUrl": "@{listCallbackUrl()}",
-                                    "resource": "/users"
-                                }
-                            }
-                        }
-                    }
+            "unsubscribe": {
+              "method": "POST",
+              "uri": "@parameters('envpar_http__Graph_Notifications_Interface (new_envpar_http__Graph_Notifications_Interface)')",
+              "body": {
+                "method": "DELETE",
+                "delayMinutes": 0,
+                "body": {
+                  "changeType": "updated",
+                  "clientState": "@{parameters('envpar_config__GraphAppId (new_envpar_config__GraphAppId)')}",
+                  "notificationUrl": "@{listCallbackUrl()}",
+                  "resource": "/users"
                 }
-            },
+              }
+            }
+          }
+        }
+      },
+      "actions": {
+        "Condition": {
+          "actions": {
+            "Response_2": {
+              "runAfter": {},
+              "type": "Response",
+              "kind": "Http",
+              "inputs": {
+                "statusCode": 202
+              }
+            }
+          },
+          "runAfter": {},
+          "else": {
             "actions": {
-                "Condition": {
-                    "actions": {
-                        "Response_2": {
-                            "runAfter": {},
-                            "type": "Response",
-                            "kind": "Http",
-                            "inputs": {
-                                "statusCode": 202
-                            }
-                        }
-                    },
-                    "runAfter": {},
-                    "else": {
-                        "actions": {
-                            "Response": {
-                                "runAfter": {},
-                                "type": "Response",
-                                "kind": "Http",
-                                "inputs": {
-                                    "statusCode": 200,
-                                    "headers": {
-                                        "content-type": "text/plain"
-                                    },
-                                    "body": "@triggerOutputs()?['queries']?['validationtoken']"
-                                }
-                            },
-                            "Terminate": {
-                                "runAfter": {
-                                    "Response": [
-                                        "Succeeded"
-                                    ]
-                                },
-                                "type": "Terminate",
-                                "inputs": {
-                                    "runStatus": "Succeeded"
-                                }
-                            }
-                        }
-                    },
-                    "expression": {
-                        "equals": [
-                            "@string(triggerOutputs()?['queries']?['validationtoken'])",
-                            ""
-                        ]
-                    },
-                    "type": "If"
+              "Response": {
+                "runAfter": {},
+                "type": "Response",
+                "kind": "Http",
+                "inputs": {
+                  "statusCode": 200,
+                  "headers": {
+                    "content-type": "text/plain"
+                  },
+                  "body": "@triggerOutputs()?['queries']?['validationtoken']"
+                }
+              },
+              "Terminate": {
+                "runAfter": {
+                  "Response": [
+                    "Succeeded"
+                  ]
                 },
-                "Parse_JSON": {
+                "type": "Terminate",
+                "inputs": {
+                  "runStatus": "Succeeded"
+                }
+              }
+            }
+          },
+          "expression": {
+            "equals": [
+              "@string(triggerOutputs()?['queries']?['validationtoken'])",
+              ""
+            ]
+          },
+          "type": "If"
+        },
+        "Parse_JSON": {
+          "runAfter": {
+            "Condition": [
+              "Succeeded"
+            ]
+          },
+          "type": "ParseJson",
+          "inputs": {
+            "content": "@triggerBody()?['value']",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "changeType": {
+                    "type": "string"
+                  },
+                  "clientState": {
+                    "type": "string"
+                  },
+                  "resource": {
+                    "type": "string"
+                  },
+                  "resourceData": {
+                    "type": "object",
+                    "properties": {
+                      "@@odata.type": {
+                        "type": "string"
+                      },
+                      "@@odata.id": {
+                        "type": "string"
+                      },
+                      "id": {
+                        "type": "string"
+                      },
+                      "organizationId": {
+                        "type": "string"
+                      },
+                      "sequenceNumber": {
+                        "type": "integer"
+                      }
+                    }
+                  },
+                  "subscriptionExpirationDateTime": {
+                    "type": "string"
+                  },
+                  "subscriptionId": {
+                    "type": "string"
+                  },
+                  "tenantId": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "changeType",
+                  "clientState",
+                  "resource",
+                  "resourceData",
+                  "subscriptionExpirationDateTime",
+                  "subscriptionId",
+                  "tenantId"
+                ]
+              }
+            }
+          }
+        },
+        "Apply_to_each": {
+          "foreach": "@body('Parse_JSON')",
+          "actions": {
+            "Condition_2": {
+              "actions": {},
+              "runAfter": {},
+              "else": {
+                "actions": {
+                  "HTTP": {
+                    "runAfter": {},
+                    "type": "Http",
+                    "inputs": {
+                      "method": "GET",
+                      "uri": "https://graph.microsoft.com/v1.0/users/@{items('Apply_to_each')?['resourceData']?['id']}/?$select=userPrincipalName,mail,mailNickname,otherMails,userType,creationType,proxyAddresses,externalUserState,externalUserStateChangeDateTime,identities,assignedLicenses,assignedPlans,usageLocation",
+                      "authentication": {
+                        "type": "ActiveDirectoryOAuth",
+                        "tenant": "@parameters('envpar_config__TenantDomain (new_envpar_config__TenantDomain)')",
+                        "audience": "https://graph.microsoft.com",
+                        "clientId": "@parameters('envpar_config__GraphAppId (new_envpar_config__GraphAppId)')",
+                        "secret": "@parameters('envpar_config__GraphAppSecret (new_envpar_config__GraphAppSecret)')"
+                      }
+                    }
+                  },
+                  "Scope_3": {
+                    "actions": {},
                     "runAfter": {
-                        "Condition": [
-                            "Succeeded"
-                        ]
+                      "HTTP": [
+                        "TimedOut",
+                        "Failed"
+                      ]
+                    },
+                    "type": "Scope"
+                  },
+                  "Parse_JSON_2": {
+                    "runAfter": {
+                      "Scope_3": [
+                        "Skipped"
+                      ]
                     },
                     "type": "ParseJson",
                     "inputs": {
-                        "content": "@triggerBody()?['value']",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "object",
-                                "properties": {
-                                    "changeType": {
-                                        "type": "string"
-                                    },
-                                    "clientState": {
-                                        "type": "string"
-                                    },
-                                    "resource": {
-                                        "type": "string"
-                                    },
-                                    "resourceData": {
-                                        "type": "object",
-                                        "properties": {
-                                            "@@odata.type": {
-                                                "type": "string"
-                                            },
-                                            "@@odata.id": {
-                                                "type": "string"
-                                            },
-                                            "id": {
-                                                "type": "string"
-                                            },
-                                            "organizationId": {
-                                                "type": "string"
-                                            },
-                                            "sequenceNumber": {
-                                                "type": "integer"
-                                            }
-                                        }
-                                    },
-                                    "subscriptionExpirationDateTime": {
-                                        "type": "string"
-                                    },
-                                    "subscriptionId": {
-                                        "type": "string"
-                                    },
-                                    "tenantId": {
-                                        "type": "string"
-                                    }
-                                },
-                                "required": [
-                                    "changeType",
-                                    "clientState",
-                                    "resource",
-                                    "resourceData",
-                                    "subscriptionExpirationDateTime",
-                                    "subscriptionId",
-                                    "tenantId"
-                                ]
-                            }
+                      "content": "@body('HTTP')",
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "displayName": {
+                            "type": "string"
+                          },
+                          "mail": {
+                            "type": "string"
+                          },
+                          "userPrincipalName": {
+                            "type": "string"
+                          },
+                          "id": {
+                            "type": "string"
+                          }
                         }
+                      }
                     }
-                },
-                "Apply_to_each": {
-                    "foreach": "@body('Parse_JSON')",
+                  },
+                  "Condition_upn_has_ext": {
                     "actions": {
-                        "Condition_2": {
-                            "actions": {},
-                            "runAfter": {},
-                            "else": {
-                                "actions": {
-                                    "HTTP": {
-                                        "runAfter": {},
-                                        "type": "Http",
-                                        "inputs": {
-                                            "method": "GET",
-                                            "uri": "https://graph.microsoft.com/v1.0/users/@{items('Apply_to_each')?['resourceData']?['id']}/?$select=userPrincipalName,mail,mailNickname,otherMails,userType,creationType,proxyAddresses,externalUserState,externalUserStateChangeDateTime,identities,assignedLicenses,assignedPlans,usageLocation",
-                                            "authentication": {
-                                                "type": "ActiveDirectoryOAuth",
-                                                "tenant": "@parameters('envpar_config__TenantDomain')",
-                                                "audience": "https://graph.microsoft.com",
-                                                "clientId": "@parameters('envpar_config__GraphAppId')",
-                                                "secret": "@parameters('envpar_config__GraphAppSecret')"
-                                            }
-                                        }
-                                    },
-                                    "Scope_3": {
-                                        "actions": {},
-                                        "runAfter": {
-                                            "HTTP": [
-                                                "TimedOut",
-                                                "Failed"
-                                            ]
-                                        },
-                                        "type": "Scope"
-                                    },
-                                    "Parse_JSON_2": {
-                                        "runAfter": {
-                                            "Scope_3": [
-                                                "Skipped"
-                                            ]
-                                        },
-                                        "type": "ParseJson",
-                                        "inputs": {
-                                            "content": "@body('HTTP')",
-                                            "schema": {
-                                                "type": "object",
-                                                "properties": {
-                                                    "displayName": {
-                                                        "type": "string"
-                                                    },
-                                                    "mail": {
-                                                        "type": "string"
-                                                    },
-                                                    "userPrincipalName": {
-                                                        "type": "string"
-                                                    },
-                                                    "id": {
-                                                        "type": "string"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    },
-                                    "Condition_upn_has_ext": {
-                                        "actions": {
-                                            "HTTP_Patch_user_upn": {
-                                                "runAfter": {},
-                                                "type": "Http",
-                                                "inputs": {
-                                                    "method": "PATCH",
-                                                    "uri": "https://graph.microsoft.com/v1.0/users/@{items('Apply_to_each')?['resourceData']?['id']}",
-                                                    "headers": {
-                                                        "Content-type": "application/json"
-                                                    },
-                                                    "body": {
-                                                        "userType": "Member",
-                                                        "displayName": "@{first(split(body('Parse_JSON_2')?['userPrincipalName'], '#EXT#@'))}",
-                                                        "givenName": "@{first(split(body('Parse_JSON_2')?['userPrincipalName'], '#EXT#@'))}",
-                                                        "userPrincipalName": "@{replace(body('Parse_JSON_2')?['userPrincipalName'], '#EXT#@', '@')}",
-                                                        "usageLocation": "CA"
-                                                    },
-                                                    "authentication": {
-                                                        "type": "ActiveDirectoryOAuth",
-                                                        "tenant": "@parameters('envpar_config__TenantDomain')",
-                                                        "audience": "https://graph.microsoft.com",
-                                                        "clientId": "@parameters('envpar_config__GraphAppId')",
-                                                        "secret": "@parameters('envpar_config__GraphAppSecret')"
-                                                    }
-                                                }
-                                            },
-                                            "HTTP_Post_user_licences": {
-                                                "runAfter": {
-                                                    "HTTP_Patch_user_upn": [
-                                                        "Succeeded"
-                                                    ]
-                                                },
-                                                "type": "Http",
-                                                "inputs": {
-                                                    "method": "POST",
-                                                    "uri": "https://graph.microsoft.com/v1.0/users/@{items('Apply_to_each')?['resourceData']?['id']}/assignLicense",
-                                                    "headers": {
-                                                        "Content-type": "application/json"
-                                                    },
-                                                    "body": {
-                                                        "addLicenses": [
-                                                            {
-                                                                "disabledPlans": [],
-                                                                "skuId": "@{parameters('envpar_config__TeamsSKU')}"
-                                                            },
-                                                            {
-                                                                "disabledPlans": [],
-                                                                "skuId": "@{parameters('envpar_config__StreamSKU')}"
-                                                            },
-                                                            {
-                                                                "disabledPlans": [],
-                                                                "skuId": "@{parameters('envpar_config__FlowSKU')}"
-                                                            }
-                                                        ],
-                                                        "removeLicenses": []
-                                                    },
-                                                    "authentication": {
-                                                        "type": "ActiveDirectoryOAuth",
-                                                        "tenant": "@parameters('envpar_config__TenantDomain')",
-                                                        "audience": "https://graph.microsoft.com",
-                                                        "clientId": "@parameters('envpar_config__GraphAppId')",
-                                                        "secret": "@parameters('envpar_config__GraphAppSecret')"
-                                                    }
-                                                }
-                                            }
-                                        },
-                                        "runAfter": {
-                                            "Parse_JSON_2": [
-                                                "Succeeded"
-                                            ]
-                                        },
-                                        "expression": {
-                                            "contains": [
-                                                "@body('Parse_JSON_2')?['userPrincipalName']",
-                                                "#EXT#@"
-                                            ]
-                                        },
-                                        "type": "If"
-                                    }
-                                }
-                            },
-                            "expression": {
-                                "not": {
-                                    "equals": [
-                                        "@items('Apply_to_each')['clientState']",
-                                        "@parameters('envpar_config__GraphAppId')"
-                                    ]
-                                }
-                            },
-                            "type": "If"
+                      "HTTP_Patch_user_upn": {
+                        "runAfter": {},
+                        "type": "Http",
+                        "inputs": {
+                          "method": "PATCH",
+                          "uri": "https://graph.microsoft.com/v1.0/users/@{items('Apply_to_each')?['resourceData']?['id']}",
+                          "headers": {
+                            "Content-type": "application/json"
+                          },
+                          "body": {
+                            "userType": "Member",
+                            "displayName": "@{first(split(body('Parse_JSON_2')?['userPrincipalName'], '#EXT#@'))}",
+                            "givenName": "@{first(split(body('Parse_JSON_2')?['userPrincipalName'], '#EXT#@'))}",
+                            "userPrincipalName": "@{replace(body('Parse_JSON_2')?['userPrincipalName'], '#EXT#@', '@')}",
+                            "usageLocation": "CA"
+                          },
+                          "authentication": {
+                            "type": "ActiveDirectoryOAuth",
+                            "tenant": "@parameters('envpar_config__TenantDomain (new_envpar_config__TenantDomain)')",
+                            "audience": "https://graph.microsoft.com",
+                            "clientId": "@parameters('envpar_config__GraphAppId (new_envpar_config__GraphAppId)')",
+                            "secret": "@parameters('envpar_config__GraphAppSecret (new_envpar_config__GraphAppSecret)')"
+                          }
                         }
+                      },
+                      "HTTP_Post_user_licences": {
+                        "runAfter": {
+                          "HTTP_Patch_user_upn": [
+                            "Succeeded"
+                          ]
+                        },
+                        "type": "Http",
+                        "inputs": {
+                          "method": "POST",
+                          "uri": "https://graph.microsoft.com/v1.0/users/@{items('Apply_to_each')?['resourceData']?['id']}/assignLicense",
+                          "headers": {
+                            "Content-type": "application/json"
+                          },
+                          "body": {
+                            "addLicenses": [
+                              {
+                                "disabledPlans": [],
+                                "skuId": "@{parameters('envpar_config__TeamsSKU (new_envpar_config__TeamsSKU)')}"
+                              },
+                              {
+                                "disabledPlans": [],
+                                "skuId": "@{parameters('envpar_config__StreamSKU (new_envpar_config__StreamSKU)')}"
+                              },
+                              {
+                                "disabledPlans": [],
+                                "skuId": "@{parameters('envpar_config__FlowSKU (new_envpar_config__FlowSKU)')}"
+                              }
+                            ],
+                            "removeLicenses": []
+                          },
+                          "authentication": {
+                            "type": "ActiveDirectoryOAuth",
+                            "tenant": "@parameters('envpar_config__TenantDomain (new_envpar_config__TenantDomain)')",
+                            "audience": "https://graph.microsoft.com",
+                            "clientId": "@parameters('envpar_config__GraphAppId (new_envpar_config__GraphAppId)')",
+                            "secret": "@parameters('envpar_config__GraphAppSecret (new_envpar_config__GraphAppSecret)')"
+                          }
+                        }
+                      }
                     },
                     "runAfter": {
-                        "Parse_JSON": [
-                            "Succeeded"
-                        ]
+                      "Parse_JSON_2": [
+                        "Succeeded"
+                      ]
                     },
-                    "type": "Foreach"
+                    "expression": {
+                      "contains": [
+                        "@body('Parse_JSON_2')?['userPrincipalName']",
+                        "#EXT#@"
+                      ]
+                    },
+                    "type": "If"
+                  }
                 }
-            },
-            "outputs": {}
+              },
+              "expression": {
+                "not": {
+                  "equals": [
+                    "@items('Apply_to_each')['clientState']",
+                    "@parameters('envpar_config__GraphAppId (new_envpar_config__GraphAppId)')"
+                  ]
+                }
+              },
+              "type": "If"
+            }
+          },
+          "runAfter": {
+            "Parse_JSON": [
+              "Succeeded"
+            ]
+          },
+          "type": "Foreach"
         }
-    },
-    "schemaVersion": "1.0.0.0"
+      },
+      "outputs": {}
+    }
+  },
+  "schemaVersion": "1.0.0.0"
 }

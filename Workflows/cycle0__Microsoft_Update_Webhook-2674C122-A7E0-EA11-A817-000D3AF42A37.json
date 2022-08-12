@@ -1,864 +1,864 @@
 {
-    "properties": {
-        "connectionReferences": {
-            "shared_sharepointonline": {
-                "runtimeSource": "embedded",
-                "connection": {
-                    "connectionReferenceLogicalName": "new_sharedsharepointonline_9ad14"
-                },
-                "api": {
-                    "name": "shared_sharepointonline"
-                }
-            }
+  "properties": {
+    "connectionReferences": {
+      "shared_sharepointonline": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedsharepointonline_9ad14"
         },
-        "definition": {
-            "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
-            "contentVersion": "1.0.0.0",
+        "api": {
+          "name": "shared_sharepointonline"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "envpar_config__TenantName (new_envpar_config__TenantName)": {
+          "defaultValue": "",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_envpar_config__TenantName"
+          }
+        },
+        "envpar_config__CycleZeroName (new_envpar_config__CycleZeroName)": {
+          "defaultValue": "",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_envpar_config__CycleZeroName"
+          }
+        },
+        "envpar_config__TenantDomain (new_envpar_config__TenantDomain)": {
+          "defaultValue": "",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_envpar_config__TenantDomain"
+          }
+        },
+        "envpar_config__GraphAppId (new_envpar_config__GraphAppId)": {
+          "defaultValue": "",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_envpar_config__GraphAppId",
+            "description": "enter space character ( ) for none"
+          }
+        },
+        "envpar_config__GraphAppSecret (new_envpar_config__GraphAppSecret)": {
+          "defaultValue": "",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_envpar_config__GraphAppSecret",
+            "description": "enter space character ( ) for none"
+          }
+        },
+        "envpar_config__MicrosoftAppId (new_envpar_config__MicrosoftAppId)": {
+          "defaultValue": "",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_envpar_config__MicrosoftAppId",
+            "description": "enter space character ( ) for none"
+          }
+        },
+        "envpar_config__MicrosoftAppSecret (new_envpar_config__MicrosoftAppSecret)": {
+          "defaultValue": "",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_envpar_config__MicrosoftAppSecret",
+            "description": "enter space character ( ) for none"
+          }
+        }
+      },
+      "triggers": {
+        "manual": {
+          "type": "Request",
+          "kind": "Http",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "activityId": {
+                  "type": "string"
+                },
+                "subscriptionId": {
+                  "type": "string"
+                },
+                "publisherId": {
+                  "type": "string"
+                },
+                "offerId": {
+                  "type": "string"
+                },
+                "planId": {
+                  "type": "string"
+                },
+                "quantity": {
+                  "type": "string"
+                },
+                "timeStamp": {
+                  "type": "string"
+                },
+                "action": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "Cycle1GroupName": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "actions": {
+        "Response_OK": {
+          "runAfter": {},
+          "type": "Response",
+          "kind": "Http",
+          "inputs": {
+            "statusCode": 200
+          }
+        },
+        "Get_items_GroupsList": {
+          "runAfter": {
+            "Initialize_variable_IndexOfPrice": [
+              "Succeeded"
+            ]
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_sharepointonline",
+              "operationId": "GetItems",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+            },
             "parameters": {
-                "$connections": {
-                    "defaultValue": {},
-                    "type": "Object"
-                },
-                "$authentication": {
-                    "defaultValue": {},
-                    "type": "SecureObject"
-                },
-                "envpar_config__TenantName": {
-                    "defaultValue": "",
-                    "type": "String",
-                    "metadata": {
-                        "schemaName": "new_envpar_config__TenantName"
-                    }
-                },
-                "envpar_config__CycleZeroName": {
-                    "defaultValue": "",
-                    "type": "String",
-                    "metadata": {
-                        "schemaName": "new_envpar_config__CycleZeroName"
-                    }
-                },
-                "envpar_config__TenantDomain": {
-                    "defaultValue": "",
-                    "type": "String",
-                    "metadata": {
-                        "schemaName": "new_envpar_config__TenantDomain"
-                    }
-                },
-                "envpar_config__GraphAppId": {
-                    "defaultValue": "",
-                    "type": "String",
-                    "metadata": {
-                        "schemaName": "new_envpar_config__GraphAppId",
-                        "description": "enter space character ( ) for none"
-                    }
-                },
-                "envpar_config__GraphAppSecret": {
-                    "defaultValue": "",
-                    "type": "String",
-                    "metadata": {
-                        "schemaName": "new_envpar_config__GraphAppSecret",
-                        "description": "enter space character ( ) for none"
-                    }
-                },
-                "envpar_config__MicrosoftAppId": {
-                    "defaultValue": "",
-                    "type": "String",
-                    "metadata": {
-                        "schemaName": "new_envpar_config__MicrosoftAppId",
-                        "description": "enter space character ( ) for none"
-                    }
-                },
-                "envpar_config__MicrosoftAppSecret": {
-                    "defaultValue": "",
-                    "type": "String",
-                    "metadata": {
-                        "schemaName": "new_envpar_config__MicrosoftAppSecret",
-                        "description": "enter space character ( ) for none"
-                    }
-                }
+              "dataset": "https://@{parameters('envpar_config__TenantName (new_envpar_config__TenantName)')}.sharepoint.com/sites/@{parameters('envpar_config__CycleZeroName (new_envpar_config__CycleZeroName)')}",
+              "table": "GroupsList",
+              "$filter": "Cycle1GroupName eq '@{triggerBody()?['Cycle1GroupName']}'",
+              "$top": 1
             },
-            "triggers": {
-                "manual": {
-                    "type": "Request",
-                    "kind": "Http",
-                    "inputs": {
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "id": {
-                                    "type": "string"
-                                },
-                                "activityId": {
-                                    "type": "string"
-                                },
-                                "subscriptionId": {
-                                    "type": "string"
-                                },
-                                "publisherId": {
-                                    "type": "string"
-                                },
-                                "offerId": {
-                                    "type": "string"
-                                },
-                                "planId": {
-                                    "type": "string"
-                                },
-                                "quantity": {
-                                    "type": "string"
-                                },
-                                "timeStamp": {
-                                    "type": "string"
-                                },
-                                "action": {
-                                    "type": "string"
-                                },
-                                "status": {
-                                    "type": "string"
-                                },
-                                "Cycle1GroupName": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                }
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Initialize_variable_PriceActive": {
+          "runAfter": {
+            "Response_OK": [
+              "Succeeded"
+            ]
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "PriceActive",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Initialize_variable_IndexOfPrice": {
+          "runAfter": {
+            "Initialize_variable_PriceActive": [
+              "Succeeded"
+            ]
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "IndexOfPrice",
+                "type": "integer",
+                "value": -1
+              }
+            ]
+          }
+        },
+        "Apply_to_each_GroupsList": {
+          "foreach": "@outputs('Get_items_GroupsList')?['body/value']",
+          "actions": {
+            "Scope_5": {
+              "actions": {},
+              "runAfter": {},
+              "type": "Scope"
             },
-            "actions": {
-                "Response_OK": {
-                    "runAfter": {},
-                    "type": "Response",
-                    "kind": "Http",
-                    "inputs": {
-                        "statusCode": 200
-                    }
+            "HTTP_Validate_operation": {
+              "runAfter": {
+                "Scope_5": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Http",
+              "inputs": {
+                "method": "GET",
+                "uri": "https://marketplaceapi.microsoft.com/api/saas/subscriptions/@{triggerBody()?['subscriptionId']}/operations/@{triggerBody()?['id']}?api-version=2018-08-31",
+                "headers": {
+                  "Content-type": "application/json"
                 },
-                "Get_items_GroupsList": {
-                    "runAfter": {
-                        "Initialize_variable_IndexOfPrice": [
-                            "Succeeded"
-                        ]
+                "authentication": {
+                  "type": "ActiveDirectoryOAuth",
+                  "tenant": "@parameters('envpar_config__TenantDomain (new_envpar_config__TenantDomain)')",
+                  "audience": "20e940b3-4c77-4b0b-9a53-9e16a1b010a7",
+                  "clientId": "@parameters('envpar_config__MicrosoftAppId (new_envpar_config__MicrosoftAppId)')",
+                  "secret": "@parameters('envpar_config__MicrosoftAppSecret (new_envpar_config__MicrosoftAppSecret)')"
+                }
+              }
+            },
+            "Parse_JSON_Validate_operation": {
+              "runAfter": {
+                "HTTP_Validate_operation": [
+                  "Succeeded"
+                ]
+              },
+              "type": "ParseJson",
+              "inputs": {
+                "content": "@body('HTTP_Validate_operation')",
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
                     },
-                    "type": "OpenApiConnection",
-                    "inputs": {
+                    "activityId": {
+                      "type": "string"
+                    },
+                    "publisherId": {
+                      "type": "string"
+                    },
+                    "offerId": {
+                      "type": "string"
+                    },
+                    "planId": {
+                      "type": "string"
+                    },
+                    "quantity": {
+                      "type": "integer"
+                    },
+                    "operationRequestSource": {
+                      "type": "string"
+                    },
+                    "subscriptionId": {
+                      "type": "string"
+                    },
+                    "timeStamp": {
+                      "type": "string"
+                    },
+                    "action": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "Condition": {
+              "actions": {
+                "Scope": {
+                  "actions": {
+                    "Compose_PricesAll": {
+                      "runAfter": {
+                        "Condition_4": [
+                          "Succeeded"
+                        ]
+                      },
+                      "type": "Compose",
+                      "inputs": "@union(json(items('Apply_to_each_GroupsList')?['CyclesGroups']), json(concat('[ { \"CyclesGroupName\" : \"', items('Apply_to_each_GroupsList')?['Cycle1GroupName'], '\", \"CyclesGroupId\" : \"', items('Apply_to_each_GroupsList')?['Cycle1GroupId'], '\" , \"StripePrices\" : \"', items('Apply_to_each_GroupsList')?['StripePrice0'], '\" , \"MicrosoftPrices\" : \"', items('Apply_to_each_GroupsList')?['MicrosoftPrice0'], '\" } ]')))"
+                    },
+                    "Get_items_UsersList": {
+                      "runAfter": {
+                        "Compose_PricesAll": [
+                          "Succeeded"
+                        ]
+                      },
+                      "type": "OpenApiConnection",
+                      "inputs": {
                         "host": {
-                            "connectionName": "shared_sharepointonline",
-                            "operationId": "GetItems",
-                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                          "connectionName": "shared_sharepointonline",
+                          "operationId": "GetItems",
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
                         },
                         "parameters": {
-                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{parameters('envpar_config__CycleZeroName')}",
-                            "table": "GroupsList",
-                            "$filter": "Cycle1GroupName eq '@{triggerBody()?['Cycle1GroupName']}'",
-                            "$top": 1
+                          "dataset": "https://@{parameters('envpar_config__TenantName (new_envpar_config__TenantName)')}.sharepoint.com/sites/@{items('Apply_to_each_GroupsList')?['Cycle1GroupName']}",
+                          "table": "UsersList",
+                          "$filter": "MicrosoftSubscriptionId eq '@{body('Parse_JSON_Validate_operation')?['subscriptionId']}'",
+                          "$top": 1
                         },
                         "authentication": "@parameters('$authentication')"
-                    }
-                },
-                "Initialize_variable_PriceActive": {
-                    "runAfter": {
-                        "Response_OK": [
-                            "Succeeded"
-                        ]
+                      }
                     },
-                    "type": "InitializeVariable",
-                    "inputs": {
-                        "variables": [
-                            {
-                                "name": "PriceActive",
-                                "type": "string"
-                            }
-                        ]
-                    }
-                },
-                "Initialize_variable_IndexOfPrice": {
-                    "runAfter": {
-                        "Initialize_variable_PriceActive": [
-                            "Succeeded"
-                        ]
-                    },
-                    "type": "InitializeVariable",
-                    "inputs": {
-                        "variables": [
-                            {
-                                "name": "IndexOfPrice",
-                                "type": "integer",
-                                "value": -1
-                            }
-                        ]
-                    }
-                },
-                "Apply_to_each_GroupsList": {
-                    "foreach": "@outputs('Get_items_GroupsList')?['body/value']",
-                    "actions": {
-                        "Scope_5": {
-                            "actions": {},
-                            "runAfter": {},
-                            "type": "Scope"
-                        },
-                        "HTTP_Validate_operation": {
-                            "runAfter": {
-                                "Scope_5": [
-                                    "Succeeded"
-                                ]
-                            },
-                            "type": "Http",
-                            "inputs": {
-                                "method": "GET",
-                                "uri": "https://marketplaceapi.microsoft.com/api/saas/subscriptions/@{triggerBody()?['subscriptionId']}/operations/@{triggerBody()?['id']}?api-version=2018-08-31",
-                                "headers": {
-                                    "Content-type": "application/json"
-                                },
-                                "authentication": {
-                                    "type": "ActiveDirectoryOAuth",
-                                    "tenant": "@parameters('envpar_config__TenantDomain')",
-                                    "audience": "20e940b3-4c77-4b0b-9a53-9e16a1b010a7",
-                                    "clientId": "@parameters('envpar_config__MicrosoftAppId')",
-                                    "secret": "@parameters('envpar_config__MicrosoftAppSecret')"
-                                }
-                            }
-                        },
-                        "Parse_JSON_Validate_operation": {
-                            "runAfter": {
-                                "HTTP_Validate_operation": [
-                                    "Succeeded"
-                                ]
-                            },
-                            "type": "ParseJson",
-                            "inputs": {
-                                "content": "@body('HTTP_Validate_operation')",
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "id": {
-                                            "type": "string"
-                                        },
-                                        "activityId": {
-                                            "type": "string"
-                                        },
-                                        "publisherId": {
-                                            "type": "string"
-                                        },
-                                        "offerId": {
-                                            "type": "string"
-                                        },
-                                        "planId": {
-                                            "type": "string"
-                                        },
-                                        "quantity": {
-                                            "type": "integer"
-                                        },
-                                        "operationRequestSource": {
-                                            "type": "string"
-                                        },
-                                        "subscriptionId": {
-                                            "type": "string"
-                                        },
-                                        "timeStamp": {
-                                            "type": "string"
-                                        },
-                                        "action": {
-                                            "type": "string"
-                                        },
-                                        "status": {
-                                            "type": "string"
-                                        }
+                    "Apply_to_each_4": {
+                      "foreach": "@outputs('Get_items_UsersList')?['body/value']",
+                      "actions": {
+                        "Scope_2": {
+                          "actions": {
+                            "Do_until": {
+                              "actions": {
+                                "Parse_JSON_2": {
+                                  "runAfter": {},
+                                  "type": "ParseJson",
+                                  "inputs": {
+                                    "content": "@coalesce(outputs('Compose_PricesAll')?[iterationIndexes('Do_until')], json('{}'))",
+                                    "schema": {
+                                      "type": "object",
+                                      "properties": {}
                                     }
-                                }
-                            }
-                        },
-                        "Condition": {
-                            "actions": {
-                                "Scope": {
+                                  }
+                                },
+                                "Condition_6": {
+                                  "actions": {
+                                    "Set_variable_IndexOfPrice": {
+                                      "runAfter": {},
+                                      "type": "SetVariable",
+                                      "inputs": {
+                                        "name": "IndexOfPrice",
+                                        "value": "@if(equals(body('Parse_JSON_2')?['MicrosoftPrices'], null), sub(iterationIndexes('Do_until'), 1) , iterationIndexes('Do_until') )"
+                                      }
+                                    }
+                                  },
+                                  "runAfter": {
+                                    "Parse_JSON_2": [
+                                      "Succeeded"
+                                    ]
+                                  },
+                                  "else": {
                                     "actions": {
-                                        "Compose_PricesAll": {
-                                            "runAfter": {
-                                                "Condition_4": [
-                                                    "Succeeded"
-                                                ]
-                                            },
-                                            "type": "Compose",
-                                            "inputs": "@union(json(items('Apply_to_each_GroupsList')?['CyclesGroups']), json(concat('[ { \"CyclesGroupName\" : \"', items('Apply_to_each_GroupsList')?['Cycle1GroupName'], '\", \"CyclesGroupId\" : \"', items('Apply_to_each_GroupsList')?['Cycle1GroupId'], '\" , \"StripePrices\" : \"', items('Apply_to_each_GroupsList')?['StripePrice0'], '\" , \"MicrosoftPrices\" : \"', items('Apply_to_each_GroupsList')?['MicrosoftPrice0'], '\" } ]')))"
-                                        },
-                                        "Get_items_UsersList": {
-                                            "runAfter": {
-                                                "Compose_PricesAll": [
-                                                    "Succeeded"
-                                                ]
-                                            },
-                                            "type": "OpenApiConnection",
-                                            "inputs": {
-                                                "host": {
-                                                    "connectionName": "shared_sharepointonline",
-                                                    "operationId": "GetItems",
-                                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
-                                                },
-                                                "parameters": {
-                                                    "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{items('Apply_to_each_GroupsList')?['Cycle1GroupName']}",
-                                                    "table": "UsersList",
-                                                    "$filter": "MicrosoftSubscriptionId eq '@{body('Parse_JSON_Validate_operation')?['subscriptionId']}'",
-                                                    "$top": 1
-                                                },
-                                                "authentication": "@parameters('$authentication')"
-                                            }
-                                        },
-                                        "Apply_to_each_4": {
-                                            "foreach": "@outputs('Get_items_UsersList')?['body/value']",
-                                            "actions": {
-                                                "Scope_2": {
-                                                    "actions": {
-                                                        "Do_until": {
-                                                            "actions": {
-                                                                "Parse_JSON_2": {
-                                                                    "runAfter": {},
-                                                                    "type": "ParseJson",
-                                                                    "inputs": {
-                                                                        "content": "@coalesce(outputs('Compose_PricesAll')?[iterationIndexes('Do_until')], json('{}'))",
-                                                                        "schema": {
-                                                                            "type": "object",
-                                                                            "properties": {}
-                                                                        }
-                                                                    }
-                                                                },
-                                                                "Condition_6": {
-                                                                    "actions": {
-                                                                        "Set_variable_IndexOfPrice": {
-                                                                            "runAfter": {},
-                                                                            "type": "SetVariable",
-                                                                            "inputs": {
-                                                                                "name": "IndexOfPrice",
-                                                                                "value": "@if(equals(body('Parse_JSON_2')?['MicrosoftPrices'], null), sub(iterationIndexes('Do_until'), 1) , iterationIndexes('Do_until') )"
-                                                                            }
-                                                                        }
-                                                                    },
-                                                                    "runAfter": {
-                                                                        "Parse_JSON_2": [
-                                                                            "Succeeded"
-                                                                        ]
-                                                                    },
-                                                                    "else": {
-                                                                        "actions": {
-                                                                            "HTTP_Remove_user": {
-                                                                                "runAfter": {},
-                                                                                "type": "Http",
-                                                                                "inputs": {
-                                                                                    "method": "DELETE",
-                                                                                    "uri": "https://graph.microsoft.com/v1.0/groups/@{body('Parse_JSON_2')['CyclesGroupId']}/members/@{items('Apply_to_each_4')?['UID']}/$ref",
-                                                                                    "authentication": {
-                                                                                        "type": "ActiveDirectoryOAuth",
-                                                                                        "tenant": "@parameters('envpar_config__TenantDomain')",
-                                                                                        "audience": "https://graph.microsoft.com",
-                                                                                        "clientId": "@parameters('envpar_config__GraphAppId')",
-                                                                                        "secret": "@parameters('envpar_config__GraphAppSecret')"
-                                                                                    }
-                                                                                }
-                                                                            },
-                                                                            "Scope_3": {
-                                                                                "actions": {},
-                                                                                "runAfter": {
-                                                                                    "HTTP_Remove_user": [
-                                                                                        "Failed",
-                                                                                        "Skipped",
-                                                                                        "TimedOut"
-                                                                                    ]
-                                                                                },
-                                                                                "type": "Scope"
-                                                                            }
-                                                                        }
-                                                                    },
-                                                                    "expression": {
-                                                                        "or": [
-                                                                            {
-                                                                                "equals": [
-                                                                                    "@body('Parse_JSON_2')?['MicrosoftPrices']",
-                                                                                    "@variables('PriceActive')"
-                                                                                ]
-                                                                            },
-                                                                            {
-                                                                                "equals": [
-                                                                                    "@body('Parse_JSON_2')?['MicrosoftPrices']",
-                                                                                    "@null"
-                                                                                ]
-                                                                            }
-                                                                        ]
-                                                                    },
-                                                                    "type": "If"
-                                                                }
-                                                            },
-                                                            "runAfter": {},
-                                                            "expression": "@greaterOrEquals(variables('IndexOfPrice'), 0)",
-                                                            "limit": {
-                                                                "count": 60,
-                                                                "timeout": "PT1H"
-                                                            },
-                                                            "type": "Until"
-                                                        },
-                                                        "Parse_JSON": {
-                                                            "runAfter": {
-                                                                "Do_until": [
-                                                                    "Succeeded"
-                                                                ]
-                                                            },
-                                                            "type": "ParseJson",
-                                                            "inputs": {
-                                                                "content": "@skip(outputs('Compose_PricesAll'), variables('IndexOfPrice'))",
-                                                                "schema": {
-                                                                    "type": "array",
-                                                                    "items": {
-                                                                        "type": "object",
-                                                                        "properties": {
-                                                                            "CyclesGroupName": {
-                                                                                "type": "string"
-                                                                            },
-                                                                            "CyclesGroupId": {
-                                                                                "type": "string"
-                                                                            },
-                                                                            "StripePrices": {
-                                                                                "type": "string"
-                                                                            },
-                                                                            "MicrosoftPrices": {
-                                                                                "type": "string"
-                                                                            }
-                                                                        },
-                                                                        "required": [
-                                                                            "CyclesGroupName",
-                                                                            "CyclesGroupId",
-                                                                            "StripePrices",
-                                                                            "MicrosoftPrices"
-                                                                        ]
-                                                                    }
-                                                                }
-                                                            }
-                                                        },
-                                                        "Apply_to_each_3": {
-                                                            "foreach": "@body('Parse_JSON')",
-                                                            "actions": {
-                                                                "HTTP_Add_user": {
-                                                                    "runAfter": {},
-                                                                    "type": "Http",
-                                                                    "inputs": {
-                                                                        "method": "POST",
-                                                                        "uri": "https://graph.microsoft.com/v1.0/groups/@{items('Apply_to_each_3')['CyclesGroupId']}/members/$ref",
-                                                                        "headers": {
-                                                                            "Content-type": "application/json"
-                                                                        },
-                                                                        "body": {
-                                                                            "@@odata.id": "https://graph.microsoft.com/v1.0/directoryObjects/@{items('Apply_to_each_4')?['UID']}"
-                                                                        },
-                                                                        "authentication": {
-                                                                            "type": "ActiveDirectoryOAuth",
-                                                                            "tenant": "@parameters('envpar_config__TenantDomain')",
-                                                                            "audience": "https://graph.microsoft.com",
-                                                                            "clientId": "@parameters('envpar_config__GraphAppId')",
-                                                                            "secret": "@parameters('envpar_config__GraphAppSecret')"
-                                                                        }
-                                                                    }
-                                                                },
-                                                                "Scope_4": {
-                                                                    "actions": {},
-                                                                    "runAfter": {
-                                                                        "HTTP_Add_user": [
-                                                                            "Failed",
-                                                                            "Skipped",
-                                                                            "TimedOut"
-                                                                        ]
-                                                                    },
-                                                                    "type": "Scope"
-                                                                }
-                                                            },
-                                                            "runAfter": {
-                                                                "Parse_JSON": [
-                                                                    "Succeeded"
-                                                                ]
-                                                            },
-                                                            "type": "Foreach"
-                                                        }
-                                                    },
-                                                    "runAfter": {},
-                                                    "type": "Scope"
-                                                },
-                                                "Update_item_UsersList": {
-                                                    "runAfter": {
-                                                        "Condition_2": [
-                                                            "Succeeded"
-                                                        ]
-                                                    },
-                                                    "type": "OpenApiConnection",
-                                                    "inputs": {
-                                                        "host": {
-                                                            "connectionName": "shared_sharepointonline",
-                                                            "operationId": "PatchItem",
-                                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
-                                                        },
-                                                        "parameters": {
-                                                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{items('Apply_to_each_GroupsList')?['Cycle1GroupName']}",
-                                                            "table": "UsersList",
-                                                            "id": "@items('Apply_to_each_4')?['ID']",
-                                                            "item": {
-                                                                "Title": "@items('Apply_to_each_4')?['Title']",
-                                                                "MicrosoftSubscriptionStatus": "@{body('Parse_JSON_subscription')?['saasSubscriptionStatus']}",
-                                                                "MicrosoftPriceId": "@{body('Parse_JSON_Validate_operation')?['planId']}",
-                                                                "MicrosoftPriceStatus": "@{body('Parse_JSON_Validate_operation')?['status']}",
-                                                                "MicrosoftLastMetered": "@{utcNow()}"
-                                                            }
-                                                        },
-                                                        "authentication": "@parameters('$authentication')"
-                                                    }
-                                                },
-                                                "Create_item_LogsList": {
-                                                    "runAfter": {
-                                                        "Update_item_UsersList": [
-                                                            "Succeeded"
-                                                        ]
-                                                    },
-                                                    "type": "OpenApiConnection",
-                                                    "inputs": {
-                                                        "host": {
-                                                            "connectionName": "shared_sharepointonline",
-                                                            "operationId": "PostItem",
-                                                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
-                                                        },
-                                                        "parameters": {
-                                                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{items('Apply_to_each_GroupsList')?['Cycle1GroupName']}",
-                                                            "table": "LogsList",
-                                                            "item": {
-                                                                "Title": "Updated @{items('Apply_to_each_4')?['Title']} to price @{body('Parse_JSON_Validate_operation')?['planId']} subscription status @{body('Parse_JSON_subscription')?['saasSubscriptionStatus']}",
-                                                                "Resource": "UsersList",
-                                                                "ResourceId": "@items('Apply_to_each_4')?['Title']",
-                                                                "ChangeType": "UPDATE",
-                                                                "Source": "cycle0__Microsoft_Update_Webhook",
-                                                                "LogDescription": ""
-                                                            }
-                                                        },
-                                                        "authentication": "@parameters('$authentication')"
-                                                    }
-                                                },
-                                                "Condition_2": {
-                                                    "actions": {
-                                                        "HTTP_Meter": {
-                                                            "runAfter": {},
-                                                            "type": "Http",
-                                                            "inputs": {
-                                                                "method": "POST",
-                                                                "uri": "https://marketplaceapi.microsoft.com/api/usageEvent?api-version=2018-08-31",
-                                                                "headers": {
-                                                                    "Content-type": "application/json"
-                                                                },
-                                                                "body": {
-                                                                    "resourceId": "@{items('Apply_to_each_4')?['MicrosoftSubscriptionId']}",
-                                                                    "quantity": "@div(div(sub(ticks(utcNow()), ticks(items('Apply_to_each_4')?['MicrosoftLastMetered'])), float(36000000000)), 720)",
-                                                                    "dimension": "@{json(items('Apply_to_each_GroupsList')?['MicrosoftMeterDict'])?[items('Apply_to_each_4')?['MicrosoftPriceId']]}",
-                                                                    "effectiveStartTime": "@{items('Apply_to_each_4')?['MicrosoftLastMetered']}",
-                                                                    "planId": "@{items('Apply_to_each_4')?['MicrosoftPriceId']}"
-                                                                },
-                                                                "authentication": {
-                                                                    "type": "ActiveDirectoryOAuth",
-                                                                    "tenant": "@parameters('envpar_config__TenantDomain')",
-                                                                    "audience": "20e940b3-4c77-4b0b-9a53-9e16a1b010a7",
-                                                                    "clientId": "@parameters('envpar_config__MicrosoftAppId')",
-                                                                    "secret": "@parameters('envpar_config__MicrosoftAppSecret')"
-                                                                }
-                                                            }
-                                                        },
-                                                        "Scope_6": {
-                                                            "actions": {},
-                                                            "runAfter": {
-                                                                "HTTP_Meter": [
-                                                                    "Failed"
-                                                                ]
-                                                            },
-                                                            "type": "Scope"
-                                                        }
-                                                    },
-                                                    "runAfter": {
-                                                        "Scope_2": [
-                                                            "Succeeded"
-                                                        ]
-                                                    },
-                                                    "expression": {
-                                                        "and": [
-                                                            {
-                                                                "equals": [
-                                                                    "@items('Apply_to_each_4')?['MicrosoftSubscriptionStatus']",
-                                                                    "Subscribed"
-                                                                ]
-                                                            },
-                                                            {
-                                                                "not": {
-                                                                    "equals": [
-                                                                        "@items('Apply_to_each_4')?['MicrosoftPriceId']",
-                                                                        "@items('Apply_to_each_GroupsList')?['MicrosoftPrice0']"
-                                                                    ]
-                                                                }
-                                                            },
-                                                            {
-                                                                "not": {
-                                                                    "equals": [
-                                                                        "@json(items('Apply_to_each_GroupsList')?['MicrosoftMeterDict'])?[items('Apply_to_each_4')?['MicrosoftPriceId']]",
-                                                                        ""
-                                                                    ]
-                                                                }
-                                                            }
-                                                        ]
-                                                    },
-                                                    "type": "If"
-                                                }
-                                            },
-                                            "runAfter": {
-                                                "Get_items_UsersList": [
-                                                    "Succeeded"
-                                                ]
-                                            },
-                                            "type": "Foreach"
-                                        },
-                                        "HTTP_Get_subscription": {
-                                            "runAfter": {},
-                                            "type": "Http",
-                                            "inputs": {
-                                                "method": "GET",
-                                                "uri": "https://marketplaceapi.microsoft.com/api/saas/subscriptions/@{triggerBody()?['subscriptionId']}?api-version=2018-08-31",
-                                                "headers": {
-                                                    "Content-type": "application/json"
-                                                },
-                                                "authentication": {
-                                                    "type": "ActiveDirectoryOAuth",
-                                                    "tenant": "@parameters('envpar_config__TenantDomain')",
-                                                    "audience": "20e940b3-4c77-4b0b-9a53-9e16a1b010a7",
-                                                    "clientId": "@parameters('envpar_config__MicrosoftAppId')",
-                                                    "secret": "@parameters('envpar_config__MicrosoftAppSecret')"
-                                                }
-                                            }
-                                        },
-                                        "Parse_JSON_subscription": {
-                                            "runAfter": {
-                                                "HTTP_Get_subscription": [
-                                                    "Succeeded"
-                                                ]
-                                            },
-                                            "type": "ParseJson",
-                                            "inputs": {
-                                                "content": "@body('HTTP_Get_subscription')",
-                                                "schema": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "id": {
-                                                            "type": "string"
-                                                        },
-                                                        "publisherId": {
-                                                            "type": "string"
-                                                        },
-                                                        "offerId": {
-                                                            "type": "string"
-                                                        },
-                                                        "name": {
-                                                            "type": "string"
-                                                        },
-                                                        "saasSubscriptionStatus": {
-                                                            "type": "string"
-                                                        },
-                                                        "beneficiary": {
-                                                            "type": "object",
-                                                            "properties": {
-                                                                "emailId": {
-                                                                    "type": "string"
-                                                                },
-                                                                "objectId": {
-                                                                    "type": "string"
-                                                                },
-                                                                "tenantId": {
-                                                                    "type": "string"
-                                                                },
-                                                                "groupIds": {
-                                                                    "type": "array",
-                                                                    "items": {
-                                                                        "type": "string"
-                                                                    }
-                                                                },
-                                                                "puid": {
-                                                                    "type": "string"
-                                                                },
-                                                                "iss": {
-                                                                    "type": "string"
-                                                                },
-                                                                "idp": {
-                                                                    "type": "string"
-                                                                }
-                                                            }
-                                                        },
-                                                        "purchaser": {
-                                                            "type": "object",
-                                                            "properties": {
-                                                                "emailId": {
-                                                                    "type": "string"
-                                                                },
-                                                                "objectId": {
-                                                                    "type": "string"
-                                                                },
-                                                                "tenantId": {
-                                                                    "type": "string"
-                                                                },
-                                                                "groupIds": {
-                                                                    "type": "array",
-                                                                    "items": {
-                                                                        "type": "string"
-                                                                    }
-                                                                },
-                                                                "puid": {
-                                                                    "type": "string"
-                                                                },
-                                                                "iss": {
-                                                                    "type": "string"
-                                                                },
-                                                                "idp": {
-                                                                    "type": "string"
-                                                                }
-                                                            }
-                                                        },
-                                                        "planId": {
-                                                            "type": "string"
-                                                        },
-                                                        "term": {
-                                                            "type": "object",
-                                                            "properties": {
-                                                                "startDate": {
-                                                                    "type": "string"
-                                                                },
-                                                                "endDate": {
-                                                                    "type": "string"
-                                                                },
-                                                                "termUnit": {
-                                                                    "type": "string"
-                                                                }
-                                                            }
-                                                        },
-                                                        "autoRenew": {
-                                                            "type": "boolean"
-                                                        },
-                                                        "isTest": {
-                                                            "type": "boolean"
-                                                        },
-                                                        "isFreeTrial": {
-                                                            "type": "boolean"
-                                                        },
-                                                        "allowedCustomerOperations": {
-                                                            "type": "array",
-                                                            "items": {
-                                                                "type": "string"
-                                                            }
-                                                        },
-                                                        "sessionId": {
-                                                            "type": "string"
-                                                        },
-                                                        "fulfillmentId": {
-                                                            "type": "string"
-                                                        },
-                                                        "storeFront": {
-                                                            "type": "string"
-                                                        },
-                                                        "sandboxType": {
-                                                            "type": "string"
-                                                        },
-                                                        "created": {
-                                                            "type": "string"
-                                                        },
-                                                        "lastModified": {
-                                                            "type": "string"
-                                                        },
-                                                        "sessionMode": {
-                                                            "type": "string"
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        },
-                                        "Condition_4": {
-                                            "actions": {
-                                                "Set_variable": {
-                                                    "runAfter": {},
-                                                    "type": "SetVariable",
-                                                    "inputs": {
-                                                        "name": "PriceActive",
-                                                        "value": "@body('Parse_JSON_Validate_operation')?['planId']"
-                                                    }
-                                                }
-                                            },
-                                            "runAfter": {
-                                                "Parse_JSON_subscription": [
-                                                    "Succeeded"
-                                                ]
-                                            },
-                                            "else": {
-                                                "actions": {
-                                                    "Set_variable_2": {
-                                                        "runAfter": {},
-                                                        "type": "SetVariable",
-                                                        "inputs": {
-                                                            "name": "PriceActive",
-                                                            "value": "@items('Apply_to_each_GroupsList')?['MicrosoftPrice0']"
-                                                        }
-                                                    }
-                                                }
-                                            },
-                                            "expression": {
-                                                "equals": [
-                                                    "@body('Parse_JSON_subscription')?['saasSubscriptionStatus']",
-                                                    "Subscribed"
-                                                ]
-                                            },
-                                            "type": "If"
-                                        }
-                                    },
-                                    "runAfter": {},
-                                    "type": "Scope"
-                                }
-                            },
-                            "runAfter": {
-                                "Parse_JSON_Validate_operation": [
-                                    "Succeeded"
-                                ]
-                            },
-                            "else": {
-                                "actions": {
-                                    "HTTP_Patch_operation": {
+                                      "HTTP_Remove_user": {
                                         "runAfter": {},
                                         "type": "Http",
                                         "inputs": {
-                                            "method": "PATCH",
-                                            "uri": "https://marketplaceapi.microsoft.com/api/saas/subscriptions/@{triggerBody()?['subscriptionId']}/operations/@{triggerBody()?['id']}?api-version=2018-08-31",
-                                            "headers": {
-                                                "Content-type": "application/json"
-                                            },
-                                            "body": {
-                                                "status": "Success"
-                                            },
-                                            "authentication": {
-                                                "type": "ActiveDirectoryOAuth",
-                                                "tenant": "@parameters('envpar_config__TenantDomain')",
-                                                "audience": "20e940b3-4c77-4b0b-9a53-9e16a1b010a7",
-                                                "clientId": "@parameters('envpar_config__MicrosoftAppId')",
-                                                "secret": "@parameters('envpar_config__MicrosoftAppSecret')"
-                                            }
+                                          "method": "DELETE",
+                                          "uri": "https://graph.microsoft.com/v1.0/groups/@{body('Parse_JSON_2')['CyclesGroupId']}/members/@{items('Apply_to_each_4')?['UID']}/$ref",
+                                          "authentication": {
+                                            "type": "ActiveDirectoryOAuth",
+                                            "tenant": "@parameters('envpar_config__TenantDomain (new_envpar_config__TenantDomain)')",
+                                            "audience": "https://graph.microsoft.com",
+                                            "clientId": "@parameters('envpar_config__GraphAppId (new_envpar_config__GraphAppId)')",
+                                            "secret": "@parameters('envpar_config__GraphAppSecret (new_envpar_config__GraphAppSecret)')"
+                                          }
                                         }
+                                      },
+                                      "Scope_3": {
+                                        "actions": {},
+                                        "runAfter": {
+                                          "HTTP_Remove_user": [
+                                            "Failed",
+                                            "Skipped",
+                                            "TimedOut"
+                                          ]
+                                        },
+                                        "type": "Scope"
+                                      }
                                     }
+                                  },
+                                  "expression": {
+                                    "or": [
+                                      {
+                                        "equals": [
+                                          "@body('Parse_JSON_2')?['MicrosoftPrices']",
+                                          "@variables('PriceActive')"
+                                        ]
+                                      },
+                                      {
+                                        "equals": [
+                                          "@body('Parse_JSON_2')?['MicrosoftPrices']",
+                                          "@null"
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  "type": "If"
                                 }
+                              },
+                              "runAfter": {},
+                              "expression": "@greaterOrEquals(variables('IndexOfPrice'), 0)",
+                              "limit": {
+                                "count": 60,
+                                "timeout": "PT1H"
+                              },
+                              "type": "Until"
                             },
-                            "expression": {
-                                "startsWith": [
-                                    "@body('Parse_JSON_Validate_operation')?['status']",
-                                    "Succe"
+                            "Parse_JSON": {
+                              "runAfter": {
+                                "Do_until": [
+                                  "Succeeded"
                                 ]
+                              },
+                              "type": "ParseJson",
+                              "inputs": {
+                                "content": "@skip(outputs('Compose_PricesAll'), variables('IndexOfPrice'))",
+                                "schema": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "CyclesGroupName": {
+                                        "type": "string"
+                                      },
+                                      "CyclesGroupId": {
+                                        "type": "string"
+                                      },
+                                      "StripePrices": {
+                                        "type": "string"
+                                      },
+                                      "MicrosoftPrices": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "required": [
+                                      "CyclesGroupName",
+                                      "CyclesGroupId",
+                                      "StripePrices",
+                                      "MicrosoftPrices"
+                                    ]
+                                  }
+                                }
+                              }
                             },
-                            "type": "If"
+                            "Apply_to_each_3": {
+                              "foreach": "@body('Parse_JSON')",
+                              "actions": {
+                                "HTTP_Add_user": {
+                                  "runAfter": {},
+                                  "type": "Http",
+                                  "inputs": {
+                                    "method": "POST",
+                                    "uri": "https://graph.microsoft.com/v1.0/groups/@{items('Apply_to_each_3')['CyclesGroupId']}/members/$ref",
+                                    "headers": {
+                                      "Content-type": "application/json"
+                                    },
+                                    "body": {
+                                      "@@odata.id": "https://graph.microsoft.com/v1.0/directoryObjects/@{items('Apply_to_each_4')?['UID']}"
+                                    },
+                                    "authentication": {
+                                      "type": "ActiveDirectoryOAuth",
+                                      "tenant": "@parameters('envpar_config__TenantDomain (new_envpar_config__TenantDomain)')",
+                                      "audience": "https://graph.microsoft.com",
+                                      "clientId": "@parameters('envpar_config__GraphAppId (new_envpar_config__GraphAppId)')",
+                                      "secret": "@parameters('envpar_config__GraphAppSecret (new_envpar_config__GraphAppSecret)')"
+                                    }
+                                  }
+                                },
+                                "Scope_4": {
+                                  "actions": {},
+                                  "runAfter": {
+                                    "HTTP_Add_user": [
+                                      "Failed",
+                                      "Skipped",
+                                      "TimedOut"
+                                    ]
+                                  },
+                                  "type": "Scope"
+                                }
+                              },
+                              "runAfter": {
+                                "Parse_JSON": [
+                                  "Succeeded"
+                                ]
+                              },
+                              "type": "Foreach"
+                            }
+                          },
+                          "runAfter": {},
+                          "type": "Scope"
+                        },
+                        "Update_item_UsersList": {
+                          "runAfter": {
+                            "Condition_2": [
+                              "Succeeded"
+                            ]
+                          },
+                          "type": "OpenApiConnection",
+                          "inputs": {
+                            "host": {
+                              "connectionName": "shared_sharepointonline",
+                              "operationId": "PatchItem",
+                              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                            },
+                            "parameters": {
+                              "dataset": "https://@{parameters('envpar_config__TenantName (new_envpar_config__TenantName)')}.sharepoint.com/sites/@{items('Apply_to_each_GroupsList')?['Cycle1GroupName']}",
+                              "table": "UsersList",
+                              "id": "@items('Apply_to_each_4')?['ID']",
+                              "item": {
+                                "Title": "@items('Apply_to_each_4')?['Title']",
+                                "MicrosoftSubscriptionStatus": "@{body('Parse_JSON_subscription')?['saasSubscriptionStatus']}",
+                                "MicrosoftPriceId": "@{body('Parse_JSON_Validate_operation')?['planId']}",
+                                "MicrosoftPriceStatus": "@{body('Parse_JSON_Validate_operation')?['status']}",
+                                "MicrosoftLastMetered": "@{utcNow()}"
+                              }
+                            },
+                            "authentication": "@parameters('$authentication')"
+                          }
+                        },
+                        "Create_item_LogsList": {
+                          "runAfter": {
+                            "Update_item_UsersList": [
+                              "Succeeded"
+                            ]
+                          },
+                          "type": "OpenApiConnection",
+                          "inputs": {
+                            "host": {
+                              "connectionName": "shared_sharepointonline",
+                              "operationId": "PostItem",
+                              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                            },
+                            "parameters": {
+                              "dataset": "https://@{parameters('envpar_config__TenantName (new_envpar_config__TenantName)')}.sharepoint.com/sites/@{items('Apply_to_each_GroupsList')?['Cycle1GroupName']}",
+                              "table": "LogsList",
+                              "item": {
+                                "Title": "Updated @{items('Apply_to_each_4')?['Title']} to price @{body('Parse_JSON_Validate_operation')?['planId']} subscription status @{body('Parse_JSON_subscription')?['saasSubscriptionStatus']}",
+                                "Resource": "UsersList",
+                                "ResourceId": "@items('Apply_to_each_4')?['Title']",
+                                "ChangeType": "UPDATE",
+                                "Source": "cycle0__Microsoft_Update_Webhook",
+                                "LogDescription": ""
+                              }
+                            },
+                            "authentication": "@parameters('$authentication')"
+                          }
+                        },
+                        "Condition_2": {
+                          "actions": {
+                            "HTTP_Meter": {
+                              "runAfter": {},
+                              "type": "Http",
+                              "inputs": {
+                                "method": "POST",
+                                "uri": "https://marketplaceapi.microsoft.com/api/usageEvent?api-version=2018-08-31",
+                                "headers": {
+                                  "Content-type": "application/json"
+                                },
+                                "body": {
+                                  "resourceId": "@{items('Apply_to_each_4')?['MicrosoftSubscriptionId']}",
+                                  "quantity": "@div(div(sub(ticks(utcNow()), ticks(items('Apply_to_each_4')?['MicrosoftLastMetered'])), float(36000000000)), 720)",
+                                  "dimension": "@{json(items('Apply_to_each_GroupsList')?['MicrosoftMeterDict'])?[items('Apply_to_each_4')?['MicrosoftPriceId']]}",
+                                  "effectiveStartTime": "@{items('Apply_to_each_4')?['MicrosoftLastMetered']}",
+                                  "planId": "@{items('Apply_to_each_4')?['MicrosoftPriceId']}"
+                                },
+                                "authentication": {
+                                  "type": "ActiveDirectoryOAuth",
+                                  "tenant": "@parameters('envpar_config__TenantDomain (new_envpar_config__TenantDomain)')",
+                                  "audience": "20e940b3-4c77-4b0b-9a53-9e16a1b010a7",
+                                  "clientId": "@parameters('envpar_config__MicrosoftAppId (new_envpar_config__MicrosoftAppId)')",
+                                  "secret": "@parameters('envpar_config__MicrosoftAppSecret (new_envpar_config__MicrosoftAppSecret)')"
+                                }
+                              }
+                            },
+                            "Scope_6": {
+                              "actions": {},
+                              "runAfter": {
+                                "HTTP_Meter": [
+                                  "Failed"
+                                ]
+                              },
+                              "type": "Scope"
+                            }
+                          },
+                          "runAfter": {
+                            "Scope_2": [
+                              "Succeeded"
+                            ]
+                          },
+                          "expression": {
+                            "and": [
+                              {
+                                "equals": [
+                                  "@items('Apply_to_each_4')?['MicrosoftSubscriptionStatus']",
+                                  "Subscribed"
+                                ]
+                              },
+                              {
+                                "not": {
+                                  "equals": [
+                                    "@items('Apply_to_each_4')?['MicrosoftPriceId']",
+                                    "@items('Apply_to_each_GroupsList')?['MicrosoftPrice0']"
+                                  ]
+                                }
+                              },
+                              {
+                                "not": {
+                                  "equals": [
+                                    "@json(items('Apply_to_each_GroupsList')?['MicrosoftMeterDict'])?[items('Apply_to_each_4')?['MicrosoftPriceId']]",
+                                    ""
+                                  ]
+                                }
+                              }
+                            ]
+                          },
+                          "type": "If"
                         }
-                    },
-                    "runAfter": {
-                        "Get_items_GroupsList": [
-                            "Succeeded"
+                      },
+                      "runAfter": {
+                        "Get_items_UsersList": [
+                          "Succeeded"
                         ]
+                      },
+                      "type": "Foreach"
                     },
-                    "type": "Foreach"
+                    "HTTP_Get_subscription": {
+                      "runAfter": {},
+                      "type": "Http",
+                      "inputs": {
+                        "method": "GET",
+                        "uri": "https://marketplaceapi.microsoft.com/api/saas/subscriptions/@{triggerBody()?['subscriptionId']}?api-version=2018-08-31",
+                        "headers": {
+                          "Content-type": "application/json"
+                        },
+                        "authentication": {
+                          "type": "ActiveDirectoryOAuth",
+                          "tenant": "@parameters('envpar_config__TenantDomain (new_envpar_config__TenantDomain)')",
+                          "audience": "20e940b3-4c77-4b0b-9a53-9e16a1b010a7",
+                          "clientId": "@parameters('envpar_config__MicrosoftAppId (new_envpar_config__MicrosoftAppId)')",
+                          "secret": "@parameters('envpar_config__MicrosoftAppSecret (new_envpar_config__MicrosoftAppSecret)')"
+                        }
+                      }
+                    },
+                    "Parse_JSON_subscription": {
+                      "runAfter": {
+                        "HTTP_Get_subscription": [
+                          "Succeeded"
+                        ]
+                      },
+                      "type": "ParseJson",
+                      "inputs": {
+                        "content": "@body('HTTP_Get_subscription')",
+                        "schema": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string"
+                            },
+                            "publisherId": {
+                              "type": "string"
+                            },
+                            "offerId": {
+                              "type": "string"
+                            },
+                            "name": {
+                              "type": "string"
+                            },
+                            "saasSubscriptionStatus": {
+                              "type": "string"
+                            },
+                            "beneficiary": {
+                              "type": "object",
+                              "properties": {
+                                "emailId": {
+                                  "type": "string"
+                                },
+                                "objectId": {
+                                  "type": "string"
+                                },
+                                "tenantId": {
+                                  "type": "string"
+                                },
+                                "groupIds": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                },
+                                "puid": {
+                                  "type": "string"
+                                },
+                                "iss": {
+                                  "type": "string"
+                                },
+                                "idp": {
+                                  "type": "string"
+                                }
+                              }
+                            },
+                            "purchaser": {
+                              "type": "object",
+                              "properties": {
+                                "emailId": {
+                                  "type": "string"
+                                },
+                                "objectId": {
+                                  "type": "string"
+                                },
+                                "tenantId": {
+                                  "type": "string"
+                                },
+                                "groupIds": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                },
+                                "puid": {
+                                  "type": "string"
+                                },
+                                "iss": {
+                                  "type": "string"
+                                },
+                                "idp": {
+                                  "type": "string"
+                                }
+                              }
+                            },
+                            "planId": {
+                              "type": "string"
+                            },
+                            "term": {
+                              "type": "object",
+                              "properties": {
+                                "startDate": {
+                                  "type": "string"
+                                },
+                                "endDate": {
+                                  "type": "string"
+                                },
+                                "termUnit": {
+                                  "type": "string"
+                                }
+                              }
+                            },
+                            "autoRenew": {
+                              "type": "boolean"
+                            },
+                            "isTest": {
+                              "type": "boolean"
+                            },
+                            "isFreeTrial": {
+                              "type": "boolean"
+                            },
+                            "allowedCustomerOperations": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "sessionId": {
+                              "type": "string"
+                            },
+                            "fulfillmentId": {
+                              "type": "string"
+                            },
+                            "storeFront": {
+                              "type": "string"
+                            },
+                            "sandboxType": {
+                              "type": "string"
+                            },
+                            "created": {
+                              "type": "string"
+                            },
+                            "lastModified": {
+                              "type": "string"
+                            },
+                            "sessionMode": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "Condition_4": {
+                      "actions": {
+                        "Set_variable": {
+                          "runAfter": {},
+                          "type": "SetVariable",
+                          "inputs": {
+                            "name": "PriceActive",
+                            "value": "@body('Parse_JSON_Validate_operation')?['planId']"
+                          }
+                        }
+                      },
+                      "runAfter": {
+                        "Parse_JSON_subscription": [
+                          "Succeeded"
+                        ]
+                      },
+                      "else": {
+                        "actions": {
+                          "Set_variable_2": {
+                            "runAfter": {},
+                            "type": "SetVariable",
+                            "inputs": {
+                              "name": "PriceActive",
+                              "value": "@items('Apply_to_each_GroupsList')?['MicrosoftPrice0']"
+                            }
+                          }
+                        }
+                      },
+                      "expression": {
+                        "equals": [
+                          "@body('Parse_JSON_subscription')?['saasSubscriptionStatus']",
+                          "Subscribed"
+                        ]
+                      },
+                      "type": "If"
+                    }
+                  },
+                  "runAfter": {},
+                  "type": "Scope"
                 }
+              },
+              "runAfter": {
+                "Parse_JSON_Validate_operation": [
+                  "Succeeded"
+                ]
+              },
+              "else": {
+                "actions": {
+                  "HTTP_Patch_operation": {
+                    "runAfter": {},
+                    "type": "Http",
+                    "inputs": {
+                      "method": "PATCH",
+                      "uri": "https://marketplaceapi.microsoft.com/api/saas/subscriptions/@{triggerBody()?['subscriptionId']}/operations/@{triggerBody()?['id']}?api-version=2018-08-31",
+                      "headers": {
+                        "Content-type": "application/json"
+                      },
+                      "body": {
+                        "status": "Success"
+                      },
+                      "authentication": {
+                        "type": "ActiveDirectoryOAuth",
+                        "tenant": "@parameters('envpar_config__TenantDomain (new_envpar_config__TenantDomain)')",
+                        "audience": "20e940b3-4c77-4b0b-9a53-9e16a1b010a7",
+                        "clientId": "@parameters('envpar_config__MicrosoftAppId (new_envpar_config__MicrosoftAppId)')",
+                        "secret": "@parameters('envpar_config__MicrosoftAppSecret (new_envpar_config__MicrosoftAppSecret)')"
+                      }
+                    }
+                  }
+                }
+              },
+              "expression": {
+                "startsWith": [
+                  "@body('Parse_JSON_Validate_operation')?['status']",
+                  "Succe"
+                ]
+              },
+              "type": "If"
             }
+          },
+          "runAfter": {
+            "Get_items_GroupsList": [
+              "Succeeded"
+            ]
+          },
+          "type": "Foreach"
         }
-    },
-    "schemaVersion": "1.0.0.0"
+      }
+    }
+  },
+  "schemaVersion": "1.0.0.0"
 }

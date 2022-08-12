@@ -1,445 +1,445 @@
 {
-    "properties": {
-        "connectionReferences": {
-            "shared_sharepointonline": {
-                "runtimeSource": "embedded",
-                "connection": {
-                    "connectionReferenceLogicalName": "new_sharedsharepointonline_9ad14"
-                },
-                "api": {
-                    "name": "shared_sharepointonline"
-                }
-            }
+  "properties": {
+    "connectionReferences": {
+      "shared_sharepointonline": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedsharepointonline_9ad14"
         },
-        "definition": {
-            "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
-            "contentVersion": "1.0.0.0",
-            "parameters": {
-                "$connections": {
-                    "defaultValue": {},
-                    "type": "Object"
+        "api": {
+          "name": "shared_sharepointonline"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "envpar_config__TenantName (new_envpar_config__TenantName)": {
+          "defaultValue": "",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_envpar_config__TenantName"
+          }
+        },
+        "envpar_config__CycleZeroName (new_envpar_config__CycleZeroName)": {
+          "defaultValue": "",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_envpar_config__CycleZeroName"
+          }
+        },
+        "envpar_config__PaypalApiPrefix (new_envpar_config__PaypalApiPrefix)": {
+          "defaultValue": "",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_envpar_config__PaypalApiPrefix"
+          }
+        }
+      },
+      "triggers": {
+        "manual": {
+          "type": "Request",
+          "kind": "Http",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "Cycle1GroupName": {
+                  "type": "string"
                 },
-                "$authentication": {
-                    "defaultValue": {},
-                    "type": "SecureObject"
+                "id": {
+                  "type": "string"
                 },
-                "envpar_config__TenantName": {
-                    "defaultValue": "",
-                    "type": "String",
-                    "metadata": {
-                        "schemaName": "new_envpar_config__TenantName"
-                    }
+                "create_time": {
+                  "type": "string"
                 },
-                "envpar_config__CycleZeroName": {
-                    "defaultValue": "",
-                    "type": "String",
-                    "metadata": {
-                        "schemaName": "new_envpar_config__CycleZeroName"
-                    }
+                "event_type": {
+                  "type": "string"
                 },
-                "envpar_config__PaypalApiPrefix": {
-                    "defaultValue": "",
-                    "type": "String",
-                    "metadata": {
-                        "schemaName": "new_envpar_config__PaypalApiPrefix"
-                    }
-                }
-            },
-            "triggers": {
-                "manual": {
-                    "type": "Request",
-                    "kind": "Http",
-                    "inputs": {
-                        "schema": {
+                "summary": {
+                  "type": "string"
+                },
+                "resource": {
+                  "type": "object",
+                  "properties": {
+                    "create_time": {
+                      "type": "string"
+                    },
+                    "purchase_units": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "reference_id": {
+                            "type": "string"
+                          },
+                          "amount": {
                             "type": "object",
                             "properties": {
-                                "Cycle1GroupName": {
-                                    "type": "string"
-                                },
-                                "id": {
-                                    "type": "string"
-                                },
-                                "create_time": {
-                                    "type": "string"
-                                },
-                                "event_type": {
-                                    "type": "string"
-                                },
-                                "summary": {
-                                    "type": "string"
-                                },
-                                "resource": {
-                                    "type": "object",
-                                    "properties": {
-                                        "create_time": {
-                                            "type": "string"
-                                        },
-                                        "purchase_units": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "object",
-                                                "properties": {
-                                                    "reference_id": {
-                                                        "type": "string"
-                                                    },
-                                                    "amount": {
-                                                        "type": "object",
-                                                        "properties": {
-                                                            "currency_code": {
-                                                                "type": "string"
-                                                            },
-                                                            "value": {
-                                                                "type": "string"
-                                                            }
-                                                        }
-                                                    },
-                                                    "payee": {
-                                                        "type": "object",
-                                                        "properties": {
-                                                            "email_address": {
-                                                                "type": "string"
-                                                            },
-                                                            "merchant_id": {
-                                                                "type": "string"
-                                                            }
-                                                        }
-                                                    }
-                                                },
-                                                "required": [
-                                                    "reference_id",
-                                                    "amount",
-                                                    "payee"
-                                                ]
-                                            }
-                                        },
-                                        "links": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "object",
-                                                "properties": {
-                                                    "href": {
-                                                        "type": "string"
-                                                    },
-                                                    "method": {
-                                                        "type": "string"
-                                                    },
-                                                    "rel": {
-                                                        "type": "string"
-                                                    }
-                                                },
-                                                "required": [
-                                                    "href",
-                                                    "rel",
-                                                    "method"
-                                                ]
-                                            }
-                                        },
-                                        "id": {
-                                            "type": "string"
-                                        },
-                                        "intent": {
-                                            "type": "string"
-                                        },
-                                        "payer": {
-                                            "type": "object",
-                                            "properties": {
-                                                "email_address": {
-                                                    "type": "string"
-                                                },
-                                                "payer_id": {
-                                                    "type": "string"
-                                                }
-                                            }
-                                        },
-                                        "status": {
-                                            "type": "string"
-                                        }
-                                    }
-                                },
-                                "resource_type": {
-                                    "type": "string"
-                                },
-                                "status": {
-                                    "type": "string"
-                                },
-                                "event_version": {
-                                    "type": "string"
-                                },
-                                "resource_version": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "actions": {
-                "Initialize_variable_stripeCustomerId": {
-                    "runAfter": {
-                        "Response_status_200": [
-                            "Succeeded"
-                        ]
-                    },
-                    "type": "InitializeVariable",
-                    "inputs": {
-                        "variables": [
-                            {
-                                "name": "stripeCustomerId",
+                              "currency_code": {
                                 "type": "string"
+                              },
+                              "value": {
+                                "type": "string"
+                              }
                             }
-                        ]
-                    }
-                },
-                "Response_status_200": {
-                    "runAfter": {},
-                    "type": "Response",
-                    "kind": "Http",
-                    "inputs": {
-                        "statusCode": 200
-                    }
-                },
-                "Initialize_variable_amount_value": {
-                    "runAfter": {
-                        "Initialize_variable_stripeCustomerId": [
-                            "Succeeded"
-                        ]
-                    },
-                    "type": "InitializeVariable",
-                    "inputs": {
-                        "variables": [
-                            {
-                                "name": "amount_value",
-                                "type": "float",
-                                "value": 0
+                          },
+                          "payee": {
+                            "type": "object",
+                            "properties": {
+                              "email_address": {
+                                "type": "string"
+                              },
+                              "merchant_id": {
+                                "type": "string"
+                              }
                             }
-                        ]
-                    }
-                },
-                "Initialize_variable_amount_currency": {
-                    "runAfter": {
-                        "Initialize_variable_amount_value": [
-                            "Succeeded"
-                        ]
-                    },
-                    "type": "InitializeVariable",
-                    "inputs": {
-                        "variables": [
-                            {
-                                "name": "amount_currency",
-                                "type": "string",
-                                "value": "@{'cad'}"
-                            }
-                        ]
-                    }
-                },
-                "Get_items_GroupsList": {
-                    "runAfter": {
-                        "Initialize_variable_amount_currency": [
-                            "Succeeded"
-                        ]
-                    },
-                    "type": "OpenApiConnection",
-                    "inputs": {
-                        "host": {
-                            "connectionName": "shared_sharepointonline",
-                            "operationId": "GetItems",
-                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                          }
                         },
-                        "parameters": {
-                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{parameters('envpar_config__CycleZeroName')}",
-                            "table": "GroupsList",
-                            "$filter": "Cycle1GroupName eq '@{triggerBody()?['Cycle1GroupName']}'",
-                            "$top": 1
+                        "required": [
+                          "reference_id",
+                          "amount",
+                          "payee"
+                        ]
+                      }
+                    },
+                    "links": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "href": {
+                            "type": "string"
+                          },
+                          "method": {
+                            "type": "string"
+                          },
+                          "rel": {
+                            "type": "string"
+                          }
                         },
-                        "authentication": "@parameters('$authentication')"
-                    }
-                },
-                "Apply_to_each_GroupsList": {
-                    "foreach": "@outputs('Get_items_GroupsList')?['body/value']",
-                    "actions": {
-                        "Condition_CHECKOUT.ORDER.APPROVED": {
-                            "actions": {
-                                "Apply_to_each_purchase_units": {
-                                    "foreach": "@triggerBody()?['resource']?['purchase_units']",
-                                    "actions": {
-                                        "Set_variable_stripeCustomerId": {
-                                            "runAfter": {},
-                                            "type": "SetVariable",
-                                            "inputs": {
-                                                "name": "stripeCustomerId",
-                                                "value": "@items('Apply_to_each_purchase_units')?['reference_id']"
-                                            }
-                                        },
-                                        "Increment_variable_amount_value": {
-                                            "runAfter": {
-                                                "Set_variable_amount_currency": [
-                                                    "Succeeded"
-                                                ]
-                                            },
-                                            "type": "IncrementVariable",
-                                            "inputs": {
-                                                "name": "amount_value",
-                                                "value": "@if(contains(createArray('bif', 'clp', 'djf', 'gnf', 'jpy', 'kmf', 'krw', 'mga', 'pyg', 'rwf', 'vnd', 'vuv', 'xaf', 'xof', 'xpf'), variables('amount_currency')), int(items('Apply_to_each_purchase_units')?['amount']?['value']), int(mul(float(items('Apply_to_each_purchase_units')?['amount']?['value']), 100)))"
-                                            }
-                                        },
-                                        "Set_variable_amount_currency": {
-                                            "runAfter": {
-                                                "Set_variable_stripeCustomerId": [
-                                                    "Succeeded"
-                                                ]
-                                            },
-                                            "type": "SetVariable",
-                                            "inputs": {
-                                                "name": "amount_currency",
-                                                "value": "@{toLower(items('Apply_to_each_purchase_units')?['amount']?['currency_code'])}"
-                                            }
-                                        }
-                                    },
-                                    "runAfter": {},
-                                    "type": "Foreach"
-                                },
-                                "Scope_Paypal_Order": {
-                                    "actions": {
-                                        "HTTP_ClientSecret": {
-                                            "runAfter": {},
-                                            "type": "Http",
-                                            "inputs": {
-                                                "method": "POST",
-                                                "uri": "@{parameters('envpar_config__PaypalApiPrefix')}/v1/oauth2/token",
-                                                "headers": {
-                                                    "Accept": "application/json",
-                                                    "Accept-Language": "en_US",
-                                                    "content-type": "application/x-www-form-urlencoded"
-                                                },
-                                                "body": "grant_type=client_credentials",
-                                                "authentication": {
-                                                    "type": "Basic",
-                                                    "username": "@items('Apply_to_each_GroupsList')?['PaypalKey']",
-                                                    "password": "@items('Apply_to_each_GroupsList')?['PaypalSecret']"
-                                                }
-                                            }
-                                        },
-                                        "Parse_JSON_Http_ClientSecret": {
-                                            "runAfter": {
-                                                "HTTP_ClientSecret": [
-                                                    "Succeeded"
-                                                ]
-                                            },
-                                            "type": "ParseJson",
-                                            "inputs": {
-                                                "content": "@body('HTTP_ClientSecret')",
-                                                "schema": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "scope": {
-                                                            "type": "string"
-                                                        },
-                                                        "access_token": {
-                                                            "type": "string"
-                                                        },
-                                                        "token_type": {
-                                                            "type": "string"
-                                                        },
-                                                        "app_id": {
-                                                            "type": "string"
-                                                        },
-                                                        "expires_in": {
-                                                            "type": "integer"
-                                                        },
-                                                        "nonce": {
-                                                            "type": "string"
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        },
-                                        "Apply_to_each": {
-                                            "foreach": "@triggerBody()?['resource']?['links']",
-                                            "actions": {
-                                                "Condition_links_capture": {
-                                                    "actions": {
-                                                        "HTTP_Capture_order": {
-                                                            "runAfter": {},
-                                                            "type": "Http",
-                                                            "inputs": {
-                                                                "method": "POST",
-                                                                "uri": "@items('Apply_to_each')?['href']",
-                                                                "headers": {
-                                                                    "Content-Type": "application/json"
-                                                                },
-                                                                "body": {},
-                                                                "authentication": {
-                                                                    "type": "Raw",
-                                                                    "value": "Bearer @{body('Parse_JSON_Http_ClientSecret')?['access_token']}"
-                                                                }
-                                                            }
-                                                        },
-                                                        "HTTP_Add_balance": {
-                                                            "runAfter": {
-                                                                "HTTP_Capture_order": [
-                                                                    "Succeeded"
-                                                                ]
-                                                            },
-                                                            "type": "Http",
-                                                            "inputs": {
-                                                                "method": "POST",
-                                                                "uri": "https://api.stripe.com/v1/customers/@{variables('stripeCustomerId')}/balance_transactions",
-                                                                "headers": {
-                                                                    "Content-type": "application/x-www-form-urlencoded"
-                                                                },
-                                                                "body": "amount=-@{variables('amount_value')}&currency=@{variables('amount_currency')}&metadata%5Bsource%5D=paypal&metadata%5Bid%5D=@{triggerBody()?['resource']?['id']}",
-                                                                "authentication": {
-                                                                    "type": "Raw",
-                                                                    "value": "Bearer @{items('Apply_to_each_GroupsList')?['StripeKey']}"
-                                                                }
-                                                            }
-                                                        }
-                                                    },
-                                                    "runAfter": {},
-                                                    "expression": {
-                                                        "contains": [
-                                                            "@items('Apply_to_each')?['rel']",
-                                                            "@'capture'"
-                                                        ]
-                                                    },
-                                                    "type": "If"
-                                                }
-                                            },
-                                            "runAfter": {
-                                                "Parse_JSON_Http_ClientSecret": [
-                                                    "Succeeded"
-                                                ]
-                                            },
-                                            "type": "Foreach"
-                                        }
-                                    },
-                                    "runAfter": {
-                                        "Apply_to_each_purchase_units": [
-                                            "Succeeded"
-                                        ]
-                                    },
-                                    "type": "Scope"
-                                }
-                            },
-                            "runAfter": {},
-                            "expression": {
-                                "equals": [
-                                    "@triggerBody()?['event_type']",
-                                    "@'CHECKOUT.ORDER.APPROVED'"
-                                ]
-                            },
-                            "type": "If"
+                        "required": [
+                          "href",
+                          "rel",
+                          "method"
+                        ]
+                      }
+                    },
+                    "id": {
+                      "type": "string"
+                    },
+                    "intent": {
+                      "type": "string"
+                    },
+                    "payer": {
+                      "type": "object",
+                      "properties": {
+                        "email_address": {
+                          "type": "string"
+                        },
+                        "payer_id": {
+                          "type": "string"
                         }
+                      }
                     },
-                    "runAfter": {
-                        "Get_items_GroupsList": [
-                            "Succeeded"
-                        ]
-                    },
-                    "type": "Foreach"
+                    "status": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "resource_type": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "event_version": {
+                  "type": "string"
+                },
+                "resource_version": {
+                  "type": "string"
                 }
+              }
             }
+          }
         }
-    },
-    "schemaVersion": "1.0.0.0"
+      },
+      "actions": {
+        "Initialize_variable_stripeCustomerId": {
+          "runAfter": {
+            "Response_status_200": [
+              "Succeeded"
+            ]
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "stripeCustomerId",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Response_status_200": {
+          "runAfter": {},
+          "type": "Response",
+          "kind": "Http",
+          "inputs": {
+            "statusCode": 200
+          }
+        },
+        "Initialize_variable_amount_value": {
+          "runAfter": {
+            "Initialize_variable_stripeCustomerId": [
+              "Succeeded"
+            ]
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "amount_value",
+                "type": "float",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "Initialize_variable_amount_currency": {
+          "runAfter": {
+            "Initialize_variable_amount_value": [
+              "Succeeded"
+            ]
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "amount_currency",
+                "type": "string",
+                "value": "@{'cad'}"
+              }
+            ]
+          }
+        },
+        "Get_items_GroupsList": {
+          "runAfter": {
+            "Initialize_variable_amount_currency": [
+              "Succeeded"
+            ]
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_sharepointonline",
+              "operationId": "GetItems",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+            },
+            "parameters": {
+              "dataset": "https://@{parameters('envpar_config__TenantName (new_envpar_config__TenantName)')}.sharepoint.com/sites/@{parameters('envpar_config__CycleZeroName (new_envpar_config__CycleZeroName)')}",
+              "table": "GroupsList",
+              "$filter": "Cycle1GroupName eq '@{triggerBody()?['Cycle1GroupName']}'",
+              "$top": 1
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Apply_to_each_GroupsList": {
+          "foreach": "@outputs('Get_items_GroupsList')?['body/value']",
+          "actions": {
+            "Condition_CHECKOUT.ORDER.APPROVED": {
+              "actions": {
+                "Apply_to_each_purchase_units": {
+                  "foreach": "@triggerBody()?['resource']?['purchase_units']",
+                  "actions": {
+                    "Set_variable_stripeCustomerId": {
+                      "runAfter": {},
+                      "type": "SetVariable",
+                      "inputs": {
+                        "name": "stripeCustomerId",
+                        "value": "@items('Apply_to_each_purchase_units')?['reference_id']"
+                      }
+                    },
+                    "Increment_variable_amount_value": {
+                      "runAfter": {
+                        "Set_variable_amount_currency": [
+                          "Succeeded"
+                        ]
+                      },
+                      "type": "IncrementVariable",
+                      "inputs": {
+                        "name": "amount_value",
+                        "value": "@if(contains(createArray('bif', 'clp', 'djf', 'gnf', 'jpy', 'kmf', 'krw', 'mga', 'pyg', 'rwf', 'vnd', 'vuv', 'xaf', 'xof', 'xpf'), variables('amount_currency')), int(items('Apply_to_each_purchase_units')?['amount']?['value']), int(mul(float(items('Apply_to_each_purchase_units')?['amount']?['value']), 100)))"
+                      }
+                    },
+                    "Set_variable_amount_currency": {
+                      "runAfter": {
+                        "Set_variable_stripeCustomerId": [
+                          "Succeeded"
+                        ]
+                      },
+                      "type": "SetVariable",
+                      "inputs": {
+                        "name": "amount_currency",
+                        "value": "@{toLower(items('Apply_to_each_purchase_units')?['amount']?['currency_code'])}"
+                      }
+                    }
+                  },
+                  "runAfter": {},
+                  "type": "Foreach"
+                },
+                "Scope_Paypal_Order": {
+                  "actions": {
+                    "HTTP_ClientSecret": {
+                      "runAfter": {},
+                      "type": "Http",
+                      "inputs": {
+                        "method": "POST",
+                        "uri": "@{parameters('envpar_config__PaypalApiPrefix (new_envpar_config__PaypalApiPrefix)')}/v1/oauth2/token",
+                        "headers": {
+                          "Accept": "application/json",
+                          "Accept-Language": "en_US",
+                          "content-type": "application/x-www-form-urlencoded"
+                        },
+                        "body": "grant_type=client_credentials",
+                        "authentication": {
+                          "type": "Basic",
+                          "username": "@items('Apply_to_each_GroupsList')?['PaypalKey']",
+                          "password": "@items('Apply_to_each_GroupsList')?['PaypalSecret']"
+                        }
+                      }
+                    },
+                    "Parse_JSON_Http_ClientSecret": {
+                      "runAfter": {
+                        "HTTP_ClientSecret": [
+                          "Succeeded"
+                        ]
+                      },
+                      "type": "ParseJson",
+                      "inputs": {
+                        "content": "@body('HTTP_ClientSecret')",
+                        "schema": {
+                          "type": "object",
+                          "properties": {
+                            "scope": {
+                              "type": "string"
+                            },
+                            "access_token": {
+                              "type": "string"
+                            },
+                            "token_type": {
+                              "type": "string"
+                            },
+                            "app_id": {
+                              "type": "string"
+                            },
+                            "expires_in": {
+                              "type": "integer"
+                            },
+                            "nonce": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "Apply_to_each": {
+                      "foreach": "@triggerBody()?['resource']?['links']",
+                      "actions": {
+                        "Condition_links_capture": {
+                          "actions": {
+                            "HTTP_Capture_order": {
+                              "runAfter": {},
+                              "type": "Http",
+                              "inputs": {
+                                "method": "POST",
+                                "uri": "@items('Apply_to_each')?['href']",
+                                "headers": {
+                                  "Content-Type": "application/json"
+                                },
+                                "body": {},
+                                "authentication": {
+                                  "type": "Raw",
+                                  "value": "Bearer @{body('Parse_JSON_Http_ClientSecret')?['access_token']}"
+                                }
+                              }
+                            },
+                            "HTTP_Add_balance": {
+                              "runAfter": {
+                                "HTTP_Capture_order": [
+                                  "Succeeded"
+                                ]
+                              },
+                              "type": "Http",
+                              "inputs": {
+                                "method": "POST",
+                                "uri": "https://api.stripe.com/v1/customers/@{variables('stripeCustomerId')}/balance_transactions",
+                                "headers": {
+                                  "Content-type": "application/x-www-form-urlencoded"
+                                },
+                                "body": "amount=-@{variables('amount_value')}&currency=@{variables('amount_currency')}&metadata%5Bsource%5D=paypal&metadata%5Bid%5D=@{triggerBody()?['resource']?['id']}",
+                                "authentication": {
+                                  "type": "Raw",
+                                  "value": "Bearer @{items('Apply_to_each_GroupsList')?['StripeKey']}"
+                                }
+                              }
+                            }
+                          },
+                          "runAfter": {},
+                          "expression": {
+                            "contains": [
+                              "@items('Apply_to_each')?['rel']",
+                              "@'capture'"
+                            ]
+                          },
+                          "type": "If"
+                        }
+                      },
+                      "runAfter": {
+                        "Parse_JSON_Http_ClientSecret": [
+                          "Succeeded"
+                        ]
+                      },
+                      "type": "Foreach"
+                    }
+                  },
+                  "runAfter": {
+                    "Apply_to_each_purchase_units": [
+                      "Succeeded"
+                    ]
+                  },
+                  "type": "Scope"
+                }
+              },
+              "runAfter": {},
+              "expression": {
+                "equals": [
+                  "@triggerBody()?['event_type']",
+                  "@'CHECKOUT.ORDER.APPROVED'"
+                ]
+              },
+              "type": "If"
+            }
+          },
+          "runAfter": {
+            "Get_items_GroupsList": [
+              "Succeeded"
+            ]
+          },
+          "type": "Foreach"
+        }
+      }
+    }
+  },
+  "schemaVersion": "1.0.0.0"
 }

@@ -1,100 +1,100 @@
 {
-    "properties": {
-        "connectionReferences": {
-            "shared_sharepointonline": {
-                "runtimeSource": "embedded",
-                "connection": {
-                    "connectionReferenceLogicalName": "new_sharedsharepointonline_9ad14"
-                },
-                "api": {
-                    "name": "shared_sharepointonline"
-                }
-            }
+  "properties": {
+    "connectionReferences": {
+      "shared_sharepointonline": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedsharepointonline_9ad14"
         },
-        "definition": {
-            "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
-            "contentVersion": "1.0.0.0",
-            "parameters": {
-                "$connections": {
-                    "defaultValue": {},
-                    "type": "Object"
-                },
-                "$authentication": {
-                    "defaultValue": {},
-                    "type": "SecureObject"
-                },
-                "envpar_http__MySubscriptions": {
-                    "defaultValue": "",
-                    "type": "String",
-                    "metadata": {
-                        "schemaName": "new_envpar_http__MySubscriptions",
-                        "description": "This flow HTTP trigger URL. Enter space character ( ) for none. Filled automatically."
-                    }
-                },
-                "envpar_config__TenantName": {
-                    "defaultValue": "",
-                    "type": "String",
-                    "metadata": {
-                        "schemaName": "new_envpar_config__TenantName",
-                        "description": "Required. Org Name orgname (this is the prefix of the auto assigned domain orgname.onmicrosoft.com)"
-                    }
-                },
-                "envpar_config__CycleZeroName": {
-                    "defaultValue": "",
-                    "type": "String",
-                    "metadata": {
-                        "schemaName": "new_envpar_config__CycleZeroName",
-                        "description": "Required. Could have many environments N each with its envN_cycle0 template"
-                    }
-                }
-            },
-            "triggers": {
-                "When_an_item_is_created": {
-                    "recurrence": {
-                        "interval": 3,
-                        "frequency": "Minute"
-                    },
-                    "splitOn": "@triggerOutputs()?['body/value']",
-                    "metadata": {
-                        "operationMetadataId": "86334872-a739-4e89-a5cd-bca1edc7a9fc"
-                    },
-                    "type": "OpenApiConnection",
-                    "inputs": {
-                        "host": {
-                            "connectionName": "shared_sharepointonline",
-                            "operationId": "GetOnNewItems",
-                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
-                        },
-                        "parameters": {
-                            "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{parameters('envpar_config__CycleZeroName')}",
-                            "table": "MySubscriptions"
-                        },
-                        "authentication": "@parameters('$authentication')"
-                    }
-                }
-            },
-            "actions": {
-                "HTTP_2": {
-                    "runAfter": {},
-                    "metadata": {
-                        "operationMetadataId": "ded96448-27dc-469c-b6cc-157f8013162f"
-                    },
-                    "type": "Http",
-                    "inputs": {
-                        "method": "POST",
-                        "uri": "@parameters('envpar_http__MySubscriptions')",
-                        "body": {
-                            "Cycle1GroupName": "tplparam_cyclname",
-                            "Id": "@triggerOutputs()?['body/ID']",
-                            "CreatedByEmail": "@{triggerOutputs()?['body/Author/Email']}"
-                        },
-                        "retryPolicy": {
-                            "type": "none"
-                        }
-                    }
-                }
-            }
+        "api": {
+          "name": "shared_sharepointonline"
         }
+      }
     },
-    "schemaVersion": "1.0.0.0"
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "envpar_http__MySubscriptions (new_envpar_http__MySubscriptions)": {
+          "defaultValue": "",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_envpar_http__MySubscriptions",
+            "description": "This flow HTTP trigger URL. Enter space character ( ) for none. Filled automatically."
+          }
+        },
+        "envpar_config__TenantName (new_envpar_config__TenantName)": {
+          "defaultValue": "",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_envpar_config__TenantName",
+            "description": "Required. Org Name orgname (this is the prefix of the auto assigned domain orgname.onmicrosoft.com)"
+          }
+        },
+        "envpar_config__CycleZeroName (new_envpar_config__CycleZeroName)": {
+          "defaultValue": "",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_envpar_config__CycleZeroName",
+            "description": "Required. Could have many environments N each with its envN_cycle0 template"
+          }
+        }
+      },
+      "triggers": {
+        "When_an_item_is_created": {
+          "recurrence": {
+            "interval": 3,
+            "frequency": "Minute"
+          },
+          "splitOn": "@triggerOutputs()?['body/value']",
+          "metadata": {
+            "operationMetadataId": "86334872-a739-4e89-a5cd-bca1edc7a9fc"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_sharepointonline",
+              "operationId": "GetOnNewItems",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+            },
+            "parameters": {
+              "dataset": "https://@{parameters('envpar_config__TenantName (new_envpar_config__TenantName)')}.sharepoint.com/sites/@{parameters('envpar_config__CycleZeroName (new_envpar_config__CycleZeroName)')}",
+              "table": "MySubscriptions"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      },
+      "actions": {
+        "HTTP_2": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "ded96448-27dc-469c-b6cc-157f8013162f"
+          },
+          "type": "Http",
+          "inputs": {
+            "method": "POST",
+            "uri": "@parameters('envpar_http__MySubscriptions (new_envpar_http__MySubscriptions)')",
+            "body": {
+              "Cycle1GroupName": "tplparam_cyclname",
+              "Id": "@triggerOutputs()?['body/ID']",
+              "CreatedByEmail": "@{triggerOutputs()?['body/Author/Email']}"
+            },
+            "retryPolicy": {
+              "type": "none"
+            }
+          }
+        }
+      }
+    }
+  },
+  "schemaVersion": "1.0.0.0"
 }

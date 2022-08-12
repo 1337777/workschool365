@@ -1,11 +1,11 @@
-<ImportExportXml version="9.2.21114.126" SolutionPackageVersion="9.2" languagecode="1033" generatedBy="CrmLive" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<ImportExportXml version="9.2.22074.142" SolutionPackageVersion="9.2" languagecode="1033" generatedBy="CrmLive" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <SolutionManifest>
     <UniqueName>WorkSchool365</UniqueName>
     <LocalizedNames>
       <LocalizedName description="WorkSchool 365" languagecode="1033" />
     </LocalizedNames>
     <Descriptions />
-    <Version>3.0.7.0</Version>
+    <Version>3.0.7.15</Version>
     <Managed>0</Managed>
     <Publisher>
       <UniqueName>DefaultPublisherorg1602069c</UniqueName>
@@ -120,7 +120,7 @@
         <Dependent type="29" displayName="cycle0__Setup" id="{20035822-a6af-eb11-8236-0022486d8fed}" />
       </MissingDependency>
       <MissingDependency>
-        <Required type="1" schemaName="environmentvariablevalue" displayName="Environment Variable Value" solution="EnvironmentVariables (1.0.2.113)" />
+        <Required type="1" schemaName="environmentvariablevalue" displayName="Environment Variable Value" solution="EnvironmentVariables (1.0.2.135)" />
         <Dependent type="29" displayName="cycle0__Setup" id="{20035822-a6af-eb11-8236-0022486d8fed}" />
       </MissingDependency>
     </MissingDependencies>

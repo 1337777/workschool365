@@ -1,1253 +1,1253 @@
 {
-    "properties": {
-        "connectionReferences": {
-            "shared_sharepointonline": {
-                "runtimeSource": "embedded",
-                "connection": {
-                    "connectionReferenceLogicalName": "new_sharedsharepointonline_9ad14"
-                },
-                "api": {
-                    "name": "shared_sharepointonline"
-                }
-            }
+  "properties": {
+    "connectionReferences": {
+      "shared_sharepointonline": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedsharepointonline_9ad14"
         },
-        "definition": {
-            "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
-            "contentVersion": "1.0.0.0",
-            "parameters": {
-                "$connections": {
-                    "defaultValue": {},
-                    "type": "Object"
+        "api": {
+          "name": "shared_sharepointonline"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "envpar_config__TenantName (new_envpar_config__TenantName)": {
+          "defaultValue": "",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_envpar_config__TenantName",
+            "description": "Required. Org Name orgname (this is the prefix of the auto assigned domain orgname.onmicrosoft.com)"
+          }
+        },
+        "envpar_config__CycleZeroName (new_envpar_config__CycleZeroName)": {
+          "defaultValue": "",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_envpar_config__CycleZeroName",
+            "description": "Required. Could have many environments N each with its envN_cycle0 template"
+          }
+        },
+        "envpar_config__PaypalApiPrefix (new_envpar_config__PaypalApiPrefix)": {
+          "defaultValue": "",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_envpar_config__PaypalApiPrefix",
+            "description": "Use https://api.paypal.com for live, or https://api.sandbox.paypal.com for test."
+          }
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "d7e219e3-4942-4cc5-85c1-b141d765f50b"
+          },
+          "type": "Request",
+          "kind": "Http",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "Cycle1GroupName": {
+                  "type": "string"
                 },
-                "$authentication": {
-                    "defaultValue": {},
-                    "type": "SecureObject"
+                "ID": {
+                  "type": "integer"
                 },
-                "envpar_config__TenantName": {
-                    "defaultValue": "",
-                    "type": "String",
-                    "metadata": {
-                        "schemaName": "new_envpar_config__TenantName",
-                        "description": "Required. Org Name orgname (this is the prefix of the auto assigned domain orgname.onmicrosoft.com)"
-                    }
-                },
-                "envpar_config__CycleZeroName": {
-                    "defaultValue": "",
-                    "type": "String",
-                    "metadata": {
-                        "schemaName": "new_envpar_config__CycleZeroName",
-                        "description": "Required. Could have many environments N each with its envN_cycle0 template"
-                    }
-                },
-                "envpar_config__PaypalApiPrefix": {
-                    "defaultValue": "",
-                    "type": "String",
-                    "metadata": {
-                        "schemaName": "new_envpar_config__PaypalApiPrefix",
-                        "description": "Use https://api.paypal.com for live, or https://api.sandbox.paypal.com for test."
-                    }
+                "CreatedByEmail": {
+                  "type": "string"
                 }
+              }
+            }
+          }
+        }
+      },
+      "actions": {
+        "Initialize_variable_PaypalApproveUrl": {
+          "runAfter": {
+            "Initialize_variable_WechatLink": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "71ca5714-bf80-466a-a487-9eb291681ded"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "PaypalApproveUrl",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Get_items_GroupsList": {
+          "runAfter": {
+            "Get_item_MySubscriptions": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "flowSystemMetadata": {
+              "swaggerOperationId": "GetItems"
             },
-            "triggers": {
-                "manual": {
-                    "metadata": {
-                        "operationMetadataId": "d7e219e3-4942-4cc5-85c1-b141d765f50b"
+            "operationMetadataId": "d89fed77-509f-48e5-baf6-dac95c3b2e38"
+          },
+          "type": "ApiConnection",
+          "inputs": {
+            "host": {
+              "connection": {
+                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+              }
+            },
+            "method": "get",
+            "path": "/datasets/@{encodeURIComponent(encodeURIComponent('https://' , parameters('envpar_config__TenantName (new_envpar_config__TenantName)') , '.sharepoint.com/sites/', parameters('envpar_config__CycleZeroName (new_envpar_config__CycleZeroName)')))}/tables/@{encodeURIComponent(encodeURIComponent('GroupsList'))}/items",
+            "queries": {
+              "$filter": "Cycle1GroupName eq '@{triggerBody()?['Cycle1GroupName']}'",
+              "$top": 1
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Get_item_MySubscriptions": {
+          "runAfter": {
+            "Initialize_variable_customerId": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "flowSystemMetadata": {
+              "swaggerOperationId": "GetItem"
+            },
+            "operationMetadataId": "4f50afea-1d1b-4de9-8392-52c47cef7f54"
+          },
+          "type": "ApiConnection",
+          "inputs": {
+            "host": {
+              "connection": {
+                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+              }
+            },
+            "method": "get",
+            "path": "/datasets/@{encodeURIComponent(encodeURIComponent('https://' , parameters('envpar_config__TenantName (new_envpar_config__TenantName)') , '.sharepoint.com/sites/',triggerBody()?['Cycle1GroupName']))}/tables/@{encodeURIComponent(encodeURIComponent('MySubscriptions'))}/items/@{encodeURIComponent(triggerBody()?['ID'])}",
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Get_items_UsersList": {
+          "runAfter": {
+            "Get_items_GroupsList": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "flowSystemMetadata": {
+              "swaggerOperationId": "GetItems"
+            },
+            "operationMetadataId": "75b08b08-c0ec-4bb3-a86a-d71d636be19c"
+          },
+          "type": "ApiConnection",
+          "inputs": {
+            "host": {
+              "connection": {
+                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+              }
+            },
+            "method": "get",
+            "path": "/datasets/@{encodeURIComponent(encodeURIComponent('https://' , parameters('envpar_config__TenantName (new_envpar_config__TenantName)') , '.sharepoint.com/sites/',triggerBody()?['Cycle1GroupName']))}/tables/@{encodeURIComponent(encodeURIComponent('UsersList'))}/items",
+            "queries": {
+              "$filter": "Title eq '@{body('Get_item_MySubscriptions')?['Author']?['Email']}'",
+              "$top": 1
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Initialize_variable_SubscriptionLink": {
+          "runAfter": {
+            "Initialize_variable_StripeNextInvoice": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "da242ba8-1ad0-44c2-9fa6-6b5cdd18a43f"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "SubscriptionLink",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Initialize_variable_WechatLink": {
+          "runAfter": {
+            "Initialize_variable_AlipayLink": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "60c62bc9-c776-4efc-8b93-175e173f501e"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "WechatLink",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Initialize_variable_AlipayLink": {
+          "runAfter": {
+            "Initialize_variable_SubscriptionLink": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "423f7156-d6de-42e4-b15e-740c59ed33c8"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "AlipayLink",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Initialize_variable_StripeBalance": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "17164f2c-9328-4e8b-8059-fd164413c4d8"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "StripeBalance",
+                "type": "float",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "Initialize_variable_StripeNextInvoice": {
+          "runAfter": {
+            "Initialize_variable_StripeBalance": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "295aba43-f9e3-48f6-bb5a-79f7bb261b36"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "StripeNextInvoice",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Initialize_variable_MicrosoftLink": {
+          "runAfter": {
+            "Initialize_variable_PaypalApproveUrl": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "8b4396f4-d8b0-4549-a619-a6700a3bb8e6"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "MicrosoftLink",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Initialize_variable_customerId": {
+          "runAfter": {
+            "Initialize_variable_MicrosoftLink": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "caf5d0ca-a066-469c-86d9-e2b0d1c3ad07"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "customerId",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Apply_to_each_GroupsList": {
+          "foreach": "@body('Get_items_GroupsList')?['value']",
+          "actions": {
+            "Apply_to_each_UsersList": {
+              "foreach": "@body('Get_items_UsersList')?['value']",
+              "actions": {
+                "Update_item_MySubscriptions": {
+                  "runAfter": {
+                    "Condition_Microsoft": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "flowSystemMetadata": {
+                      "swaggerOperationId": "PatchItem"
                     },
-                    "type": "Request",
-                    "kind": "Http",
-                    "inputs": {
-                        "schema": {
+                    "operationMetadataId": "c9681077-058c-4764-9b64-a56517006cb3"
+                  },
+                  "type": "ApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connection": {
+                        "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
+                      }
+                    },
+                    "method": "patch",
+                    "body": {
+                      "Title": "@body('Get_item_MySubscriptions')?['Author']?['Email']",
+                      "SubscriptionLink": "@{variables('SubscriptionLink')}",
+                      "NextInvoice": "@{variables('StripeNextInvoice')}",
+                      "Balance": "@variables('StripeBalance')",
+                      "AlipayLink": "@{variables('AlipayLink')}",
+                      "WechatLink": "@{variables('WechatLink')}",
+                      "PayPalLink": "@variables('PaypalApproveUrl')",
+                      "CreditCardLink": "@{variables('SubscriptionLink')}",
+                      "MicrosoftLink": "@{variables('MicrosoftLink')}",
+                      "Status": "READY",
+                      "StatusDescription": "READY! Click on the links before it is expired or request new links"
+                    },
+                    "path": "/datasets/@{encodeURIComponent(encodeURIComponent('https://' , parameters('envpar_config__TenantName (new_envpar_config__TenantName)') , '.sharepoint.com/sites/',items('Apply_to_each_GroupsList')?['Cycle1GroupName']))}/tables/@{encodeURIComponent(encodeURIComponent('MySubscriptions'))}/items/@{encodeURIComponent(body('Get_item_MySubscriptions')?['ID'])}",
+                    "authentication": "@parameters('$authentication')"
+                  }
+                },
+                "Condition_StripeKey": {
+                  "actions": {},
+                  "runAfter": {},
+                  "else": {
+                    "actions": {
+                      "Parse_JSON_Customer": {
+                        "runAfter": {
+                          "HTTP_Get_customer": [
+                            "Succeeded"
+                          ]
+                        },
+                        "metadata": {
+                          "operationMetadataId": "d955df87-4259-4de3-bcaa-70c0e0054ce4"
+                        },
+                        "type": "ParseJson",
+                        "inputs": {
+                          "content": "@body('HTTP_Get_customer')",
+                          "schema": {
                             "type": "object",
                             "properties": {
-                                "Cycle1GroupName": {
-                                    "type": "string"
-                                },
-                                "ID": {
-                                    "type": "integer"
-                                },
-                                "CreatedByEmail": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "actions": {
-                "Initialize_variable_PaypalApproveUrl": {
-                    "runAfter": {
-                        "Initialize_variable_WechatLink": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "operationMetadataId": "71ca5714-bf80-466a-a487-9eb291681ded"
-                    },
-                    "type": "InitializeVariable",
-                    "inputs": {
-                        "variables": [
-                            {
-                                "name": "PaypalApproveUrl",
+                              "id": {
                                 "type": "string"
-                            }
-                        ]
-                    }
-                },
-                "Get_items_GroupsList": {
-                    "runAfter": {
-                        "Get_item_MySubscriptions": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "flowSystemMetadata": {
-                            "swaggerOperationId": "GetItems"
-                        },
-                        "operationMetadataId": "d89fed77-509f-48e5-baf6-dac95c3b2e38"
-                    },
-                    "type": "ApiConnection",
-                    "inputs": {
-                        "host": {
-                            "connection": {
-                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
-                            }
-                        },
-                        "method": "get",
-                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent('https://' , parameters('envpar_config__TenantName') , '.sharepoint.com/sites/', parameters('envpar_config__CycleZeroName')))}/tables/@{encodeURIComponent(encodeURIComponent('GroupsList'))}/items",
-                        "queries": {
-                            "$filter": "Cycle1GroupName eq '@{triggerBody()?['Cycle1GroupName']}'",
-                            "$top": 1
-                        },
-                        "authentication": "@parameters('$authentication')"
-                    }
-                },
-                "Get_item_MySubscriptions": {
-                    "runAfter": {
-                        "Initialize_variable_customerId": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "flowSystemMetadata": {
-                            "swaggerOperationId": "GetItem"
-                        },
-                        "operationMetadataId": "4f50afea-1d1b-4de9-8392-52c47cef7f54"
-                    },
-                    "type": "ApiConnection",
-                    "inputs": {
-                        "host": {
-                            "connection": {
-                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
-                            }
-                        },
-                        "method": "get",
-                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent('https://' , parameters('envpar_config__TenantName') , '.sharepoint.com/sites/',triggerBody()?['Cycle1GroupName']))}/tables/@{encodeURIComponent(encodeURIComponent('MySubscriptions'))}/items/@{encodeURIComponent(triggerBody()?['ID'])}",
-                        "authentication": "@parameters('$authentication')"
-                    }
-                },
-                "Get_items_UsersList": {
-                    "runAfter": {
-                        "Get_items_GroupsList": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "flowSystemMetadata": {
-                            "swaggerOperationId": "GetItems"
-                        },
-                        "operationMetadataId": "75b08b08-c0ec-4bb3-a86a-d71d636be19c"
-                    },
-                    "type": "ApiConnection",
-                    "inputs": {
-                        "host": {
-                            "connection": {
-                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
-                            }
-                        },
-                        "method": "get",
-                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent('https://' , parameters('envpar_config__TenantName') , '.sharepoint.com/sites/',triggerBody()?['Cycle1GroupName']))}/tables/@{encodeURIComponent(encodeURIComponent('UsersList'))}/items",
-                        "queries": {
-                            "$filter": "Title eq '@{body('Get_item_MySubscriptions')?['Author']?['Email']}'",
-                            "$top": 1
-                        },
-                        "authentication": "@parameters('$authentication')"
-                    }
-                },
-                "Initialize_variable_SubscriptionLink": {
-                    "runAfter": {
-                        "Initialize_variable_StripeNextInvoice": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "operationMetadataId": "da242ba8-1ad0-44c2-9fa6-6b5cdd18a43f"
-                    },
-                    "type": "InitializeVariable",
-                    "inputs": {
-                        "variables": [
-                            {
-                                "name": "SubscriptionLink",
+                              },
+                              "balance": {
+                                "type": "integer"
+                              },
+                              "currency": {
                                 "type": "string"
-                            }
-                        ]
-                    }
-                },
-                "Initialize_variable_WechatLink": {
-                    "runAfter": {
-                        "Initialize_variable_AlipayLink": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "operationMetadataId": "60c62bc9-c776-4efc-8b93-175e173f501e"
-                    },
-                    "type": "InitializeVariable",
-                    "inputs": {
-                        "variables": [
-                            {
-                                "name": "WechatLink",
-                                "type": "string"
-                            }
-                        ]
-                    }
-                },
-                "Initialize_variable_AlipayLink": {
-                    "runAfter": {
-                        "Initialize_variable_SubscriptionLink": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "operationMetadataId": "423f7156-d6de-42e4-b15e-740c59ed33c8"
-                    },
-                    "type": "InitializeVariable",
-                    "inputs": {
-                        "variables": [
-                            {
-                                "name": "AlipayLink",
-                                "type": "string"
-                            }
-                        ]
-                    }
-                },
-                "Initialize_variable_StripeBalance": {
-                    "runAfter": {},
-                    "metadata": {
-                        "operationMetadataId": "17164f2c-9328-4e8b-8059-fd164413c4d8"
-                    },
-                    "type": "InitializeVariable",
-                    "inputs": {
-                        "variables": [
-                            {
-                                "name": "StripeBalance",
-                                "type": "float",
-                                "value": 0
-                            }
-                        ]
-                    }
-                },
-                "Initialize_variable_StripeNextInvoice": {
-                    "runAfter": {
-                        "Initialize_variable_StripeBalance": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "operationMetadataId": "295aba43-f9e3-48f6-bb5a-79f7bb261b36"
-                    },
-                    "type": "InitializeVariable",
-                    "inputs": {
-                        "variables": [
-                            {
-                                "name": "StripeNextInvoice",
-                                "type": "string"
-                            }
-                        ]
-                    }
-                },
-                "Initialize_variable_MicrosoftLink": {
-                    "runAfter": {
-                        "Initialize_variable_PaypalApproveUrl": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "operationMetadataId": "8b4396f4-d8b0-4549-a619-a6700a3bb8e6"
-                    },
-                    "type": "InitializeVariable",
-                    "inputs": {
-                        "variables": [
-                            {
-                                "name": "MicrosoftLink",
-                                "type": "string"
-                            }
-                        ]
-                    }
-                },
-                "Initialize_variable_customerId": {
-                    "runAfter": {
-                        "Initialize_variable_MicrosoftLink": [
-                            "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "operationMetadataId": "caf5d0ca-a066-469c-86d9-e2b0d1c3ad07"
-                    },
-                    "type": "InitializeVariable",
-                    "inputs": {
-                        "variables": [
-                            {
-                                "name": "customerId",
-                                "type": "string"
-                            }
-                        ]
-                    }
-                },
-                "Apply_to_each_GroupsList": {
-                    "foreach": "@body('Get_items_GroupsList')?['value']",
-                    "actions": {
-                        "Apply_to_each_UsersList": {
-                            "foreach": "@body('Get_items_UsersList')?['value']",
-                            "actions": {
-                                "Update_item_MySubscriptions": {
-                                    "runAfter": {
-                                        "Condition_Microsoft": [
-                                            "Succeeded"
-                                        ]
-                                    },
-                                    "metadata": {
-                                        "flowSystemMetadata": {
-                                            "swaggerOperationId": "PatchItem"
+                              },
+                              "subscriptions": {
+                                "type": "object",
+                                "properties": {
+                                  "data": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "id": {
+                                          "type": "string"
                                         },
-                                        "operationMetadataId": "c9681077-058c-4764-9b64-a56517006cb3"
-                                    },
-                                    "type": "ApiConnection",
-                                    "inputs": {
-                                        "host": {
-                                            "connection": {
-                                                "name": "@parameters('$connections')['shared_sharepointonline']['connectionId']"
-                                            }
-                                        },
-                                        "method": "patch",
-                                        "body": {
-                                            "Title": "@body('Get_item_MySubscriptions')?['Author']?['Email']",
-                                            "SubscriptionLink": "@{variables('SubscriptionLink')}",
-                                            "NextInvoice": "@{variables('StripeNextInvoice')}",
-                                            "Balance": "@variables('StripeBalance')",
-                                            "AlipayLink": "@{variables('AlipayLink')}",
-                                            "WechatLink": "@{variables('WechatLink')}",
-                                            "PayPalLink": "@variables('PaypalApproveUrl')",
-                                            "CreditCardLink": "@{variables('SubscriptionLink')}",
-                                            "MicrosoftLink": "@{variables('MicrosoftLink')}",
-                                            "Status": "READY",
-                                            "StatusDescription": "READY! Click on the links before it is expired or request new links"
-                                        },
-                                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent('https://' , parameters('envpar_config__TenantName') , '.sharepoint.com/sites/',items('Apply_to_each_GroupsList')?['Cycle1GroupName']))}/tables/@{encodeURIComponent(encodeURIComponent('MySubscriptions'))}/items/@{encodeURIComponent(body('Get_item_MySubscriptions')?['ID'])}",
-                                        "authentication": "@parameters('$authentication')"
+                                        "current_period_end": {
+                                          "type": "integer"
+                                        }
+                                      },
+                                      "required": [
+                                        "id",
+                                        "current_period_end"
+                                      ]
                                     }
-                                },
-                                "Condition_StripeKey": {
-                                    "actions": {},
-                                    "runAfter": {},
-                                    "else": {
-                                        "actions": {
-                                            "Parse_JSON_Customer": {
-                                                "runAfter": {
-                                                    "HTTP_Get_customer": [
-                                                        "Succeeded"
-                                                    ]
-                                                },
-                                                "metadata": {
-                                                    "operationMetadataId": "d955df87-4259-4de3-bcaa-70c0e0054ce4"
-                                                },
-                                                "type": "ParseJson",
-                                                "inputs": {
-                                                    "content": "@body('HTTP_Get_customer')",
-                                                    "schema": {
-                                                        "type": "object",
-                                                        "properties": {
-                                                            "id": {
-                                                                "type": "string"
-                                                            },
-                                                            "balance": {
-                                                                "type": "integer"
-                                                            },
-                                                            "currency": {
-                                                                "type": "string"
-                                                            },
-                                                            "subscriptions": {
-                                                                "type": "object",
-                                                                "properties": {
-                                                                    "data": {
-                                                                        "type": "array",
-                                                                        "items": {
-                                                                            "type": "object",
-                                                                            "properties": {
-                                                                                "id": {
-                                                                                    "type": "string"
-                                                                                },
-                                                                                "current_period_end": {
-                                                                                    "type": "integer"
-                                                                                }
-                                                                            },
-                                                                            "required": [
-                                                                                "id",
-                                                                                "current_period_end"
-                                                                            ]
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            },
-                                            "Set_variable_StripeBalance": {
-                                                "runAfter": {
-                                                    "Parse_JSON_Customer": [
-                                                        "Succeeded"
-                                                    ]
-                                                },
-                                                "metadata": {
-                                                    "operationMetadataId": "bad0649b-950a-403a-8b6b-77a6d1cb5bdc"
-                                                },
-                                                "type": "SetVariable",
-                                                "inputs": {
-                                                    "name": "StripeBalance",
-                                                    "value": "@div(body('Parse_JSON_Customer')?['balance'], float(-100))"
-                                                }
-                                            },
-                                            "Set_variable_StripeNextInvoice": {
-                                                "runAfter": {
-                                                    "Set_variable_StripeBalance": [
-                                                        "Succeeded"
-                                                    ]
-                                                },
-                                                "metadata": {
-                                                    "operationMetadataId": "cbc52eed-61c5-48bf-be21-983f914e2ba1"
-                                                },
-                                                "type": "SetVariable",
-                                                "inputs": {
-                                                    "name": "StripeNextInvoice",
-                                                    "value": "@{addDays('1970-01-01T00:00:00Z', div(first(body('Parse_JSON_Customer')?['subscriptions']?['data'])?['current_period_end'], 86400))}"
-                                                }
-                                            },
-                                            "HTTP_Create_Session": {
-                                                "runAfter": {
-                                                    "Set_variable_StripeNextInvoice": [
-                                                        "Succeeded"
-                                                    ]
-                                                },
-                                                "metadata": {
-                                                    "operationMetadataId": "e57c42f9-4489-4124-b677-996686604b54"
-                                                },
-                                                "type": "Http",
-                                                "inputs": {
-                                                    "method": "POST",
-                                                    "uri": "https://api.stripe.com/v1/billing_portal/sessions",
-                                                    "headers": {
-                                                        "Content-type": "application/x-www-form-urlencoded"
-                                                    },
-                                                    "body": "customer=@{variables('customerId')}&return_url=@{uriComponent(concat('https://', concat(parameters('envpar_config__TenantName'), '.sharepoint.com'), '/sites/', items('Apply_to_each_GroupsList')?['Cycle1GroupName'], '/Lists/MySubscriptions'))}",
-                                                    "authentication": {
-                                                        "type": "Raw",
-                                                        "value": "Bearer @{items('Apply_to_each_GroupsList')?['StripeKey']}"
-                                                    }
-                                                }
-                                            },
-                                            "Parse_JSON_Session": {
-                                                "runAfter": {
-                                                    "HTTP_Create_Session": [
-                                                        "Succeeded"
-                                                    ]
-                                                },
-                                                "metadata": {
-                                                    "operationMetadataId": "825bfbf2-c461-4ae6-b32c-bf408e3eb7c6"
-                                                },
-                                                "type": "ParseJson",
-                                                "inputs": {
-                                                    "content": "@body('HTTP_Create_Session')",
-                                                    "schema": {
-                                                        "type": "object",
-                                                        "properties": {
-                                                            "id": {
-                                                                "type": "string"
-                                                            },
-                                                            "customer": {
-                                                                "type": "string"
-                                                            },
-                                                            "url": {
-                                                                "type": "string"
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            },
-                                            "Set_variable_SubscriptionLink": {
-                                                "runAfter": {
-                                                    "Parse_JSON_Session": [
-                                                        "Succeeded"
-                                                    ]
-                                                },
-                                                "metadata": {
-                                                    "operationMetadataId": "dd765014-9e15-4002-92a3-64519bd50e34"
-                                                },
-                                                "type": "SetVariable",
-                                                "inputs": {
-                                                    "name": "SubscriptionLink",
-                                                    "value": "@body('Parse_JSON_Session')?['url']"
-                                                }
-                                            },
-                                            "Condition_Alipay": {
-                                                "actions": {
-                                                    "HTTP_Create_Alipay_Source": {
-                                                        "runAfter": {},
-                                                        "metadata": {
-                                                            "operationMetadataId": "d5511ba5-b383-456b-9cfd-c52710884898"
-                                                        },
-                                                        "type": "Http",
-                                                        "inputs": {
-                                                            "method": "POST",
-                                                            "uri": "https://api.stripe.com/v1/sources",
-                                                            "headers": {
-                                                                "Content-type": "application/x-www-form-urlencoded"
-                                                            },
-                                                            "body": "type=alipay&amount=@{outputs('Compose_amount')}&currency=@{items('Apply_to_each_GroupsList')?['CurrencyCode']}&@{uriComponent('metadata[customer]')}=@{items('Apply_to_each_UsersList')?['StripeCustomerId']}&@{uriComponent('redirect[return_url]')}=@{uriComponent(body('Parse_JSON_Session')?['url'])}",
-                                                            "authentication": {
-                                                                "type": "Raw",
-                                                                "value": "Bearer @{items('Apply_to_each_GroupsList')?['StripeKey']}"
-                                                            }
-                                                        }
-                                                    },
-                                                    "Parse_JSON_Alipay_Source_id_and_url": {
-                                                        "runAfter": {
-                                                            "HTTP_Create_Alipay_Source": [
-                                                                "Succeeded"
-                                                            ]
-                                                        },
-                                                        "metadata": {
-                                                            "operationMetadataId": "259e84ce-1fe6-494a-8329-56e7ed5315b4"
-                                                        },
-                                                        "type": "ParseJson",
-                                                        "inputs": {
-                                                            "content": "@body('HTTP_Create_Alipay_Source')",
-                                                            "schema": {
-                                                                "type": "object",
-                                                                "properties": {
-                                                                    "id": {
-                                                                        "type": "string"
-                                                                    },
-                                                                    "redirect": {
-                                                                        "type": "object",
-                                                                        "properties": {
-                                                                            "url": {
-                                                                                "type": "string"
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    },
-                                                    "Set_variable_AlipayLink": {
-                                                        "runAfter": {
-                                                            "Parse_JSON_Alipay_Source_id_and_url": [
-                                                                "Succeeded"
-                                                            ]
-                                                        },
-                                                        "metadata": {
-                                                            "operationMetadataId": "4a64db65-81a4-4b1a-9a05-7749afffdeec"
-                                                        },
-                                                        "type": "SetVariable",
-                                                        "inputs": {
-                                                            "name": "AlipayLink",
-                                                            "value": "@body('Parse_JSON_Alipay_Source_id_and_url')?['redirect']?['url']"
-                                                        }
-                                                    }
-                                                },
-                                                "runAfter": {
-                                                    "Compose_amount": [
-                                                        "Succeeded"
-                                                    ]
-                                                },
-                                                "expression": {
-                                                    "equals": [
-                                                        "@body('Get_item_MySubscriptions')?['GetAlipayLink']",
-                                                        "@true"
-                                                    ]
-                                                },
-                                                "metadata": {
-                                                    "operationMetadataId": "361e2ef2-5da1-4d8a-928a-11792bbcfe1b"
-                                                },
-                                                "type": "If"
-                                            },
-                                            "Condition_Wechatpay": {
-                                                "actions": {
-                                                    "HTTP_Create_WechatPay_Source": {
-                                                        "runAfter": {},
-                                                        "metadata": {
-                                                            "operationMetadataId": "f5e1492a-588b-409f-9bcf-e5d5dfa1b12c"
-                                                        },
-                                                        "type": "Http",
-                                                        "inputs": {
-                                                            "method": "POST",
-                                                            "uri": "https://api.stripe.com/v1/sources",
-                                                            "headers": {
-                                                                "Content-type": "application/x-www-form-urlencoded"
-                                                            },
-                                                            "body": "type=wechat&amount=@{outputs('Compose_amount')}&currency=@{items('Apply_to_each_GroupsList')?['CurrencyCode']}&@{uriComponent('metadata[customer]')}=@{items('Apply_to_each_UsersList')?['StripeCustomerId']}&@{uriComponent('redirect[return_url]')}=@{uriComponent(body('Parse_JSON_Session')?['url'])}",
-                                                            "authentication": {
-                                                                "type": "Raw",
-                                                                "value": "Bearer @{items('Apply_to_each_GroupsList')?['StripeKey']}"
-                                                            }
-                                                        }
-                                                    },
-                                                    "Parse_JSON_WechatPay_Source_id_and_url": {
-                                                        "runAfter": {
-                                                            "HTTP_Create_WechatPay_Source": [
-                                                                "Succeeded"
-                                                            ]
-                                                        },
-                                                        "metadata": {
-                                                            "operationMetadataId": "4063a02f-19c9-45d9-94d1-34c5e45ce497"
-                                                        },
-                                                        "type": "ParseJson",
-                                                        "inputs": {
-                                                            "content": "@body('HTTP_Create_WechatPay_Source')",
-                                                            "schema": {
-                                                                "type": "object",
-                                                                "properties": {
-                                                                    "id": {
-                                                                        "type": "string"
-                                                                    },
-                                                                    "wechat": {
-                                                                        "type": "object",
-                                                                        "properties": {
-                                                                            "qr_code_url": {
-                                                                                "type": "string"
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    },
-                                                    "Set_variable_WechatLink": {
-                                                        "runAfter": {
-                                                            "Parse_JSON_WechatPay_Source_id_and_url": [
-                                                                "Succeeded"
-                                                            ]
-                                                        },
-                                                        "metadata": {
-                                                            "operationMetadataId": "a1dffabd-a085-4dcd-a123-08e1cb20cac5"
-                                                        },
-                                                        "type": "SetVariable",
-                                                        "inputs": {
-                                                            "name": "WechatLink",
-                                                            "value": "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=@{body('Parse_JSON_WechatPay_Source_id_and_url')?['wechat']?['qr_code_url']}"
-                                                        }
-                                                    }
-                                                },
-                                                "runAfter": {
-                                                    "Condition_Alipay": [
-                                                        "Succeeded"
-                                                    ]
-                                                },
-                                                "expression": {
-                                                    "equals": [
-                                                        "@body('Get_item_MySubscriptions')?['GetWechatpayLink']",
-                                                        "@true"
-                                                    ]
-                                                },
-                                                "metadata": {
-                                                    "operationMetadataId": "cf49364d-243d-420d-a328-e843e4665cd6"
-                                                },
-                                                "type": "If"
-                                            },
-                                            "Condition_Paypal": {
-                                                "actions": {
-                                                    "HTTP_ClientSecret": {
-                                                        "runAfter": {},
-                                                        "metadata": {
-                                                            "operationMetadataId": "de8b9523-b762-4cb6-8c09-623b4793a415"
-                                                        },
-                                                        "type": "Http",
-                                                        "inputs": {
-                                                            "method": "POST",
-                                                            "uri": "@{parameters('envpar_config__PaypalApiPrefix')}/v1/oauth2/token",
-                                                            "headers": {
-                                                                "Accept": "application/json",
-                                                                "Accept-Language": "en_US",
-                                                                "content-type": "application/x-www-form-urlencoded"
-                                                            },
-                                                            "body": "grant_type=client_credentials",
-                                                            "authentication": {
-                                                                "type": "Basic",
-                                                                "username": "@items('Apply_to_each_GroupsList')?['PaypalKey']",
-                                                                "password": "@items('Apply_to_each_GroupsList')?['PaypalSecret']"
-                                                            }
-                                                        }
-                                                    },
-                                                    "Parse_JSON_Http_ClientSecret": {
-                                                        "runAfter": {
-                                                            "HTTP_ClientSecret": [
-                                                                "Succeeded"
-                                                            ]
-                                                        },
-                                                        "metadata": {
-                                                            "operationMetadataId": "9a83f65b-d9b1-4095-89ec-7756f4088e49"
-                                                        },
-                                                        "type": "ParseJson",
-                                                        "inputs": {
-                                                            "content": "@body('HTTP_ClientSecret')",
-                                                            "schema": {
-                                                                "type": "object",
-                                                                "properties": {
-                                                                    "scope": {
-                                                                        "type": "string"
-                                                                    },
-                                                                    "access_token": {
-                                                                        "type": "string"
-                                                                    },
-                                                                    "token_type": {
-                                                                        "type": "string"
-                                                                    },
-                                                                    "app_id": {
-                                                                        "type": "string"
-                                                                    },
-                                                                    "expires_in": {
-                                                                        "type": "integer"
-                                                                    },
-                                                                    "nonce": {
-                                                                        "type": "string"
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    },
-                                                    "HTTP_Create_order": {
-                                                        "runAfter": {
-                                                            "Parse_JSON_Http_ClientSecret": [
-                                                                "Succeeded"
-                                                            ]
-                                                        },
-                                                        "metadata": {
-                                                            "operationMetadataId": "518a38b4-8a3c-49ed-bb9e-7d702045c5e3"
-                                                        },
-                                                        "type": "Http",
-                                                        "inputs": {
-                                                            "method": "POST",
-                                                            "uri": "@{parameters('envpar_config__PaypalApiPrefix')}/v2/checkout/orders",
-                                                            "headers": {
-                                                                "Accept": "application/json",
-                                                                "Accept-Language": "en_US",
-                                                                "content-type": "application/json"
-                                                            },
-                                                            "body": {
-                                                                "intent": "CAPTURE",
-                                                                "purchase_units": [
-                                                                    {
-                                                                        "reference_id": "@{items('Apply_to_each_UsersList')?['StripeCustomerId']}",
-                                                                        "amount": {
-                                                                            "currency_code": "@{toUpper(items('Apply_to_each_GroupsList')?['CurrencyCode'])}",
-                                                                            "value": "@{outputs('Compose_amount_paypal')}"
-                                                                        }
-                                                                    }
-                                                                ],
-                                                                "application_context": {
-                                                                    "return_url": "@{body('Parse_JSON_Session')?['url']}",
-                                                                    "cancel_url": "@{body('Parse_JSON_Session')?['url']}"
-                                                                }
-                                                            },
-                                                            "authentication": {
-                                                                "type": "Raw",
-                                                                "value": "Bearer @{body('Parse_JSON_Http_ClientSecret')?['access_token']}"
-                                                            }
-                                                        }
-                                                    },
-                                                    "Parse_JSON_Create_order": {
-                                                        "runAfter": {
-                                                            "HTTP_Create_order": [
-                                                                "Succeeded"
-                                                            ]
-                                                        },
-                                                        "metadata": {
-                                                            "operationMetadataId": "68517a30-4ea9-4c17-b1b1-99492aeab63d"
-                                                        },
-                                                        "type": "ParseJson",
-                                                        "inputs": {
-                                                            "content": "@body('HTTP_Create_order')",
-                                                            "schema": {
-                                                                "type": "object",
-                                                                "properties": {
-                                                                    "id": {
-                                                                        "type": "string"
-                                                                    },
-                                                                    "links": {
-                                                                        "type": "array",
-                                                                        "items": {
-                                                                            "type": "object",
-                                                                            "properties": {
-                                                                                "href": {
-                                                                                    "type": "string"
-                                                                                },
-                                                                                "rel": {
-                                                                                    "type": "string"
-                                                                                },
-                                                                                "method": {
-                                                                                    "type": "string"
-                                                                                }
-                                                                            },
-                                                                            "required": [
-                                                                                "href",
-                                                                                "rel",
-                                                                                "method"
-                                                                            ]
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    },
-                                                    "Apply_to_each_Create_order_links": {
-                                                        "foreach": "@body('Parse_JSON_Create_order')?['links']",
-                                                        "actions": {
-                                                            "Condition_Create_order_links_rel": {
-                                                                "actions": {
-                                                                    "Set_variable_PaypalApproveUrl": {
-                                                                        "runAfter": {},
-                                                                        "metadata": {
-                                                                            "operationMetadataId": "962fc236-6555-4445-8660-697c03d488de"
-                                                                        },
-                                                                        "type": "SetVariable",
-                                                                        "inputs": {
-                                                                            "name": "PaypalApproveUrl",
-                                                                            "value": "@items('Apply_to_each_Create_order_links')?['href']"
-                                                                        }
-                                                                    }
-                                                                },
-                                                                "runAfter": {},
-                                                                "expression": {
-                                                                    "contains": [
-                                                                        "@items('Apply_to_each_Create_order_links')?['rel']",
-                                                                        "@'approve'"
-                                                                    ]
-                                                                },
-                                                                "metadata": {
-                                                                    "operationMetadataId": "f2ce3f8b-5283-4419-99a6-2f7ec58fa90b"
-                                                                },
-                                                                "type": "If"
-                                                            }
-                                                        },
-                                                        "runAfter": {
-                                                            "Parse_JSON_Create_order": [
-                                                                "Succeeded"
-                                                            ]
-                                                        },
-                                                        "metadata": {
-                                                            "operationMetadataId": "ec1e704e-9c90-4ac9-b061-29e5a6e06f74"
-                                                        },
-                                                        "type": "Foreach"
-                                                    }
-                                                },
-                                                "runAfter": {
-                                                    "Compose_amount_paypal": [
-                                                        "Succeeded"
-                                                    ]
-                                                },
-                                                "expression": {
-                                                    "and": [
-                                                        {
-                                                            "equals": [
-                                                                "@body('Get_item_MySubscriptions')?['GetPaypalLink']",
-                                                                "@true"
-                                                            ]
-                                                        },
-                                                        {
-                                                            "not": {
-                                                                "equals": [
-                                                                    "@items('Apply_to_each_GroupsList')?['PaypalKey']",
-                                                                    "@null"
-                                                                ]
-                                                            }
-                                                        }
-                                                    ]
-                                                },
-                                                "metadata": {
-                                                    "operationMetadataId": "8cf58d92-bfbb-4e7b-ad99-4dd748b29ba7"
-                                                },
-                                                "type": "If"
-                                            },
-                                            "Condition_StripeSubscriptionId": {
-                                                "actions": {
-                                                    "Scope_Create_StripeSubscription": {
-                                                        "actions": {
-                                                            "HTTP_4": {
-                                                                "runAfter": {},
-                                                                "metadata": {
-                                                                    "operationMetadataId": "57952a5f-15a5-4771-8125-6a25d8470ab6"
-                                                                },
-                                                                "type": "Http",
-                                                                "inputs": {
-                                                                    "method": "GET",
-                                                                    "uri": "https://api.stripe.com/v1/customers?email=@{uriComponent(items('Apply_to_each_UsersList')?['Title'])}&expand%5B%5D=data.subscriptions",
-                                                                    "authentication": {
-                                                                        "type": "Raw",
-                                                                        "value": "Bearer @{items('Apply_to_each_GroupsList')?['StripeKey']}"
-                                                                    }
-                                                                }
-                                                            },
-                                                            "Condition_no_customer": {
-                                                                "actions": {
-                                                                    "HTTP_3": {
-                                                                        "runAfter": {},
-                                                                        "metadata": {
-                                                                            "operationMetadataId": "9702a531-ca0d-4d53-98f7-e09df18b9334"
-                                                                        },
-                                                                        "type": "Http",
-                                                                        "inputs": {
-                                                                            "method": "POST",
-                                                                            "uri": "https://api.stripe.com/v1/customers",
-                                                                            "headers": {
-                                                                                "Content-type": "application/x-www-form-urlencoded"
-                                                                            },
-                                                                            "body": "email=@{uriComponent(items('Apply_to_each_UsersList')?['Title'])}&metadata%5Buid%5D=@{uriComponent(items('Apply_to_each_UsersList')?['UID'])}&metadata%5Bgid%5D=@{uriComponent(items('Apply_to_each_GroupsList')?['Cycle1GroupId'])}",
-                                                                            "authentication": {
-                                                                                "type": "Raw",
-                                                                                "value": "Bearer @{items('Apply_to_each_GroupsList')?['StripeKey']}"
-                                                                            }
-                                                                        }
-                                                                    },
-                                                                    "Set_variable_customerId": {
-                                                                        "runAfter": {
-                                                                            "HTTP_3": [
-                                                                                "Succeeded"
-                                                                            ]
-                                                                        },
-                                                                        "metadata": {
-                                                                            "operationMetadataId": "ac7b1204-354e-479b-a183-20e70a3ff050"
-                                                                        },
-                                                                        "type": "SetVariable",
-                                                                        "inputs": {
-                                                                            "name": "customerId",
-                                                                            "value": "@{body('HTTP_3')?['id']}"
-                                                                        }
-                                                                    }
-                                                                },
-                                                                "runAfter": {
-                                                                    "HTTP_4": [
-                                                                        "Succeeded"
-                                                                    ]
-                                                                },
-                                                                "else": {
-                                                                    "actions": {
-                                                                        "Set_variable_customerId_2": {
-                                                                            "runAfter": {},
-                                                                            "metadata": {
-                                                                                "operationMetadataId": "089f4143-1fb6-4056-a0d0-5d48a6c24823"
-                                                                            },
-                                                                            "type": "SetVariable",
-                                                                            "inputs": {
-                                                                                "name": "customerId",
-                                                                                "value": "@{body('HTTP_4')?['data']?[0]?['id']}"
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                },
-                                                                "expression": {
-                                                                    "equals": [
-                                                                        "@length(body('HTTP_4')?['data'])",
-                                                                        0
-                                                                    ]
-                                                                },
-                                                                "metadata": {
-                                                                    "operationMetadataId": "c608e402-8e62-4ae8-baa0-1f4a4841266c"
-                                                                },
-                                                                "type": "If"
-                                                            },
-                                                            "Parse_JSON_4": {
-                                                                "runAfter": {
-                                                                    "Condition_no_subscription": [
-                                                                        "Succeeded"
-                                                                    ]
-                                                                },
-                                                                "metadata": {
-                                                                    "operationMetadataId": "3dadad5f-dead-4983-860a-59c5da850403"
-                                                                },
-                                                                "type": "ParseJson",
-                                                                "inputs": {
-                                                                    "content": "@coalesce(body('HTTP'), body('HTTP_4')?['data']?[0]?['subscriptions']?['data']?[0])",
-                                                                    "schema": {
-                                                                        "type": "object",
-                                                                        "properties": {
-                                                                            "id": {
-                                                                                "type": "string"
-                                                                            },
-                                                                            "current_period_start": {
-                                                                                "type": "integer"
-                                                                            },
-                                                                            "current_period_end": {
-                                                                                "type": "integer"
-                                                                            },
-                                                                            "plan": {
-                                                                                "type": "object",
-                                                                                "properties": {
-                                                                                    "id": {
-                                                                                        "type": "string"
-                                                                                    }
-                                                                                }
-                                                                            },
-                                                                            "status": {
-                                                                                "type": "string"
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
-                                                            },
-                                                            "Update_item_UsersList": {
-                                                                "runAfter": {
-                                                                    "Parse_JSON_4": [
-                                                                        "Succeeded"
-                                                                    ]
-                                                                },
-                                                                "metadata": {
-                                                                    "operationMetadataId": "72bc3fb7-8887-4155-b6e8-7aca8a51341a"
-                                                                },
-                                                                "type": "OpenApiConnection",
-                                                                "inputs": {
-                                                                    "host": {
-                                                                        "connectionName": "shared_sharepointonline",
-                                                                        "operationId": "PatchItem",
-                                                                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
-                                                                    },
-                                                                    "parameters": {
-                                                                        "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{items('Apply_to_each_GroupsList')?['Cycle1GroupName']}",
-                                                                        "table": "UsersList",
-                                                                        "id": "@items('Apply_to_each_UsersList')?['ID']",
-                                                                        "item": {
-                                                                            "StripeCustomerId": "@{variables('customerId')}",
-                                                                            "StripeSubscriptionId": "@{body('Parse_JSON_4')?['id']}",
-                                                                            "StripePriceId": "@{body('Parse_JSON_4')?['plan']?['id']}",
-                                                                            "StripePriceStatus": "@{body('Parse_JSON_4')?['status']}",
-                                                                            "StripeLastMetered": "@{utcNow()}"
-                                                                        }
-                                                                    },
-                                                                    "authentication": "@parameters('$authentication')"
-                                                                }
-                                                            },
-                                                            "Create_item_LogsList": {
-                                                                "runAfter": {
-                                                                    "Update_item_UsersList": [
-                                                                        "Succeeded"
-                                                                    ]
-                                                                },
-                                                                "metadata": {
-                                                                    "operationMetadataId": "818bf389-61db-4e2c-a104-94c655ac6c67"
-                                                                },
-                                                                "type": "OpenApiConnection",
-                                                                "inputs": {
-                                                                    "host": {
-                                                                        "connectionName": "shared_sharepointonline",
-                                                                        "operationId": "PostItem",
-                                                                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
-                                                                    },
-                                                                    "parameters": {
-                                                                        "dataset": "https://@{parameters('envpar_config__TenantName')}.sharepoint.com/sites/@{items('Apply_to_each_GroupsList')?['Cycle1GroupName']}",
-                                                                        "table": "LogsList",
-                                                                        "item": {
-                                                                            "Title": "Updated @{items('Apply_to_each_UsersList')?['Title']} to Stripe customer @{variables('customerId')}  ",
-                                                                            "Resource": "UsersList",
-                                                                            "ResourceId": "@{items('Apply_to_each_UsersList')?['Title']}",
-                                                                            "ChangeType": "UPDATE",
-                                                                            "Source": "cycle0__Graph_Groups_Webhook",
-                                                                            "LogDescription": ""
-                                                                        }
-                                                                    },
-                                                                    "authentication": "@parameters('$authentication')"
-                                                                }
-                                                            },
-                                                            "Condition_no_subscription": {
-                                                                "actions": {
-                                                                    "HTTP": {
-                                                                        "runAfter": {},
-                                                                        "metadata": {
-                                                                            "operationMetadataId": "b3ff5f2e-4cae-472b-a304-77dae16a2045"
-                                                                        },
-                                                                        "type": "Http",
-                                                                        "inputs": {
-                                                                            "method": "POST",
-                                                                            "uri": "https://api.stripe.com/v1/subscriptions",
-                                                                            "headers": {
-                                                                                "Content-type": "application/x-www-form-urlencoded"
-                                                                            },
-                                                                            "body": "customer=@{variables('customerId')}&@{uriComponent('items[0][price]')}=@{items('Apply_to_each_GroupsList')?['StripePrice0']}",
-                                                                            "authentication": {
-                                                                                "type": "Raw",
-                                                                                "value": "Bearer @{items('Apply_to_each_GroupsList')?['StripeKey']}"
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                },
-                                                                "runAfter": {
-                                                                    "Condition_no_customer": [
-                                                                        "Succeeded"
-                                                                    ]
-                                                                },
-                                                                "expression": {
-                                                                    "equals": [
-                                                                        "@body('HTTP_4')?['data']?[0]?['subscriptions']?['data']?[0]",
-                                                                        "@null"
-                                                                    ]
-                                                                },
-                                                                "metadata": {
-                                                                    "operationMetadataId": "d0a59133-18dd-4a2d-ba8b-64d10d2d760d"
-                                                                },
-                                                                "type": "If"
-                                                            }
-                                                        },
-                                                        "runAfter": {},
-                                                        "metadata": {
-                                                            "operationMetadataId": "43075260-cd71-4c43-83d0-cc7f8273faba"
-                                                        },
-                                                        "type": "Scope"
-                                                    }
-                                                },
-                                                "runAfter": {},
-                                                "else": {
-                                                    "actions": {
-                                                        "Set_variable_customerId_3": {
-                                                            "runAfter": {},
-                                                            "metadata": {
-                                                                "operationMetadataId": "19f3a759-4d5f-4921-b446-ed2f6ebf9331"
-                                                            },
-                                                            "type": "SetVariable",
-                                                            "inputs": {
-                                                                "name": "customerId",
-                                                                "value": "@{items('Apply_to_each_UsersList')?['StripeCustomerId']}"
-                                                            }
-                                                        }
-                                                    }
-                                                },
-                                                "expression": {
-                                                    "equals": [
-                                                        "@items('Apply_to_each_UsersList')?['StripeSubscriptionId']",
-                                                        "@null"
-                                                    ]
-                                                },
-                                                "metadata": {
-                                                    "operationMetadataId": "67013e5e-83d5-4f96-b1dd-194818571d1a"
-                                                },
-                                                "type": "If"
-                                            },
-                                            "HTTP_Get_customer": {
-                                                "runAfter": {
-                                                    "Condition_StripeSubscriptionId": [
-                                                        "Succeeded"
-                                                    ]
-                                                },
-                                                "metadata": {
-                                                    "operationMetadataId": "1bce3c4d-e885-48b7-8db2-8f9e761ba19f"
-                                                },
-                                                "type": "Http",
-                                                "inputs": {
-                                                    "method": "GET",
-                                                    "uri": "https://api.stripe.com/v1/customers/@{variables('customerId')}",
-                                                    "authentication": {
-                                                        "type": "Raw",
-                                                        "value": "Bearer @{items('Apply_to_each_GroupsList')?['StripeKey']}"
-                                                    }
-                                                }
-                                            },
-                                            "Compose_amount": {
-                                                "runAfter": {
-                                                    "Set_variable_SubscriptionLink": [
-                                                        "Succeeded"
-                                                    ]
-                                                },
-                                                "metadata": {
-                                                    "operationMetadataId": "d374179b-02fa-44ee-a4c1-d22286f23eb1"
-                                                },
-                                                "type": "Compose",
-                                                "inputs": "@if(contains(createArray('bif', 'clp', 'djf', 'gnf', 'jpy', 'kmf', 'krw', 'mga', 'pyg', 'rwf', 'vnd', 'vuv', 'xaf', 'xof', 'xpf'), items('Apply_to_each_GroupsList')?['CurrencyCode']), int(items('Apply_to_each_GroupsList')?['CurrencyUnit']) , int(mul(float(items('Apply_to_each_GroupsList')?['CurrencyUnit']), 100)) )"
-                                            },
-                                            "Compose_amount_paypal": {
-                                                "runAfter": {
-                                                    "Condition_Wechatpay": [
-                                                        "Succeeded"
-                                                    ]
-                                                },
-                                                "metadata": {
-                                                    "operationMetadataId": "37cb50fc-1335-451b-bf3e-60c6189442e3"
-                                                },
-                                                "type": "Compose",
-                                                "inputs": "@float(items('Apply_to_each_GroupsList')?['CurrencyUnit'])"
-                                            }
-                                        }
-                                    },
-                                    "expression": {
-                                        "equals": [
-                                            "@items('Apply_to_each_GroupsList')?['StripeKey']",
-                                            "@null"
-                                        ]
-                                    },
-                                    "metadata": {
-                                        "operationMetadataId": "4c171484-ef99-410e-8dd9-c3c8245819f8"
-                                    },
-                                    "type": "If"
-                                },
-                                "Condition_Microsoft": {
-                                    "actions": {},
-                                    "runAfter": {
-                                        "Condition_StripeKey": [
-                                            "Succeeded"
-                                        ]
-                                    },
-                                    "else": {
-                                        "actions": {
-                                            "Set_variable_MicrosoftLink": {
-                                                "runAfter": {},
-                                                "metadata": {
-                                                    "operationMetadataId": "ed4612da-b0c6-4e01-b6ee-f141ec489a22"
-                                                },
-                                                "type": "SetVariable",
-                                                "inputs": {
-                                                    "name": "MicrosoftLink",
-                                                    "value": "https://azuremarketplace.microsoft.com"
-                                                }
-                                            }
-                                        }
-                                    },
-                                    "expression": {
-                                        "equals": [
-                                            "@items('Apply_to_each_UsersList')?['MicrosoftSubscriptionId']",
-                                            "@null"
-                                        ]
-                                    },
-                                    "metadata": {
-                                        "operationMetadataId": "38a36ae3-2c5b-4e6b-9e65-470d487f5bef"
-                                    },
-                                    "type": "If"
+                                  }
                                 }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "Set_variable_StripeBalance": {
+                        "runAfter": {
+                          "Parse_JSON_Customer": [
+                            "Succeeded"
+                          ]
+                        },
+                        "metadata": {
+                          "operationMetadataId": "bad0649b-950a-403a-8b6b-77a6d1cb5bdc"
+                        },
+                        "type": "SetVariable",
+                        "inputs": {
+                          "name": "StripeBalance",
+                          "value": "@div(body('Parse_JSON_Customer')?['balance'], float(-100))"
+                        }
+                      },
+                      "Set_variable_StripeNextInvoice": {
+                        "runAfter": {
+                          "Set_variable_StripeBalance": [
+                            "Succeeded"
+                          ]
+                        },
+                        "metadata": {
+                          "operationMetadataId": "cbc52eed-61c5-48bf-be21-983f914e2ba1"
+                        },
+                        "type": "SetVariable",
+                        "inputs": {
+                          "name": "StripeNextInvoice",
+                          "value": "@{addDays('1970-01-01T00:00:00Z', div(first(body('Parse_JSON_Customer')?['subscriptions']?['data'])?['current_period_end'], 86400))}"
+                        }
+                      },
+                      "HTTP_Create_Session": {
+                        "runAfter": {
+                          "Set_variable_StripeNextInvoice": [
+                            "Succeeded"
+                          ]
+                        },
+                        "metadata": {
+                          "operationMetadataId": "e57c42f9-4489-4124-b677-996686604b54"
+                        },
+                        "type": "Http",
+                        "inputs": {
+                          "method": "POST",
+                          "uri": "https://api.stripe.com/v1/billing_portal/sessions",
+                          "headers": {
+                            "Content-type": "application/x-www-form-urlencoded"
+                          },
+                          "body": "customer=@{variables('customerId')}&return_url=@{uriComponent(concat('https://', concat(parameters('envpar_config__TenantName (new_envpar_config__TenantName)'), '.sharepoint.com'), '/sites/', items('Apply_to_each_GroupsList')?['Cycle1GroupName'], '/Lists/MySubscriptions'))}",
+                          "authentication": {
+                            "type": "Raw",
+                            "value": "Bearer @{items('Apply_to_each_GroupsList')?['StripeKey']}"
+                          }
+                        }
+                      },
+                      "Parse_JSON_Session": {
+                        "runAfter": {
+                          "HTTP_Create_Session": [
+                            "Succeeded"
+                          ]
+                        },
+                        "metadata": {
+                          "operationMetadataId": "825bfbf2-c461-4ae6-b32c-bf408e3eb7c6"
+                        },
+                        "type": "ParseJson",
+                        "inputs": {
+                          "content": "@body('HTTP_Create_Session')",
+                          "schema": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "customer": {
+                                "type": "string"
+                              },
+                              "url": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "Set_variable_SubscriptionLink": {
+                        "runAfter": {
+                          "Parse_JSON_Session": [
+                            "Succeeded"
+                          ]
+                        },
+                        "metadata": {
+                          "operationMetadataId": "dd765014-9e15-4002-92a3-64519bd50e34"
+                        },
+                        "type": "SetVariable",
+                        "inputs": {
+                          "name": "SubscriptionLink",
+                          "value": "@body('Parse_JSON_Session')?['url']"
+                        }
+                      },
+                      "Condition_Alipay": {
+                        "actions": {
+                          "HTTP_Create_Alipay_Source": {
+                            "runAfter": {},
+                            "metadata": {
+                              "operationMetadataId": "d5511ba5-b383-456b-9cfd-c52710884898"
+                            },
+                            "type": "Http",
+                            "inputs": {
+                              "method": "POST",
+                              "uri": "https://api.stripe.com/v1/sources",
+                              "headers": {
+                                "Content-type": "application/x-www-form-urlencoded"
+                              },
+                              "body": "type=alipay&amount=@{outputs('Compose_amount')}&currency=@{items('Apply_to_each_GroupsList')?['CurrencyCode']}&@{uriComponent('metadata[customer]')}=@{items('Apply_to_each_UsersList')?['StripeCustomerId']}&@{uriComponent('redirect[return_url]')}=@{uriComponent(body('Parse_JSON_Session')?['url'])}",
+                              "authentication": {
+                                "type": "Raw",
+                                "value": "Bearer @{items('Apply_to_each_GroupsList')?['StripeKey']}"
+                              }
+                            }
+                          },
+                          "Parse_JSON_Alipay_Source_id_and_url": {
+                            "runAfter": {
+                              "HTTP_Create_Alipay_Source": [
+                                "Succeeded"
+                              ]
+                            },
+                            "metadata": {
+                              "operationMetadataId": "259e84ce-1fe6-494a-8329-56e7ed5315b4"
+                            },
+                            "type": "ParseJson",
+                            "inputs": {
+                              "content": "@body('HTTP_Create_Alipay_Source')",
+                              "schema": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string"
+                                  },
+                                  "redirect": {
+                                    "type": "object",
+                                    "properties": {
+                                      "url": {
+                                        "type": "string"
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "Set_variable_AlipayLink": {
+                            "runAfter": {
+                              "Parse_JSON_Alipay_Source_id_and_url": [
+                                "Succeeded"
+                              ]
+                            },
+                            "metadata": {
+                              "operationMetadataId": "4a64db65-81a4-4b1a-9a05-7749afffdeec"
+                            },
+                            "type": "SetVariable",
+                            "inputs": {
+                              "name": "AlipayLink",
+                              "value": "@body('Parse_JSON_Alipay_Source_id_and_url')?['redirect']?['url']"
+                            }
+                          }
+                        },
+                        "runAfter": {
+                          "Compose_amount": [
+                            "Succeeded"
+                          ]
+                        },
+                        "expression": {
+                          "equals": [
+                            "@body('Get_item_MySubscriptions')?['GetAlipayLink']",
+                            "@true"
+                          ]
+                        },
+                        "metadata": {
+                          "operationMetadataId": "361e2ef2-5da1-4d8a-928a-11792bbcfe1b"
+                        },
+                        "type": "If"
+                      },
+                      "Condition_Wechatpay": {
+                        "actions": {
+                          "HTTP_Create_WechatPay_Source": {
+                            "runAfter": {},
+                            "metadata": {
+                              "operationMetadataId": "f5e1492a-588b-409f-9bcf-e5d5dfa1b12c"
+                            },
+                            "type": "Http",
+                            "inputs": {
+                              "method": "POST",
+                              "uri": "https://api.stripe.com/v1/sources",
+                              "headers": {
+                                "Content-type": "application/x-www-form-urlencoded"
+                              },
+                              "body": "type=wechat&amount=@{outputs('Compose_amount')}&currency=@{items('Apply_to_each_GroupsList')?['CurrencyCode']}&@{uriComponent('metadata[customer]')}=@{items('Apply_to_each_UsersList')?['StripeCustomerId']}&@{uriComponent('redirect[return_url]')}=@{uriComponent(body('Parse_JSON_Session')?['url'])}",
+                              "authentication": {
+                                "type": "Raw",
+                                "value": "Bearer @{items('Apply_to_each_GroupsList')?['StripeKey']}"
+                              }
+                            }
+                          },
+                          "Parse_JSON_WechatPay_Source_id_and_url": {
+                            "runAfter": {
+                              "HTTP_Create_WechatPay_Source": [
+                                "Succeeded"
+                              ]
+                            },
+                            "metadata": {
+                              "operationMetadataId": "4063a02f-19c9-45d9-94d1-34c5e45ce497"
+                            },
+                            "type": "ParseJson",
+                            "inputs": {
+                              "content": "@body('HTTP_Create_WechatPay_Source')",
+                              "schema": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string"
+                                  },
+                                  "wechat": {
+                                    "type": "object",
+                                    "properties": {
+                                      "qr_code_url": {
+                                        "type": "string"
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "Set_variable_WechatLink": {
+                            "runAfter": {
+                              "Parse_JSON_WechatPay_Source_id_and_url": [
+                                "Succeeded"
+                              ]
+                            },
+                            "metadata": {
+                              "operationMetadataId": "a1dffabd-a085-4dcd-a123-08e1cb20cac5"
+                            },
+                            "type": "SetVariable",
+                            "inputs": {
+                              "name": "WechatLink",
+                              "value": "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=@{body('Parse_JSON_WechatPay_Source_id_and_url')?['wechat']?['qr_code_url']}"
+                            }
+                          }
+                        },
+                        "runAfter": {
+                          "Condition_Alipay": [
+                            "Succeeded"
+                          ]
+                        },
+                        "expression": {
+                          "equals": [
+                            "@body('Get_item_MySubscriptions')?['GetWechatpayLink']",
+                            "@true"
+                          ]
+                        },
+                        "metadata": {
+                          "operationMetadataId": "cf49364d-243d-420d-a328-e843e4665cd6"
+                        },
+                        "type": "If"
+                      },
+                      "Condition_Paypal": {
+                        "actions": {
+                          "HTTP_ClientSecret": {
+                            "runAfter": {},
+                            "metadata": {
+                              "operationMetadataId": "de8b9523-b762-4cb6-8c09-623b4793a415"
+                            },
+                            "type": "Http",
+                            "inputs": {
+                              "method": "POST",
+                              "uri": "@{parameters('envpar_config__PaypalApiPrefix (new_envpar_config__PaypalApiPrefix)')}/v1/oauth2/token",
+                              "headers": {
+                                "Accept": "application/json",
+                                "Accept-Language": "en_US",
+                                "content-type": "application/x-www-form-urlencoded"
+                              },
+                              "body": "grant_type=client_credentials",
+                              "authentication": {
+                                "type": "Basic",
+                                "username": "@items('Apply_to_each_GroupsList')?['PaypalKey']",
+                                "password": "@items('Apply_to_each_GroupsList')?['PaypalSecret']"
+                              }
+                            }
+                          },
+                          "Parse_JSON_Http_ClientSecret": {
+                            "runAfter": {
+                              "HTTP_ClientSecret": [
+                                "Succeeded"
+                              ]
+                            },
+                            "metadata": {
+                              "operationMetadataId": "9a83f65b-d9b1-4095-89ec-7756f4088e49"
+                            },
+                            "type": "ParseJson",
+                            "inputs": {
+                              "content": "@body('HTTP_ClientSecret')",
+                              "schema": {
+                                "type": "object",
+                                "properties": {
+                                  "scope": {
+                                    "type": "string"
+                                  },
+                                  "access_token": {
+                                    "type": "string"
+                                  },
+                                  "token_type": {
+                                    "type": "string"
+                                  },
+                                  "app_id": {
+                                    "type": "string"
+                                  },
+                                  "expires_in": {
+                                    "type": "integer"
+                                  },
+                                  "nonce": {
+                                    "type": "string"
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "HTTP_Create_order": {
+                            "runAfter": {
+                              "Parse_JSON_Http_ClientSecret": [
+                                "Succeeded"
+                              ]
+                            },
+                            "metadata": {
+                              "operationMetadataId": "518a38b4-8a3c-49ed-bb9e-7d702045c5e3"
+                            },
+                            "type": "Http",
+                            "inputs": {
+                              "method": "POST",
+                              "uri": "@{parameters('envpar_config__PaypalApiPrefix (new_envpar_config__PaypalApiPrefix)')}/v2/checkout/orders",
+                              "headers": {
+                                "Accept": "application/json",
+                                "Accept-Language": "en_US",
+                                "content-type": "application/json"
+                              },
+                              "body": {
+                                "intent": "CAPTURE",
+                                "purchase_units": [
+                                  {
+                                    "reference_id": "@{items('Apply_to_each_UsersList')?['StripeCustomerId']}",
+                                    "amount": {
+                                      "currency_code": "@{toUpper(items('Apply_to_each_GroupsList')?['CurrencyCode'])}",
+                                      "value": "@{outputs('Compose_amount_paypal')}"
+                                    }
+                                  }
+                                ],
+                                "application_context": {
+                                  "return_url": "@{body('Parse_JSON_Session')?['url']}",
+                                  "cancel_url": "@{body('Parse_JSON_Session')?['url']}"
+                                }
+                              },
+                              "authentication": {
+                                "type": "Raw",
+                                "value": "Bearer @{body('Parse_JSON_Http_ClientSecret')?['access_token']}"
+                              }
+                            }
+                          },
+                          "Parse_JSON_Create_order": {
+                            "runAfter": {
+                              "HTTP_Create_order": [
+                                "Succeeded"
+                              ]
+                            },
+                            "metadata": {
+                              "operationMetadataId": "68517a30-4ea9-4c17-b1b1-99492aeab63d"
+                            },
+                            "type": "ParseJson",
+                            "inputs": {
+                              "content": "@body('HTTP_Create_order')",
+                              "schema": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string"
+                                  },
+                                  "links": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "href": {
+                                          "type": "string"
+                                        },
+                                        "rel": {
+                                          "type": "string"
+                                        },
+                                        "method": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "required": [
+                                        "href",
+                                        "rel",
+                                        "method"
+                                      ]
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "Apply_to_each_Create_order_links": {
+                            "foreach": "@body('Parse_JSON_Create_order')?['links']",
+                            "actions": {
+                              "Condition_Create_order_links_rel": {
+                                "actions": {
+                                  "Set_variable_PaypalApproveUrl": {
+                                    "runAfter": {},
+                                    "metadata": {
+                                      "operationMetadataId": "962fc236-6555-4445-8660-697c03d488de"
+                                    },
+                                    "type": "SetVariable",
+                                    "inputs": {
+                                      "name": "PaypalApproveUrl",
+                                      "value": "@items('Apply_to_each_Create_order_links')?['href']"
+                                    }
+                                  }
+                                },
+                                "runAfter": {},
+                                "expression": {
+                                  "contains": [
+                                    "@items('Apply_to_each_Create_order_links')?['rel']",
+                                    "@'approve'"
+                                  ]
+                                },
+                                "metadata": {
+                                  "operationMetadataId": "f2ce3f8b-5283-4419-99a6-2f7ec58fa90b"
+                                },
+                                "type": "If"
+                              }
+                            },
+                            "runAfter": {
+                              "Parse_JSON_Create_order": [
+                                "Succeeded"
+                              ]
+                            },
+                            "metadata": {
+                              "operationMetadataId": "ec1e704e-9c90-4ac9-b061-29e5a6e06f74"
+                            },
+                            "type": "Foreach"
+                          }
+                        },
+                        "runAfter": {
+                          "Compose_amount_paypal": [
+                            "Succeeded"
+                          ]
+                        },
+                        "expression": {
+                          "and": [
+                            {
+                              "equals": [
+                                "@body('Get_item_MySubscriptions')?['GetPaypalLink']",
+                                "@true"
+                              ]
+                            },
+                            {
+                              "not": {
+                                "equals": [
+                                  "@items('Apply_to_each_GroupsList')?['PaypalKey']",
+                                  "@null"
+                                ]
+                              }
+                            }
+                          ]
+                        },
+                        "metadata": {
+                          "operationMetadataId": "8cf58d92-bfbb-4e7b-ad99-4dd748b29ba7"
+                        },
+                        "type": "If"
+                      },
+                      "Condition_StripeSubscriptionId": {
+                        "actions": {
+                          "Scope_Create_StripeSubscription": {
+                            "actions": {
+                              "HTTP_4": {
+                                "runAfter": {},
+                                "metadata": {
+                                  "operationMetadataId": "57952a5f-15a5-4771-8125-6a25d8470ab6"
+                                },
+                                "type": "Http",
+                                "inputs": {
+                                  "method": "GET",
+                                  "uri": "https://api.stripe.com/v1/customers?email=@{uriComponent(items('Apply_to_each_UsersList')?['Title'])}&expand%5B%5D=data.subscriptions",
+                                  "authentication": {
+                                    "type": "Raw",
+                                    "value": "Bearer @{items('Apply_to_each_GroupsList')?['StripeKey']}"
+                                  }
+                                }
+                              },
+                              "Condition_no_customer": {
+                                "actions": {
+                                  "HTTP_3": {
+                                    "runAfter": {},
+                                    "metadata": {
+                                      "operationMetadataId": "9702a531-ca0d-4d53-98f7-e09df18b9334"
+                                    },
+                                    "type": "Http",
+                                    "inputs": {
+                                      "method": "POST",
+                                      "uri": "https://api.stripe.com/v1/customers",
+                                      "headers": {
+                                        "Content-type": "application/x-www-form-urlencoded"
+                                      },
+                                      "body": "email=@{uriComponent(items('Apply_to_each_UsersList')?['Title'])}&metadata%5Buid%5D=@{uriComponent(items('Apply_to_each_UsersList')?['UID'])}&metadata%5Bgid%5D=@{uriComponent(items('Apply_to_each_GroupsList')?['Cycle1GroupId'])}",
+                                      "authentication": {
+                                        "type": "Raw",
+                                        "value": "Bearer @{items('Apply_to_each_GroupsList')?['StripeKey']}"
+                                      }
+                                    }
+                                  },
+                                  "Set_variable_customerId": {
+                                    "runAfter": {
+                                      "HTTP_3": [
+                                        "Succeeded"
+                                      ]
+                                    },
+                                    "metadata": {
+                                      "operationMetadataId": "ac7b1204-354e-479b-a183-20e70a3ff050"
+                                    },
+                                    "type": "SetVariable",
+                                    "inputs": {
+                                      "name": "customerId",
+                                      "value": "@{body('HTTP_3')?['id']}"
+                                    }
+                                  }
+                                },
+                                "runAfter": {
+                                  "HTTP_4": [
+                                    "Succeeded"
+                                  ]
+                                },
+                                "else": {
+                                  "actions": {
+                                    "Set_variable_customerId_2": {
+                                      "runAfter": {},
+                                      "metadata": {
+                                        "operationMetadataId": "089f4143-1fb6-4056-a0d0-5d48a6c24823"
+                                      },
+                                      "type": "SetVariable",
+                                      "inputs": {
+                                        "name": "customerId",
+                                        "value": "@{body('HTTP_4')?['data']?[0]?['id']}"
+                                      }
+                                    }
+                                  }
+                                },
+                                "expression": {
+                                  "equals": [
+                                    "@length(body('HTTP_4')?['data'])",
+                                    0
+                                  ]
+                                },
+                                "metadata": {
+                                  "operationMetadataId": "c608e402-8e62-4ae8-baa0-1f4a4841266c"
+                                },
+                                "type": "If"
+                              },
+                              "Parse_JSON_4": {
+                                "runAfter": {
+                                  "Condition_no_subscription": [
+                                    "Succeeded"
+                                  ]
+                                },
+                                "metadata": {
+                                  "operationMetadataId": "3dadad5f-dead-4983-860a-59c5da850403"
+                                },
+                                "type": "ParseJson",
+                                "inputs": {
+                                  "content": "@coalesce(body('HTTP'), body('HTTP_4')?['data']?[0]?['subscriptions']?['data']?[0])",
+                                  "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                      "id": {
+                                        "type": "string"
+                                      },
+                                      "current_period_start": {
+                                        "type": "integer"
+                                      },
+                                      "current_period_end": {
+                                        "type": "integer"
+                                      },
+                                      "plan": {
+                                        "type": "object",
+                                        "properties": {
+                                          "id": {
+                                            "type": "string"
+                                          }
+                                        }
+                                      },
+                                      "status": {
+                                        "type": "string"
+                                      }
+                                    }
+                                  }
+                                }
+                              },
+                              "Update_item_UsersList": {
+                                "runAfter": {
+                                  "Parse_JSON_4": [
+                                    "Succeeded"
+                                  ]
+                                },
+                                "metadata": {
+                                  "operationMetadataId": "72bc3fb7-8887-4155-b6e8-7aca8a51341a"
+                                },
+                                "type": "OpenApiConnection",
+                                "inputs": {
+                                  "host": {
+                                    "connectionName": "shared_sharepointonline",
+                                    "operationId": "PatchItem",
+                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                  },
+                                  "parameters": {
+                                    "dataset": "https://@{parameters('envpar_config__TenantName (new_envpar_config__TenantName)')}.sharepoint.com/sites/@{items('Apply_to_each_GroupsList')?['Cycle1GroupName']}",
+                                    "table": "UsersList",
+                                    "id": "@items('Apply_to_each_UsersList')?['ID']",
+                                    "item": {
+                                      "StripeCustomerId": "@{variables('customerId')}",
+                                      "StripeSubscriptionId": "@{body('Parse_JSON_4')?['id']}",
+                                      "StripePriceId": "@{body('Parse_JSON_4')?['plan']?['id']}",
+                                      "StripePriceStatus": "@{body('Parse_JSON_4')?['status']}",
+                                      "StripeLastMetered": "@{utcNow()}"
+                                    }
+                                  },
+                                  "authentication": "@parameters('$authentication')"
+                                }
+                              },
+                              "Create_item_LogsList": {
+                                "runAfter": {
+                                  "Update_item_UsersList": [
+                                    "Succeeded"
+                                  ]
+                                },
+                                "metadata": {
+                                  "operationMetadataId": "818bf389-61db-4e2c-a104-94c655ac6c67"
+                                },
+                                "type": "OpenApiConnection",
+                                "inputs": {
+                                  "host": {
+                                    "connectionName": "shared_sharepointonline",
+                                    "operationId": "PostItem",
+                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                                  },
+                                  "parameters": {
+                                    "dataset": "https://@{parameters('envpar_config__TenantName (new_envpar_config__TenantName)')}.sharepoint.com/sites/@{items('Apply_to_each_GroupsList')?['Cycle1GroupName']}",
+                                    "table": "LogsList",
+                                    "item": {
+                                      "Title": "Updated @{items('Apply_to_each_UsersList')?['Title']} to Stripe customer @{variables('customerId')}  ",
+                                      "Resource": "UsersList",
+                                      "ResourceId": "@{items('Apply_to_each_UsersList')?['Title']}",
+                                      "ChangeType": "UPDATE",
+                                      "Source": "cycle0__Graph_Groups_Webhook",
+                                      "LogDescription": ""
+                                    }
+                                  },
+                                  "authentication": "@parameters('$authentication')"
+                                }
+                              },
+                              "Condition_no_subscription": {
+                                "actions": {
+                                  "HTTP": {
+                                    "runAfter": {},
+                                    "metadata": {
+                                      "operationMetadataId": "b3ff5f2e-4cae-472b-a304-77dae16a2045"
+                                    },
+                                    "type": "Http",
+                                    "inputs": {
+                                      "method": "POST",
+                                      "uri": "https://api.stripe.com/v1/subscriptions",
+                                      "headers": {
+                                        "Content-type": "application/x-www-form-urlencoded"
+                                      },
+                                      "body": "customer=@{variables('customerId')}&@{uriComponent('items[0][price]')}=@{items('Apply_to_each_GroupsList')?['StripePrice0']}",
+                                      "authentication": {
+                                        "type": "Raw",
+                                        "value": "Bearer @{items('Apply_to_each_GroupsList')?['StripeKey']}"
+                                      }
+                                    }
+                                  }
+                                },
+                                "runAfter": {
+                                  "Condition_no_customer": [
+                                    "Succeeded"
+                                  ]
+                                },
+                                "expression": {
+                                  "equals": [
+                                    "@body('HTTP_4')?['data']?[0]?['subscriptions']?['data']?[0]",
+                                    "@null"
+                                  ]
+                                },
+                                "metadata": {
+                                  "operationMetadataId": "d0a59133-18dd-4a2d-ba8b-64d10d2d760d"
+                                },
+                                "type": "If"
+                              }
                             },
                             "runAfter": {},
                             "metadata": {
-                                "operationMetadataId": "1a1e445c-9c0b-41e2-a69e-afdcf04a8253"
+                              "operationMetadataId": "43075260-cd71-4c43-83d0-cc7f8273faba"
                             },
-                            "type": "Foreach"
-                        }
-                    },
-                    "runAfter": {
-                        "Get_items_UsersList": [
+                            "type": "Scope"
+                          }
+                        },
+                        "runAfter": {},
+                        "else": {
+                          "actions": {
+                            "Set_variable_customerId_3": {
+                              "runAfter": {},
+                              "metadata": {
+                                "operationMetadataId": "19f3a759-4d5f-4921-b446-ed2f6ebf9331"
+                              },
+                              "type": "SetVariable",
+                              "inputs": {
+                                "name": "customerId",
+                                "value": "@{items('Apply_to_each_UsersList')?['StripeCustomerId']}"
+                              }
+                            }
+                          }
+                        },
+                        "expression": {
+                          "equals": [
+                            "@items('Apply_to_each_UsersList')?['StripeSubscriptionId']",
+                            "@null"
+                          ]
+                        },
+                        "metadata": {
+                          "operationMetadataId": "67013e5e-83d5-4f96-b1dd-194818571d1a"
+                        },
+                        "type": "If"
+                      },
+                      "HTTP_Get_customer": {
+                        "runAfter": {
+                          "Condition_StripeSubscriptionId": [
                             "Succeeded"
-                        ]
-                    },
-                    "metadata": {
-                        "operationMetadataId": "1102e9b3-c1a2-4a15-9643-79e334ad6b17"
-                    },
-                    "type": "Foreach"
+                          ]
+                        },
+                        "metadata": {
+                          "operationMetadataId": "1bce3c4d-e885-48b7-8db2-8f9e761ba19f"
+                        },
+                        "type": "Http",
+                        "inputs": {
+                          "method": "GET",
+                          "uri": "https://api.stripe.com/v1/customers/@{variables('customerId')}",
+                          "authentication": {
+                            "type": "Raw",
+                            "value": "Bearer @{items('Apply_to_each_GroupsList')?['StripeKey']}"
+                          }
+                        }
+                      },
+                      "Compose_amount": {
+                        "runAfter": {
+                          "Set_variable_SubscriptionLink": [
+                            "Succeeded"
+                          ]
+                        },
+                        "metadata": {
+                          "operationMetadataId": "d374179b-02fa-44ee-a4c1-d22286f23eb1"
+                        },
+                        "type": "Compose",
+                        "inputs": "@if(contains(createArray('bif', 'clp', 'djf', 'gnf', 'jpy', 'kmf', 'krw', 'mga', 'pyg', 'rwf', 'vnd', 'vuv', 'xaf', 'xof', 'xpf'), items('Apply_to_each_GroupsList')?['CurrencyCode']), int(items('Apply_to_each_GroupsList')?['CurrencyUnit']) , int(mul(float(items('Apply_to_each_GroupsList')?['CurrencyUnit']), 100)) )"
+                      },
+                      "Compose_amount_paypal": {
+                        "runAfter": {
+                          "Condition_Wechatpay": [
+                            "Succeeded"
+                          ]
+                        },
+                        "metadata": {
+                          "operationMetadataId": "37cb50fc-1335-451b-bf3e-60c6189442e3"
+                        },
+                        "type": "Compose",
+                        "inputs": "@float(items('Apply_to_each_GroupsList')?['CurrencyUnit'])"
+                      }
+                    }
+                  },
+                  "expression": {
+                    "equals": [
+                      "@items('Apply_to_each_GroupsList')?['StripeKey']",
+                      "@null"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "4c171484-ef99-410e-8dd9-c3c8245819f8"
+                  },
+                  "type": "If"
+                },
+                "Condition_Microsoft": {
+                  "actions": {},
+                  "runAfter": {
+                    "Condition_StripeKey": [
+                      "Succeeded"
+                    ]
+                  },
+                  "else": {
+                    "actions": {
+                      "Set_variable_MicrosoftLink": {
+                        "runAfter": {},
+                        "metadata": {
+                          "operationMetadataId": "ed4612da-b0c6-4e01-b6ee-f141ec489a22"
+                        },
+                        "type": "SetVariable",
+                        "inputs": {
+                          "name": "MicrosoftLink",
+                          "value": "https://azuremarketplace.microsoft.com"
+                        }
+                      }
+                    }
+                  },
+                  "expression": {
+                    "equals": [
+                      "@items('Apply_to_each_UsersList')?['MicrosoftSubscriptionId']",
+                      "@null"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "38a36ae3-2c5b-4e6b-9e65-470d487f5bef"
+                  },
+                  "type": "If"
                 }
+              },
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "1a1e445c-9c0b-41e2-a69e-afdcf04a8253"
+              },
+              "type": "Foreach"
             }
+          },
+          "runAfter": {
+            "Get_items_UsersList": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "1102e9b3-c1a2-4a15-9643-79e334ad6b17"
+          },
+          "type": "Foreach"
         }
-    },
-    "schemaVersion": "1.0.0.0"
+      }
+    }
+  },
+  "schemaVersion": "1.0.0.0"
 }
